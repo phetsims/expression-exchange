@@ -14,7 +14,7 @@ define( function( require ) {
   var Screen = require( 'JOIST/Screen' );
 
   // strings
-  var expressionsSimString = require( 'string!EXPRESSIONS/expressions.title' );
+  var expressionsTitleString = require( 'string!EXPRESSIONS/expressions.title' );
 
   /**
    * @constructor
@@ -25,7 +25,7 @@ define( function( require ) {
     //If there are multiple screens, then the icon must be provided here.
     var icon = null;
 
-    Screen.call( this, expressionsSimString, icon,
+    Screen.call( this, expressionsTitleString, icon,
       function() { return new ExpressionsModel(); },
       function( model ) { return new ExpressionsScreenView( model ); },
       { backgroundColor: 'white' }

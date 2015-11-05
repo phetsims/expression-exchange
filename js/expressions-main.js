@@ -14,7 +14,7 @@ define( function( require ) {
   var SimLauncher = require( 'JOIST/SimLauncher' );
 
   // strings
-  var simTitle = require( 'string!EXPRESSIONS/expressions.title' );
+  var expressionsTitleString = require( 'string!EXPRESSIONS/expressions.title' );
 
   var simOptions = {
     credits: {
@@ -36,7 +36,7 @@ define( function( require ) {
   }
 
   SimLauncher.launch( function() {
-    var sim = new Sim( simTitle, [ new ExpressionsScreen() ], simOptions );
+    var sim = new Sim( expressionsTitleString, [ new ExpressionsScreen() ], simOptions );
     sim.start();
   } );
 } );
