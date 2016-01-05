@@ -17,7 +17,9 @@ define( function( require ) {
    */
   function ExpressionExchangeExploreModel() {
 
-    PropertySet.call( this, {} );
+    PropertySet.call( this, {
+      totalCents: 0 // @public, read-only
+    } );
   }
 
   return inherit( PropertySet, ExpressionExchangeExploreModel, {

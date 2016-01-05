@@ -1,4 +1,7 @@
 {
+  "numberCents": {
+    "value": "{0} cents"
+  },
   "expression-exchange.title": {
     "value": "Expression Exchange"
   },
@@ -7,5 +10,11 @@
   },
   "game": {
     "value": "Game"
+  },
+  "myCollection": {
+    "value": "My Collection"
+  },
+  "total": {
+    "value": "Total"
   }
 }
