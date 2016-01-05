@@ -9,7 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var Coin = require( 'EXPRESSION_EXCHANGE/expression-exchange/common/model/Coin' );
+  var Coin = require( 'EXPRESSION_EXCHANGE/common/model/Coin' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
   var PropertySet = require( 'AXON/PropertySet' );

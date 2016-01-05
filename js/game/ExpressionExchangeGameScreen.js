@@ -9,8 +9,8 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var ExpressionExchangeGameScreenView = require( 'EXPRESSION_EXCHANGE/expression-exchange/game/view/ExpressionExchangeGameScreenView' );
-  var ExpressionExchangeGameModel = require( 'EXPRESSION_EXCHANGE/expression-exchange/game/model/ExpressionExchangeGameModel' );
+  var ExpressionExchangeGameScreenView = require( 'EXPRESSION_EXCHANGE/game/view/ExpressionExchangeGameScreenView' );
+  var ExpressionExchangeGameModel = require( 'EXPRESSION_EXCHANGE/game/model/ExpressionExchangeGameModel' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var Screen = require( 'JOIST/Screen' );

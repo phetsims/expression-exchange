@@ -9,8 +9,8 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var ExpressionExchangeExploreScreenView = require( 'EXPRESSION_EXCHANGE/expression-exchange/explore/view/ExpressionExchangeExploreScreenView' );
-  var ExpressionExchangeExploreModel = require( 'EXPRESSION_EXCHANGE/expression-exchange/explore/model/ExpressionExchangeExploreModel' );
+  var ExpressionExchangeExploreScreenView = require( 'EXPRESSION_EXCHANGE/explore/view/ExpressionExchangeExploreScreenView' );
+  var ExpressionExchangeExploreModel = require( 'EXPRESSION_EXCHANGE/explore/model/ExpressionExchangeExploreModel' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var Screen = require( 'JOIST/Screen' );
