@@ -28,9 +28,12 @@ define( function( require ) {
   var totalString = require( 'string!EXPRESSION_EXCHANGE/total' );
 
   // constants
-  var INSET = 10; // inset from edges of layout bounds, in screen coords
   var ACCORDION_BOX_TITLE_FONT = new PhetFont( { size: 16, weight: 'bold' } );
+  var ACCORDION_BOX_BUTTON_X_MARGIN = 8;
+  var ACCORDION_BOX_BUTTON_Y_MARGIN = 4;
+  var ACCORDION_BOX_CORNER_RADIUS = 7;
   var CHECK_BOX_FONT = new PhetFont( { size: 16 } );
+  var INSET = 10; // inset from edges of layout bounds, in screen coords
 
   /**
    * @param {ExpressionExchangeExploreModel} exploreModel
@@ -57,9 +60,11 @@ define( function( require ) {
       titleNode: new Text( totalString, { font: ACCORDION_BOX_TITLE_FONT } ),
       left: INSET,
       top: INSET,
+      cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
+      buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
+      buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
       minWidth: totalCentsReadout.width * 1.8 // multiplier empirically determined
     } );
-    totalCentsAccordionBox.expandedProperty.value = false;
     this.addChild( totalCentsAccordionBox );
 
     // add accordion box that will contain the user's coin collection
@@ -67,6 +72,9 @@ define( function( require ) {
       titleNode: new Text( myCollectionString, { font: ACCORDION_BOX_TITLE_FONT } ),
       right: this.layoutBounds.width - INSET,
       top: INSET,
+      cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
+      buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
+      buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
       minWidth: 200 // empirically determined
     } );
     this.addChild( myCollectionAccordionBox );
@@ -95,14 +103,12 @@ define( function( require ) {
     );
     this.addChild( showAllCoefficientsCheckbox );
 
-    // close the "My Collection" accordion box now that layout is complete
-    myCollectionAccordionBox.expandedProperty.value = false;
-
-
     // add the 'Reset All' button
     var resetAllButton = new ResetAllButton( {
       listener: function() {
         exploreModel.reset();
+        myCollectionAccordionBox.expandedProperty.reset();
+        totalCentsAccordionBox.expandedProperty.reset();
       },
       right: this.layoutBounds.maxX - 10,
       bottom: this.layoutBounds.maxY - 10
