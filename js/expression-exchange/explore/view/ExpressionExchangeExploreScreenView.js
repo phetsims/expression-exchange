@@ -10,6 +10,7 @@ define( function( require ) {
 
   // modules
   var AccordionBox = require( 'SUN/AccordionBox' );
+  var CheckBox = require( 'SUN/CheckBox' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Panel = require( 'SUN/Panel' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
@@ -22,11 +23,14 @@ define( function( require ) {
   // strings
   var myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
   var numberCentsString = require( 'string!EXPRESSION_EXCHANGE/numberCents' );
+  var showAllCoefficientsString = require( 'string!EXPRESSION_EXCHANGE/showAllCoefficients' );
+  var showValuesString = require( 'string!EXPRESSION_EXCHANGE/showValues' );
   var totalString = require( 'string!EXPRESSION_EXCHANGE/total' );
 
   // constants
   var INSET = 10; // inset from edges of layout bounds, in screen coords
   var ACCORDION_BOX_TITLE_FONT = new PhetFont( { size: 16, weight: 'bold' } );
+  var CHECK_BOX_FONT = new PhetFont( { size: 16 } );
 
   /**
    * @param {ExpressionExchangeExploreModel} exploreModel
@@ -65,15 +69,42 @@ define( function( require ) {
       top: INSET,
       minWidth: 200 // empirically determined
     } );
-    myCollectionAccordionBox.expandedProperty.value = false;
     this.addChild( myCollectionAccordionBox );
+
+    // add the checkbox that controls visibility of values
+    var showValuesCheckbox = new CheckBox(
+      new Text( showValuesString, { font: CHECK_BOX_FONT } ),
+      exploreModel.showValuesProperty,
+      {
+        top: myCollectionAccordionBox.bottom + 6,
+        left: myCollectionAccordionBox.left,
+        maxWidth: myCollectionAccordionBox.width
+      }
+    );
+    this.addChild( showValuesCheckbox );
+
+    // add the checkbox that controls whether all coefficents (including 1) are shown
+    var showAllCoefficientsCheckbox = new CheckBox(
+      new Text( showAllCoefficientsString, { font: CHECK_BOX_FONT } ),
+      exploreModel.showAllCoefficientsProperty,
+      {
+        top: showValuesCheckbox.bottom + 6,
+        left: myCollectionAccordionBox.left,
+        maxWidth: myCollectionAccordionBox.width
+      }
+    );
+    this.addChild( showAllCoefficientsCheckbox );
+
+    // close the "My Collection" accordion box now that layout is complete
+    myCollectionAccordionBox.expandedProperty.value = false;
+
 
     // add the 'Reset All' button
     var resetAllButton = new ResetAllButton( {
       listener: function() {
         exploreModel.reset();
       },
-      right:  this.layoutBounds.maxX - 10,
+      right: this.layoutBounds.maxX - 10,
       bottom: this.layoutBounds.maxY - 10
     } );
     this.addChild( resetAllButton );

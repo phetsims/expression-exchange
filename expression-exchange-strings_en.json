@@ -14,6 +14,12 @@
   "myCollection": {
     "value": "My Collection"
   },
+  "showAllCoefficients": {
+    "value": "Show All Coefficients"
+  },
+  "showValues": {
+    "value": "Show Values"
+  },
   "total": {
     "value": "Total"
   }
