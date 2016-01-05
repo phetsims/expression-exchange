@@ -1,8 +1,9 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2016, University of Colorado Boulder
 
 /**
+ * main model for the 'Explore' screen
  *
- * @author Aaron Davis (PhET Interactive Simulations)
+ * @author John Blanco
  */
 define( function( require ) {
   'use strict';
@@ -14,12 +15,12 @@ define( function( require ) {
   /**
    * @constructor
    */
-  function ExpressionExchangeModel() {
+  function ExpressionExchangeExploreModel() {
 
     PropertySet.call( this, {} );
   }
 
-  return inherit( PropertySet, ExpressionExchangeModel, {
+  return inherit( PropertySet, ExpressionExchangeExploreModel, {
 
     //TODO Called by the animation loop. Optional, so if your model has no animation, please delete this.
     step: function( dt ) {

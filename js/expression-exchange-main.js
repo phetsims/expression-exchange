@@ -3,13 +3,14 @@
 /**
  * Main entry point for the sim.
  *
- * @author Aaron Davis (PhET Interactive Simulations)
+ * @author John Blanco
  */
 define( function( require ) {
   'use strict';
 
   // modules
-  var ExpressionExchangeScreen = require( 'EXPRESSION_EXCHANGE/expression-exchange/ExpressionExchangeScreen' );
+  var ExpressionExchangeExploreScreen = require( 'EXPRESSION_EXCHANGE/expression-exchange/explore/ExpressionExchangeExploreScreen' );
+  var ExpressionExchangeGameScreen = require( 'EXPRESSION_EXCHANGE/expression-exchange/game/ExpressionExchangeGameScreen' );
   var Sim = require( 'JOIST/Sim' );
   var SimLauncher = require( 'JOIST/SimLauncher' );
 
@@ -18,25 +19,21 @@ define( function( require ) {
 
   var simOptions = {
     credits: {
-      //TODO fill in proper credits, all of these fields are optional, see joist.AboutDialog
-      leadDesign: '',
-      softwareDevelopment: '',
-      team: '',
-      qualityAssurance: '',
-      graphicArts: '',
-      thanks: ''
+      leadDesign: 'Amanda McGarry',
+      softwareDevelopment: 'John Blanco',
+      team: 'Amanda McGarry, Ariel Paul, Kathy Perkins',
+      qualityAssurance: 'Steele Dalton, Elise Morgan, Oliver Nix, Oliver Orejola, Bryan Yoelin'
     }
   };
 
-  // Appending '?dev' to the URL will enable developer-only features.
-  if ( phet.chipper.getQueryParameter( 'dev' ) ) {
-    simOptions = _.extend( {
-      // add dev-specific options here
-    }, simOptions );
-  }
-
   SimLauncher.launch( function() {
-    var sim = new Sim( expressionExchangeTitleString, [ new ExpressionExchangeScreen() ], simOptions );
+    var sim = new Sim(
+      expressionExchangeTitleString,
+      [
+        new ExpressionExchangeExploreScreen(),
+        new ExpressionExchangeGameScreen()
+      ],
+      simOptions );
     sim.start();
   } );
 } );

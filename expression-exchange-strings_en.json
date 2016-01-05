@@ -1,5 +1,11 @@
 {
   "expression-exchange.title": {
     "value": "Expression Exchange"
+  },
+  "explore": {
+    "value": "Explore"
+  },
+  "game": {
+    "value": "Game"
   }
 }

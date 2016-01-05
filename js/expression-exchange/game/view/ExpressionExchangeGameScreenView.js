@@ -1,8 +1,9 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2016, University of Colorado Boulder
 
 /**
+ * main view for the 'Game' screen
  *
- * @author Aaron Davis (PhET Interactive Simulations)
+ * @author John Blanco
  */
 define( function( require ) {
   'use strict';
@@ -13,25 +14,25 @@ define( function( require ) {
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
 
   /**
-   * @param {ExpressionExchangeModel} expressionExchangeModel
+   * @param {ExpressionExchangeGameModel} gameModel
    * @constructor
    */
-  function ExpressionExchangeScreenView( expressionExchangeModel ) {
+  function ExpressionExchangeGameScreenView( gameModel ) {
 
     ScreenView.call( this );
 
     // Reset All button
     var resetAllButton = new ResetAllButton( {
       listener: function() {
-        expressionExchangeModel.reset();
+        gameModel.reset();
       },
-      right:  this.layoutBounds.maxX - 10,
+      right: this.layoutBounds.maxX - 10,
       bottom: this.layoutBounds.maxY - 10
     } );
     this.addChild( resetAllButton );
   }
 
-  return inherit( ScreenView, ExpressionExchangeScreenView, {
+  return inherit( ScreenView, ExpressionExchangeGameScreenView, {
 
     //TODO Called by the animation loop. Optional, so if your view has no animation, please delete this.
     step: function( dt ) {
