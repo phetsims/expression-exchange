@@ -9,7 +9,9 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var Coin = require( 'EXPRESSION_EXCHANGE/expression-exchange/common/model/Coin' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var ObservableArray = require( 'AXON/ObservableArray' );
   var PropertySet = require( 'AXON/PropertySet' );
 
   /**
@@ -22,6 +24,14 @@ define( function( require ) {
       showValues: false, // @public
       showAllCoefficients: false // @public
     } );
+
+    // @public, read and listen only
+    this.coins = new ObservableArray();
+
+    // TODO temp - add some initial coins
+    var coin;
+    coin = Coin.createCoin( 1 );
+    this.coins.add( coin );
   }
 
   return inherit( PropertySet, ExpressionExchangeExploreModel, {
