@@ -21,7 +21,7 @@ define( function( require ) {
   function CoinNode( coin ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
-    this.addChild( new Circle( coin.radius, { fill: coin.color } ) );
+    this.addChild( CoinNode.createCoinRepresentation( coin.value ) );
 
     // move this node as the model representation moves
     coin.positionProperty.link( function( position ) {
@@ -43,11 +43,41 @@ define( function( require ) {
       start: function( event, trail ) {
         coin.userControlled = true;
       },
+
       end: function( event, trail ) {
         coin.userControlled = false;
       }
     } ) );
   }
 
-  return inherit( Node, CoinNode );
+  return inherit( Node, CoinNode, {}, {
+
+    // create the representation for a coin of the given denomination
+    createCoinRepresentation: function( denomination ) {
+      var coinRepresentation;
+      switch( denomination ) {
+        case 1:
+          coinRepresentation = new Circle( 20, { fill: 'red' } );
+          break;
+        case 2:
+          coinRepresentation = new Circle( 30, { fill: 'cyan' } );
+          break;
+        case 5:
+          coinRepresentation = new Circle( 40, { fill: 'yellow' } );
+          break;
+        case 10:
+          coinRepresentation = new Circle( 50, { fill: 'orange' } );
+          break;
+        case 25:
+          coinRepresentation = new Circle( 60, { fill: 'green' } );
+          break;
+        default:
+          assert && assert( false, 'unsupported coin denomination' );
+          coinRepresentation = new Circle( 20, { fill: 'pink' } );
+          break;
+      }
+      return coinRepresentation;
+
+    }
+  } );
 } );

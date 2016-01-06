@@ -11,7 +11,7 @@ define( function( require ) {
   // modules
   var AccordionBox = require( 'SUN/AccordionBox' );
   var CheckBox = require( 'SUN/CheckBox' );
-  var Coin = require( 'EXPRESSION_EXCHANGE/common/model/Coin' );
+  var CoinCreatorNode = require( 'EXPRESSION_EXCHANGE/explore/view/CoinCreatorNode' );
   var CoinNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinNode' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -44,7 +44,6 @@ define( function( require ) {
    */
   function ExpressionExchangeExploreScreenView( exploreModel ) {
 
-    var self = this;
     ScreenView.call( this );
 
     // create the readout that will display the total accumulated cents
@@ -139,10 +138,21 @@ define( function( require ) {
 
     } );
 
-    // TODO temp - add some initial coins
-    var coin;
-    coin = Coin.createCoin( 1 );
-    exploreModel.addCoin( coin );
+    // TODO temp - add some initial coin creators
+    var coinCreatorNode = new CoinCreatorNode( 1, exploreModel );
+    coinCreatorNode.left = 110;
+    coinCreatorNode.top = 200;
+    this.addChild( coinCreatorNode );
+
+    coinCreatorNode = new CoinCreatorNode( 2, exploreModel );
+    coinCreatorNode.left = 150;
+    coinCreatorNode.top = 200;
+    this.addChild( coinCreatorNode );
+
+    coinCreatorNode = new CoinCreatorNode( 5, exploreModel );
+    coinCreatorNode.left = 200;
+    coinCreatorNode.top = 200;
+    this.addChild( coinCreatorNode );
   }
 
   return inherit( ScreenView, ExpressionExchangeExploreScreenView, {
