@@ -11,7 +11,10 @@ define( function( require ) {
   // modules
   var AccordionBox = require( 'SUN/AccordionBox' );
   var CheckBox = require( 'SUN/CheckBox' );
+  var Coin = require( 'EXPRESSION_EXCHANGE/common/model/Coin' );
+  var CoinNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinNode' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var Node = require( 'SCENERY/nodes/Node' );
   var Panel = require( 'SUN/Panel' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
@@ -41,6 +44,7 @@ define( function( require ) {
    */
   function ExpressionExchangeExploreScreenView( exploreModel ) {
 
+    var self = this;
     ScreenView.call( this );
 
     // create the readout that will display the total accumulated cents
@@ -91,7 +95,7 @@ define( function( require ) {
     );
     this.addChild( showValuesCheckbox );
 
-    // add the checkbox that controls whether all coefficents (including 1) are shown
+    // add the checkbox that controls whether all coefficients (including 1) are shown
     var showAllCoefficientsCheckbox = new CheckBox(
       new Text( showAllCoefficientsString, { font: CHECK_BOX_FONT } ),
       exploreModel.showAllCoefficientsProperty,
@@ -102,6 +106,10 @@ define( function( require ) {
       }
     );
     this.addChild( showAllCoefficientsCheckbox );
+
+    // add the node that will act as the layer where the coins will come and go
+    var coinLayer = new Node();
+    this.addChild( coinLayer );
 
     // add the 'Reset All' button
     var resetAllButton = new ResetAllButton( {
@@ -114,6 +122,27 @@ define( function( require ) {
       bottom: this.layoutBounds.maxY - 10
     } );
     this.addChild( resetAllButton );
+
+    // add and remove coin nodes as coins are added and removed from the model
+    exploreModel.coins.addItemAddedListener( function( addedCoin ) {
+
+      // add a representation of the coin
+      coinLayer.addChild( new CoinNode( addedCoin ) );
+
+      // set up a listener to remove the node when the corresponding coin is removed from the model
+      exploreModel.coins.addItemRemovedListener( function removalListener( removedCoin ) {
+        if ( removedCoin === addedCoin ) {
+          coinLayer.removeChild( removedCoin );
+          exploreModel.coins.removeItemRemovedListener( removalListener );
+        }
+      } );
+
+    } );
+
+    // TODO temp - add some initial coins
+    var coin;
+    coin = Coin.createCoin( 1 );
+    exploreModel.addCoin( coin );
   }
 
   return inherit( ScreenView, ExpressionExchangeExploreScreenView, {

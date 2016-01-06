@@ -9,7 +9,6 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var Coin = require( 'EXPRESSION_EXCHANGE/common/model/Coin' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
   var PropertySet = require( 'AXON/PropertySet' );
@@ -25,13 +24,8 @@ define( function( require ) {
       showAllCoefficients: false // @public
     } );
 
-    // @public, read and listen only
+    // @public, read and listen only, use API defined below to add and remove coins
     this.coins = new ObservableArray();
-
-    // TODO temp - add some initial coins
-    var coin;
-    coin = Coin.createCoin( 1 );
-    this.coins.add( coin );
   }
 
   return inherit( PropertySet, ExpressionExchangeExploreModel, {
@@ -39,6 +33,10 @@ define( function( require ) {
     //TODO Called by the animation loop. Optional, so if your model has no animation, please delete this.
     step: function( dt ) {
       //TODO Handle model animation here.
+    },
+
+    addCoin: function( coin ) {
+      this.coins.add( coin );
     }
   } );
 } );

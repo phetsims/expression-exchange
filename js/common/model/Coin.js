@@ -20,11 +20,12 @@ define( function( require ) {
    */
   function Coin( value, color, diameter ) {
     PropertySet.call( this, {
-      position: Vector2.ZERO // @public
+      position: Vector2.ZERO, // @public
+      userControlled: false // @public, indicate whether user is currently dragging this coin
     } );
     this.value = value; // @public, read only
     this.color = color; // @public, read only
-    this.diameter = diameter; // @public, read only
+    this.radius = diameter / 2; // @public, read only
   }
 
   return inherit(
