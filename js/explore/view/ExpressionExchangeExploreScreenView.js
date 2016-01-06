@@ -108,19 +108,21 @@ define( function( require ) {
     this.addChild( showAllCoefficientsCheckbox );
 
     // add the carousel that will contain the various coins and expressions
-    this.addChild( new Carousel(
+    var carousel = new Carousel(
       [
-        new CoinCreatorNode( 1, exploreModel ),
         new CoinCreatorNode( 2, exploreModel ),
+        new CoinCreatorNode( 4, exploreModel ),
         new CoinCreatorNode( 5, exploreModel ),
         new CoinCreatorNode( 10, exploreModel ),
-        new CoinCreatorNode( 25, exploreModel )
+        new CoinCreatorNode( 25, exploreModel ),
+        new CoinCreatorNode( 100, exploreModel )
       ],
       {
         centerX: this.layoutBounds.width / 2,
         bottom: this.layoutBounds.height - 50
       }
-    ) );
+    );
+    this.addChild( carousel );
 
     // add the node that will act as the layer where the coins will come and go
     var coinLayer = new Node();
@@ -132,6 +134,7 @@ define( function( require ) {
         exploreModel.reset();
         myCollectionAccordionBox.expandedProperty.reset();
         totalCentsAccordionBox.expandedProperty.reset();
+        carousel.pageNumberProperty.reset();
       },
       right: this.layoutBounds.maxX - 10,
       bottom: this.layoutBounds.maxY - 10
@@ -142,12 +145,13 @@ define( function( require ) {
     exploreModel.coins.addItemAddedListener( function( addedCoin ) {
 
       // add a representation of the coin
-      coinLayer.addChild( new CoinNode( addedCoin ) );
+      var coinNode = new CoinNode( addedCoin );
+      coinLayer.addChild( coinNode );
 
       // set up a listener to remove the node when the corresponding coin is removed from the model
       exploreModel.coins.addItemRemovedListener( function removalListener( removedCoin ) {
         if ( removedCoin === addedCoin ) {
-          coinLayer.removeChild( removedCoin );
+          coinLayer.removeChild( coinNode );
           exploreModel.coins.removeItemRemovedListener( removalListener );
         }
       } );

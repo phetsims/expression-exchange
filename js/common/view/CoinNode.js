@@ -10,9 +10,19 @@ define( function( require ) {
 
   // modules
   var Circle = require( 'SCENERY/nodes/Circle' );
+  var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
+
+  // images
+  var coin2CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-2-cents.png' );
+  var coin4CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-4-cents.png' );
+  var coin5CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-5-cents.png' );
+  var coin10CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-10-cents-a.png' );
+  var coin25CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-25-cents.png' );
+  var coin100CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-100-cents.png' );
+
 
   /**
    * @param {Coin} coin - model of a coin
@@ -56,20 +66,23 @@ define( function( require ) {
     createCoinRepresentation: function( denomination ) {
       var coinRepresentation;
       switch( denomination ) {
-        case 1:
-          coinRepresentation = new Circle( 20, { fill: 'red' } );
-          break;
         case 2:
-          coinRepresentation = new Circle( 30, { fill: 'cyan' } );
+          coinRepresentation = new Image( coin2CentsImage );
+          break;
+        case 4:
+          coinRepresentation = new Image( coin4CentsImage );
           break;
         case 5:
-          coinRepresentation = new Circle( 40, { fill: 'yellow' } );
+          coinRepresentation = new Image( coin5CentsImage );
           break;
         case 10:
-          coinRepresentation = new Circle( 50, { fill: 'orange' } );
+          coinRepresentation = new Image( coin10CentsImage );
           break;
         case 25:
-          coinRepresentation = new Circle( 60, { fill: 'green' } );
+          coinRepresentation = new Image( coin25CentsImage );
+          break;
+        case 100:
+          coinRepresentation = new Image( coin100CentsImage );
           break;
         default:
           assert && assert( false, 'unsupported coin denomination' );

@@ -35,8 +35,14 @@ define( function( require ) {
       //TODO Handle model animation here.
     },
 
+    // @public
     addCoin: function( coin ) {
       this.coins.add( coin );
+    },
+
+    // @public
+    reset: function() {
+      this.coins.clear();
     }
   } );
 } );
