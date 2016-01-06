@@ -10,6 +10,7 @@ define( function( require ) {
 
   // modules
   var AccordionBox = require( 'SUN/AccordionBox' );
+  var Carousel = require( 'SUN/Carousel' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinCreatorNode = require( 'EXPRESSION_EXCHANGE/explore/view/CoinCreatorNode' );
   var CoinNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinNode' );
@@ -106,6 +107,21 @@ define( function( require ) {
     );
     this.addChild( showAllCoefficientsCheckbox );
 
+    // add the carousel that will contain the various coins and expressions
+    this.addChild( new Carousel(
+      [
+        new CoinCreatorNode( 1, exploreModel ),
+        new CoinCreatorNode( 2, exploreModel ),
+        new CoinCreatorNode( 5, exploreModel ),
+        new CoinCreatorNode( 10, exploreModel ),
+        new CoinCreatorNode( 25, exploreModel )
+      ],
+      {
+        centerX: this.layoutBounds.width / 2,
+        bottom: this.layoutBounds.height - 50
+      }
+    ) );
+
     // add the node that will act as the layer where the coins will come and go
     var coinLayer = new Node();
     this.addChild( coinLayer );
@@ -137,22 +153,6 @@ define( function( require ) {
       } );
 
     } );
-
-    // TODO temp - add some initial coin creators
-    var coinCreatorNode = new CoinCreatorNode( 1, exploreModel );
-    coinCreatorNode.left = 110;
-    coinCreatorNode.top = 200;
-    this.addChild( coinCreatorNode );
-
-    coinCreatorNode = new CoinCreatorNode( 2, exploreModel );
-    coinCreatorNode.left = 150;
-    coinCreatorNode.top = 200;
-    this.addChild( coinCreatorNode );
-
-    coinCreatorNode = new CoinCreatorNode( 5, exploreModel );
-    coinCreatorNode.left = 200;
-    coinCreatorNode.top = 200;
-    this.addChild( coinCreatorNode );
   }
 
   return inherit( ScreenView, ExpressionExchangeExploreScreenView, {
