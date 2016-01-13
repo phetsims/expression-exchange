@@ -13,17 +13,46 @@ define( function( require ) {
   var PropertySet = require( 'AXON/PropertySet' );
   var Vector2 = require( 'DOT/Vector2' );
 
+  // constants
+
+  var TERM_STRING_TO_COIN_PARAM_MAPPING = {
+    'x': { diameter: 20 },
+    '2*x': { diameter: 20 },
+    'x^2': { diameter: 20 },
+    'y': { diameter: 20 },
+    '3*y': { diameter: 20 },
+    'y^2': { diameter: 20 },
+    'z': { diameter: 20 },
+    'x*y': { diameter: 20 },
+    'x^2*y^2': { diameter: 20 }
+  };
+
   /**
    * TODO: document parameters once finalized
    * @constructor
    */
-  function Coin( value ) {
+  function Coin( termString, diameter ) {
     PropertySet.call( this, {
       position: Vector2.ZERO, // @public
       userControlled: false // @public, indicate whether user is currently dragging this coin
     } );
-    this.value = value; // @public, read only
+    this.termString = termString; // @public, read only
+    this.diameter = diameter; // @public, read only
   }
 
-  return inherit( PropertySet, Coin );
+  return inherit( PropertySet, Coin, {
+
+    /**
+     * Create a coin based on the provided term string.  The simulation supports a fixed set of coins, each of which
+     * map the a particular term string (e.g. 'x', '2*x', 'y^2').  The function creates the Coin model element that
+     * corresponds to the provided term string.
+     * @param {String} termString
+     * @public
+     */
+    createCoin: function( termString ){
+      var coinParameters = TERM_STRING_TO_COIN_PARAM_MAPPING[ termString ];
+      assert && assert( coinParameters, 'no coin defined for provided term string' );
+      return new Coin( termString, coinParameters.diamter );
+    }
+  } );
 } );

@@ -110,12 +110,15 @@ define( function( require ) {
     // add the carousel that will contain the various coins and expressions
     var carousel = new Carousel(
       [
-        new CoinCreatorNode( 2, exploreModel ),
-        new CoinCreatorNode( 4, exploreModel ),
-        new CoinCreatorNode( 5, exploreModel ),
-        new CoinCreatorNode( 10, exploreModel ),
-        new CoinCreatorNode( 25, exploreModel ),
-        new CoinCreatorNode( 100, exploreModel )
+        new CoinCreatorNode( 'x', exploreModel ),
+        new CoinCreatorNode( '2*x', exploreModel ),
+        new CoinCreatorNode( 'x^2', exploreModel ),
+        new CoinCreatorNode( 'y', exploreModel ),
+        new CoinCreatorNode( '3*y', exploreModel ),
+        new CoinCreatorNode( 'y^2', exploreModel ),
+        new CoinCreatorNode( 'z', exploreModel ),
+        new CoinCreatorNode( 'x*y', exploreModel ),
+        new CoinCreatorNode( 'x^2*y^2', exploreModel )
       ],
       {
         centerX: this.layoutBounds.width / 2,

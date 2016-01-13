@@ -13,13 +13,13 @@ define( function( require ) {
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
 
   /**
-   * @param {number} denomination - value, in cents, of coin to be created
+   * @param {string} termString - string that defines the term represented by this coin
    * @param {ExpressionExchangeExploreModel} exploreModel - model where coins are to be added
    * @param {Object} options
    * TODO: This type may need to be moved and generalized if used in the game
    * @constructor
    */
-  function CoinCreatorNode( denomination, exploreModel, options ) {
+  function CoinCreatorNode( termString, exploreModel, options ) {
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
     options = _.extend( {
@@ -29,7 +29,8 @@ define( function( require ) {
     }, options );
 
     // add the coin node that will be clicked upon to create coins of the same denomination
-    this.addChild( CoinNode.createCoinRepresentation( denomination ) );
+    var coinNode = new CoinNode( new Coin ( termString ) );
+    this.addChild( coinNode );
 
     var createdCountProperty = new Property( 0 ); // Used to track the number of shapes created and not returned.
 
@@ -37,6 +38,11 @@ define( function( require ) {
     createdCountProperty.link( function( numCreated ) {
       self.visible = numCreated < options.creationLimit;
     } );
+
+    // remove the default input listener from the coin node so that it can be replaced
+    var coinNodeInputListeners = coinNode.getInputListeners();
+    assert && assert( coinNodeInputListeners.length === 1, 'unexpected listeners present on coin node' );
+    coinNode.removeInputListener( coinNodeInputListeners[ 0 ] );
 
     // add the listener that will allow the user to click on this node and create a new coin, then position it in the model
     this.addInputListener( new SimpleDragHandler( {
@@ -67,7 +73,7 @@ define( function( require ) {
         var initialPosition = this.parentScreenView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new model element
-        this.createdCoin = new Coin( denomination );
+        this.createdCoin = new Coin( termString );
         this.createdCoin.position = initialPosition;
         this.createdCoin.userControlled = true;
         exploreModel.addCoin( this.createdCoin );

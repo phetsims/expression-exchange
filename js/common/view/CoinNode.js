@@ -23,6 +23,18 @@ define( function( require ) {
   var coin25CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-25-cents.png' );
   var coin100CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-100-cents.png' );
 
+  // map of coin terms to images
+  var TERM_STRING_TO_IMAGES_MAP = {
+    'x': { frontImage: coin2CentsImage },
+    '2*x': { frontImage: coin2CentsImage },
+    'x^2': { frontImage: coin2CentsImage },
+    'y': { frontImage: coin2CentsImage },
+    '3*y': { frontImage: coin2CentsImage },
+    'y^2': { frontImage: coin2CentsImage },
+    'z': { frontImage: coin2CentsImage },
+    'x*y': { frontImage: coin2CentsImage },
+    'x^2*y^2': { frontImage: coin2CentsImage }
+  };
 
   /**
    * @param {Coin} coin - model of a coin
@@ -31,7 +43,10 @@ define( function( require ) {
   function CoinNode( coin ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
-    this.addChild( CoinNode.createCoinRepresentation( coin.value ) );
+    var image = TERM_STRING_TO_IMAGES_MAP[ coin.termString ].frontImage;
+    assert && assert( image, 'no image found for term string: ', coin.termString );
+    var imageNode = new Image( image );
+    this.addChild( imageNode );
 
     // move this node as the model representation moves
     coin.positionProperty.link( function( position ) {
@@ -60,37 +75,5 @@ define( function( require ) {
     } ) );
   }
 
-  return inherit( Node, CoinNode, {}, {
-
-    // create the representation for a coin of the given denomination
-    createCoinRepresentation: function( denomination ) {
-      var coinRepresentation;
-      switch( denomination ) {
-        case 2:
-          coinRepresentation = new Image( coin2CentsImage );
-          break;
-        case 4:
-          coinRepresentation = new Image( coin4CentsImage );
-          break;
-        case 5:
-          coinRepresentation = new Image( coin5CentsImage );
-          break;
-        case 10:
-          coinRepresentation = new Image( coin10CentsImage );
-          break;
-        case 25:
-          coinRepresentation = new Image( coin25CentsImage );
-          break;
-        case 100:
-          coinRepresentation = new Image( coin100CentsImage );
-          break;
-        default:
-          assert && assert( false, 'unsupported coin denomination' );
-          coinRepresentation = new Circle( 20, { fill: 'pink' } );
-          break;
-      }
-      return coinRepresentation;
-
-    }
-  } );
+  return inherit( Node, CoinNode, {} );
 } );
