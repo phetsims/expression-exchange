@@ -111,18 +111,17 @@ define( function( require ) {
     var carousel = new Carousel(
       [
         new CoinCreatorNode( 'x', exploreModel ),
-        new CoinCreatorNode( '2*x', exploreModel ),
-        new CoinCreatorNode( 'x^2', exploreModel ),
         new CoinCreatorNode( 'y', exploreModel ),
-        new CoinCreatorNode( '3*y', exploreModel ),
-        new CoinCreatorNode( 'y^2', exploreModel ),
         new CoinCreatorNode( 'z', exploreModel ),
         new CoinCreatorNode( 'x*y', exploreModel ),
+        new CoinCreatorNode( 'x^2', exploreModel ),
+        new CoinCreatorNode( 'y^2', exploreModel ),
         new CoinCreatorNode( 'x^2*y^2', exploreModel )
       ],
       {
         centerX: this.layoutBounds.width / 2,
-        bottom: this.layoutBounds.height - 50
+        bottom: this.layoutBounds.height - 50,
+        itemsPerPage: 3
       }
     );
     this.addChild( carousel );

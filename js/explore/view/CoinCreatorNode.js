@@ -29,7 +29,7 @@ define( function( require ) {
     }, options );
 
     // add the coin node that will be clicked upon to create coins of the same denomination
-    var coinNode = new CoinNode( new Coin ( termString ) );
+    var coinNode = new CoinNode( Coin.createCoinFromTermString( termString ) );
     this.addChild( coinNode );
 
     var createdCountProperty = new Property( 0 ); // Used to track the number of shapes created and not returned.
@@ -73,7 +73,7 @@ define( function( require ) {
         var initialPosition = this.parentScreenView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new model element
-        this.createdCoin = new Coin( termString );
+        this.createdCoin = Coin.createCoinFromTermString( termString );
         this.createdCoin.position = initialPosition;
         this.createdCoin.userControlled = true;
         exploreModel.addCoin( this.createdCoin );

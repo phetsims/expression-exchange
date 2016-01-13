@@ -16,15 +16,13 @@ define( function( require ) {
   // constants
 
   var TERM_STRING_TO_COIN_PARAM_MAPPING = {
-    'x': { diameter: 20 },
-    '2*x': { diameter: 20 },
-    'x^2': { diameter: 20 },
-    'y': { diameter: 20 },
-    '3*y': { diameter: 20 },
-    'y^2': { diameter: 20 },
-    'z': { diameter: 20 },
-    'x*y': { diameter: 20 },
-    'x^2*y^2': { diameter: 20 }
+    'x': { diameter: 45 },
+    'y': { diameter: 45 },
+    'z': { diameter: 60 },
+    'x*y': { diameter: 60 },
+    'x^2': { diameter: 75 },
+    'y^2': { diameter: 75 },
+    'x^2*y^2': { diameter: 80 }
   };
 
   /**
@@ -40,7 +38,7 @@ define( function( require ) {
     this.diameter = diameter; // @public, read only
   }
 
-  return inherit( PropertySet, Coin, {
+  return inherit( PropertySet, Coin, {}, {
 
     /**
      * Create a coin based on the provided term string.  The simulation supports a fixed set of coins, each of which
@@ -49,10 +47,10 @@ define( function( require ) {
      * @param {String} termString
      * @public
      */
-    createCoin: function( termString ){
+    createCoinFromTermString: function( termString ){
       var coinParameters = TERM_STRING_TO_COIN_PARAM_MAPPING[ termString ];
       assert && assert( coinParameters, 'no coin defined for provided term string' );
-      return new Coin( termString, coinParameters.diamter );
+      return new Coin( termString, coinParameters.diameter );
     }
   } );
 } );

@@ -16,24 +16,23 @@ define( function( require ) {
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
 
   // images
-  var coin2CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-2-cents.png' );
-  var coin4CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-4-cents.png' );
-  var coin5CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-5-cents.png' );
-  var coin10CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-10-cents-a.png' );
-  var coin25CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-25-cents.png' );
-  var coin100CentsImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-100-cents.png' );
+  var coinXImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
+  var coinXSquaredImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared.png' );
+  var coinXSquareYSquaredImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
+  var coinXYImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy.png' );
+  var coinYImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
+  var coinYSquaredImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
+  var coinZImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
 
   // map of coin terms to images
   var TERM_STRING_TO_IMAGES_MAP = {
-    'x': { frontImage: coin2CentsImage },
-    '2*x': { frontImage: coin2CentsImage },
-    'x^2': { frontImage: coin2CentsImage },
-    'y': { frontImage: coin2CentsImage },
-    '3*y': { frontImage: coin2CentsImage },
-    'y^2': { frontImage: coin2CentsImage },
-    'z': { frontImage: coin2CentsImage },
-    'x*y': { frontImage: coin2CentsImage },
-    'x^2*y^2': { frontImage: coin2CentsImage }
+    'x': { frontImage: coinXImage },
+    'x^2': { frontImage: coinXSquaredImage },
+    'y': { frontImage: coinYImage },
+    'y^2': { frontImage: coinYSquaredImage },
+    'z': { frontImage: coinZImage },
+    'x*y': { frontImage: coinXYImage },
+    'x^2*y^2': { frontImage: coinXSquareYSquaredImage }
   };
 
   /**
@@ -46,6 +45,7 @@ define( function( require ) {
     var image = TERM_STRING_TO_IMAGES_MAP[ coin.termString ].frontImage;
     assert && assert( image, 'no image found for term string: ', coin.termString );
     var imageNode = new Image( image );
+    imageNode.scale( coin.diameter / imageNode.width );
     this.addChild( imageNode );
 
     // move this node as the model representation moves
