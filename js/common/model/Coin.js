@@ -11,6 +11,7 @@ define( function( require ) {
   // modules
   var inherit = require( 'PHET_CORE/inherit' );
   var PropertySet = require( 'AXON/PropertySet' );
+  var TermStringEvaluator = require( 'EXPRESSION_EXCHANGE/common/model/TermStringEvaluator' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
@@ -36,6 +37,7 @@ define( function( require ) {
     } );
     this.termString = termString; // @public, read only
     this.diameter = diameter; // @public, read only
+    this.value = TermStringEvaluator.evaluate( termString ); // @public, read only
   }
 
   return inherit( PropertySet, Coin, {}, {

@@ -25,9 +25,22 @@ define( function( require ) {
       showAllCoefficients: false, // @public
       viewMode: ViewMode.COINS // @public
     } );
+    var self = this;
 
     // @public, read and listen only, use API defined below to add and remove coins
     this.coins = new ObservableArray();
+
+    // function to update the total cents whenever a coin is added or removed
+    function updateTotal(){
+      var total = 0;
+      self.coins.forEach( function( coin ){
+        total += coin.value;
+      } );
+      self.totalCents = total;
+    }
+
+    this.coins.addItemAddedListener( updateTotal );
+    this.coins.addItemRemovedListener( updateTotal );
   }
 
   return inherit( PropertySet, ExpressionExchangeExploreModel, {
