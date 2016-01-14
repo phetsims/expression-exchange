@@ -54,7 +54,7 @@ define( function( require ) {
     coinImageNode.scale( coin.diameter / coinImageNode.width );
     this.addChild( coinImageNode );
 
-    // add the representation that will be shown when in 'TERMS' mode
+    // add the representation that will be shown when in 'VARIABLES' mode
     var mouseAndTouchArea = Shape.circle( coinImageNode.centerX, coinImageNode.centerY, coin.diameter );
     // TODO: This will need to be replaced with a more mathematical looking term, using plain text for now
     var termText = new Text( coin.termString, {
@@ -67,7 +67,7 @@ define( function( require ) {
 
     // switch the visibility of the different representations based on the view mode
     representationTypeProperty.link( function( representationMode ){
-      termText.visible = representationMode === ViewMode.TERMS;
+      termText.visible = representationMode === ViewMode.VARIABLES;
       coinImageNode.visible = representationMode === ViewMode.COINS;
     } );
 

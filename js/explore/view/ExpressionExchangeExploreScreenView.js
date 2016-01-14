@@ -138,7 +138,7 @@ define( function( require ) {
       exploreModel.viewModeProperty,
       ViewMode.COINS,
       new Image( switchCoinImage, { scale: 0.6 } ),
-      ViewMode.TERMS,
+      ViewMode.VARIABLES,
       new Text( 'X', { font: new PhetFont( 16 )} ),
       { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
     ) );

@@ -9,7 +9,7 @@ define( function() {
   'use strict';
 
   return Object.freeze( {
-    COINS: 'coins',
-    TERMS: 'terms'
+    COINS: 'COINS',
+    VARIABLES: 'VARIABLES'
   } );
 } );
