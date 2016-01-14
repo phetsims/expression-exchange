@@ -63,6 +63,7 @@ define( function( require ) {
     // @public
     reset: function() {
       this.coins.clear();
+      PropertySet.prototype.reset.call( this );
     }
   } );
 } );
