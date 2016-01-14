@@ -9,11 +9,14 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var ABSwitch = require( 'SUN/ABSwitch' );
   var AccordionBox = require( 'SUN/AccordionBox' );
   var Carousel = require( 'SUN/Carousel' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinCreatorNode = require( 'EXPRESSION_EXCHANGE/explore/view/CoinCreatorNode' );
   var CoinNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinNode' );
+  var Dimension2 = require( 'DOT/Dimension2' );
+  var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Panel = require( 'SUN/Panel' );
@@ -22,6 +25,7 @@ define( function( require ) {
   var ScreenView = require( 'JOIST/ScreenView' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
   var VStrut = require( 'SCENERY/nodes/VStrut' );
 
   // strings
@@ -30,6 +34,9 @@ define( function( require ) {
   var showAllCoefficientsString = require( 'string!EXPRESSION_EXCHANGE/showAllCoefficients' );
   var showValuesString = require( 'string!EXPRESSION_EXCHANGE/showValues' );
   var totalString = require( 'string!EXPRESSION_EXCHANGE/total' );
+
+  // images
+  var switchCoinImage = require( 'mipmap!EXPRESSION_EXCHANGE/switch-coin.png' );
 
   // constants
   var ACCORDION_BOX_TITLE_FONT = new PhetFont( { size: 16, weight: 'bold' } );
@@ -126,6 +133,16 @@ define( function( require ) {
     );
     this.addChild( carousel );
 
+    // add the switch for switching between coin and term view
+    this.addChild( new ABSwitch(
+      exploreModel.viewModeProperty,
+      ViewMode.COINS,
+      new Image( switchCoinImage, { scale: 0.6 } ),
+      ViewMode.TERMS,
+      new Text( 'X', { font: new PhetFont( 16 )} ),
+      { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
+    ) );
+
     // add the node that will act as the layer where the coins will come and go
     var coinLayer = new Node();
     this.addChild( coinLayer );
@@ -147,7 +164,7 @@ define( function( require ) {
     exploreModel.coins.addItemAddedListener( function( addedCoin ) {
 
       // add a representation of the coin
-      var coinNode = new CoinNode( addedCoin );
+      var coinNode = new CoinNode( addedCoin, exploreModel.viewModeProperty );
       coinLayer.addChild( coinNode );
 
       // set up a listener to remove the node when the corresponding coin is removed from the model

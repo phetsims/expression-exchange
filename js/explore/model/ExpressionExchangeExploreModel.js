@@ -12,6 +12,7 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
   var PropertySet = require( 'AXON/PropertySet' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
   /**
    * @constructor
@@ -21,7 +22,8 @@ define( function( require ) {
     PropertySet.call( this, {
       totalCents: 0, // @public, read-only
       showValues: false, // @public
-      showAllCoefficients: false // @public
+      showAllCoefficients: false, // @public
+      viewMode: ViewMode.COINS // @public
     } );
 
     // @public, read and listen only, use API defined below to add and remove coins
