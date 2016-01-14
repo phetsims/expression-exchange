@@ -96,6 +96,9 @@ define( function( require ) {
         coin.userControlled = false;
       }
     } ) );
+
+    // add a listener that will pop this coin to the front when selected by the user
+    coin.userControlledProperty.onValue( true, function(){ self.moveToFront(); } );
   }
 
   return inherit( Node, CoinNode, {} );
