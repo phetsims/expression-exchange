@@ -9,11 +9,11 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var Circle = require( 'SCENERY/nodes/Circle' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var Shape = require( 'KITE/Shape' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
@@ -40,7 +40,7 @@ define( function( require ) {
 
   /**
    * @param {Coin} coin - model of a coin
-   * @param {Property.<ViewMode>} - controls whether to show the coin or the term
+   * @param {Property.<ViewMode>} representationTypeProperty - controls whether to show the coin or the term
    * @constructor
    */
   function CoinNode( coin, representationTypeProperty ) {
@@ -55,19 +55,19 @@ define( function( require ) {
     this.addChild( coinImageNode );
 
     // add the representation that will be shown when in 'TERMS' mode
-    var termCircle = new Circle( coin.diameter / 2, {
-      fill: 'pink',
-      centerX: coinImageNode.width / 2,
-      centerY: coinImageNode.height / 2
-    } );
+    var mouseAndTouchArea = Shape.circle( coinImageNode.centerX, coinImageNode.centerY, coin.diameter );
     // TODO: This will need to be replaced with a more mathematical looking term, using plain text for now
-    var termText = new Text( coin.termString, { font: new PhetFont( 20 ), centerX: 0, centerY: 0 } );
-    termCircle.addChild( termText );
-    this.addChild( termCircle );
+    var termText = new Text( coin.termString, {
+      font: new PhetFont( 20 ),
+      center: coinImageNode.center,
+      mouseArea: mouseAndTouchArea,
+      touchArea: mouseAndTouchArea
+    } );
+    this.addChild( termText );
 
     // switch the visibility of the different representations based on the view mode
     representationTypeProperty.link( function( representationMode ){
-      termCircle.visible = representationMode === ViewMode.TERMS;
+      termText.visible = representationMode === ViewMode.TERMS;
       coinImageNode.visible = representationMode === ViewMode.COINS;
     } );
 
