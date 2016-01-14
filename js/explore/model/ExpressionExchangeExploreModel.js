@@ -55,6 +55,11 @@ define( function( require ) {
       this.coins.add( coin );
     },
 
+    // @public TODO this will likely be made more fancy at some point, i.e. will include some animation
+    removeCoin: function( coin ) {
+      this.coins.remove( coin );
+    },
+
     // @public
     reset: function() {
       this.coins.clear();

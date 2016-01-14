@@ -167,6 +167,14 @@ define( function( require ) {
       var coinNode = new CoinNode( addedCoin, exploreModel.viewModeProperty );
       coinLayer.addChild( coinNode );
 
+      // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
+      // from the model.
+      addedCoin.userControlledProperty.onValue( false, function(){
+        if ( coinNode.bounds.intersectsBounds( carousel.bounds ) ){
+          exploreModel.removeCoin( addedCoin );
+        }
+      } );
+
       // set up a listener to remove the node when the corresponding coin is removed from the model
       exploreModel.coins.addItemRemovedListener( function removalListener( removedCoin ) {
         if ( removedCoin === addedCoin ) {
