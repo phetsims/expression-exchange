@@ -24,6 +24,7 @@ define( function( require ) {
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
+  var TermsInfo = require( 'EXPRESSION_EXCHANGE/explore/model/TermsInfo' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
   var VStrut = require( 'SCENERY/nodes/VStrut' );
@@ -117,13 +118,13 @@ define( function( require ) {
     // add the carousel that will contain the various coins and expressions
     var carousel = new Carousel(
       [
-        new CoinCreatorNode( 'x', exploreModel ),
-        new CoinCreatorNode( 'y', exploreModel ),
-        new CoinCreatorNode( 'z', exploreModel ),
-        new CoinCreatorNode( 'x*y', exploreModel ),
-        new CoinCreatorNode( 'x^2', exploreModel ),
-        new CoinCreatorNode( 'y^2', exploreModel ),
-        new CoinCreatorNode( 'x^2*y^2', exploreModel )
+        new CoinCreatorNode( TermsInfo.X, exploreModel ),
+        new CoinCreatorNode( TermsInfo.Y, exploreModel ),
+        new CoinCreatorNode( TermsInfo.Z, exploreModel ),
+        new CoinCreatorNode( TermsInfo.XY, exploreModel ),
+        new CoinCreatorNode( TermsInfo.X_SQUARED, exploreModel ),
+        new CoinCreatorNode( TermsInfo.Y_SQUARED, exploreModel ),
+        new CoinCreatorNode( TermsInfo.X_SQUARED_Y_SQUARED, exploreModel )
       ],
       {
         centerX: this.layoutBounds.width / 2,
@@ -139,7 +140,7 @@ define( function( require ) {
       ViewMode.COINS,
       new Image( switchCoinImage, { scale: 0.6 } ),
       ViewMode.VARIABLES,
-      new Text( 'X', { font: new PhetFont( 16 )} ),
+      new Text( 'x', { font: new PhetFont( { family: '"Times New Roman", serif', size: 32, weight: 'bold', style: 'italic' } ) } ),
       { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
     ) );
 

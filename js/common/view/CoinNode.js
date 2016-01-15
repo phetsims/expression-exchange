@@ -13,60 +13,38 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Shape = require( 'KITE/Shape' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
-  var Text = require( 'SCENERY/nodes/Text' );
+  var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
-  // images
-  var coinXImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
-  var coinXSquaredImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared.png' );
-  var coinXSquareYSquaredImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
-  var coinXYImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy.png' );
-  var coinYImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
-  var coinYSquaredImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
-  var coinZImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
-
-  // map of coin terms to images
-  var TERM_STRING_TO_IMAGES_MAP = {
-    'x': { frontImage: coinXImage },
-    'x^2': { frontImage: coinXSquaredImage },
-    'y': { frontImage: coinYImage },
-    'y^2': { frontImage: coinYSquaredImage },
-    'z': { frontImage: coinZImage },
-    'x*y': { frontImage: coinXYImage },
-    'x^2*y^2': { frontImage: coinXSquareYSquaredImage }
-  };
+  // constants
+  var TERM_TEXT = new PhetFont( { family: '"Times New Roman", serif', size: 28, weight: 'bold', style: 'italic' });
 
   /**
    * @param {Coin} coin - model of a coin
-   * @param {Property.<ViewMode>} representationTypeProperty - controls whether to show the coin or the term
+   * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
    * @constructor
    */
-  function CoinNode( coin, representationTypeProperty ) {
+  function CoinNode( coin, viewModeProperty ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
     // add the coin image node that is appropriate for this coin's term string
-    var image = TERM_STRING_TO_IMAGES_MAP[ coin.termString ].frontImage;
-    assert && assert( image, 'no image found for term string: ', coin.termString );
+    var image = coin.termInfo.coinFrontImage;
     var coinImageNode = new Image( image );
-    coinImageNode.scale( coin.diameter / coinImageNode.width );
+    coinImageNode.scale( coin.termInfo.coinDiameter / coinImageNode.width );
     this.addChild( coinImageNode );
 
     // add the representation that will be shown when in 'VARIABLES' mode
-    var mouseAndTouchArea = Shape.circle( coinImageNode.centerX, coinImageNode.centerY, coin.diameter );
     // TODO: This will need to be replaced with a more mathematical looking term, using plain text for now
-    var termText = new Text( coin.termString, {
-      font: new PhetFont( 20 ),
-      center: coinImageNode.center,
-      mouseArea: mouseAndTouchArea,
-      touchArea: mouseAndTouchArea
-    } );
+    var termText = new SubSupText( coin.termInfo.subSupText, { font: TERM_TEXT } );
+    termText.mouseArea = termText.bounds.dilated( 10 );
+    termText.touchArea = termText.bounds.dilated( 10 );
+    termText.center = coinImageNode.center;
     this.addChild( termText );
 
     // switch the visibility of the different representations based on the view mode
-    representationTypeProperty.link( function( representationMode ){
+    viewModeProperty.link( function( representationMode ){
       termText.visible = representationMode === ViewMode.VARIABLES;
       coinImageNode.visible = representationMode === ViewMode.COINS;
     } );

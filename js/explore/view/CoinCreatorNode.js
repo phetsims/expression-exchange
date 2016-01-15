@@ -13,13 +13,13 @@ define( function( require ) {
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
 
   /**
-   * @param {string} termString - string that defines the term represented by this coin
+   * @param {TermInfo} termInfo - object that defines the term represented by this coin
    * @param {ExpressionExchangeExploreModel} exploreModel - model where coins are to be added
    * @param {Object} options
    * TODO: This type may need to be moved and generalized if used in the game
    * @constructor
    */
-  function CoinCreatorNode( termString, exploreModel, options ) {
+  function CoinCreatorNode( termInfo, exploreModel, options ) {
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
     options = _.extend( {
@@ -29,7 +29,7 @@ define( function( require ) {
     }, options );
 
     // add the coin node that will be clicked upon to create coins of the same denomination
-    var coinNode = new CoinNode( Coin.createCoinFromTermString( termString ), exploreModel.viewModeProperty );
+    var coinNode = new CoinNode( new Coin( termInfo ), exploreModel.viewModeProperty );
     this.addChild( coinNode );
 
     var createdCountProperty = new Property( 0 ); // Used to track the number of shapes created and not returned.
@@ -73,7 +73,7 @@ define( function( require ) {
         var initialPosition = this.parentScreenView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new model element
-        this.createdCoin = Coin.createCoinFromTermString( termString );
+        this.createdCoin = new Coin( termInfo );
         this.createdCoin.position = initialPosition;
         this.createdCoin.userControlled = true;
         exploreModel.addCoin( this.createdCoin );
