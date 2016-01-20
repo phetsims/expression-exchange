@@ -11,6 +11,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var Emitter = require( 'AXON/Emitter' );
   var inherit = require( 'PHET_CORE/inherit' );
   var PropertySet = require( 'AXON/PropertySet' );
   var Vector2 = require( 'DOT/Vector2' );
@@ -29,6 +30,7 @@ define( function( require ) {
       coinCount: 1 // @public, number of coins represented
     } );
     this.termInfo = termInfo; // @public, read only
+    this.destinationReached = new Emitter(); // @public, listen only, fired when a destination is reached
   }
 
   return inherit( PropertySet, Coin, {
@@ -45,6 +47,9 @@ define( function( require ) {
         .easing( TWEEN.Easing.Cubic.InOut )
         .onUpdate( function() {
           self.position = new Vector2( this.x, this.y );
+        } )
+        .onComplete( function(){
+          self.destinationReached.emit();
         } )
         .start();
 

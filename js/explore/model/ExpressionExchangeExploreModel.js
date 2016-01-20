@@ -15,7 +15,7 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
   // utility function
-  function coinsOverlap( coin1, coin2 ){
+  function coinsOverlap( coin1, coin2 ) {
     var distanceBetweenCenters = coin1.position.distance( coin2.position );
     return distanceBetweenCenters < ( coin1.termInfo.coinDiameter / 2 ) + ( coin2.termInfo.coinDiameter / 2 ) * 0.65;
   }
@@ -37,9 +37,9 @@ define( function( require ) {
     this.coins = new ObservableArray();
 
     // function to update the total cents whenever a coin is added or removed
-    function updateTotal(){
+    function updateTotal() {
       var total = 0;
-      self.coins.forEach( function( coin ){
+      self.coins.forEach( function( coin ) {
         total += coin.termInfo.value;
       } );
       self.totalCents = total;
@@ -50,20 +50,24 @@ define( function( require ) {
     this.coins.addItemRemovedListener( updateTotal );
 
     // add listeners to handling combining coins
-    this.coins.addItemAddedListener( function( addedCoin ){
+    this.coins.addItemAddedListener( function( addedCoin ) {
       // TODO: Revisit this and verify that it doesn't leak memory
-      addedCoin.userControlledProperty.onValue( false, function(){
+      addedCoin.userControlledProperty.onValue( false, function() {
         var overlappingCoins = self.getOverlappingCoins( addedCoin );
-        if ( overlappingCoins.length > 0 ){
-          for ( var i = 0; i < overlappingCoins.length; i++ ){
-            if ( overlappingCoins[ i ].termInfo === addedCoin.termInfo ){
-              // same type of coin, so combine them
-              addedCoin.travelToDestination( overlappingCoins[ i ].position );
-              break;
-            }
+        // Only combine when there is a single overlap
+        // TODO: Not sure if the single overlap rule will last, may need to get more sophisticated here.
+        if ( overlappingCoins.length === 1 ) {
+          var overlappingCoin = overlappingCoins[ 0 ];
+          if ( overlappingCoin.termInfo === addedCoin.termInfo ) {
+            // same type of coin, so combine them
+            addedCoin.travelToDestination( overlappingCoin.position );
+            addedCoin.destinationReached.addListener( function() {
+              self.removeCoin( addedCoin );
+              overlappingCoin.coinCount += 1;
+            } );
           }
         }
-      });
+      } );
     } );
   }
 
@@ -91,11 +95,11 @@ define( function( require ) {
     },
 
     // @private, gets a list of coins that overlap with the provided coin
-    getOverlappingCoins: function( coin ){
+    getOverlappingCoins: function( coin ) {
       assert && assert( this.coins.contains( coin ), 'overlap requested for coin that is not in model' );
       var overlappingCoins = [];
-      this.coins.forEach( function( potentiallyOverlappingCoin ){
-        if ( coin !== potentiallyOverlappingCoin && coinsOverlap( coin, potentiallyOverlappingCoin ) ){
+      this.coins.forEach( function( potentiallyOverlappingCoin ) {
+        if ( coin !== potentiallyOverlappingCoin && coinsOverlap( coin, potentiallyOverlappingCoin ) ) {
           overlappingCoins.push( potentiallyOverlappingCoin );
         }
       } );
