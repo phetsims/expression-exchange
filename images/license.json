@@ -1,5 +1,5 @@
 {
-  "coin-2-cents.png": {
+  "coin-x.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],
@@ -7,7 +7,7 @@
     "license": "contact phethelp@colorado.edu",
     "notes": ""
   },
-  "coin-4-cents.png": {
+  "coin-x-squared.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],
@@ -15,7 +15,7 @@
     "license": "contact phethelp@colorado.edu",
     "notes": ""
   },
-  "coin-5-cents.png": {
+  "coin-x-squared-y-squared.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],
@@ -23,7 +23,7 @@
     "license": "contact phethelp@colorado.edu",
     "notes": ""
   },
-  "coin-10-cents-a.png": {
+  "coin-xy.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],
@@ -31,7 +31,7 @@
     "license": "contact phethelp@colorado.edu",
     "notes": ""
   },
-  "coin-10-cents-b.png": {
+  "coin-y.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],
@@ -39,7 +39,7 @@
     "license": "contact phethelp@colorado.edu",
     "notes": ""
   },
-  "coin-25-cents.png": {
+  "coin-y-squared.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],
@@ -47,7 +47,15 @@
     "license": "contact phethelp@colorado.edu",
     "notes": ""
   },
-  "coin-100-cents.png": {
+  "coin-z.png": {
+    "text": [
+      "Copyright 20016 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": ""
+  },
+  "switch-coin.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],
