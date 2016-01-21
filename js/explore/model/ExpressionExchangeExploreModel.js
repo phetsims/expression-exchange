@@ -52,6 +52,8 @@ define( function( require ) {
     // add listeners to handling combining coins
     this.coins.addItemAddedListener( function( addedCoin ) {
       // TODO: Revisit this and verify that it doesn't leak memory
+
+      // add a handler that will check for overlap upon release of a coin and, if found, will combine the coins
       addedCoin.userControlledProperty.onValue( false, function() {
         var overlappingCoins = self.getOverlappingCoins( addedCoin );
         // Only combine when there is a single overlap
@@ -66,6 +68,14 @@ define( function( require ) {
               overlappingCoin.coinCount += 1;
             } );
           }
+        }
+      } );
+
+      // add a handler that will check for overlap when a coin is moved and will activate and deactivate halos
+      addedCoin.positionProperty.link( function() {
+        if ( addedCoin.userControlled ) {
+          var overlappingCoins = self.getOverlappingCoins( addedCoin );
+          addedCoin.overlappingOtherCoins = overlappingCoins.length > 0;
         }
       } );
     } );

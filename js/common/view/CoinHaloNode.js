@@ -11,13 +11,8 @@ define( function( require ) {
   // modules
   var Circle = require( 'SCENERY/nodes/Circle' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
-  var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
-  var SubSupText = require( 'SCENERY_PHET/SubSupText' );
-  var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
   // constants
@@ -37,9 +32,15 @@ define( function( require ) {
     this.addChild( halo );
 
     // control halo visibility
-    viewModeProperty.link( function( representationMode ){
-      halo.visible = representationMode === ViewMode.COINS;
-    } );
+    var haloVisibleProperty = new DerivedProperty(
+      [
+        viewModeProperty,
+        coin.overlappingOtherCoinsProperty
+      ],
+      function( viewMode, overlappingOtherCoins ){
+        return viewMode === ViewMode.COINS && overlappingOtherCoins;
+      } );
+    haloVisibleProperty.linkAttribute( this, 'visible' );
 
     // move this node as the model representation moves
     coin.positionProperty.link( function( position ) {
