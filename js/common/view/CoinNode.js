@@ -9,23 +9,28 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var DerivedProperty = require( 'AXON/DerivedProperty' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
+  var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
   // constants
-  var TERM_TEXT = new PhetFont( { family: '"Times New Roman", serif', size: 28, weight: 'bold', style: 'italic' });
+  var TERM_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 28, weight: 'bold', style: 'italic' });
+  var NUMBER_FONT = new PhetFont( { size: 28 });
 
   /**
    * @param {Coin} coin - model of a coin
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
+   * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
+   * @param {Property.<boolean>} showValuesProperty - controls whether or not coin value is shown
    * @constructor
    */
-  function CoinNode( coin, viewModeProperty ) {
+  function CoinNode( coin, viewModeProperty, showValuesProperty, showAllCoefficientsProperty ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
@@ -35,19 +40,59 @@ define( function( require ) {
     coinImageNode.scale( coin.termInfo.coinDiameter / coinImageNode.width );
     this.addChild( coinImageNode );
 
-    // add the representation that will be shown when in 'VARIABLES' mode
+    // control coin image visibility
+    viewModeProperty.link( function( representationMode ){
+      coinImageNode.visible = representationMode === ViewMode.COINS;
+    } );
+
+    // add the representation that will be shown when view in 'VARIABLES' mode
     // TODO: This will need to be replaced with a more mathematical looking term, using plain text for now
-    var termText = new SubSupText( coin.termInfo.subSupText, { font: TERM_TEXT } );
+    var termText = new SubSupText( coin.termInfo.subSupText, { font: TERM_FONT } );
     termText.mouseArea = termText.bounds.dilated( 10 );
     termText.touchArea = termText.bounds.dilated( 10 );
     termText.center = coinImageNode.center;
     this.addChild( termText );
 
-    // switch the visibility of the different representations based on the view mode
-    viewModeProperty.link( function( representationMode ){
-      termText.visible = representationMode === ViewMode.VARIABLES;
-      coinImageNode.visible = representationMode === ViewMode.COINS;
+    // switch the visibility of the term text based on the view mode
+    var termTextVisibleProperty = new DerivedProperty( [
+        viewModeProperty,
+        showValuesProperty ],
+      function( viewMode, showValues ) {
+        return ( viewMode === ViewMode.VARIABLES && !showValues );
+      } );
+    termTextVisibleProperty.linkAttribute( termText, 'visible' );
+
+    // add the value that will be shown when the showValuesProperty is true
+    var valueText = new Text( coin.termInfo.value, {
+      font: NUMBER_FONT,
+      center: coinImageNode.center
     } );
+    this.addChild( valueText );
+
+    // control the visibility of the value labels
+    showValuesProperty.linkAttribute( valueText, 'visible' );
+
+    // add the coefficient value
+    var coefficientText = new Text( '', {
+      font: NUMBER_FONT
+    } );
+    this.addChild( coefficientText );
+
+    // update the coefficient text when the value changes
+    coin.coinCountProperty.link( function( coinCount ) {
+      coefficientText.text = coinCount;
+      coefficientText.right = coinImageNode.left - 5; // tweak factor empirically determined
+      coefficientText.centerY = coinImageNode.centerY
+    } );
+
+    // control the visibility of the coefficient text
+    var coefficientVisibleProperty = new DerivedProperty( [
+        coin.coinCountProperty,
+        showAllCoefficientsProperty ],
+      function( coinCount, showAllCoefficients ) {
+        return ( coinCount > 1 || showAllCoefficients );
+      } );
+    coefficientVisibleProperty.linkAttribute( coefficientText, 'visible' );
 
     // move this node as the model representation moves
     coin.positionProperty.link( function( position ) {
