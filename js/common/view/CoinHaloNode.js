@@ -16,7 +16,8 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
   // constants
-  var RADIUS_ADDER = 10; // empirically determined
+  var RADIUS_ADDER = 5; // empirically determined
+  var HALO_COLOR = '#29ABE2';
 
   /**
    * @param {Coin} coin - model of a coin
@@ -28,7 +29,7 @@ define( function( require ) {
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
     // add the coin halo
-    var halo = new Circle( coin.termInfo.coinDiameter / 2 + RADIUS_ADDER, { fill: '#33adff' } );
+    var halo = new Circle( coin.termInfo.coinDiameter / 2 + RADIUS_ADDER, { fill: HALO_COLOR } );
     this.addChild( halo );
 
     // control halo visibility

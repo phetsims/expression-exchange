@@ -70,22 +70,42 @@ define( function( require ) {
           }
         }
       } );
-
-      // add a handler that will check for overlap when a coin is moved and will activate and deactivate halos
-      addedCoin.positionProperty.link( function() {
-        if ( addedCoin.userControlled ) {
-          var overlappingCoins = self.getOverlappingCoins( addedCoin );
-          addedCoin.overlappingOtherCoins = overlappingCoins.length > 0;
-        }
-      } );
     } );
   }
 
   return inherit( PropertySet, ExpressionExchangeExploreModel, {
 
-    //TODO Called by the animation loop. Optional, so if your model has no animation, please delete this.
     step: function( dt ) {
-      //TODO Handle model animation here.
+
+      var self = this;
+
+      // ---------------------------------------------------------------------
+      // update the overlap state for all coins
+      // ---------------------------------------------------------------------
+
+      // get a list of all user controlled coins (max of one coin on mouse-based systems, more on touch-based)
+      var userControlledCoins = _.filter( this.coins.getArray(), function( coin ) { return coin.userControlled } );
+
+      // make a list of all coins that should have halos
+      var coinsThatOverlapOtherCoins = [];
+      userControlledCoins.forEach( function( coin ) {
+        var overlappingCoins = self.getOverlappingCoins( coin );
+        if ( overlappingCoins.length > 0 ) {
+          if ( coinsThatOverlapOtherCoins.indexOf( coin ) === -1 ) {
+            coinsThatOverlapOtherCoins.push( coin );
+          }
+          overlappingCoins.forEach( function( overlappingCoin ) {
+            if ( coinsThatOverlapOtherCoins.indexOf( overlappingCoin ) === -1 ) {
+              coinsThatOverlapOtherCoins.push( overlappingCoin );
+            }
+          } );
+        }
+      } );
+
+      // go through all coins and set the overlap state
+      this.coins.forEach( function( coin ) {
+        coin.overlappingOtherCoins = coinsThatOverlapOtherCoins.indexOf( coin ) !== -1;
+      } );
     },
 
     // @public
