@@ -27,7 +27,8 @@ define( function( require ) {
     PropertySet.call( this, {
       position: Vector2.ZERO, // @public
       userControlled: false, // @public, indicate whether user is currently dragging this coin
-      coinCount: 1 // @public, number of coins represented
+      coinCount: 1, // @public, number of coins represented
+      overlappingOtherCoins: false // @public
     } );
     this.termInfo = termInfo; // @public, read only
     this.destinationReached = new Emitter(); // @public, listen only, fired when a destination is reached

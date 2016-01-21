@@ -15,6 +15,7 @@ define( function( require ) {
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinCreatorNode = require( 'EXPRESSION_EXCHANGE/explore/view/CoinCreatorNode' );
   var CoinNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinNode' );
+  var CoinHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinHaloNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -144,6 +145,10 @@ define( function( require ) {
       { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
     ) );
 
+    // add the node that will act as the layer where the coin halos will come and go
+    var coinHaloLayer = new Node();
+    this.addChild( coinHaloLayer );
+
     // add the node that will act as the layer where the coins will come and go
     var coinLayer = new Node();
     this.addChild( coinLayer );
@@ -177,10 +182,15 @@ define( function( require ) {
         }
       } );
 
-      // set up a listener to remove the node when the corresponding coin is removed from the model
+      // add the coin halo
+      var coinHaloNode = new CoinHaloNode( addedCoin, exploreModel.viewModeProperty );
+      coinHaloLayer.addChild( coinHaloNode );
+
+      // set up a listener to remove the nodes when the corresponding coin is removed from the model
       exploreModel.coins.addItemRemovedListener( function removalListener( removedCoin ) {
         if ( removedCoin === addedCoin ) {
           coinLayer.removeChild( coinNode );
+          coinHaloLayer.removeChild( coinHaloNode );
           exploreModel.coins.removeItemRemovedListener( removalListener );
         }
       } );

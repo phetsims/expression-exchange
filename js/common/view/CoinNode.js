@@ -96,7 +96,8 @@ define( function( require ) {
 
     // move this node as the model representation moves
     coin.positionProperty.link( function( position ) {
-      self.center = position;
+      self.right = position.x + coinImageNode.width / 2;
+      self.centerY = position.y;
     } );
 
     // add the listener that will allow the user to drag the coin around
