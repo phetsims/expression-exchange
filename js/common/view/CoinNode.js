@@ -96,6 +96,7 @@ define( function( require ) {
 
     // move this node as the model representation moves
     coin.positionProperty.link( function( position ) {
+      // the intent here is to position the center of the coin at the position, NOT the center of the node
       self.right = position.x + coinImageNode.width / 2;
       self.centerY = position.y;
     } );
