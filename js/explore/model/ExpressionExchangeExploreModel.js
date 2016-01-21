@@ -40,7 +40,7 @@ define( function( require ) {
     function updateTotal() {
       var total = 0;
       self.coins.forEach( function( coin ) {
-        total += coin.termInfo.value;
+        total += coin.termInfo.value * coin.coinCount;
       } );
       self.totalCents = total;
     }
