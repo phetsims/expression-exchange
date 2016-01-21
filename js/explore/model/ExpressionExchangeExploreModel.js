@@ -64,8 +64,8 @@ define( function( require ) {
             // same type of coin, so combine them
             addedCoin.travelToDestination( overlappingCoin.position );
             addedCoin.destinationReached.addListener( function() {
+              overlappingCoin.coinCount += addedCoin.coinCount;
               self.removeCoin( addedCoin );
-              overlappingCoin.coinCount += 1;
             } );
           }
         }
