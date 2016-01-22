@@ -82,7 +82,7 @@ define( function( require ) {
     coin.coinCountProperty.link( function( coinCount ) {
       coefficientText.text = coinCount;
       coefficientText.right = coinImageNode.left - 5; // tweak factor empirically determined
-      coefficientText.centerY = coinImageNode.centerY
+      coefficientText.centerY = coinImageNode.centerY;
     } );
 
     // control the visibility of the coefficient text
