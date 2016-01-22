@@ -141,7 +141,7 @@ define( function( require ) {
       ViewMode.COINS,
       new Image( switchCoinImage, { scale: 0.6 } ),
       ViewMode.VARIABLES,
-      new Text( 'x', { font: new PhetFont( { family: '"Times New Roman", serif', size: 32, weight: 'bold', style: 'italic' } ) } ),
+      new Text( 'x', { font: new PhetFont( { family: '"Times New Roman", serif', size: 32, style: 'italic' } ) } ),
       { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
     ) );
 

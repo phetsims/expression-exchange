@@ -20,7 +20,7 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
   // constants
-  var TERM_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 34, weight: 'normal', style: 'italic' });
+  var TERM_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 34, style: 'italic' });
   var NUMBER_FONT = new PhetFont( { size: 34 });
 
   /**
