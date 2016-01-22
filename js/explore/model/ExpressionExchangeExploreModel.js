@@ -14,10 +14,24 @@ define( function( require ) {
   var PropertySet = require( 'AXON/PropertySet' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
-  // utility function
+  // utility function for determining whether two coins overlap
   function coinsOverlap( coin1, coin2 ) {
     var distanceBetweenCenters = coin1.position.distance( coin2.position );
     return distanceBetweenCenters < ( coin1.termInfo.coinDiameter / 2 ) + ( coin2.termInfo.coinDiameter / 2 ) * 0.65;
+  }
+
+  // utility function for determining the coin in a set that is closest to the provided position
+  function getClosestCoinToPosition( position, coins ) {
+    assert && assert( coins.length > 0, 'coins must be an array with at least one coin' );
+    var distanceToClosestCoin = Number.POSITIVE_INFINITY;
+    var closestCoin;
+    coins.forEach( function( coin ) {
+      if ( position.distance( coin.position ) < distanceToClosestCoin ) {
+        closestCoin = coin;
+        distanceToClosestCoin = position.distance( closestCoin.position );
+      }
+    } );
+    return closestCoin;
   }
 
   /**
@@ -56,17 +70,21 @@ define( function( require ) {
       // add a handler that will check for overlap upon release of a coin and, if found, will combine the coins
       addedCoin.userControlledProperty.onValue( false, function() {
         var overlappingCoins = self.getOverlappingCoins( addedCoin );
-        // Only combine when there is a single overlap
-        // TODO: Not sure if the single overlap rule will last, may need to get more sophisticated here.
-        if ( overlappingCoins.length === 1 ) {
-          var overlappingCoin = overlappingCoins[ 0 ];
-          if ( overlappingCoin.termInfo === addedCoin.termInfo ) {
+
+        if ( overlappingCoins.length > 0 ) {
+          var coinToCombineWith = getClosestCoinToPosition( addedCoin.position, overlappingCoins );
+          if ( coinToCombineWith.termInfo === addedCoin.termInfo ) {
+
             // same type of coin, so combine them
-            addedCoin.travelToDestination( overlappingCoin.position );
+            addedCoin.travelToDestination( coinToCombineWith.position );
             addedCoin.destinationReached.addListener( function() {
-              overlappingCoin.coinCount += addedCoin.coinCount;
+              coinToCombineWith.coinCount += addedCoin.coinCount;
               self.removeCoin( addedCoin );
             } );
+          }
+          // TODO: Add combining of dissimilar coins into expressions
+          else {
+            console.log( 'combining of dissimilar coins is not yet implemented' );
           }
         }
       } );
@@ -84,27 +102,21 @@ define( function( require ) {
       // ---------------------------------------------------------------------
 
       // get a list of all user controlled coins (max of one coin on mouse-based systems, more on touch-based)
-      var userControlledCoins = _.filter( this.coins.getArray(), function( coin ) { return coin.userControlled } );
+      var userControlledCoins = _.filter( this.coins.getArray(), function( coin ) { return coin.userControlled; } );
 
       // make a list of all coins that should have halos
-      var coinsThatOverlapOtherCoins = [];
+      var coinsThatCouldCombine = [];
       userControlledCoins.forEach( function( coin ) {
         var overlappingCoins = self.getOverlappingCoins( coin );
         if ( overlappingCoins.length > 0 ) {
-          if ( coinsThatOverlapOtherCoins.indexOf( coin ) === -1 ) {
-            coinsThatOverlapOtherCoins.push( coin );
-          }
-          overlappingCoins.forEach( function( overlappingCoin ) {
-            if ( coinsThatOverlapOtherCoins.indexOf( overlappingCoin ) === -1 ) {
-              coinsThatOverlapOtherCoins.push( overlappingCoin );
-            }
-          } );
+          coinsThatCouldCombine.push( coin );
+          coinsThatCouldCombine.push( getClosestCoinToPosition( coin.position, overlappingCoins ) );
         }
       } );
 
-      // go through all coins and set the overlap state
+      // go through all coins and set the state of their combine halos
       this.coins.forEach( function( coin ) {
-        coin.overlappingOtherCoins = coinsThatOverlapOtherCoins.indexOf( coin ) !== -1;
+        coin.combineHaloActive = coinsThatCouldCombine.indexOf( coin ) !== -1;
       } );
     },
 

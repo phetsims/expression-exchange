@@ -20,8 +20,8 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
   // constants
-  var TERM_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 28, weight: 'bold', style: 'italic' });
-  var NUMBER_FONT = new PhetFont( { size: 28 });
+  var TERM_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 34, weight: 'normal', style: 'italic' });
+  var NUMBER_FONT = new PhetFont( { size: 34 });
 
   /**
    * @param {Coin} coin - model of a coin

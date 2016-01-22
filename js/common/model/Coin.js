@@ -28,7 +28,7 @@ define( function( require ) {
       position: Vector2.ZERO, // @public
       userControlled: false, // @public, indicate whether user is currently dragging this coin
       coinCount: 1, // @public, number of coins represented
-      overlappingOtherCoins: false // @public
+      combineHaloActive: false // @public
     } );
     this.termInfo = termInfo; // @public, read only
     this.destinationReached = new Emitter(); // @public, listen only, fired when a destination is reached
