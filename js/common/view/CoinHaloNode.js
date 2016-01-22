@@ -16,7 +16,7 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
   // constants
-  var RADIUS_ADDER = 5; // empirically determined
+  var RADIUS_ADDER = 4; // empirically determined
   var HALO_COLOR = '#29ABE2';
 
   /**
@@ -29,17 +29,17 @@ define( function( require ) {
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
     // add the coin halo
-    var halo = new Circle( coin.termInfo.coinDiameter / 2 + RADIUS_ADDER, { fill: HALO_COLOR } );
+    var halo = new Circle( coin.termInfo.coinDiameter / 2, { stroke: HALO_COLOR, lineWidth: RADIUS_ADDER * 2 } );
     this.addChild( halo );
 
     // control halo visibility
     var haloVisibleProperty = new DerivedProperty(
       [
         viewModeProperty,
-        coin.overlappingOtherCoinsProperty
+        coin.combineHaloActiveProperty
       ],
-      function( viewMode, overlappingOtherCoins ){
-        return viewMode === ViewMode.COINS && overlappingOtherCoins;
+      function( viewMode, combineHaloActive ){
+        return viewMode === ViewMode.COINS && combineHaloActive;
       } );
     haloVisibleProperty.linkAttribute( this, 'visible' );
 
