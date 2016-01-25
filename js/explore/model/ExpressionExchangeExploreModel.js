@@ -63,7 +63,7 @@ define( function( require ) {
     this.coins.addItemAddedListener( updateTotal );
     this.coins.addItemRemovedListener( updateTotal );
 
-    // add listeners to handling combining coins
+    // add listeners to handle combining coins
     this.coins.addItemAddedListener( function( addedCoin ) {
       // TODO: Revisit this and verify that it doesn't leak memory
 
