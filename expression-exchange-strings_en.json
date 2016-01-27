@@ -14,11 +14,14 @@
   "myCollection": {
     "value": "My Collection"
   },
-  "showAllCoefficients": {
-    "value": "Show All Coefficients"
+  "allCoefficients": {
+    "value": "all coefficients"
   },
-  "showValues": {
-    "value": "Show Values"
+  "coinValues": {
+    "value": "coin values"
+  },
+  "variableValues": {
+    "value": "variable values"
   },
   "total": {
     "value": "Total"

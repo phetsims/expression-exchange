@@ -33,9 +33,10 @@ define( function( require ) {
   // strings
   var myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
   var numberCentsString = require( 'string!EXPRESSION_EXCHANGE/numberCents' );
-  var showAllCoefficientsString = require( 'string!EXPRESSION_EXCHANGE/showAllCoefficients' );
-  var showValuesString = require( 'string!EXPRESSION_EXCHANGE/showValues' );
+  var allCoefficientsString = require( 'string!EXPRESSION_EXCHANGE/allCoefficients' );
+  var coinValuesString = require( 'string!EXPRESSION_EXCHANGE/coinValues' );
   var totalString = require( 'string!EXPRESSION_EXCHANGE/total' );
+  var variableValuesString = require( 'string!EXPRESSION_EXCHANGE/variableValues' );
 
   // images
   var switchCoinImage = require( 'mipmap!EXPRESSION_EXCHANGE/switch-coin.png' );
@@ -92,9 +93,9 @@ define( function( require ) {
     } );
     this.addChild( myCollectionAccordionBox );
 
-    // add the checkbox that controls visibility of values
-    var showValuesCheckbox = new CheckBox(
-      new Text( showValuesString, { font: CHECK_BOX_FONT } ),
+    // add the checkbox that controls visibility of coin values
+    var showCoinValuesCheckbox = new CheckBox(
+      new Text( coinValuesString, { font: CHECK_BOX_FONT } ),
       exploreModel.showValuesProperty,
       {
         top: myCollectionAccordionBox.bottom + 6,
@@ -102,14 +103,32 @@ define( function( require ) {
         maxWidth: myCollectionAccordionBox.width
       }
     );
-    this.addChild( showValuesCheckbox );
+    this.addChild( showCoinValuesCheckbox );
+
+    // add the checkbox that controls visibility of variable values
+    var showVariableValuesCheckbox = new CheckBox(
+      new Text( variableValuesString, { font: CHECK_BOX_FONT } ),
+      exploreModel.showValuesProperty,
+      {
+        top: myCollectionAccordionBox.bottom + 6,
+        left: myCollectionAccordionBox.left,
+        maxWidth: myCollectionAccordionBox.width
+      }
+    );
+    this.addChild( showVariableValuesCheckbox );
+
+    // control whether the coin values or variable values checkbox is visible
+    exploreModel.viewModeProperty.link( function( viewMode ){
+      showCoinValuesCheckbox.visible = viewMode === ViewMode.COINS;
+      showVariableValuesCheckbox.visible = viewMode === ViewMode.VARIABLES;
+    });
 
     // add the checkbox that controls whether all coefficients (including 1) are shown
     var showAllCoefficientsCheckbox = new CheckBox(
-      new Text( showAllCoefficientsString, { font: CHECK_BOX_FONT } ),
+      new Text( allCoefficientsString, { font: CHECK_BOX_FONT } ),
       exploreModel.showAllCoefficientsProperty,
       {
-        top: showValuesCheckbox.bottom + 6,
+        top: showCoinValuesCheckbox.bottom + 6,
         left: myCollectionAccordionBox.left,
         maxWidth: myCollectionAccordionBox.width
       }
