@@ -38,7 +38,10 @@ define( function( require ) {
       totalCents: 0, // @public, read-only
       showValues: false, // @public
       showAllCoefficients: false, // @public
-      viewMode: ViewMode.COINS // @public
+      viewMode: ViewMode.COINS, // @public
+      xTermValue : 2, // @public
+      yTermValue : 5, // @public
+      zTermValue : 10 // @public
     } );
     var self = this;
 
