@@ -13,7 +13,7 @@ define( function( require ) {
   var AccordionBox = require( 'SUN/AccordionBox' );
   var Carousel = require( 'SUN/Carousel' );
   var CheckBox = require( 'SUN/CheckBox' );
-  var CoinCreatorNode = require( 'EXPRESSION_EXCHANGE/explore/view/CoinCreatorNode' );
+  var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/explore/view/CoinTermCreatorNode' );
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
   var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
@@ -138,13 +138,13 @@ define( function( require ) {
     // add the carousel that will contain the various coins and expressions
     var carousel = new Carousel(
       [
-        new CoinCreatorNode( TermsInfo.X, exploreModel ),
-        new CoinCreatorNode( TermsInfo.Y, exploreModel ),
-        new CoinCreatorNode( TermsInfo.Z, exploreModel ),
-        new CoinCreatorNode( TermsInfo.XY, exploreModel ),
-        new CoinCreatorNode( TermsInfo.X_SQUARED, exploreModel ),
-        new CoinCreatorNode( TermsInfo.Y_SQUARED, exploreModel ),
-        new CoinCreatorNode( TermsInfo.X_SQUARED_Y_SQUARED, exploreModel )
+        new CoinTermCreatorNode( TermsInfo.X, exploreModel ),
+        new CoinTermCreatorNode( TermsInfo.Y, exploreModel ),
+        new CoinTermCreatorNode( TermsInfo.Z, exploreModel ),
+        new CoinTermCreatorNode( TermsInfo.XY, exploreModel ),
+        new CoinTermCreatorNode( TermsInfo.X_SQUARED, exploreModel ),
+        new CoinTermCreatorNode( TermsInfo.Y_SQUARED, exploreModel ),
+        new CoinTermCreatorNode( TermsInfo.X_SQUARED_Y_SQUARED, exploreModel )
       ],
       {
         centerX: this.layoutBounds.width / 2,

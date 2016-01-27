@@ -19,7 +19,7 @@ define( function( require ) {
    * TODO: This type may need to be moved and generalized if used in the game
    * @constructor
    */
-  function CoinCreatorNode( termInfo, exploreModel, options ) {
+  function CoinTermCreatorNode( termInfo, exploreModel, options ) {
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
     options = _.extend( {
@@ -107,5 +107,5 @@ define( function( require ) {
     } ) );
   }
 
-  return inherit( Node, CoinCreatorNode );
+  return inherit( Node, CoinTermCreatorNode );
 } );
