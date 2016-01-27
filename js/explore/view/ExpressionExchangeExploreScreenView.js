@@ -139,13 +139,13 @@ define( function( require ) {
     // add the carousel that will contain the various coins and expressions
     var carousel = new Carousel(
       [
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X ) } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Y ) } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Z ) } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.XY ) } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X_SQUARED ) } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Y_SQUARED ) } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X_SQUARED_Y_SQUARED ) } )
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Y ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Z ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.XY ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X_SQUARED ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Y_SQUARED ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X_SQUARED_Y_SQUARED ); } )
       ],
       {
         centerX: this.layoutBounds.width / 2,
