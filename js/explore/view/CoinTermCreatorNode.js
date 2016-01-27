@@ -4,7 +4,6 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -13,24 +12,31 @@ define( function( require ) {
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
 
   /**
-   * @param {TermInfo} termInfo - object that defines the term represented by this coin
    * @param {ExpressionExchangeExploreModel} exploreModel - model where coins are to be added
+   * @param {function} creatorFunction - the function that will be invoked in order to create the model element.  This
+   * will be used both for creating a local model instance that will then be used for creating the view node, and it
+   * will also be used to create the elements that will be added to the model.  The function should take no parameters
+   * and should return the created model element.
    * @param {Object} options
    * TODO: This type may need to be moved and generalized if used in the game
    * @constructor
    */
-  function CoinTermCreatorNode( termInfo, exploreModel, options ) {
+  function CoinTermCreatorNode( exploreModel, creatorFunction, options ) {
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
     options = _.extend( {
 
-      // max number of coins that this can create
+      // max number of coin terms that this can create
       creationLimit: Number.POSITIVE_INFINITY
     }, options );
 
     // add the coin node that will be clicked upon to create coins of the same denomination
-    var coinNode = new CoinTermNode( new CoinTerm( termInfo ), exploreModel.viewModeProperty, exploreModel.showValuesProperty,
-      exploreModel.showAllCoefficientsProperty );
+    var coinNode = new CoinTermNode(
+      creatorFunction(),
+      exploreModel.viewModeProperty,
+      exploreModel.showValuesProperty,
+      exploreModel.showAllCoefficientsProperty
+    );
     this.addChild( coinNode );
 
     var createdCountProperty = new Property( 0 ); // Used to track the number of shapes created and not returned.
@@ -74,7 +80,7 @@ define( function( require ) {
         var initialPosition = this.parentScreenView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new model element
-        this.createdCoinTerm = new CoinTerm( termInfo );
+        this.createdCoinTerm = creatorFunction();
         this.createdCoinTerm.position = initialPosition;
         this.createdCoinTerm.userControlled = true;
         exploreModel.addCoinTerm( this.createdCoinTerm );

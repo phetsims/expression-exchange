@@ -14,6 +14,7 @@ define( function( require ) {
   var Carousel = require( 'SUN/Carousel' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/explore/view/CoinTermCreatorNode' );
+  var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
   var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
@@ -138,13 +139,13 @@ define( function( require ) {
     // add the carousel that will contain the various coins and expressions
     var carousel = new Carousel(
       [
-        new CoinTermCreatorNode( TermsInfo.X, exploreModel ),
-        new CoinTermCreatorNode( TermsInfo.Y, exploreModel ),
-        new CoinTermCreatorNode( TermsInfo.Z, exploreModel ),
-        new CoinTermCreatorNode( TermsInfo.XY, exploreModel ),
-        new CoinTermCreatorNode( TermsInfo.X_SQUARED, exploreModel ),
-        new CoinTermCreatorNode( TermsInfo.Y_SQUARED, exploreModel ),
-        new CoinTermCreatorNode( TermsInfo.X_SQUARED_Y_SQUARED, exploreModel )
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X ) } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Y ) } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Z ) } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.XY ) } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X_SQUARED ) } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Y_SQUARED ) } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X_SQUARED_Y_SQUARED ) } )
       ],
       {
         centerX: this.layoutBounds.width / 2,
