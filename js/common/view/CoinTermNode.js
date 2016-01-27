@@ -24,13 +24,13 @@ define( function( require ) {
   var NUMBER_FONT = new PhetFont( { size: 34 });
 
   /**
-   * @param {Coin} coin - model of a coin
+   * @param {CoinTerm} coin - model of a coin
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
    * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
    * @param {Property.<boolean>} showValuesProperty - controls whether or not coin value is shown
    * @constructor
    */
-  function CoinNode( coin, viewModeProperty, showValuesProperty, showAllCoefficientsProperty ) {
+  function CoinTermNode( coin, viewModeProperty, showValuesProperty, showAllCoefficientsProperty ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
@@ -126,5 +126,5 @@ define( function( require ) {
     coin.userControlledProperty.onValue( true, function(){ self.moveToFront(); } );
   }
 
-  return inherit( Node, CoinNode, {} );
+  return inherit( Node, CoinTermNode, {} );
 } );

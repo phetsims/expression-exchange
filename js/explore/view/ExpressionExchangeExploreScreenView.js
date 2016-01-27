@@ -14,8 +14,8 @@ define( function( require ) {
   var Carousel = require( 'SUN/Carousel' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinCreatorNode = require( 'EXPRESSION_EXCHANGE/explore/view/CoinCreatorNode' );
-  var CoinNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinNode' );
-  var CoinHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinHaloNode' );
+  var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
+  var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -170,7 +170,7 @@ define( function( require ) {
     exploreModel.coins.addItemAddedListener( function( addedCoin ) {
 
       // add a representation of the coin
-      var coinNode = new CoinNode( addedCoin, exploreModel.viewModeProperty, exploreModel.showValuesProperty,
+      var coinNode = new CoinTermNode( addedCoin, exploreModel.viewModeProperty, exploreModel.showValuesProperty,
         exploreModel.showAllCoefficientsProperty );
       coinLayer.addChild( coinNode );
 
@@ -183,7 +183,7 @@ define( function( require ) {
       } );
 
       // add the coin halo
-      var coinHaloNode = new CoinHaloNode( addedCoin, exploreModel.viewModeProperty );
+      var coinHaloNode = new CoinTermHaloNode( addedCoin, exploreModel.viewModeProperty );
       coinHaloLayer.addChild( coinHaloNode );
 
       // set up a listener to remove the nodes when the corresponding coin is removed from the model

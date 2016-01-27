@@ -20,11 +20,11 @@ define( function( require ) {
   var HALO_COLOR = '#29ABE2';
 
   /**
-   * @param {Coin} coin - model of a coin
+   * @param {CoinTerm} coin - model of a coin
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
    * @constructor
    */
-  function CoinHaloNode( coin, viewModeProperty ) {
+  function CoinTermHaloNode( coin, viewModeProperty ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
@@ -49,5 +49,5 @@ define( function( require ) {
     } );
   }
 
-  return inherit( Node, CoinHaloNode );
+  return inherit( Node, CoinTermHaloNode );
 } );

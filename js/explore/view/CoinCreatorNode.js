@@ -4,8 +4,8 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var Coin = require( 'EXPRESSION_EXCHANGE/common/model/Coin' );
-  var CoinNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinNode' );
+  var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
+  var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Property = require( 'AXON/Property' );
@@ -29,7 +29,7 @@ define( function( require ) {
     }, options );
 
     // add the coin node that will be clicked upon to create coins of the same denomination
-    var coinNode = new CoinNode( new Coin( termInfo ), exploreModel.viewModeProperty, exploreModel.showValuesProperty,
+    var coinNode = new CoinTermNode( new CoinTerm( termInfo ), exploreModel.viewModeProperty, exploreModel.showValuesProperty,
       exploreModel.showAllCoefficientsProperty );
     this.addChild( coinNode );
 
@@ -74,7 +74,7 @@ define( function( require ) {
         var initialPosition = this.parentScreenView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new model element
-        this.createdCoin = new Coin( termInfo );
+        this.createdCoin = new CoinTerm( termInfo );
         this.createdCoin.position = initialPosition;
         this.createdCoin.userControlled = true;
         exploreModel.addCoin( this.createdCoin );

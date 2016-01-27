@@ -3,7 +3,8 @@
 /**
  * This type represents a model of a single or combined coin which can be represented in the view as a coin image or a
  * mathematical term.  A 'combined' coin is one where other matching coins have been combined with this one, kind of
- * like a stack of coins, though they are not represented in the view as a stack.
+ * like a stack of coins, though they are not represented in the view as a stack.  A 'term' refers to a mathematical
+ * term, like xy or x squared.
  *
  * @author John Blanco
  */
@@ -23,7 +24,7 @@ define( function( require ) {
    * TODO: document parameters once finalized
    * @constructor
    */
-  function Coin( termInfo ) {
+  function CoinTerm( termInfo ) {
     PropertySet.call( this, {
       position: Vector2.ZERO, // @public
       userControlled: false, // @public, indicate whether user is currently dragging this coin
@@ -34,7 +35,7 @@ define( function( require ) {
     this.destinationReached = new Emitter(); // @public, listen only, fired when a destination is reached
   }
 
-  return inherit( PropertySet, Coin, {
+  return inherit( PropertySet, CoinTerm, {
 
     /**
      * move to the specified destination, but do so a step at a time rather than all at once
