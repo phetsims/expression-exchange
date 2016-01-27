@@ -74,17 +74,17 @@ define( function( require ) {
         var initialPosition = this.parentScreenView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new model element
-        this.createdCoin = new CoinTerm( termInfo );
-        this.createdCoin.position = initialPosition;
-        this.createdCoin.userControlled = true;
-        exploreModel.addCoin( this.createdCoin );
+        this.createdCoinTerm = new CoinTerm( termInfo );
+        this.createdCoinTerm.position = initialPosition;
+        this.createdCoinTerm.userControlled = true;
+        exploreModel.addCoinTerm( this.createdCoinTerm );
 
         // If the creation count is limited, adjust the value and monitor the created shape for if/when it is returned.
         if ( options.creationLimit < Number.POSITIVE_INFINITY ) {
           // Use an IIFE to keep a reference of the movable shape in a closure.
           (function() {
             createdCountProperty.value++;
-            var localRefToMovableShape = thisDragHandler.createdCoin;
+            var localRefToMovableShape = thisDragHandler.createdCoinTerm;
             localRefToMovableShape.on( 'returnedToOrigin', function returnedToOriginListener() {
               if ( !localRefToMovableShape.userControlled ) {
                 // the shape has been returned to its origin, so decrement the created count
@@ -97,12 +97,12 @@ define( function( require ) {
       },
 
       translate: function( translationParams ) {
-        this.createdCoin.position = this.createdCoin.position.plus( translationParams.delta );
+        this.createdCoinTerm.position = this.createdCoinTerm.position.plus( translationParams.delta );
       },
 
       end: function( event, trail ) {
-        this.createdCoin.userControlled = false;
-        this.createdCoin = null;
+        this.createdCoinTerm.userControlled = false;
+        this.createdCoinTerm = null;
       }
     } ) );
   }

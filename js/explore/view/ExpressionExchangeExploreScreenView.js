@@ -186,31 +186,31 @@ define( function( require ) {
     this.addChild( resetAllButton );
 
     // add and remove coin nodes as coins are added and removed from the model
-    exploreModel.coins.addItemAddedListener( function( addedCoin ) {
+    exploreModel.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
 
       // add a representation of the coin
-      var coinNode = new CoinTermNode( addedCoin, exploreModel.viewModeProperty, exploreModel.showValuesProperty,
+      var coinNode = new CoinTermNode( addedCoinTerm, exploreModel.viewModeProperty, exploreModel.showValuesProperty,
         exploreModel.showAllCoefficientsProperty );
       coinLayer.addChild( coinNode );
 
       // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
       // from the model.
-      addedCoin.userControlledProperty.onValue( false, function(){
+      addedCoinTerm.userControlledProperty.onValue( false, function(){
         if ( coinNode.bounds.intersectsBounds( carousel.bounds ) ){
-          exploreModel.removeCoin( addedCoin );
+          exploreModel.removeCoinTerm( addedCoinTerm );
         }
       } );
 
       // add the coin halo
-      var coinHaloNode = new CoinTermHaloNode( addedCoin, exploreModel.viewModeProperty );
+      var coinHaloNode = new CoinTermHaloNode( addedCoinTerm, exploreModel.viewModeProperty );
       coinHaloLayer.addChild( coinHaloNode );
 
       // set up a listener to remove the nodes when the corresponding coin is removed from the model
-      exploreModel.coins.addItemRemovedListener( function removalListener( removedCoin ) {
-        if ( removedCoin === addedCoin ) {
+      exploreModel.coinTerms.addItemRemovedListener( function removalListener( removedCoin ) {
+        if ( removedCoin === addedCoinTerm ) {
           coinLayer.removeChild( coinNode );
           coinHaloLayer.removeChild( coinHaloNode );
-          exploreModel.coins.removeItemRemovedListener( removalListener );
+          exploreModel.coinTerms.removeItemRemovedListener( removalListener );
         }
       } );
 

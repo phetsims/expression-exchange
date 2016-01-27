@@ -10,7 +10,10 @@ define( function( require ) {
   return {
     X_TERM_DEFAULT_VALUE: 2,
     Y_TERM_DEFAULT_VALUE: 5,
-    Z_TERM_DEFAULT_VALUE: 10
+    Z_TERM_DEFAULT_VALUE: 10,
+
+    // radius at which terms can be combined
+    TERM_COMBINE_RADIUS: 35
   };
 
 } );
