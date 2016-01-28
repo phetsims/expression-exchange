@@ -89,11 +89,26 @@ define( function( require ) {
     } );
     this.addChild( coefficientText );
 
+    // create a little helper function for positioning the coefficient
+    function updateCoefficientPosition(){
+      if ( viewModeProperty.value === ViewMode.COINS ){
+        coefficientText.right = coinImageNode.left - 3; // tweak factor empirically determined
+        coefficientText.centerY = coinImageNode.centerY;
+      }
+      else if ( termTextVisibleProperty.value ){
+        coefficientText.right = termText.left - 3;
+        coefficientText.y = termText.y;
+      }
+      else{
+        coefficientText.right = valueText.left - 3;
+        coefficientText.y = valueText.y;
+      }
+    }
+
     // update the coefficient text when the value changes
     coinTerm.coinCountProperty.link( function( coinCount ) {
       coefficientText.text = coinCount;
-      coefficientText.right = coinImageNode.left - 5; // tweak factor empirically determined
-      coefficientText.centerY = coinImageNode.centerY;
+      updateCoefficientPosition();
     } );
 
     // control the visibility of the coefficient text
@@ -104,6 +119,10 @@ define( function( require ) {
         return ( coinCount > 1 || showAllCoefficients );
       } );
     coefficientVisibleProperty.linkAttribute( coefficientText, 'visible' );
+
+    // position the coefficient to line up well with the text or the code
+    // TODO: Consider listening to bounds of the value text instead so there is no order dependency for processing property changes
+    Property.multilink( [ viewModeProperty, coinTerm.termValueTextProperty, termTextVisibleProperty ], updateCoefficientPosition );
 
     // move this node as the model representation moves
     coinTerm.positionProperty.link( function( position ) {
