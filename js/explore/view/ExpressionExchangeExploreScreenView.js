@@ -139,13 +139,18 @@ define( function( require ) {
     // add the carousel that will contain the various coins and expressions
     var carousel = new Carousel(
       [
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Y ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Z ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.XY ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X_SQUARED ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.Y_SQUARED ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm( TermsInfo.X_SQUARED_Y_SQUARED ); } )
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.X( exploreModel.xTermValueProperty ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.Y( exploreModel.xTermValueProperty ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.Z( exploreModel.zTermValueProperty ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.XTimesY(
+          exploreModel.xTermValueProperty,
+          exploreModel.yTermValueProperty
+        ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.XSquared( exploreModel.xTermValueProperty ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.XSquaredTimesYSquared(
+          exploreModel.xTermValueProperty,
+          exploreModel.yTermValueProperty
+        ); } )
       ],
       {
         centerX: this.layoutBounds.width / 2,

@@ -24,20 +24,20 @@ define( function( require ) {
   var TERM_HALO_COLOR_EDGE = 'rgba( 255, 255, 0, 0 )';
 
   /**
-   * @param {CoinTerm} coin - model of a coin
+   * @param {CoinTerm} coinTerm - model of a coin term
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
    * @constructor
    */
-  function CoinTermHaloNode( coin, viewModeProperty ) {
+  function CoinTermHaloNode( coinTerm, viewModeProperty ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
     // add the coin halo
-    var coinHalo = new Circle( coin.termInfo.coinDiameter / 2, { stroke: COIN_HALO_COLOR, lineWidth: RADIUS_ADDER * 2 } );
+    var coinHalo = new Circle( coinTerm.coinDiameter / 2, { stroke: COIN_HALO_COLOR, lineWidth: RADIUS_ADDER * 2 } );
     this.addChild( coinHalo );
 
     // control coin halo visibility
-    var coinHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coin.combineHaloActiveProperty ],
+    var coinHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
       function( viewMode, combineHaloActive ){
         return ( viewMode === ViewMode.COINS ) && combineHaloActive;
       } );
@@ -53,14 +53,14 @@ define( function( require ) {
     this.addChild( termHalo );
 
     // control term halo visibility
-    var termHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coin.combineHaloActiveProperty ],
+    var termHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
       function( viewMode, combineHaloActive ){
         return ( viewMode === ViewMode.VARIABLES ) && combineHaloActive;
       } );
     termHaloVisibleProperty.linkAttribute( termHalo, 'visible' );
 
     // move this node as the model representation moves
-    coin.positionProperty.link( function( position ) {
+    coinTerm.positionProperty.link( function( position ) {
       self.center = position;
     } );
   }

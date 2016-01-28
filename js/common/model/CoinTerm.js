@@ -14,25 +14,50 @@ define( function( require ) {
   // modules
   var Emitter = require( 'AXON/Emitter' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var Property = require( 'AXON/Property' );
   var PropertySet = require( 'AXON/PropertySet' );
   var Vector2 = require( 'DOT/Vector2' );
+
+  // images
+  var coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
+  var coinXSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared.png' );
+  var coinXSquareYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
+  var coinXYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy.png' );
+  var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
+  var coinYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
+  var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
 
   // constants
   var MOVEMENT_SPEED = 100; // in model units (which are basically screen coordinates) per second
 
   /**
-   * TODO: document parameters once finalized
+   * TODO: document parameters thoroughly once finalized.  Make sure to note requirement for subSupText format of some of the string values.
    * @constructor
    */
-  function CoinTerm( termInfo ) {
+  function CoinTerm( coinValue, coinDiameter, coinFrontImage, termText, termValueTextProperty, options ) {
+
+    options = _.extend( {
+      initialCount: 1
+    }, options );
+
     PropertySet.call( this, {
       position: Vector2.ZERO, // @public
       userControlled: false, // @public, indicate whether user is currently dragging this coin
-      coinCount: 1, // @public, number of coins represented
+      coinCount: options.initialCount, // @public, number of coins/terms represented
       combineHaloActive: false // @public
     } );
-    this.termInfo = termInfo; // @public, read only
-    this.destinationReached = new Emitter(); // @public, listen only, fired when a destination is reached
+
+    // @public, read only, values that describe the nature of this coin term
+    this.coinValue = coinValue;
+    this.termText = termText;
+    this.coinDiameter = coinDiameter;
+    this.coinFrontImage = coinFrontImage;
+
+    // @public, listen only, a property with contains the text that should be shown when displaying term value
+    this.termValueTextProperty = termValueTextProperty;
+
+    // @public, listen only, emits and event when an animation finishes and the destination is reached
+    this.destinationReached = new Emitter();
   }
 
   return inherit( PropertySet, CoinTerm, {
@@ -56,5 +81,161 @@ define( function( require ) {
         .start();
 
     }
+  }, {
+
+    //-------------------------------------------------------------------------
+    // Below are the constructors for the specific coin terms used in the sim.
+    //-------------------------------------------------------------------------
+
+    /**
+     * @param {Property.<number>} xValueProperty
+     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @returns {CoinTerm}
+     * @constructor
+     */
+    X: function( xValueProperty, initialCount ){
+      var termValueTextProperty = new Property();
+      xValueProperty.link( function( xValue ){
+        termValueTextProperty.value = xValueProperty.value.toString();
+      } );
+      return new CoinTerm(
+        xValueProperty.value,
+        45,
+        coinXFrontImage,
+        'x',
+        termValueTextProperty,
+        { initialCount: initialCount || 1 }
+      );
+    },
+
+    /**
+     * @param {Property.<number>} yValueProperty
+     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @returns {CoinTerm}
+     * @constructor
+     */
+    Y: function( yValueProperty, initialCount ){
+      var termValueTextProperty = new Property();
+      yValueProperty.link( function( yValue ){
+        termValueTextProperty.value = yValueProperty.value.toString();
+      } );
+      return new CoinTerm(
+        yValueProperty.value,
+        45,
+        coinYFrontImage,
+        'y',
+        termValueTextProperty,
+        { initialCount: initialCount || 1 }
+      );
+    },
+
+    /**
+     * @param {Property.<number>} zValueProperty
+     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @returns {CoinTerm}
+     * @constructor
+     */
+    Z: function( zValueProperty, initialCount ){
+      var termValueTextProperty = new Property();
+      zValueProperty.link( function( zValue ){
+        termValueTextProperty.value = zValueProperty.value.toString();
+      } );
+      return new CoinTerm(
+        zValueProperty.value,
+        60,
+        coinZFrontImage,
+        'z',
+        termValueTextProperty,
+        { initialCount: initialCount || 1 }
+      );
+    },
+
+    /**
+     * @param {Property.<number>} xValueProperty
+     * @param {Property.<number>} yValueProperty
+     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @returns {CoinTerm}
+     * @constructor
+     */
+    XTimesY: function( xValueProperty, yValueProperty, initialCount ){
+      var termValueTextProperty = new Property();
+      Property.multilink( [ xValueProperty, yValueProperty ], function(){
+        termValueTextProperty.value = xValueProperty.value.toString() + '\u00B7' + yValueProperty.value.toString();
+      } );
+      return new CoinTerm(
+        xValueProperty.value * yValueProperty.value,
+        60,
+        coinXYFrontImage,
+        'xy',
+        termValueTextProperty,
+        { initialCount: initialCount || 1 }
+      );
+    },
+
+    /**
+     * @param {Property.<number>} xValueProperty
+     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @returns {CoinTerm}
+     * @constructor
+     */
+    XSquared: function( xValueProperty, initialCount ){
+      var termValueTextProperty = new Property();
+      xValueProperty.link( function( xValue ){
+        termValueTextProperty.value = xValueProperty.value.toString() + '<sup>' + '2' + '</sup>';
+      } );
+      return new CoinTerm(
+        xValueProperty.value * xValueProperty.value,
+        75,
+        coinXSquaredFrontImage,
+        'x',
+        termValueTextProperty,
+        { initialCount: initialCount || 1 }
+      );
+    },
+
+    /**
+     * @param {Property.<number>} yValueProperty
+     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @returns {CoinTerm}
+     * @constructor
+     */
+    YSquared: function( yValueProperty, initialCount ){
+      var termValueTextProperty = new Property();
+      yValueProperty.link( function( yValue ){
+        termValueTextProperty.value = yValueProperty.value.toString() + '<sup>' + '2' + '</sup>';
+      } );
+      return new CoinTerm(
+        yValueProperty.value * yValueProperty.value,
+        75,
+        coinYSquaredFrontImage,
+        'y',
+        termValueTextProperty,
+        { initialCount: initialCount || 1 }
+      );
+    },
+
+    /**
+     * @param {Property.<number>} xValueProperty
+     * @param {Property.<number>} yValueProperty
+     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @returns {CoinTerm}
+     * @constructor
+     */
+    XSquaredTimesYSquared: function( xValueProperty, yValueProperty, initialCount ){
+      var termValueTextProperty = new Property();
+      Property.multilink( [ xValueProperty, yValueProperty ], function(){
+        termValueTextProperty.value = xValueProperty.value.toString() + '<sup>' + '2' + '</sup>' +
+                                      yValueProperty.value.toString() + '<sup>' + '2' + '</sup>';
+      } );
+      return new CoinTerm(
+        Math.pow( xValueProperty.value, 2 ) * Math.pow( yValueProperty.value, 2 ),
+        80,
+        coinXSquareYSquaredFrontImage,
+        'x' + '<sup>' + '2' + '</sup>' + 'y' + '<sup>' + '2' + '</sup>',
+        termValueTextProperty,
+        { initialCount: initialCount || 1 }
+      );
+    }
+
   } );
 } );

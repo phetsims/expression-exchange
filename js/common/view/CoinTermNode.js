@@ -14,6 +14,7 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var Property = require( 'AXON/Property' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
@@ -24,20 +25,20 @@ define( function( require ) {
   var NUMBER_FONT = new PhetFont( { size: 34 });
 
   /**
-   * @param {CoinTerm} coin - model of a coin
+   * @param {CoinTerm} coinTerm - model of a coin
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
    * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
    * @param {Property.<boolean>} showValuesProperty - controls whether or not coin value is shown
    * @constructor
    */
-  function CoinTermNode( coin, viewModeProperty, showValuesProperty, showAllCoefficientsProperty ) {
+  function CoinTermNode( coinTerm, viewModeProperty, showValuesProperty, showAllCoefficientsProperty ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
     // add the coin image node that is appropriate for this coin's term string
-    var image = coin.termInfo.coinFrontImage;
+    var image = coinTerm.coinFrontImage;
     var coinImageNode = new Image( image );
-    coinImageNode.scale( coin.termInfo.coinDiameter / coinImageNode.width );
+    coinImageNode.scale( coinTerm.coinDiameter / coinImageNode.width );
     this.addChild( coinImageNode );
 
     // control coin image visibility
@@ -46,8 +47,7 @@ define( function( require ) {
     } );
 
     // add the representation that will be shown when view in 'VARIABLES' mode
-    // TODO: This will need to be replaced with a more mathematical looking term, using plain text for now
-    var termText = new SubSupText( coin.termInfo.subSupText, { font: TERM_FONT } );
+    var termText = new SubSupText( coinTerm.termText, { font: TERM_FONT } );
     termText.mouseArea = termText.bounds.dilated( 10 );
     termText.touchArea = termText.bounds.dilated( 10 );
     termText.center = coinImageNode.center;
@@ -63,11 +63,22 @@ define( function( require ) {
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
 
     // add the value that will be shown when the showValuesProperty is true
-    var valueText = new Text( coin.termInfo.value, {
+    var valueText = new SubSupText( '', {
       font: NUMBER_FONT,
       center: coinImageNode.center
     } );
     this.addChild( valueText );
+
+    // update the value text when the properties that affect it change
+    Property.multilink( [ viewModeProperty, coinTerm.termValueTextProperty ], function(){
+      if ( viewModeProperty.value === ViewMode.COINS ){
+        valueText.text = coinTerm.coinValue.toString();
+      }
+      else{
+        valueText.text = coinTerm.termValueTextProperty.value;
+      }
+      valueText.center = coinImageNode.center;
+    } );
 
     // control the visibility of the value labels
     showValuesProperty.linkAttribute( valueText, 'visible' );
@@ -79,7 +90,7 @@ define( function( require ) {
     this.addChild( coefficientText );
 
     // update the coefficient text when the value changes
-    coin.coinCountProperty.link( function( coinCount ) {
+    coinTerm.coinCountProperty.link( function( coinCount ) {
       coefficientText.text = coinCount;
       coefficientText.right = coinImageNode.left - 5; // tweak factor empirically determined
       coefficientText.centerY = coinImageNode.centerY;
@@ -87,7 +98,7 @@ define( function( require ) {
 
     // control the visibility of the coefficient text
     var coefficientVisibleProperty = new DerivedProperty( [
-        coin.coinCountProperty,
+        coinTerm.coinCountProperty,
         showAllCoefficientsProperty ],
       function( coinCount, showAllCoefficients ) {
         return ( coinCount > 1 || showAllCoefficients );
@@ -95,7 +106,7 @@ define( function( require ) {
     coefficientVisibleProperty.linkAttribute( coefficientText, 'visible' );
 
     // move this node as the model representation moves
-    coin.positionProperty.link( function( position ) {
+    coinTerm.positionProperty.link( function( position ) {
       // the intent here is to position the center of the coin at the position, NOT the center of the node
       self.right = position.x + coinImageNode.width / 2;
       self.centerY = position.y;
@@ -109,21 +120,21 @@ define( function( require ) {
 
       // handler that moves the shape in model space
       translate: function( translationParams ) {
-        coin.position = coin.position.plus( translationParams.delta );
+        coinTerm.position = coinTerm.position.plus( translationParams.delta );
         return translationParams.position;
       },
 
       start: function( event, trail ) {
-        coin.userControlled = true;
+        coinTerm.userControlled = true;
       },
 
       end: function( event, trail ) {
-        coin.userControlled = false;
+        coinTerm.userControlled = false;
       }
     } ) );
 
     // add a listener that will pop this coin to the front when selected by the user
-    coin.userControlledProperty.onValue( true, function(){ self.moveToFront(); } );
+    coinTerm.userControlledProperty.onValue( true, function(){ self.moveToFront(); } );
   }
 
   return inherit( Node, CoinTermNode, {} );

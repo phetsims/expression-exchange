@@ -52,7 +52,7 @@ define( function( require ) {
     function updateTotal() {
       var total = 0;
       self.coinTerms.forEach( function( coin ) {
-        total += coin.termInfo.value * coin.coinCount;
+        total += coin.coinValue * coin.coinCount;
       } );
       self.totalCents = total;
     }
@@ -71,7 +71,7 @@ define( function( require ) {
 
         if ( overlappingCoins.length > 0 ) {
           var coinToCombineWith = getClosestCoinTermToPosition( addedCoinTerm.position, overlappingCoins );
-          if ( coinToCombineWith.termInfo === addedCoinTerm.termInfo ) {
+          if ( coinToCombineWith.termText === addedCoinTerm.termText ) {
 
             // same type of coin, so combine them
             addedCoinTerm.travelToDestination( coinToCombineWith.position );
@@ -141,7 +141,7 @@ define( function( require ) {
       // the decision about whether these overlap depends upon whether we are in COIN and VARIABLES mode
       if ( this.viewMode === ViewMode.COINS ){
         // multiplier in test below was empirically determined
-        return distanceBetweenCenters < ( coinTerm1.termInfo.coinDiameter / 2 ) + ( coinTerm2.termInfo.coinDiameter / 2 ) * 0.65;
+        return distanceBetweenCenters < ( coinTerm1.coinDiameter / 2 ) + ( coinTerm2.coinDiameter / 2 ) * 0.65;
       }
       else{
         // multiplier in test below was empirically determined
