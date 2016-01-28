@@ -19,7 +19,7 @@ define( function( require ) {
 
   // constants
   var RADIUS_ADDER = 4; // empirically determined
-  var COIN_HALO_COLOR = '#29ABE2';
+  var COIN_HALO_COLOR = 'yellow';
   var TERM_HALO_COLOR_CENTER = 'yellow';
   var TERM_HALO_COLOR_EDGE = 'rgba( 255, 255, 0, 0 )';
 

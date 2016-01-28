@@ -64,7 +64,7 @@ define( function( require ) {
 
     // add the value that will be shown when the showValuesProperty is true
     var valueText = new SubSupText( '', {
-      font: NUMBER_FONT,
+      font: TERM_FONT,
       center: coinImageNode.center
     } );
     this.addChild( valueText );

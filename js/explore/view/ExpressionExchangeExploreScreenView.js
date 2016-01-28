@@ -140,7 +140,7 @@ define( function( require ) {
     var carousel = new Carousel(
       [
         new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.X( exploreModel.xTermValueProperty ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.Y( exploreModel.xTermValueProperty ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.Y( exploreModel.yTermValueProperty ); } ),
         new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.Z( exploreModel.zTermValueProperty ); } ),
         new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.X( exploreModel.xTermValueProperty, 2 ); } ),
         new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.Y( exploreModel.xTermValueProperty, 3 ); } ),
