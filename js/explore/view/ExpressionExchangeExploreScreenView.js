@@ -26,7 +26,6 @@ define( function( require ) {
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
-  var TermsInfo = require( 'EXPRESSION_EXCHANGE/explore/model/TermsInfo' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
   var VStrut = require( 'SCENERY/nodes/VStrut' );
