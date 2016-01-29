@@ -28,10 +28,10 @@ define( function( require ) {
    * @param {CoinTerm} coinTerm - model of a coin
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
    * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
-   * @param {Property.<boolean>} showValuesProperty - controls whether or not coin value is shown
+   * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
    * @constructor
    */
-  function CoinTermNode( coinTerm, viewModeProperty, showValuesProperty, showAllCoefficientsProperty ) {
+  function CoinTermNode( coinTerm, viewModeProperty, showCoinValuesProperty, showAllCoefficientsProperty ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
@@ -56,13 +56,13 @@ define( function( require ) {
     // switch the visibility of the term text based on the view mode
     var termTextVisibleProperty = new DerivedProperty( [
         viewModeProperty,
-        showValuesProperty ],
-      function( viewMode, showValues ) {
-        return ( viewMode === ViewMode.VARIABLES && !showValues );
+        showCoinValuesProperty ],
+      function( viewMode, showCoinValues ) {
+        return ( viewMode === ViewMode.VARIABLES && !showCoinValues );
       } );
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
 
-    // add the value that will be shown when the showValuesProperty is true
+    // add the value that will be shown when the showCoinValuesProperty is true
     var valueText = new SubSupText( '', {
       font: TERM_FONT,
       center: coinImageNode.center
@@ -81,7 +81,7 @@ define( function( require ) {
     } );
 
     // control the visibility of the value labels
-    showValuesProperty.linkAttribute( valueText, 'visible' );
+    showCoinValuesProperty.linkAttribute( valueText, 'visible' );
 
     // add the coefficient value
     var coefficientText = new Text( '', {

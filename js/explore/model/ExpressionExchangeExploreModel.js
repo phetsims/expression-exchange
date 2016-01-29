@@ -35,13 +35,14 @@ define( function( require ) {
   function ExpressionExchangeExploreModel() {
 
     PropertySet.call( this, {
-      totalCents: 0, // @public, read-only
-      showValues: false, // @public
-      showAllCoefficients: false, // @public
       viewMode: ViewMode.COINS, // @public
+      showCoinValues: false, // @public
+      showVariableValues: false, // @public
+      showAllCoefficients: false, // @public
       xTermValue : 2, // @public
       yTermValue : 5, // @public
-      zTermValue : 10 // @public
+      zTermValue : 10, // @public
+      totalCents: 0 // @public, read-only
     } );
     var self = this;
 

@@ -96,7 +96,7 @@ define( function( require ) {
     // add the checkbox that controls visibility of coin values
     var showCoinValuesCheckbox = new CheckBox(
       new Text( coinValuesString, { font: CHECK_BOX_FONT } ),
-      exploreModel.showValuesProperty,
+      exploreModel.showCoinValuesProperty,
       {
         top: myCollectionAccordionBox.bottom + 6,
         left: myCollectionAccordionBox.left,
@@ -108,7 +108,7 @@ define( function( require ) {
     // add the checkbox that controls visibility of variable values
     var showVariableValuesCheckbox = new CheckBox(
       new Text( variableValuesString, { font: CHECK_BOX_FONT } ),
-      exploreModel.showValuesProperty,
+      exploreModel.showVariableValuesProperty,
       {
         top: myCollectionAccordionBox.bottom + 6,
         left: myCollectionAccordionBox.left,
@@ -197,7 +197,7 @@ define( function( require ) {
     exploreModel.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
 
       // add a representation of the coin
-      var coinNode = new CoinTermNode( addedCoinTerm, exploreModel.viewModeProperty, exploreModel.showValuesProperty,
+      var coinNode = new CoinTermNode( addedCoinTerm, exploreModel.viewModeProperty, exploreModel.showCoinValuesProperty,
         exploreModel.showAllCoefficientsProperty );
       coinLayer.addChild( coinNode );
 

@@ -34,7 +34,7 @@ define( function( require ) {
     var coinNode = new CoinTermNode(
       creatorFunction(),
       exploreModel.viewModeProperty,
-      exploreModel.showValuesProperty,
+      exploreModel.showCoinValuesProperty,
       exploreModel.showAllCoefficientsProperty
     );
     this.addChild( coinNode );
