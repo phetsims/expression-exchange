@@ -142,7 +142,7 @@ define( function( require ) {
       } );
       return new CoinTerm(
         zValueProperty.value,
-        60,
+        50,
         coinZFrontImage,
         'z',
         termValueTextProperty,
@@ -164,7 +164,7 @@ define( function( require ) {
       } );
       return new CoinTerm(
         xValueProperty.value * yValueProperty.value,
-        60,
+        50,
         coinXYFrontImage,
         'xy',
         termValueTextProperty,
@@ -185,7 +185,7 @@ define( function( require ) {
       } );
       return new CoinTerm(
         xValueProperty.value * xValueProperty.value,
-        75,
+        55,
         coinXSquaredFrontImage,
         'x<sup>2</sup>',
         termValueTextProperty,
@@ -206,7 +206,7 @@ define( function( require ) {
       } );
       return new CoinTerm(
         yValueProperty.value * yValueProperty.value,
-        75,
+        60,
         coinYSquaredFrontImage,
         'y<sup>2</sup>',
         termValueTextProperty,
@@ -229,7 +229,7 @@ define( function( require ) {
       } );
       return new CoinTerm(
         Math.pow( xValueProperty.value, 2 ) * Math.pow( yValueProperty.value, 2 ),
-        80,
+        65,
         coinXSquareYSquaredFrontImage,
         'x<sup>2</sup>y<sup>2</sup>',
         termValueTextProperty,
