@@ -181,13 +181,13 @@ define( function( require ) {
     XSquared: function( xValueProperty, initialCount ){
       var termValueTextProperty = new Property();
       xValueProperty.link( function( xValue ){
-        termValueTextProperty.value = '(' + xValueProperty.value.toString() + '<sup>' + '2' + '</sup>' + ')';
+        termValueTextProperty.value = '(' + xValueProperty.value.toString() + '<sup>2</sup>' + ')';
       } );
       return new CoinTerm(
         xValueProperty.value * xValueProperty.value,
         75,
         coinXSquaredFrontImage,
-        'x',
+        'x<sup>2</sup>',
         termValueTextProperty,
         { initialCount: initialCount || 1 }
       );
@@ -208,7 +208,7 @@ define( function( require ) {
         yValueProperty.value * yValueProperty.value,
         75,
         coinYSquaredFrontImage,
-        'y',
+        'y<sup>2</sup>',
         termValueTextProperty,
         { initialCount: initialCount || 1 }
       );
@@ -231,7 +231,7 @@ define( function( require ) {
         Math.pow( xValueProperty.value, 2 ) * Math.pow( yValueProperty.value, 2 ),
         80,
         coinXSquareYSquaredFrontImage,
-        'x' + '<sup>' + '2' + '</sup>' + 'y' + '<sup>' + '2' + '</sup>',
+        'x<sup>2</sup>y<sup>2</sup>',
         termValueTextProperty,
         { initialCount: initialCount || 1 }
       );
