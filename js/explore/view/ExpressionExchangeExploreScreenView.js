@@ -149,6 +149,7 @@ define( function( require ) {
           exploreModel.yTermValueProperty
         ); } ),
         new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.XSquared( exploreModel.xTermValueProperty ); } ),
+        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.YSquared( exploreModel.yTermValueProperty ); } ),
         new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.XSquaredTimesYSquared(
           exploreModel.xTermValueProperty,
           exploreModel.yTermValueProperty
