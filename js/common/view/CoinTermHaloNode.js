@@ -18,10 +18,10 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
   // constants
-  var RADIUS_ADDER = 7; // empirically determined
-  var COIN_HALO_COLOR = 'yellow';
+  var COIN_HALO_COLOR = 'rgba( 255, 255, 0, 0.8 )';
+  var COIN_HALO_EDGE_COLOR = 'rgba( 255, 255, 0, 0 )';
   var TERM_HALO_COLOR_CENTER = 'yellow';
-  var TERM_HALO_COLOR_EDGE = 'rgba( 255, 255, 0, 0 )';
+  var TERM_HALO_EDGE_COLOR = 'rgba( 255, 255, 0, 0 )';
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin term
@@ -33,7 +33,12 @@ define( function( require ) {
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
     // add the coin halo
-    var coinHalo = new Circle( coinTerm.coinDiameter / 2, { stroke: COIN_HALO_COLOR, lineWidth: RADIUS_ADDER * 2 } );
+    var coinHalo = new Circle( coinTerm.coinDiameter / 2, {
+      stroke: new RadialGradient( 0, 0, coinTerm.coinDiameter / 2, 0, 0, coinTerm.coinDiameter * 0.75 ).
+      addColorStop( 0, COIN_HALO_COLOR ).
+      addColorStop( 1, COIN_HALO_EDGE_COLOR ),
+      lineWidth: 16 // empirically determined
+    } );
     this.addChild( coinHalo );
 
     // control coin halo visibility
@@ -48,7 +53,7 @@ define( function( require ) {
       fill: new RadialGradient( 0, 0, 0, 0, 0, ExpressionExchangeSharedConstants.TERM_COMBINE_RADIUS ).
         addColorStop( 0, TERM_HALO_COLOR_CENTER ).
         addColorStop( 0.5, TERM_HALO_COLOR_CENTER ).
-        addColorStop( 1, TERM_HALO_COLOR_EDGE )
+        addColorStop( 1, TERM_HALO_EDGE_COLOR )
     } );
     this.addChild( termHalo );
 
