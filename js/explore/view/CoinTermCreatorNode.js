@@ -35,6 +35,7 @@ define( function( require ) {
       creatorFunction(),
       exploreModel.viewModeProperty,
       exploreModel.showCoinValuesProperty,
+      exploreModel.showVariableValuesProperty,
       exploreModel.showAllCoefficientsProperty
     );
     this.addChild( coinNode );

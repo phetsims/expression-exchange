@@ -197,8 +197,13 @@ define( function( require ) {
     exploreModel.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
 
       // add a representation of the coin
-      var coinNode = new CoinTermNode( addedCoinTerm, exploreModel.viewModeProperty, exploreModel.showCoinValuesProperty,
-        exploreModel.showAllCoefficientsProperty );
+      var coinNode = new CoinTermNode(
+        addedCoinTerm,
+        exploreModel.viewModeProperty,
+        exploreModel.showCoinValuesProperty,
+        exploreModel.showVariableValuesProperty,
+        exploreModel.showAllCoefficientsProperty
+      );
       coinLayer.addChild( coinNode );
 
       // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed

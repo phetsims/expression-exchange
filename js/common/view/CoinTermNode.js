@@ -19,73 +19,88 @@ define( function( require ) {
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
+  var Vector2 = require( 'DOT/Vector2' );
 
   // constants
-  var TERM_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 34, style: 'italic' });
-  var NUMBER_FONT = new PhetFont( { size: 34 });
+  var TERM_AND_VALUE_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 34, style: 'italic' });
+  var COEFFICIENT_FONT = new PhetFont( { size: 34 });
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
-   * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
    * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
+   * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
+   * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
    * @constructor
    */
-  function CoinTermNode( coinTerm, viewModeProperty, showCoinValuesProperty, showAllCoefficientsProperty ) {
+  function CoinTermNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty, showAllCoefficientsProperty ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
-    // add the coin image node that is appropriate for this coin's term string
+    // add the image that represents the front of the coin
     var image = coinTerm.coinFrontImage;
     var coinImageNode = new Image( image );
     coinImageNode.scale( coinTerm.coinDiameter / coinImageNode.width );
     this.addChild( coinImageNode );
 
-    // control coin image visibility
+    // control front coin image visibility
     viewModeProperty.link( function( representationMode ){
       coinImageNode.visible = representationMode === ViewMode.COINS;
     } );
+    
+    // convenience variable for positioning the textual labels created below
+    var coinCenter = new Vector2( coinImageNode.width / 2, coinImageNode.height / 2);
+    
+    // add the coin value text
+    var coinValueText = new Text( coinTerm.coinValue, { font: TERM_AND_VALUE_FONT, center: coinCenter } );
+    this.addChild( coinValueText );
+    
+    // control the coin value text visibility
+    var coinValueVisibleProperty = new DerivedProperty( [ viewModeProperty, showCoinValuesProperty ],
+      function( viewMode, showCoinValues ) {
+        return ( viewMode === ViewMode.COINS && showCoinValues );
+      } );
+    coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
 
-    // add the representation that will be shown when view in 'VARIABLES' mode
-    var termText = new SubSupText( coinTerm.termText, { font: TERM_FONT } );
+    // add the 'term' text, e.g. xy
+    var termText = new SubSupText( coinTerm.termText, { 
+      font: TERM_AND_VALUE_FONT,
+      center: coinCenter
+    } );
+    // TODO: Can I dilate the mouse and touch areas in the constructor?
     termText.mouseArea = termText.bounds.dilated( 10 );
     termText.touchArea = termText.bounds.dilated( 10 );
-    termText.center = coinImageNode.center;
     this.addChild( termText );
 
-    // switch the visibility of the term text based on the view mode
-    var termTextVisibleProperty = new DerivedProperty( [
-        viewModeProperty,
-        showCoinValuesProperty ],
-      function( viewMode, showCoinValues ) {
-        return ( viewMode === ViewMode.VARIABLES && !showCoinValues );
+    // control the term text visibility
+    var termTextVisibleProperty = new DerivedProperty( [ viewModeProperty, showVariableValuesProperty ],
+      function( viewMode, showVariableValues ) {
+        return ( viewMode === ViewMode.VARIABLES && !showVariableValues );
       } );
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
 
-    // add the value that will be shown when the showCoinValuesProperty is true
-    var valueText = new SubSupText( '', {
-      font: TERM_FONT,
-      center: coinImageNode.center
-    } );
-    this.addChild( valueText );
+    // Add the text that includes the variable values.  This can change, so it starts off blank.
+    var termWithVariableValuesText = new SubSupText( '', { font: TERM_AND_VALUE_FONT } );
+    this.addChild( termWithVariableValuesText );
 
-    // update the value text when the properties that affect it change
-    Property.multilink( [ viewModeProperty, coinTerm.termValueTextProperty ], function(){
-      if ( viewModeProperty.value === ViewMode.COINS ){
-        valueText.text = coinTerm.coinValue.toString();
-      }
-      else{
-        valueText.text = coinTerm.termValueTextProperty.value;
-      }
-      valueText.center = coinImageNode.center;
+    // update the variable text when it changes, which is triggered by changes to the underlying variable values
+    coinTerm.termValueTextProperty.link( function( termValueText ){
+      termWithVariableValuesText.text = termValueText;
+      termWithVariableValuesText.center = coinCenter;
+      termWithVariableValuesText.mouseArea = termWithVariableValuesText.bounds.dilated( 10 );
+      termWithVariableValuesText.touchArea = termWithVariableValuesText.bounds.dilated( 10 );
     } );
-
-    // control the visibility of the value labels
-    showCoinValuesProperty.linkAttribute( valueText, 'visible' );
+    
+    // control the visibility of the value text
+    var variableTextVisibleProperty = new DerivedProperty( [ viewModeProperty, showVariableValuesProperty ],
+      function( viewMode, showVariableValues ) {
+        return ( viewMode === ViewMode.VARIABLES && showVariableValues );
+      } );
+    variableTextVisibleProperty.linkAttribute( termWithVariableValuesText, 'visible' );
 
     // add the coefficient value
     var coefficientText = new Text( '', {
-      font: NUMBER_FONT
+      font: COEFFICIENT_FONT
     } );
     this.addChild( coefficientText );
 
@@ -100,8 +115,8 @@ define( function( require ) {
         coefficientText.y = termText.y;
       }
       else{
-        coefficientText.right = valueText.left - 3;
-        coefficientText.y = valueText.y;
+        coefficientText.right = termWithVariableValuesText.left - 3;
+        coefficientText.y = termWithVariableValuesText.y;
       }
     }
 
@@ -127,8 +142,8 @@ define( function( require ) {
     // move this node as the model representation moves
     coinTerm.positionProperty.link( function( position ) {
       // the intent here is to position the center of the coin at the position, NOT the center of the node
-      self.right = position.x + coinImageNode.width / 2;
-      self.centerY = position.y;
+      self.x = position.x - coinCenter.x;
+      self.y = position.y - coinCenter.y;
     } );
 
     // add the listener that will allow the user to drag the coin around
