@@ -18,7 +18,7 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
   // constants
-  var RADIUS_ADDER = 4; // empirically determined
+  var RADIUS_ADDER = 7; // empirically determined
   var COIN_HALO_COLOR = 'yellow';
   var TERM_HALO_COLOR_CENTER = 'yellow';
   var TERM_HALO_COLOR_EDGE = 'rgba( 255, 255, 0, 0 )';
