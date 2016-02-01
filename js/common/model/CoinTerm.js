@@ -43,7 +43,7 @@ define( function( require ) {
     PropertySet.call( this, {
       position: Vector2.ZERO, // @public
       userControlled: false, // @public, indicate whether user is currently dragging this coin
-      coinCount: options.initialCount, // @public, number of coins/terms represented
+      combinedCount: options.initialCount, // @public, number of coins/terms combined into this one, must be 1 or more
       combineHaloActive: false // @public
     } );
 
@@ -96,7 +96,7 @@ define( function( require ) {
     X: function( xValueProperty, initialCount ){
       var termValueTextProperty = new Property();
       xValueProperty.link( function( xValue ){
-        termValueTextProperty.value = '(' + xValueProperty.value.toString() + ')';
+        termValueTextProperty.value = xValueProperty.value.toString();
       } );
       return new CoinTerm(
         xValueProperty.value,
@@ -117,7 +117,7 @@ define( function( require ) {
     Y: function( yValueProperty, initialCount ){
       var termValueTextProperty = new Property();
       yValueProperty.link( function( yValue ){
-        termValueTextProperty.value = '(' + yValueProperty.value.toString() + ')';
+        termValueTextProperty.value = yValueProperty.value.toString();
       } );
       return new CoinTerm(
         yValueProperty.value,
@@ -138,7 +138,7 @@ define( function( require ) {
     Z: function( zValueProperty, initialCount ){
       var termValueTextProperty = new Property();
       zValueProperty.link( function( zValue ){
-        termValueTextProperty.value = '(' + zValueProperty.value.toString() + ')';
+        termValueTextProperty.value = zValueProperty.value.toString();
       } );
       return new CoinTerm(
         zValueProperty.value,
@@ -160,7 +160,7 @@ define( function( require ) {
     XTimesY: function( xValueProperty, yValueProperty, initialCount ){
       var termValueTextProperty = new Property();
       Property.multilink( [ xValueProperty, yValueProperty ], function(){
-        termValueTextProperty.value = '(' + xValueProperty.value.toString() + '\u00B7' + yValueProperty.value.toString() + ')';
+        termValueTextProperty.value = xValueProperty.value.toString() + '\u00B7' + yValueProperty.value.toString();
       } );
       return new CoinTerm(
         xValueProperty.value * yValueProperty.value,
@@ -181,7 +181,7 @@ define( function( require ) {
     XSquared: function( xValueProperty, initialCount ){
       var termValueTextProperty = new Property();
       xValueProperty.link( function( xValue ){
-        termValueTextProperty.value = '(' + xValueProperty.value.toString() + '<sup>2</sup>' + ')';
+        termValueTextProperty.value = xValueProperty.value.toString() + '<sup>2</sup>';
       } );
       return new CoinTerm(
         xValueProperty.value * xValueProperty.value,
@@ -202,7 +202,7 @@ define( function( require ) {
     YSquared: function( yValueProperty, initialCount ){
       var termValueTextProperty = new Property();
       yValueProperty.link( function( yValue ){
-        termValueTextProperty.value = '(' + yValueProperty.value.toString() + '<sup>' + '2' + '</sup>' + ')';
+        termValueTextProperty.value = yValueProperty.value.toString() + '<sup>' + '2' + '</sup>';
       } );
       return new CoinTerm(
         yValueProperty.value * yValueProperty.value,
@@ -224,8 +224,8 @@ define( function( require ) {
     XSquaredTimesYSquared: function( xValueProperty, yValueProperty, initialCount ){
       var termValueTextProperty = new Property();
       Property.multilink( [ xValueProperty, yValueProperty ], function(){
-        termValueTextProperty.value = '(' + xValueProperty.value.toString() + '<sup>' + '2' + '</sup>'  + '\u00B7' +
-                                      yValueProperty.value.toString() + '<sup>' + '2' + '</sup>' + ')';
+        termValueTextProperty.value = xValueProperty.value.toString() + '<sup>' + '2' + '</sup>'  + '\u00B7' +
+                                      yValueProperty.value.toString() + '<sup>' + '2' + '</sup>';
       } );
       return new CoinTerm(
         Math.pow( xValueProperty.value, 2 ) * Math.pow( yValueProperty.value, 2 ),

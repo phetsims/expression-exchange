@@ -53,7 +53,7 @@ define( function( require ) {
     function updateTotal() {
       var total = 0;
       self.coinTerms.forEach( function( coin ) {
-        total += coin.coinValue * coin.coinCount;
+        total += coin.coinValue * coin.combinedCount;
       } );
       self.totalCents = total;
     }
@@ -77,7 +77,7 @@ define( function( require ) {
             // same type of coin, so combine them
             addedCoinTerm.travelToDestination( coinToCombineWith.position );
             addedCoinTerm.destinationReached.addListener( function() {
-              coinToCombineWith.coinCount += addedCoinTerm.coinCount;
+              coinToCombineWith.combinedCount += addedCoinTerm.combinedCount;
               self.removeCoinTerm( addedCoinTerm );
             } );
           }

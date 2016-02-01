@@ -83,13 +83,21 @@ define( function( require ) {
     var termWithVariableValuesText = new SubSupText( '', { font: TERM_AND_VALUE_FONT } );
     this.addChild( termWithVariableValuesText );
 
-    // update the variable text when it changes, which is triggered by changes to the underlying variable values
-    coinTerm.termValueTextProperty.link( function( termValueText ){
+    // create a helper function to update the term value text, since it needs to be done in multiple places
+    function updateTermValueText(){
+      var termValueText = coinTerm.termValueTextProperty.value;
+      if ( coinTerm.combinedCount > 1 || showAllCoefficientsProperty.value ){
+        // wrap the term value text in parentheses
+        termValueText = '(' + termValueText + ')';
+      }
       termWithVariableValuesText.text = termValueText;
       termWithVariableValuesText.center = coinCenter;
       termWithVariableValuesText.mouseArea = termWithVariableValuesText.bounds.dilated( 10 );
       termWithVariableValuesText.touchArea = termWithVariableValuesText.bounds.dilated( 10 );
-    } );
+    }
+
+    // update the variable text when it changes, which is triggered by changes to the underlying variable values
+    coinTerm.termValueTextProperty.link( updateTermValueText );
     
     // control the visibility of the value text
     var variableTextVisibleProperty = new DerivedProperty( [ viewModeProperty, showVariableValuesProperty ],
@@ -104,7 +112,7 @@ define( function( require ) {
     } );
     this.addChild( coefficientText );
 
-    // create a little helper function for positioning the coefficient
+    // create a helper function for positioning the coefficient
     function updateCoefficientPosition(){
       if ( viewModeProperty.value === ViewMode.COINS ){
         coefficientText.right = coinImageNode.left - 3; // tweak factor empirically determined
@@ -121,19 +129,23 @@ define( function( require ) {
     }
 
     // update the coefficient text when the value changes
-    coinTerm.coinCountProperty.link( function( coinCount ) {
-      coefficientText.text = coinCount;
+    coinTerm.combinedCountProperty.link( function( combinedCount ) {
+      coefficientText.text = combinedCount;
       updateCoefficientPosition();
     } );
 
     // control the visibility of the coefficient text
     var coefficientVisibleProperty = new DerivedProperty( [
-        coinTerm.coinCountProperty,
+        coinTerm.combinedCountProperty,
         showAllCoefficientsProperty ],
-      function( coinCount, showAllCoefficients ) {
-        return ( coinCount > 1 || showAllCoefficients );
+      function( combinedCount, showAllCoefficients ) {
+        return ( combinedCount > 1 || showAllCoefficients );
       } );
-    coefficientVisibleProperty.linkAttribute( coefficientText, 'visible' );
+    coefficientVisibleProperty.link( function( coefficientVisible ){
+      updateTermValueText();
+      updateCoefficientPosition();
+      coefficientText.visible = coefficientVisible;
+    } );
 
     // position the coefficient to line up well with the text or the code
     // TODO: Consider listening to bounds of the value text instead so there is no order dependency for processing property changes
