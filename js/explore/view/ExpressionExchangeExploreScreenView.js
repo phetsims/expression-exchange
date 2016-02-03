@@ -18,6 +18,7 @@ define( function( require ) {
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
   var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
+  var ExpressionHintNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionHintNode' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -172,6 +173,10 @@ define( function( require ) {
       { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
     ) );
 
+    // add the node that will act as the layer where the expression backgrounds and expression hints will come and go
+    var expressionLayer = new Node();
+    this.addChild( expressionLayer );
+
     // add the node that will act as the layer where the coin halos will come and go
     var coinHaloLayer = new Node();
     this.addChild( coinHaloLayer );
@@ -228,6 +233,23 @@ define( function( require ) {
       } );
 
     } );
+
+    // add and remove expression hints as they come and go
+    exploreModel.expressionHints.addItemAddedListener( function( addedExpressionHint ){
+
+      var expressionHintNode = new ExpressionHintNode( addedExpressionHint, exploreModel.viewModeProperty );
+      expressionLayer.addChild( expressionHintNode );
+
+      // set up a listener to remove the hint node when the corresponding hint is removed from the model
+      exploreModel.expressionHints.addItemRemovedListener( function removalListener( removedExpressionHint ) {
+        if ( removedExpressionHint === addedExpressionHint ) {
+          expressionLayer.removeChild( expressionHintNode );
+          exploreModel.expressionHints.removeItemRemovedListener( removalListener );
+        }
+      } );
+
+    } );
+
   }
 
   return inherit( ScreenView, ExpressionExchangeExploreScreenView, {

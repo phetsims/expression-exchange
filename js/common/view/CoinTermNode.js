@@ -10,6 +10,7 @@ define( function( require ) {
 
   // modules
   var DerivedProperty = require( 'AXON/DerivedProperty' );
+  var Dimension2 = require( 'DOT/Dimension2' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -19,11 +20,13 @@ define( function( require ) {
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
+  var Util = require( 'DOT/Util' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
-  var TERM_AND_VALUE_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 34, style: 'italic' });
-  var COEFFICIENT_FONT = new PhetFont( { size: 34 });
+  var TERM_AND_VALUE_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 34, style: 'italic' } );
+  var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
+  var COEFFICIENT_X_SPACING = 3;
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin
@@ -44,17 +47,17 @@ define( function( require ) {
     this.addChild( coinImageNode );
 
     // control front coin image visibility
-    viewModeProperty.link( function( representationMode ){
+    viewModeProperty.link( function( representationMode ) {
       coinImageNode.visible = representationMode === ViewMode.COINS;
     } );
-    
+
     // convenience variable for positioning the textual labels created below
-    var coinCenter = new Vector2( coinImageNode.width / 2, coinImageNode.height / 2);
-    
+    var coinCenter = new Vector2( coinImageNode.width / 2, coinImageNode.height / 2 );
+
     // add the coin value text
     var coinValueText = new Text( coinTerm.coinValue, { font: TERM_AND_VALUE_FONT, center: coinCenter } );
     this.addChild( coinValueText );
-    
+
     // control the coin value text visibility
     var coinValueVisibleProperty = new DerivedProperty( [ viewModeProperty, showCoinValuesProperty ],
       function( viewMode, showCoinValues ) {
@@ -63,7 +66,7 @@ define( function( require ) {
     coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
 
     // add the 'term' text, e.g. xy
-    var termText = new SubSupText( coinTerm.termText, { 
+    var termText = new SubSupText( coinTerm.termText, {
       font: TERM_AND_VALUE_FONT,
       center: coinCenter
     } );
@@ -84,9 +87,9 @@ define( function( require ) {
     this.addChild( termWithVariableValuesText );
 
     // create a helper function to update the term value text, since it needs to be done in multiple places
-    function updateTermValueText(){
+    function updateTermValueText() {
       var termValueText = coinTerm.termValueTextProperty.value;
-      if ( coinTerm.combinedCount > 1 || showAllCoefficientsProperty.value ){
+      if ( coinTerm.combinedCount > 1 || showAllCoefficientsProperty.value ) {
         // wrap the term value text in parentheses
         termValueText = '(' + termValueText + ')';
       }
@@ -98,7 +101,7 @@ define( function( require ) {
 
     // update the variable text when it changes, which is triggered by changes to the underlying variable values
     coinTerm.termValueTextProperty.link( updateTermValueText );
-    
+
     // control the visibility of the value text
     var variableTextVisibleProperty = new DerivedProperty( [ viewModeProperty, showVariableValuesProperty ],
       function( viewMode, showVariableValues ) {
@@ -113,17 +116,17 @@ define( function( require ) {
     this.addChild( coefficientText );
 
     // create a helper function for positioning the coefficient
-    function updateCoefficientPosition(){
-      if ( viewModeProperty.value === ViewMode.COINS ){
-        coefficientText.right = coinImageNode.left - 3; // tweak factor empirically determined
+    function updateCoefficientPosition() {
+      if ( viewModeProperty.value === ViewMode.COINS ) {
+        coefficientText.right = coinImageNode.left - COEFFICIENT_X_SPACING;
         coefficientText.centerY = coinImageNode.centerY;
       }
-      else if ( termTextVisibleProperty.value ){
-        coefficientText.right = termText.left - 3;
+      else if ( termTextVisibleProperty.value ) {
+        coefficientText.right = termText.left - COEFFICIENT_X_SPACING;
         coefficientText.y = termText.y;
       }
-      else{
-        coefficientText.right = termWithVariableValuesText.left - 3;
+      else {
+        coefficientText.right = termWithVariableValuesText.left - COEFFICIENT_X_SPACING;
         coefficientText.y = termWithVariableValuesText.y;
       }
     }
@@ -141,7 +144,7 @@ define( function( require ) {
       function( combinedCount, showAllCoefficients ) {
         return ( combinedCount > 1 || showAllCoefficients );
       } );
-    coefficientVisibleProperty.link( function( coefficientVisible ){
+    coefficientVisibleProperty.link( function( coefficientVisible ) {
       updateTermValueText();
       updateCoefficientPosition();
       coefficientText.visible = coefficientVisible;
@@ -150,6 +153,31 @@ define( function( require ) {
     // position the coefficient to line up well with the text or the code
     // TODO: Consider listening to bounds of the value text instead so there is no order dependency for processing property changes
     Property.multilink( [ viewModeProperty, coinTerm.termValueTextProperty, termTextVisibleProperty ], updateCoefficientPosition );
+
+    // helper function to update dimensions
+    function updateDimensionsInModel() {
+      var visibleWidth = Util.toFixedNumber( self.visibleBounds.width, 1 );
+      var visibleHeight = Util.toFixedNumber( self.visibleBounds.height, 1 );
+      var xOffset = self.visibleBounds.centerX - coinTerm.position.x;
+      if ( !coinTerm.viewInfo ||
+           coinTerm.viewInfo.dimensions.width !== visibleWidth ||
+           coinTerm.viewInfo.dimensions.height !== visibleHeight ||
+           coinTerm.viewInfo.xOffset !== xOffset ) {
+        coinTerm.viewInfo = {
+          dimensions: new Dimension2( visibleWidth, visibleHeight ),
+          xOffset: xOffset
+        };
+      }
+    }
+
+    // Update the model with the view's dimensions.  This breaks the whole model-view separation rule a bit, but in this
+    // sim both the model and the view can be affected by the size of the coin terms, so this was necessary.
+    this.on( 'bounds', function() {
+      updateDimensionsInModel();
+    } );
+
+    // TODO: This is a workaround because I couldn't figure out how to monitor visible bounds.  This should be removed when possible.
+    coefficientVisibleProperty.link( updateDimensionsInModel );
 
     // move this node as the model representation moves
     coinTerm.positionProperty.link( function( position ) {
@@ -180,7 +208,7 @@ define( function( require ) {
     } ) );
 
     // add a listener that will pop this coin to the front when selected by the user
-    coinTerm.userControlledProperty.onValue( true, function(){ self.moveToFront(); } );
+    coinTerm.userControlledProperty.onValue( true, function() { self.moveToFront(); } );
   }
 
   return inherit( Node, CoinTermNode, {} );
