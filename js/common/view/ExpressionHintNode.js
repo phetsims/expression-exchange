@@ -21,7 +21,7 @@ define( function( require ) {
   var HINT_BACKGROUND_COLOR = 'rgba( 255, 255, 255, 0.5 )';
   var INSET = 10; // in screen coordinates
   var NUM_ZIG_ZAGS = 10;
-  var ZIG_ZAG_X_SIZE = 3; // empirically determined
+  var ZIG_ZAG_X_SIZE = 2; // empirically determined
 
   // utility function for drawing a zig zag line on a shape between two endpoints
   function addZigZagLine( shape, x1, y1, x2, y2, zigRightFirst ) {
