@@ -14,11 +14,30 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Property = require( 'AXON/Property' );
-  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
+  var Shape = require( 'KITE/Shape' );
+  var Path = require( 'SCENERY/nodes/Path' );
 
   // constants
   var HINT_BACKGROUND_COLOR = 'rgba( 255, 255, 255, 0.5 )';
   var INSET = 10; // in screen coordinates
+  var NUM_ZIG_ZAGS = 10;
+  var ZIG_ZAG_X_SIZE = 3; // empirically determined
+
+  // utility function for drawing a zig zag line on a shape between two endpoints
+  function addZigZagLine( shape, x1, y1, x2, y2, zigRightFirst ) {
+    assert && assert( x1 === x2, 'this function is not general enough to handle non-vertical zig-zag lines' );
+    shape.moveTo( x1, y1 );
+    var segmentYLength = ( y2 - y1 ) / NUM_ZIG_ZAGS;
+    _.times( NUM_ZIG_ZAGS - 1, function( index ) {
+      var zig = index % 2 === 0 ? ZIG_ZAG_X_SIZE : -ZIG_ZAG_X_SIZE;
+      if ( !zigRightFirst ){
+        zig = -zig;
+      }
+      shape.lineTo( x1 + zig, y1 + ( index + 1 ) * segmentYLength );
+    } );
+    shape.lineTo( x2, y2 );
+  }
+
 
   /**
    * @param {ExpressionHint} expressionHint - model of an expression hint
@@ -38,8 +57,8 @@ define( function( require ) {
         var anchorCTSize = expressionHint.anchorCoinTerm.viewInfo.dimensions;
         var movingCTSize = expressionHint.movingCoinTerm.viewInfo.dimensions;
 
-          // clear out any previous hint
-          self.removeAllChildren();
+        // clear out any previous hint
+        self.removeAllChildren();
 
         // the hint can be on the left or right side of the 'anchor coin', depending upon where the moving coin term is
         var anchorCoinTermOnLeft = expressionHint.movingCoinTerm.position.x > expressionHint.anchorCoinTerm.position.x;
@@ -62,7 +81,15 @@ define( function( require ) {
                             expressionHint.anchorCoinTerm.viewInfo.xOffset;
         }
 
-        var leftHalf = new Rectangle( 0, 0, leftHalfWidth, height, 0, 0, {
+        var leftHalfShape = new Shape()
+          .moveTo( leftHalfWidth, 0 )
+          .lineTo( 0, 0 )
+          .lineTo( 0, height )
+          .lineTo( leftHalfWidth, height );
+        addZigZagLine( leftHalfShape, leftHalfWidth, height, leftHalfWidth, 0, true );
+        leftHalfShape.close();
+
+        var leftHalf = new Path( leftHalfShape, {
           fill: HINT_BACKGROUND_COLOR,
           centerX: leftHalfCenterX,
           top: top
@@ -70,7 +97,15 @@ define( function( require ) {
         self.addChild( leftHalf );
 
         // add right half
-        self.addChild( new Rectangle( 0, 0, rightHalfWidth, height, 0, 0, {
+        var rightHalfShape = new Shape()
+          .moveTo( 0, 0 )
+          .lineTo( rightHalfWidth, 0 )
+          .lineTo( rightHalfWidth, height )
+          .lineTo( 0, height );
+        addZigZagLine( rightHalfShape, 0, height, 0, 0, true );
+        rightHalfShape.close();
+
+        self.addChild( new Path( rightHalfShape, {
           fill: HINT_BACKGROUND_COLOR,
           left: leftHalf.right,
           top: top
