@@ -10,7 +10,6 @@ define( function( require ) {
 
   // modules
   var DerivedProperty = require( 'AXON/DerivedProperty' );
-  var Dimension2 = require( 'DOT/Dimension2' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -20,7 +19,6 @@ define( function( require ) {
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
-  var Util = require( 'DOT/Util' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
