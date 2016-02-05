@@ -197,17 +197,16 @@ define( function( require ) {
     },
 
     // @private - utility function for determining whether two coin terms overlap
-    coinTermsOverlap: function( coinTerm1, coinTerm2 ) {
+    doCoinTermsOverlap: function( coinTerm1, coinTerm2 ) {
       var distanceBetweenCenters = coinTerm1.position.distance( coinTerm2.position );
 
       // the decision about whether these overlap depends upon whether we are in COIN and VARIABLES mode
       if ( this.viewMode === ViewMode.COINS ) {
-        // multiplier in test below was empirically determined
-        return distanceBetweenCenters < ( coinTerm1.coinDiameter / 2 ) + ( coinTerm2.coinDiameter / 2 ) * 0.65;
+        return distanceBetweenCenters < ( coinTerm1.coinDiameter / 2 ) + ( coinTerm2.coinDiameter / 2 );
       }
       else {
         // multiplier in test below was empirically determined
-        return distanceBetweenCenters < ExpressionExchangeSharedConstants.TERM_COMBINE_RADIUS * 1.25;
+        return distanceBetweenCenters < ExpressionExchangeSharedConstants.TERM_COMBINE_RADIUS * 1.15;
       }
     },
 
@@ -270,7 +269,7 @@ define( function( require ) {
       var overlappingCoinTerms = [];
       this.coinTerms.forEach( function( potentiallyOverlappingCoinTerm ) {
         if ( coinTerm !== potentiallyOverlappingCoinTerm && !potentiallyOverlappingCoinTerm.userControlled &&
-             self.coinTermsOverlap( coinTerm, potentiallyOverlappingCoinTerm ) ) {
+             self.doCoinTermsOverlap( coinTerm, potentiallyOverlappingCoinTerm ) ) {
           overlappingCoinTerms.push( potentiallyOverlappingCoinTerm );
         }
       } );

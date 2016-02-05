@@ -49,13 +49,13 @@ define( function( require ) {
 
     Property.multilink(
       [
-        expressionHint.anchorCoinTerm.viewInfoProperty,
-        expressionHint.anchorCoinTerm.viewInfoProperty
+        expressionHint.anchorCoinTerm.relativeViewBoundsProperty,
+        expressionHint.movingCoinTerm.relativeViewBoundsProperty
       ],
       function() {
         // convenience vars
-        var anchorCTSize = expressionHint.anchorCoinTerm.viewInfo.dimensions;
-        var movingCTSize = expressionHint.movingCoinTerm.viewInfo.dimensions;
+        var anchorCTBounds = expressionHint.anchorCoinTerm.relativeViewBounds;
+        var movingCTBounds = expressionHint.movingCoinTerm.relativeViewBounds;
 
         // clear out any previous hint
         self.removeAllChildren();
@@ -64,21 +64,23 @@ define( function( require ) {
         var anchorCoinTermOnLeft = expressionHint.movingCoinTerm.position.x > expressionHint.anchorCoinTerm.position.x;
 
         // calculate size and position for each half of the hint
-        var height = Math.max( anchorCTSize.height, movingCTSize.height ) + 2 * INSET;
+        var height = Math.max( anchorCTBounds.height, movingCTBounds.height ) + 2 * INSET;
         var top = expressionHint.anchorCoinTerm.position.y - height / 2;
         var leftHalfWidth;
         var rightHalfWidth;
         var leftHalfCenterX;
         if ( anchorCoinTermOnLeft ) {
-          leftHalfWidth = anchorCTSize.width + 2 * INSET;
-          rightHalfWidth = movingCTSize.width + 2 * INSET;
-          leftHalfCenterX = expressionHint.anchorCoinTerm.position.x + expressionHint.anchorCoinTerm.viewInfo.xOffset;
+          leftHalfWidth = anchorCTBounds.width + 2 * INSET;
+          rightHalfWidth = movingCTBounds.width + 2 * INSET;
+          leftHalfCenterX = expressionHint.anchorCoinTerm.position.x + ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2;
         }
-        else {
-          leftHalfWidth = movingCTSize.width + 2 * INSET;
-          rightHalfWidth = anchorCTSize.width + 2 * INSET;
-          leftHalfCenterX = expressionHint.anchorCoinTerm.position.x - leftHalfWidth / 2 - rightHalfWidth / 2 +
-                            expressionHint.anchorCoinTerm.viewInfo.xOffset;
+        else { // anchor coin term is on the right
+          leftHalfWidth = movingCTBounds.width + 2 * INSET;
+          rightHalfWidth = anchorCTBounds.width + 2 * INSET;
+          leftHalfCenterX = expressionHint.anchorCoinTerm.position.x +
+                            ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2 -
+                            anchorCTBounds.width / 2 -INSET -
+                            movingCTBounds.width / 2 - INSET;
         }
 
         var leftHalfShape = new Shape()

@@ -46,12 +46,10 @@ define( function( require ) {
       combinedCount: options.initialCount, // @public, number of coins/terms combined into this one, must be 1 or more
       combineHaloActive: false, // @public
 
-      // @public - The dimensions of this model element's view representation and an X offset relative to its model
-      // position.  This admittedly breaks the usual model-view rules, but many things in the view need to know this, so
-      // having it set by the view worked out to be the best approach.  This is a composite of the view dimensions and
-      // an X offset relative to its location in the model.  The X offset is necessary because of the coefficient,
-      // which can come and go, and expands the dimensions to the left but not the right.
-      viewInfo: null
+      // @public - The bounds of this model element's view representation relative to the element's current position.
+      // This admittedly breaks the usual model-view rules, but many things in the view need to know this, so having it
+      // available on the model element after being set by the view worked out to be the best approach.
+      relativeViewBounds: null
     } );
 
     // @public, read only, values that describe the nature of this coin term

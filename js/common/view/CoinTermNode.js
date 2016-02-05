@@ -10,7 +10,6 @@ define( function( require ) {
 
   // modules
   var DerivedProperty = require( 'AXON/DerivedProperty' );
-  var Dimension2 = require( 'DOT/Dimension2' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -20,7 +19,6 @@ define( function( require ) {
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
-  var Util = require( 'DOT/Util' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
@@ -155,29 +153,24 @@ define( function( require ) {
     Property.multilink( [ viewModeProperty, coinTerm.termValueTextProperty, termTextVisibleProperty ], updateCoefficientPosition );
 
     // helper function to update dimensions
-    function updateDimensionsInModel() {
-      var visibleWidth = Util.toFixedNumber( self.visibleBounds.width, 1 );
-      var visibleHeight = Util.toFixedNumber( self.visibleBounds.height, 1 );
-      var xOffset = self.visibleBounds.centerX - coinTerm.position.x;
-      if ( !coinTerm.viewInfo ||
-           coinTerm.viewInfo.dimensions.width !== visibleWidth ||
-           coinTerm.viewInfo.dimensions.height !== visibleHeight ||
-           coinTerm.viewInfo.xOffset !== xOffset ) {
-        coinTerm.viewInfo = {
-          dimensions: new Dimension2( visibleWidth, visibleHeight ),
-          xOffset: xOffset
-        };
+    function updateBoundsInModel() {
+
+      var relativeVisibleBounds = self.visibleLocalBounds.shifted( -coinTerm.coinDiameter / 2, -coinTerm.coinDiameter / 2 );
+      if ( !coinTerm.relativeViewBounds ||
+           !coinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
+        coinTerm.relativeViewBounds = relativeVisibleBounds;
+        console.log( 'relativeVisibleBounds = ' + relativeVisibleBounds );
       }
     }
 
     // Update the model with the view's dimensions.  This breaks the whole model-view separation rule a bit, but in this
     // sim both the model and the view can be affected by the size of the coin terms, so this was necessary.
     this.on( 'bounds', function() {
-      updateDimensionsInModel();
+      updateBoundsInModel();
     } );
 
     // TODO: This is a workaround because I couldn't figure out how to monitor visible bounds.  This should be removed when possible.
-    coefficientVisibleProperty.link( updateDimensionsInModel );
+    coefficientVisibleProperty.link( updateBoundsInModel );
 
     // move this node as the model representation moves
     coinTerm.positionProperty.link( function( position ) {
