@@ -206,7 +206,7 @@ define( function( require ) {
       }
       else {
         // multiplier in test below was empirically determined
-        return distanceBetweenCenters < ExpressionExchangeSharedConstants.TERM_COMBINE_RADIUS * 1.25;
+        return distanceBetweenCenters < ExpressionExchangeSharedConstants.TERM_COMBINE_RADIUS * 1.15;
       }
     },
 
