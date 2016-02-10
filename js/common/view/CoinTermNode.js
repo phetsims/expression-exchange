@@ -162,7 +162,6 @@ define( function( require ) {
       var relativeVisibleBounds = self.visibleLocalBounds.shifted( -coinTerm.coinDiameter / 2, -coinTerm.coinDiameter / 2 );
       if ( !coinTerm.relativeViewBounds || !coinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
         coinTerm.relativeViewBounds = relativeVisibleBounds;
-        console.log( 'relativeVisibleBounds = ' + relativeVisibleBounds );
       }
     }
 

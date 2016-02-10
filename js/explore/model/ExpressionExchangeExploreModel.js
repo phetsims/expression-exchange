@@ -68,14 +68,14 @@ define( function( require ) {
 
     // add listeners to handle combining coins
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
-      // TODO: Revisit this and verify that it doesn't leak memory
+      // TODO: Revisit this and verify that this doesn't leak memory
 
       // add a handler that will check for overlap upon release of a coin and, if found, will combine the coins
       addedCoinTerm.userControlledProperty.onValue( false, function() {
-        var overlappingCoins = self.getOverlappingCoinTerms( addedCoinTerm );
+        var overlappingCoinTerms = self.getOverlappingCoinTerms( addedCoinTerm );
 
-        if ( overlappingCoins.length > 0 ) {
-          var coinToCombineWith = getClosestCoinTermToPosition( addedCoinTerm.position, overlappingCoins );
+        if ( overlappingCoinTerms.length > 0 ) {
+          var coinToCombineWith = getClosestCoinTermToPosition( addedCoinTerm.position, overlappingCoinTerms );
           if ( coinToCombineWith.termText === addedCoinTerm.termText ) {
 
             // same type of coin, so combine them
@@ -87,7 +87,14 @@ define( function( require ) {
           }
           // TODO: Add combining of dissimilar coins into expressions
           else {
-            console.log( 'combining of dissimilar coins is not yet implemented' );
+            console.log( 'would create an expression here' );
+          }
+        }
+        else{
+          // there were no overlapping coin terms, so check if close enough to form an expression
+          var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
+          if ( joinableFreeCoinTerm ) {
+            console.log( 'would create an expression here' );
           }
         }
       } );
