@@ -1,0 +1,67 @@
+// Copyright 2016, University of Colorado Boulder
+
+/**
+ * This type represents a model of an expression.  An expression is a set of coin terms all positioned in a line.  In
+ * the view, an expression is represented as a box containing the coin terms with plus symboles between them.
+ *
+ * @author John Blanco
+ */
+define( function( require ) {
+  'use strict';
+
+  // modules
+  var ExpressionExchangeSharedConstants = require( 'EXPRESSION_EXCHANGE/common/ExpressionExchangeSharedConstants' );
+  var inherit = require( 'PHET_CORE/inherit' );
+  var ObservableArray = require( 'AXON/ObservableArray' );
+  var Vector2 = require( 'DOT/Vector2' );
+
+  // constants
+  var INTER_COIN_TERM_SPACING = 26; // in model units, empirically determined to work with view
+
+  /**
+   * @constructor
+   */
+  function Expression( anchorCoinTerm, floatingCoinTerm ) {
+
+    var self = this;
+
+    // @public, read and listen only, items should be added and removed via methods
+    this.coinTerms = new ObservableArray();
+    this.coinTerms.add( anchorCoinTerm );
+
+    // move the floating coin term into this expression
+    var xDestination;
+    if ( floatingCoinTerm.position.x >= anchorCoinTerm.position.x ){
+      xDestination = anchorCoinTerm.position.x + anchorCoinTerm.relativeViewBounds.maxX + INTER_COIN_TERM_SPACING -
+                     floatingCoinTerm.relativeViewBounds.minX;
+    }
+    else{
+      xDestination = anchorCoinTerm.position.x + anchorCoinTerm.relativeViewBounds.minX - INTER_COIN_TERM_SPACING -
+                     floatingCoinTerm.relativeViewBounds.maxX;
+    }
+    // TODO: I don't think this would property handle a reset that occurs during the animation, so I'll need to add that.
+    var destination = new Vector2( xDestination, anchorCoinTerm.position.y );
+    var movementTime = anchorCoinTerm.position.distance( destination ) / ExpressionExchangeSharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
+    new TWEEN.Tween( { x: floatingCoinTerm.position.x, y: floatingCoinTerm.position.y } )
+      .to( { x: destination.x, y: destination.y }, movementTime )
+      .easing( TWEEN.Easing.Cubic.InOut )
+      .onUpdate( function() {
+        floatingCoinTerm.position = new Vector2( this.x, this.y );
+      } )
+      .onComplete( function() {
+        self.coinTerms.add( floatingCoinTerm );
+      } )
+      .start();
+  }
+
+  return inherit( Object, Expression, {
+
+    /**
+     * add the specified coin
+     * @param {CoinTerm} coinTerm
+     */
+    addCoinTerm: function( coinTerm ) {
+      // TODO: implement
+    }
+  } );
+} );

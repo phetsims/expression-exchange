@@ -10,6 +10,7 @@ define( function( require ) {
 
   // modules
   var ExpressionExchangeSharedConstants = require( 'EXPRESSION_EXCHANGE/common/ExpressionExchangeSharedConstants' );
+  var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
   var ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
@@ -47,10 +48,13 @@ define( function( require ) {
     } );
     var self = this;
 
-    // @public, read and listen only, list of all coin terms in model
+    // @public, read and listen only, list of all coin terms in the model
     this.coinTerms = new ObservableArray();
 
-    // @public, read and listen only, list of expression hints in model
+    // @public, read and listen only, list of expressions in the model
+    this.expressions = new ObservableArray();
+
+    // @public, read and listen only, list of expression hints in the model
     this.expressionHints = new ObservableArray();
 
     // function to update the total cents whenever a coin is added or removed
@@ -69,6 +73,7 @@ define( function( require ) {
     // add listeners to handle combining coins
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
       // TODO: Revisit this and verify that this doesn't leak memory
+      // TODO: Work through this and see if it can be made more compact and readable (it's evolving a lot as it's being written)
 
       // add a handler that will check for overlap upon release of a coin and, if found, will combine the coins
       addedCoinTerm.userControlledProperty.onValue( false, function() {
@@ -85,16 +90,15 @@ define( function( require ) {
               self.removeCoinTerm( addedCoinTerm );
             } );
           }
-          // TODO: Add combining of dissimilar coins into expressions
           else {
-            console.log( 'would create an expression here' );
+            self.expressions.add( new Expression( coinToCombineWith, addedCoinTerm ) );
           }
         }
         else{
           // there were no overlapping coin terms, so check if close enough to form an expression
           var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
           if ( joinableFreeCoinTerm ) {
-            console.log( 'would create an expression here' );
+            self.expressions.add( new Expression( joinableFreeCoinTerm, addedCoinTerm ) );
           }
         }
       } );
@@ -199,6 +203,8 @@ define( function( require ) {
 
     // @public
     reset: function() {
+      // TODO: Probably need to reset expressions here so that they can cancel any in-progress animations.
+      this.expressions.clear();
       this.coinTerms.clear();
       PropertySet.prototype.reset.call( this );
     },

@@ -11,6 +11,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var ExpressionExchangeSharedConstants = require( 'EXPRESSION_EXCHANGE/common/ExpressionExchangeSharedConstants' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Property = require( 'AXON/Property' );
@@ -18,7 +19,7 @@ define( function( require ) {
   var Path = require( 'SCENERY/nodes/Path' );
 
   // constants
-  var HINT_BACKGROUND_COLOR = 'rgba( 255, 255, 255, 0.5 )';
+  var HINT_BACKGROUND_COLOR = ExpressionExchangeSharedConstants.EXPRESSION_BACKGROUND_COLOR;
   var INSET = 10; // in screen coordinates
   var NUM_ZIG_ZAGS = 10;
   var ZIG_ZAG_X_SIZE = 2; // empirically determined

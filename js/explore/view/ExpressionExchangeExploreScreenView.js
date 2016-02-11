@@ -19,6 +19,7 @@ define( function( require ) {
   var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
   var ExpressionHintNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionHintNode' );
+  var ExpressionNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionNode' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -232,6 +233,21 @@ define( function( require ) {
         }
       } );
 
+    } );
+
+    // add and remove expressions as they come and go
+    exploreModel.expressions.addItemAddedListener( function( addedExpression ){
+
+      var expressionNode = new ExpressionNode( addedExpression, exploreModel.viewModeProperty );
+      expressionLayer.addChild( expressionNode );
+
+      // set up a listener to remove the expression node when the corresponding expression is removed from the model
+      exploreModel.expressions.addItemRemovedListener( function removalListener( removedExpression ) {
+        if ( removedExpression === addedExpression ) {
+          expressionLayer.removeChild( expressionNode );
+          exploreModel.expressions.removeItemRemovedListener( removalListener );
+        }
+      } );
     } );
 
     // add and remove expression hints as they come and go

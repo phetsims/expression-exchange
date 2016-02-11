@@ -13,6 +13,7 @@ define( function( require ) {
 
   // modules
   var Emitter = require( 'AXON/Emitter' );
+  var ExpressionExchangeSharedConstants = require( 'EXPRESSION_EXCHANGE/common/ExpressionExchangeSharedConstants' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
   var PropertySet = require( 'AXON/PropertySet' );
@@ -26,9 +27,6 @@ define( function( require ) {
   var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
   var coinYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
   var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
-
-  // constants
-  var MOVEMENT_SPEED = 100; // in model units (which are basically screen coordinates) per second
 
   /**
    * TODO: document parameters thoroughly once finalized.  Make sure to note requirement for subSupText format of some of the string values.
@@ -73,7 +71,7 @@ define( function( require ) {
      */
     travelToDestination: function( destination ){
       var self = this;
-      var movementTime = self.position.distance( destination ) / MOVEMENT_SPEED * 1000;
+      var movementTime = self.position.distance( destination ) / ExpressionExchangeSharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
       new TWEEN.Tween( { x: this.position.x, y: this.position.y } )
         .to( { x: destination.x, y: destination.y }, movementTime )
         .easing( TWEEN.Easing.Cubic.InOut )
@@ -84,7 +82,6 @@ define( function( require ) {
           self.destinationReached.emit();
         } )
         .start();
-
     }
   }, {
 
