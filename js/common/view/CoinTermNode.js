@@ -38,11 +38,16 @@ define( function( require ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
+    // Add a root node so that the bounds can be easily monitored for changes in size without getting triggered by
+    // changes in position.
+    var rootNode = new Node();
+    this.addChild( rootNode );
+
     // add the image that represents the front of the coin
     var image = coinTerm.coinFrontImage;
     var coinImageNode = new Image( image );
     coinImageNode.scale( coinTerm.coinDiameter / coinImageNode.width );
-    this.addChild( coinImageNode );
+    rootNode.addChild( coinImageNode );
 
     // control front coin image visibility
     viewModeProperty.link( function( representationMode ) {
@@ -54,7 +59,7 @@ define( function( require ) {
 
     // add the coin value text
     var coinValueText = new Text( coinTerm.coinValue, { font: TERM_AND_VALUE_FONT, center: coinCenter } );
-    this.addChild( coinValueText );
+    rootNode.addChild( coinValueText );
 
     // control the coin value text visibility
     var coinValueVisibleProperty = new DerivedProperty( [ viewModeProperty, showCoinValuesProperty ],
@@ -71,7 +76,7 @@ define( function( require ) {
     // TODO: Can I dilate the mouse and touch areas in the constructor?
     termText.mouseArea = termText.bounds.dilated( 10 );
     termText.touchArea = termText.bounds.dilated( 10 );
-    this.addChild( termText );
+    rootNode.addChild( termText );
 
     // control the term text visibility
     var termTextVisibleProperty = new DerivedProperty( [ viewModeProperty, showVariableValuesProperty ],
@@ -82,7 +87,7 @@ define( function( require ) {
 
     // Add the text that includes the variable values.  This can change, so it starts off blank.
     var termWithVariableValuesText = new SubSupText( '', { font: TERM_AND_VALUE_FONT } );
-    this.addChild( termWithVariableValuesText );
+    rootNode.addChild( termWithVariableValuesText );
 
     // create a helper function to update the term value text, since it needs to be done in multiple places
     function updateTermValueText() {
@@ -111,7 +116,7 @@ define( function( require ) {
     var coefficientText = new Text( '', {
       font: COEFFICIENT_FONT
     } );
-    this.addChild( coefficientText );
+    rootNode.addChild( coefficientText );
 
     // create a helper function for positioning the coefficient
     function updateCoefficientPosition() {
@@ -149,23 +154,20 @@ define( function( require ) {
     } );
 
     // position the coefficient to line up well with the text or the code
-    // TODO: Consider listening to bounds of the value text instead so there is no order dependency for processing property changes
     Property.multilink( [ viewModeProperty, coinTerm.termValueTextProperty, termTextVisibleProperty ], updateCoefficientPosition );
 
     // helper function to update dimensions
     function updateBoundsInModel() {
 
       var relativeVisibleBounds = self.visibleLocalBounds.shifted( -coinTerm.coinDiameter / 2, -coinTerm.coinDiameter / 2 );
-      if ( !coinTerm.relativeViewBounds ||
-           !coinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
+      if ( !coinTerm.relativeViewBounds || !coinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
         coinTerm.relativeViewBounds = relativeVisibleBounds;
-        console.log( 'relativeVisibleBounds = ' + relativeVisibleBounds );
       }
     }
 
     // Update the model with the view's dimensions.  This breaks the whole model-view separation rule a bit, but in this
-    // sim both the model and the view can be affected by the size of the coin terms, so this was necessary.
-    this.on( 'bounds', function() {
+    // sim both the model and the view can be affected by the size of the coin terms, so this was a way to get it done.
+    rootNode.on( 'bounds', function() {
       updateBoundsInModel();
     } );
 
