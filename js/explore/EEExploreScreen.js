@@ -24,7 +24,7 @@ define( function( require ) {
   function EEExploreScreen() {
 
     // TODO: temporary icon, will need to be replaced
-    var icon = new Rectangle( 0, 0, 548, 373, 0, 0, { fill: 'green' } );
+    var icon = new Rectangle( 0, 0, 548, 373, 0, 0, { fill: 'red' } );
 
     Screen.call( this, exploreString, icon,
       function() { return new EEExploreModel(); },
