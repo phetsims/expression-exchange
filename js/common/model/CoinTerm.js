@@ -13,7 +13,7 @@ define( function( require ) {
 
   // modules
   var Emitter = require( 'AXON/Emitter' );
-  var ExpressionExchangeSharedConstants = require( 'EXPRESSION_EXCHANGE/common/ExpressionExchangeSharedConstants' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
   var PropertySet = require( 'AXON/PropertySet' );
@@ -71,7 +71,7 @@ define( function( require ) {
      */
     travelToDestination: function( destination ){
       var self = this;
-      var movementTime = self.position.distance( destination ) / ExpressionExchangeSharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
+      var movementTime = self.position.distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
       new TWEEN.Tween( { x: this.position.x, y: this.position.y } )
         .to( { x: destination.x, y: destination.y }, movementTime )
         .easing( TWEEN.Easing.Cubic.InOut )

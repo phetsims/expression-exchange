@@ -10,7 +10,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var ExpressionExchangeSharedConstants = require( 'EXPRESSION_EXCHANGE/common/ExpressionExchangeSharedConstants' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
   var Vector2 = require( 'DOT/Vector2' );
@@ -41,7 +41,7 @@ define( function( require ) {
     }
     // TODO: I don't think this would property handle a reset that occurs during the animation, so I'll need to add that.
     var destination = new Vector2( xDestination, anchorCoinTerm.position.y );
-    var movementTime = anchorCoinTerm.position.distance( destination ) / ExpressionExchangeSharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
+    var movementTime = anchorCoinTerm.position.distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
     new TWEEN.Tween( { x: floatingCoinTerm.position.x, y: floatingCoinTerm.position.y } )
       .to( { x: destination.x, y: destination.y }, movementTime )
       .easing( TWEEN.Easing.Cubic.InOut )

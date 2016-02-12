@@ -12,7 +12,7 @@ define( function( require ) {
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
 
   /**
-   * @param {ExpressionExchangeExploreModel} exploreModel - model where coins are to be added
+   * @param {EEExploreModel} exploreModel - model where coins are to be added
    * @param {function} creatorFunction - the function that will be invoked in order to create the model element.  This
    * will be used both for creating a local model instance that will then be used for creating the view node, and it
    * will also be used to create the elements that will be added to the model.  The function should take no parameters

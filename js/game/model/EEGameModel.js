@@ -15,12 +15,12 @@ define( function( require ) {
   /**
    * @constructor
    */
-  function ExpressionExchangeGameModel() {
+  function EEGameModel() {
 
     PropertySet.call( this, {} );
   }
 
-  return inherit( PropertySet, ExpressionExchangeGameModel, {
+  return inherit( PropertySet, EEGameModel, {
 
     //TODO Called by the animation loop. Optional, so if your model has no animation, please delete this.
     step: function( dt ) {

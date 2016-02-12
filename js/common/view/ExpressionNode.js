@@ -10,7 +10,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var ExpressionExchangeSharedConstants = require( 'EXPRESSION_EXCHANGE/common/ExpressionExchangeSharedConstants' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Path = require( 'SCENERY/nodes/Path' );
@@ -19,7 +19,7 @@ define( function( require ) {
   var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var BACKGROUND_COLOR = ExpressionExchangeSharedConstants.EXPRESSION_BACKGROUND_COLOR;
+  var BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;
   var INSET = 10; // in screen coordinates
   var NUM_ZIG_ZAGS = 10;
   var ZIG_ZAG_X_SIZE = 2; // empirically determined

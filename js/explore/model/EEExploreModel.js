@@ -9,7 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var ExpressionExchangeSharedConstants = require( 'EXPRESSION_EXCHANGE/common/ExpressionExchangeSharedConstants' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
   var ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -34,7 +34,7 @@ define( function( require ) {
   /**
    * @constructor
    */
-  function ExpressionExchangeExploreModel() {
+  function EEExploreModel() {
 
     PropertySet.call( this, {
       viewMode: ViewMode.COINS, // @public
@@ -105,7 +105,7 @@ define( function( require ) {
     } );
   }
 
-  return inherit( PropertySet, ExpressionExchangeExploreModel, {
+  return inherit( PropertySet, EEExploreModel, {
 
     step: function( dt ) {
 
@@ -219,7 +219,7 @@ define( function( require ) {
       }
       else {
         // multiplier in test below was empirically determined
-        return distanceBetweenCenters < ExpressionExchangeSharedConstants.TERM_COMBINE_RADIUS * 1.15;
+        return distanceBetweenCenters < EESharedConstants.TERM_COMBINE_RADIUS * 1.15;
       }
     },
 
@@ -240,9 +240,9 @@ define( function( require ) {
       else {
 
         // tweak alert - the multipliers in this clause were empirically determined
-        return ( Math.abs( positionDifferenceVector.x ) > ExpressionExchangeSharedConstants.TERM_COMBINE_RADIUS &&
-                 Math.abs( positionDifferenceVector.x ) < ExpressionExchangeSharedConstants.TERM_COMBINE_RADIUS * 3 &&
-                 Math.abs( positionDifferenceVector.y ) < ExpressionExchangeSharedConstants.TERM_COMBINE_RADIUS / 2 );
+        return ( Math.abs( positionDifferenceVector.x ) > EESharedConstants.TERM_COMBINE_RADIUS &&
+                 Math.abs( positionDifferenceVector.x ) < EESharedConstants.TERM_COMBINE_RADIUS * 3 &&
+                 Math.abs( positionDifferenceVector.y ) < EESharedConstants.TERM_COMBINE_RADIUS / 2 );
       }
     },
 

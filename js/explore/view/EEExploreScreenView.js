@@ -52,10 +52,10 @@ define( function( require ) {
   var INSET = 10; // inset from edges of layout bounds, in screen coords
 
   /**
-   * @param {ExpressionExchangeExploreModel} exploreModel
+   * @param {EEExploreModel} exploreModel
    * @constructor
    */
-  function ExpressionExchangeExploreScreenView( exploreModel ) {
+  function EEExploreScreenView( exploreModel ) {
 
     ScreenView.call( this );
 
@@ -268,7 +268,7 @@ define( function( require ) {
 
   }
 
-  return inherit( ScreenView, ExpressionExchangeExploreScreenView, {
+  return inherit( ScreenView, EEExploreScreenView, {
 
     //TODO Called by the animation loop. Optional, so if your view has no animation, please delete this.
     step: function( dt ) {

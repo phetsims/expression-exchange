@@ -14,10 +14,10 @@ define( function( require ) {
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
 
   /**
-   * @param {ExpressionExchangeGameModel} gameModel
+   * @param {EEGameModel} gameModel
    * @constructor
    */
-  function ExpressionExchangeGameScreenView( gameModel ) {
+  function EEGameScreenView( gameModel ) {
 
     ScreenView.call( this );
 
@@ -32,7 +32,7 @@ define( function( require ) {
     this.addChild( resetAllButton );
   }
 
-  return inherit( ScreenView, ExpressionExchangeGameScreenView, {
+  return inherit( ScreenView, EEGameScreenView, {
 
     //TODO Called by the animation loop. Optional, so if your view has no animation, please delete this.
     step: function( dt ) {
