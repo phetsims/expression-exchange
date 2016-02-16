@@ -21,6 +21,9 @@ define( function( require ) {
   // constants
   var BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;
   var INSET = 10; // in screen coordinates
+
+  /*
+  Note: zig zag line stuff commented out to avoid lint errors until used
   var NUM_ZIG_ZAGS = 10;
   var ZIG_ZAG_X_SIZE = 2; // empirically determined
 
@@ -39,6 +42,7 @@ define( function( require ) {
     } );
     shape.lineTo( x2, y2 );
   }
+  */
 
   /**
    * @param {Expression} expression - model of an expression
