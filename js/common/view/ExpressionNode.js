@@ -73,17 +73,7 @@ define( function( require ) {
           return ct1.position.x - ct2.position.x;
         } );
 
-        var height = 0;
-        coinTermsLeftToRight.forEach( function( coinTerm, index ) {
-          height = Math.max( height, coinTerm.relativeViewBounds.height + 2 * INSET );
-        } );
-
-        var leftEdge = coinTermsLeftToRight[ 0 ].position.x + coinTermsLeftToRight[ 0 ].relativeViewBounds.minX - INSET;
-        var rightmostCoinTerm = coinTermsLeftToRight[ coinTermsLeftToRight.length - 1 ];
-        var rightEdge = rightmostCoinTerm.position.x + rightmostCoinTerm.relativeViewBounds.maxX + INSET;
-        var width = rightEdge - leftEdge;
-
-        backgroundShape = new Shape.rect( 0, 0, width, height );
+        backgroundShape = new Shape.rect( 0, 0, expression.width, expression.height );
         if ( backgroundPath === null ) {
           backgroundPath = new Path( backgroundShape, { fill: BACKGROUND_COLOR } );
           self.addChild( backgroundPath );
@@ -94,8 +84,8 @@ define( function( require ) {
         }
 
         // position the path node
-        backgroundPath.left = leftEdge;
-        backgroundPath.centerY = expression.coinTerms.get( 0 ).position.y;
+        backgroundPath.left = expression.upperLeftCorner.x;
+        backgroundPath.top = expression.upperLeftCorner.y;
 
         // add the plus signs
         for ( var i = 0; i < coinTermsLeftToRight.length - 1; i++ ) {
