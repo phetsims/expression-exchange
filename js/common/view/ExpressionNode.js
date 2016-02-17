@@ -15,6 +15,7 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var Path = require( 'SCENERY/nodes/Path' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var Property = require( 'AXON/Property' );
   var Shape = require( 'KITE/Shape' );
   var Text = require( 'SCENERY/nodes/Text' );
 
@@ -62,7 +63,7 @@ define( function( require ) {
     var backgroundPath = null;
 
     // function to update the background and the plus symbols
-    function update() {
+    function updateShapeAndPlusSymbols() {
 
       // plus symbols are recreated each time to keep things simple
       plusSymbolsLayer.removeAllChildren();
@@ -83,17 +84,14 @@ define( function( require ) {
           backgroundPath.shape = backgroundShape;
         }
 
-        // position the path node
-        backgroundPath.left = expression.upperLeftCorner.x;
-        backgroundPath.top = expression.upperLeftCorner.y;
-
         // add the plus signs
         for ( var i = 0; i < coinTermsLeftToRight.length - 1; i++ ) {
           var plusSign = new Text( '+', {
             font: new PhetFont( 32 ),
-            centerY: coinTermsLeftToRight[ i ].position.y,
+            centerY: coinTermsLeftToRight[ i ].position.y - expression.upperLeftCorner.y,
             centerX: ( coinTermsLeftToRight[ i ].position.x + coinTermsLeftToRight[ i ].relativeViewBounds.maxX +
-                       coinTermsLeftToRight[ i + 1 ].position.x + coinTermsLeftToRight[ i + 1 ].relativeViewBounds.minX ) / 2
+                       coinTermsLeftToRight[ i + 1 ].position.x +
+                       coinTermsLeftToRight[ i + 1 ].relativeViewBounds.minX ) / 2 - expression.upperLeftCorner.x
           } );
           plusSymbolsLayer.addChild( plusSign );
         }
@@ -107,12 +105,21 @@ define( function( require ) {
       }
     }
 
+    // update the shape if the height or width change
+    Property.multilink( [ expression.widthProperty, expression.heightProperty ], updateShapeAndPlusSymbols );
+
+    // update the position when the expression moves
+    expression.upperLeftCornerProperty.link( function( upperLeftCorner ){
+      self.left = upperLeftCorner.x;
+      self.top = upperLeftCorner.y;
+    } );
+
     // update whenever coin terms are added or removed
-    expression.coinTerms.addItemAddedListener( update );
-    expression.coinTerms.addItemRemovedListener( update );
+    expression.coinTerms.addItemAddedListener( updateShapeAndPlusSymbols );
+    expression.coinTerms.addItemRemovedListener( updateShapeAndPlusSymbols );
 
     // do the initial update
-    update();
+    updateShapeAndPlusSymbols();
   }
 
   return inherit( Node, ExpressionNode );

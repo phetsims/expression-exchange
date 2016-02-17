@@ -59,6 +59,7 @@ define( function( require ) {
   function EEExploreScreenView( exploreModel ) {
 
     ScreenView.call( this );
+    var self = this;
 
     // create the readout that will display the total accumulated cents
     var totalCentsText = new Text( '', { font: new PhetFont( { size: 14 } ) } );
@@ -250,7 +251,7 @@ define( function( require ) {
       var expressionNode = new ExpressionNode( addedExpression, exploreModel.viewModeProperty );
       expressionLayer.addChild( expressionNode );
 
-      var expressionOverlayNode = new ExpressionOverlayNode( addedExpression );
+      var expressionOverlayNode = new ExpressionOverlayNode( addedExpression, self.layoutBounds );
       expressionOverlayLayer.addChild( expressionOverlayNode );
 
       // set up a listener to remove these nodes when the corresponding expression is removed from the model

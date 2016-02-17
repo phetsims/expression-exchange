@@ -26,9 +26,10 @@ define( function( require ) {
   function Expression( anchorCoinTerm, floatingCoinTerm ) {
 
     PropertySet.call( this, {
-      upperLeftCorner: Vector2.ZERO,
-      width: 0,
-      height: 0
+      upperLeftCorner: Vector2.ZERO, // @public (read only)
+      width: 0, // @public (read only)
+      height: 0, // @public (read only)
+      userControlled: false // @public
     } );
 
     var self = this;
@@ -78,6 +79,8 @@ define( function( require ) {
         self.coinTerms.add( floatingCoinTerm );
       } )
       .start();
+
+    // set up a listener to the position and move the coins as it changes
   }
 
   return inherit( PropertySet, Expression, {
@@ -88,6 +91,20 @@ define( function( require ) {
      */
     addCoinTerm: function( coinTerm ) {
       // TODO: implement
+    },
+
+    /**
+     * move, or translate, by the specified amounts
+     */
+    translate: function( deltaX, deltaY ){
+
+      // move the coin terms
+      this.coinTerms.forEach( function( coinTerm ){
+        coinTerm.position = coinTerm.position.plusXY( deltaX, deltaY );
+      } );
+
+      // move the outline shape
+      this.upperLeftCorner = this.upperLeftCorner.plusXY( deltaX, deltaY );
     }
   } );
 } );
