@@ -20,6 +20,7 @@ define( function( require ) {
   var Dimension2 = require( 'DOT/Dimension2' );
   var ExpressionHintNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionHintNode' );
   var ExpressionNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionNode' );
+  var ExpressionOverlayNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionOverlayNode' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -120,10 +121,10 @@ define( function( require ) {
     this.addChild( showVariableValuesCheckbox );
 
     // control whether the coin values or variable values checkbox is visible
-    exploreModel.viewModeProperty.link( function( viewMode ){
+    exploreModel.viewModeProperty.link( function( viewMode ) {
       showCoinValuesCheckbox.visible = viewMode === ViewMode.COINS;
       showVariableValuesCheckbox.visible = viewMode === ViewMode.VARIABLES;
-    });
+    } );
 
     // add the checkbox that controls whether all coefficients (including 1) are shown
     var showAllCoefficientsCheckbox = new CheckBox(
@@ -140,21 +141,25 @@ define( function( require ) {
     // add the carousel that will contain the various coins and expressions
     var carousel = new Carousel(
       [
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.X( exploreModel.xTermValueProperty ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.Y( exploreModel.yTermValueProperty ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.Z( exploreModel.zTermValueProperty ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.X( exploreModel.xTermValueProperty, 2 ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.Y( exploreModel.xTermValueProperty, 3 ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.XTimesY(
-          exploreModel.xTermValueProperty,
-          exploreModel.yTermValueProperty
-        ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.XSquared( exploreModel.xTermValueProperty ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.YSquared( exploreModel.yTermValueProperty ); } ),
-        new CoinTermCreatorNode( exploreModel, function(){ return new CoinTerm.XSquaredTimesYSquared(
-          exploreModel.xTermValueProperty,
-          exploreModel.yTermValueProperty
-        ); } )
+        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.X( exploreModel.xTermValueProperty ); } ),
+        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.Y( exploreModel.yTermValueProperty ); } ),
+        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.Z( exploreModel.zTermValueProperty ); } ),
+        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.X( exploreModel.xTermValueProperty, 2 ); } ),
+        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.Y( exploreModel.xTermValueProperty, 3 ); } ),
+        new CoinTermCreatorNode( exploreModel, function() {
+          return new CoinTerm.XTimesY(
+            exploreModel.xTermValueProperty,
+            exploreModel.yTermValueProperty
+          );
+        } ),
+        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.XSquared( exploreModel.xTermValueProperty ); } ),
+        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.YSquared( exploreModel.yTermValueProperty ); } ),
+        new CoinTermCreatorNode( exploreModel, function() {
+          return new CoinTerm.XSquaredTimesYSquared(
+            exploreModel.xTermValueProperty,
+            exploreModel.yTermValueProperty
+          );
+        } )
       ],
       {
         centerX: this.layoutBounds.width / 2,
@@ -186,6 +191,10 @@ define( function( require ) {
     var coinLayer = new Node();
     this.addChild( coinLayer );
 
+    // add the node that will act as the layer where the expression overlays will come and go
+    var expressionOverlayLayer = new Node();
+    this.addChild( expressionOverlayLayer );
+
     // add the 'Reset All' button
     var resetAllButton = new ResetAllButton( {
       listener: function() {
@@ -214,8 +223,8 @@ define( function( require ) {
 
       // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
       // from the model.
-      addedCoinTerm.userControlledProperty.onValue( false, function(){
-        if ( coinNode.bounds.intersectsBounds( carousel.bounds ) ){
+      addedCoinTerm.userControlledProperty.onValue( false, function() {
+        if ( coinNode.bounds.intersectsBounds( carousel.bounds ) ) {
           exploreModel.removeCoinTerm( addedCoinTerm );
         }
       } );
@@ -235,23 +244,27 @@ define( function( require ) {
 
     } );
 
-    // add and remove expressions as they come and go
-    exploreModel.expressions.addItemAddedListener( function( addedExpression ){
+    // add and remove expressions and expression overlays as they come and go
+    exploreModel.expressions.addItemAddedListener( function( addedExpression ) {
 
       var expressionNode = new ExpressionNode( addedExpression, exploreModel.viewModeProperty );
       expressionLayer.addChild( expressionNode );
 
-      // set up a listener to remove the expression node when the corresponding expression is removed from the model
+      var expressionOverlayNode = new ExpressionOverlayNode( addedExpression );
+      expressionOverlayLayer.addChild( expressionOverlayNode );
+
+      // set up a listener to remove these nodes when the corresponding expression is removed from the model
       exploreModel.expressions.addItemRemovedListener( function removalListener( removedExpression ) {
         if ( removedExpression === addedExpression ) {
           expressionLayer.removeChild( expressionNode );
+          expressionOverlayLayer.removeChild( expressionOverlayNode );
           exploreModel.expressions.removeItemRemovedListener( removalListener );
         }
       } );
     } );
 
     // add and remove expression hints as they come and go
-    exploreModel.expressionHints.addItemAddedListener( function( addedExpressionHint ){
+    exploreModel.expressionHints.addItemAddedListener( function( addedExpressionHint ) {
 
       var expressionHintNode = new ExpressionHintNode( addedExpressionHint, exploreModel.viewModeProperty );
       expressionLayer.addChild( expressionHintNode );
