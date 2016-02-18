@@ -17,7 +17,7 @@ define( function( require ) {
   var PropertySet = require( 'AXON/PropertySet' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
 
-  // utility function for determining the coin term in a set that is closest to the provided position
+  // utility function for determining which coin term in a set that is closest to the provided position
   function getClosestCoinTermToPosition( position, coinTerms ) {
     assert && assert( coinTerms.length > 0, 'coinTerms must be an array with at least one coin' );
     var distanceToClosestCoin = Number.POSITIVE_INFINITY;
