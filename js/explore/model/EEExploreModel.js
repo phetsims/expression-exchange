@@ -120,6 +120,11 @@ define( function( require ) {
       var neededExpressionHints = [];
       userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
 
+        // TODO: temp
+        self.expressions.forEach( function( expression ){
+          console.log( 'expression.getCoinTermJoinZoneOverlap( userControlledCoinTerm = ' + expression.getCoinTermJoinZoneOverlap( userControlledCoinTerm ) );
+        } );
+
         // overlap trumps being in the expression combine zone, so check that first
         var overlappingCoinTerms = self.getOverlappingCoinTerms( userControlledCoinTerm );
         if ( overlappingCoinTerms.length > 0 ) {

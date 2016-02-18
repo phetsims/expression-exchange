@@ -10,6 +10,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var Bounds2 = require( 'DOT/Bounds2' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
@@ -38,6 +39,7 @@ define( function( require ) {
     this.coinTerms = new ObservableArray();
     this.coinTerms.add( anchorCoinTerm );
 
+    // TODO: there will need to be methods that update width and height based on adding and removing of coin terms
     // set the boundaries of the expression and set up the destination for the floating coin term
     var xDestination;
     this.width = anchorCoinTerm.relativeViewBounds.width + floatingCoinTerm.relativeViewBounds.width + 2 * INSET +
@@ -65,6 +67,14 @@ define( function( require ) {
                      floatingCoinTerm.relativeViewBounds.maxX;
     }
 
+    // @private - a rectangle used to decide if coin terms or other expressions are in a position to join this expression
+    this.joinZone = new Bounds2(
+      this.upperLeftCorner.x - this.height,
+      this.upperLeftCorner.y,
+      this.upperLeftCorner.x + this.width + this.height,
+      this.upperLeftCorner.y + this.height
+    );
+
     // TODO: I don't think this would property handle a reset that occurs during the animation, so I'll need to add that.
     // animate the floating coin term to its destination within the expression
     var destination = new Vector2( xDestination, anchorCoinTerm.position.y );
@@ -79,8 +89,6 @@ define( function( require ) {
         self.coinTerms.add( floatingCoinTerm );
       } )
       .start();
-
-    // set up a listener to the position and move the coins as it changes
   }
 
   return inherit( PropertySet, Expression, {
@@ -88,13 +96,15 @@ define( function( require ) {
     /**
      * add the specified coin
      * @param {CoinTerm} coinTerm
+     * @public
      */
     addCoinTerm: function( coinTerm ) {
       // TODO: implement
     },
 
     /**
-     * move, or translate, by the specified amounts
+     * move, a.k.a. translate, by the specified amounts
+     * @public
      */
     translate: function( deltaX, deltaY ){
 
@@ -105,6 +115,21 @@ define( function( require ) {
 
       // move the outline shape
       this.upperLeftCorner = this.upperLeftCorner.plusXY( deltaX, deltaY );
+
+      // update the join zone
+      this.joinZone.shift( deltaX, deltaY );
+    },
+
+    /**
+     * get the amount of overlap between the provided coin term's bounds and this expression's "join zone"
+     * @param coinTerm
+     */
+    getCoinTermJoinZoneOverlap: function( coinTerm ){
+      var coinTermBounds = coinTerm.relativeViewBounds.copy();
+      coinTermBounds.shift( coinTerm.position.x, coinTerm.position.y );
+      var xOverlap = Math.max( 0, Math.min( coinTermBounds.maxX, this.joinZone.maxX ) - Math.max( coinTermBounds.minX, this.joinZone.minX ) );
+      var yOverlap = Math.max( 0, Math.min( coinTermBounds.maxY, this.joinZone.maxY ) - Math.max( coinTermBounds.minY, this.joinZone.minY ) );
+      return xOverlap * yOverlap;
     }
   } );
 } );
