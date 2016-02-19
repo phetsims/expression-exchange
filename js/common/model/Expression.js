@@ -30,7 +30,9 @@ define( function( require ) {
       upperLeftCorner: Vector2.ZERO, // @public (read only)
       width: 0, // @public (read only)
       height: 0, // @public (read only)
-      userControlled: false // @public
+      userControlled: false, // @public
+      leftHintActive: false, // @public (read only) indicates whether the hint on the left side should be visible
+      rightHintActive: false // @public (read only) indicates whether the hint on the right side should be visible
     } );
 
     var self = this;
