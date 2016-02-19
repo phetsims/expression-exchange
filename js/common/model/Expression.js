@@ -39,12 +39,27 @@ define( function( require ) {
 
     var self = this;
 
+    // TODO: Temp debug code
+    this.rightHintActiveProperty.link( function( active ){
+      console.log( 'R active = ' + active );
+    } );
+    this.leftHintActiveProperty.link( function( active ){
+      console.log( 'L active = ' + active );
+    } );
+    this.rightHintWidthProperty.link( function( width ){
+      console.log( 'right hint width = ' + width );
+    } );
+    this.leftHintWidthProperty.link( function( width ){
+      console.log( 'left hint width = ' + width );
+    } );
+
     // @public, read and listen only, items should be added and removed via methods
     this.coinTerms = new ObservableArray();
     this.coinTerms.add( anchorCoinTerm );
 
-    // @private, tracks coin terms that are hovering over this expression but are being controlled the the user so are
-    // not yet part of the expression.  This is used to activate and size the hints.
+    // @private, tracks coin terms that are hovering over this expression but are being controlled by the user so are
+    // not yet part of the expression.  This is used to activate and size the hints.  Items should be added and removed
+    // via methods.
     this.hoveringCoinTerms = [];
 
     // TODO: there will need to be methods that update width and height based on adding and removing of coin terms
@@ -102,6 +117,51 @@ define( function( require ) {
   return inherit( PropertySet, Expression, {
 
     /**
+     * step this expression in time, which will cause it to make any updates in its state that are needed
+     * @param dt
+     */
+    step: function( dt ){
+
+      var self = this;
+      
+      // determine the needed height and which hints should be active
+      var tallestCoinTermHeight = 0;
+      this.coinTerms.forEach( function( residentCoinTerm ){
+        tallestCoinTermHeight = Math.max( tallestCoinTermHeight, residentCoinTerm.relativeViewBounds.height );
+      } );
+      var rightHintActive = false;
+      var rightHintMaxCoinWidth = 0;
+      var leftHintActive = false;
+      var leftHintMaxCoinWidth = 0;
+      this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ){
+        tallestCoinTermHeight = Math.max( tallestCoinTermHeight, hoveringCoinTerm.relativeViewBounds.height );
+        if ( hoveringCoinTerm.position.x > self.upperLeftCorner.x + self.width / 2 ){
+          // coin is over right half of the expression
+          rightHintActive = true;
+          rightHintMaxCoinWidth = Math.max( rightHintMaxCoinWidth, hoveringCoinTerm.relativeViewBounds.width );
+        }
+        else{
+          leftHintActive = true;
+          leftHintMaxCoinWidth = Math.max( leftHintMaxCoinWidth, hoveringCoinTerm.relativeViewBounds.width );
+        }
+      } );
+
+      // update the properties that control the appearance of the hints
+      this.rightHintActive = rightHintActive;
+      this.rightHintWidth = rightHintActive ? rightHintMaxCoinWidth + 2 * INSET : 0;
+      this.leftHintActive = leftHintActive;
+      this.leftHintWidth = leftHintActive ? leftHintMaxCoinWidth + 2 * INSET : 0;
+
+      // update the overall height of the expression if needed
+      var neededHeight = tallestCoinTermHeight + 2 * INSET;
+      if ( this.height !== neededHeight ){
+        this.upperLeftCorner = this.upperLeftCorner.minusXY( 0, ( neededHeight - this.height ) / 2 );
+        this.height = tallestCoinTermHeight + 2 * INSET;
+      }
+
+    },
+
+    /**
      * add the specified coin
      * @param {CoinTerm} coinTerm
      * @public
@@ -138,6 +198,40 @@ define( function( require ) {
       var xOverlap = Math.max( 0, Math.min( coinTermBounds.maxX, this.joinZone.maxX ) - Math.max( coinTermBounds.minX, this.joinZone.minX ) );
       var yOverlap = Math.max( 0, Math.min( coinTermBounds.maxY, this.joinZone.maxY ) - Math.max( coinTermBounds.minY, this.joinZone.minY ) );
       return xOverlap * yOverlap;
+    },
+
+    /**
+     * Add a coin term to the list of those that are hovering over this expression.  This is a no-op if the coin term is
+     * already on the list.
+     * @param {CoinTerm} coinTerm
+     * @public
+     */
+    addHoveringCoinTerm: function( coinTerm ){
+      if ( this.hoveringCoinTerms.indexOf( coinTerm ) === -1 ){
+        this.hoveringCoinTerms.push( coinTerm );
+      }
+    },
+
+    /**
+     * Remove a coin term from the list of those that are hovering over this expression.  This is a no-op if the coin
+     * term is not on the list.
+     * @param {CoinTerm} coinTerm
+     * @public
+     */
+    removeHoveringCoinTerm: function( coinTerm ){
+      var index = this.hoveringCoinTerms.indexOf( coinTerm );
+      if ( index !== -1 ){
+        this.hoveringCoinTerms.splice( index, 1 );
+      }
+    },
+
+    /**
+     * returns true if the given coin term is on the list of those hovering over the expression
+     * @param {CoinTerm} coinTerm
+     * @returns {boolean}
+     */
+    isCoinTermHovering: function( coinTerm ){
+      return this.hoveringCoinTerms.indexOf( coinTerm ) > -1;
     }
   } );
 } );

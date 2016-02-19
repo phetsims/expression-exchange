@@ -12,5 +12,9 @@ It is a model object with a position, a front and back image to be used for the 
 may be as simple as 'x' or as complex as 'x squared times y squared', and several other attributes that define its
 behavior and appearance.
 
-The CoinTerm model element tracks it's bounds in the view relative to its position.  This break strict MVC practices,
+The CoinTerm model element tracks its bounds in the view relative to its position.  This break strict MVC practices,
 but worked well for the needs of the sim.
+
+A decision was made that if a coin term overlaps multiple expressions, on the one with the most overlap should have its
+hints activated.  This means that the main model has to compare them and decide which one to activate, which means that
+this decision must be centralized in the main model rather than leaving it to the coin terms or expressions.

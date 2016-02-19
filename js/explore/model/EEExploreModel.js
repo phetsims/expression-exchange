@@ -94,7 +94,7 @@ define( function( require ) {
             self.expressions.add( new Expression( coinToCombineWith, addedCoinTerm ) );
           }
         }
-        else{
+        else {
           // there were no overlapping coin terms, so check if close enough to form an expression
           var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
           if ( joinableFreeCoinTerm ) {
@@ -111,38 +111,49 @@ define( function( require ) {
 
       var self = this;
 
-      // get a list of all user controlled coins (max of one coin on mouse-based systems, more on touch-based)
+      // get a list of all user controlled coins (max of one coin on mouse-based systems, any number on touch-based)
       var userControlledCoinTerms = _.filter( this.coinTerms.getArray(), function( coin ) { return coin.userControlled; } );
 
-      // Check each user-controlled coin to see if it's in a position to combine with another coin or become part of an
-      // expression.
+      // check each user-controlled coin to see if it's in a position to combine with an expression or another coin term
       var coinTermsThatCouldCombine = [];
       var neededExpressionHints = [];
       userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
 
-        // TODO: temp
-        self.expressions.forEach( function( expression ){
-          console.log( 'expression.getCoinTermJoinZoneOverlap( userControlledCoinTerm = ' + expression.getCoinTermJoinZoneOverlap( userControlledCoinTerm ) );
+        var mostOverlappingExpression = self.getMostOverlappingExpression( userControlledCoinTerm );
+
+        // update hover info for each expression with respect to this coin term
+        self.expressions.forEach( function( expression ) {
+          if ( expression === mostOverlappingExpression ) {
+            expression.addHoveringCoinTerm( userControlledCoinTerm );
+          }
+          else {
+            expression.removeHoveringCoinTerm( userControlledCoinTerm );
+          }
         } );
 
-        // overlap trumps being in the expression combine zone, so check that first
-        var overlappingCoinTerms = self.getOverlappingCoinTerms( userControlledCoinTerm );
-        if ( overlappingCoinTerms.length > 0 ) {
-          coinTermsThatCouldCombine.push( userControlledCoinTerm );
-          coinTermsThatCouldCombine.push( getClosestCoinTermToPosition( userControlledCoinTerm.position, overlappingCoinTerms ) );
-        }
+        if ( !mostOverlappingExpression ) { // not overlapping any expressions, check overlap with other coin terms
 
-        if ( overlappingCoinTerms.length === 0 ) {
+          // TODO: This portion of code should be revised to be more similar to the clause above, where there is a
+          // method to get the most overlapping, and overlap is determined using the view bounds.
+          var overlappingCoinTerms = self.getOverlappingCoinTerms( userControlledCoinTerm );
+          if ( overlappingCoinTerms.length > 0 ) {
+            coinTermsThatCouldCombine.push( userControlledCoinTerm );
+            coinTermsThatCouldCombine.push( getClosestCoinTermToPosition( userControlledCoinTerm.position, overlappingCoinTerms ) );
+          }
 
-          // The current user-controlled coin term is not overlapping any coins, so now check if it is in the
-          // 'expression combine zone' of any other single coins.
-          var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( userControlledCoinTerm );
-          if ( joinableFreeCoinTerm ) {
+          if ( overlappingCoinTerms.length === 0 ) {
 
-            // there is such a coin term, add the pair to the list
-            neededExpressionHints.push( new ExpressionHint( joinableFreeCoinTerm, userControlledCoinTerm ) );
+            // The current user-controlled coin term is not overlapping any coins, so now check if it is in the
+            // 'expression combine zone' of any other single coins.
+            var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( userControlledCoinTerm );
+            if ( joinableFreeCoinTerm ) {
+
+              // there is such a coin term, add the pair to the list
+              neededExpressionHints.push( new ExpressionHint( joinableFreeCoinTerm, userControlledCoinTerm ) );
+            }
           }
         }
+
       } );
 
       // go through all coin terms and set the state of their combine halos
@@ -161,20 +172,20 @@ define( function( require ) {
               matchFound = true;
             }
           } );
-          if ( !matchFound ){
+          if ( !matchFound ) {
             self.expressionHints.remove( existingExpressionHint );
           }
         } );
 
         // add any needed expression hints that are not yet on the list
-        neededExpressionHints.forEach( function( neededExpressionHint ){
+        neededExpressionHints.forEach( function( neededExpressionHint ) {
           var matchFound = false;
-          self.expressionHints.forEach( function( existingExpressionHint ){
-            if ( existingExpressionHint.equals( neededExpressionHint )){
+          self.expressionHints.forEach( function( existingExpressionHint ) {
+            if ( existingExpressionHint.equals( neededExpressionHint ) ) {
               matchFound = true;
             }
           } );
-          if ( !matchFound ){
+          if ( !matchFound ) {
             self.expressionHints.add( neededExpressionHint );
           }
         } );
@@ -182,6 +193,11 @@ define( function( require ) {
       else {
         this.expressionHints.clear();
       }
+
+      // step the expressions
+      this.expressions.forEach( function( expression ) {
+        expression.step( dt );
+      } );
     },
 
     // @private - returns the first hint encountered that contains the provided coin term
@@ -204,6 +220,22 @@ define( function( require ) {
     // @public TODO this will likely be made more fancy at some point, i.e. will include some animation
     removeCoinTerm: function( coinTerm ) {
       this.coinTerms.remove( coinTerm );
+    },
+
+    /**
+     * get the expression that overlaps the most with the provided coin term, null of no overlap exists
+     * @param coinTerm
+     * @private
+     */
+    getMostOverlappingExpression: function( coinTerm ) {
+      var maxOverlap = 0;
+      var mostOverlappingExpression = null;
+      this.expressions.forEach( function( expression ) {
+        if ( expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
+          mostOverlappingExpression = expression;
+        }
+      } );
+      return mostOverlappingExpression;
     },
 
     // @public

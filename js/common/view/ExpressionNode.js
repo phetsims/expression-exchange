@@ -21,7 +21,6 @@ define( function( require ) {
 
   // constants
   var BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;
-  var INSET = 10; // in screen coordinates
 
   /*
   Note: zig zag line stuff commented out to avoid lint errors until used
