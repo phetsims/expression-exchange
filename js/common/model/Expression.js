@@ -47,7 +47,6 @@ define( function( require ) {
     // not yet part of the expression.  This is used to activate and size the hints.
     this.hoveringCoinTerms = [];
 
-
     // TODO: there will need to be methods that update width and height based on adding and removing of coin terms
     // set the boundaries of the expression and set up the destination for the floating coin term
     var xDestination;
