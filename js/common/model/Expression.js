@@ -31,8 +31,10 @@ define( function( require ) {
       width: 0, // @public (read only)
       height: 0, // @public (read only)
       userControlled: false, // @public
-      leftHintActive: false, // @public (read only) indicates whether the hint on the left side should be visible
-      rightHintActive: false // @public (read only) indicates whether the hint on the right side should be visible
+      leftHintActive: false, // @public (read only) - indicates whether the hint on the left side should be visible
+      leftHintWidth: 0, // @public (read only) - width of the left hint
+      rightHintActive: false, // @public (read only) - indicates whether the hint on the right side should be visible
+      rightHintWidth: 0 // @public (read only) - width of the right hint
     } );
 
     var self = this;
@@ -40,6 +42,11 @@ define( function( require ) {
     // @public, read and listen only, items should be added and removed via methods
     this.coinTerms = new ObservableArray();
     this.coinTerms.add( anchorCoinTerm );
+
+    // @private, tracks coin terms that are hovering over this expression but are being controlled the the user so are
+    // not yet part of the expression.  This is used to activate and size the hints.
+    this.hoveringCoinTerms = [];
+
 
     // TODO: there will need to be methods that update width and height based on adding and removing of coin terms
     // set the boundaries of the expression and set up the destination for the floating coin term
