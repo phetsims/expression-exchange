@@ -39,20 +39,6 @@ define( function( require ) {
 
     var self = this;
 
-    // TODO: Temp debug code
-    this.rightHintActiveProperty.link( function( active ){
-      console.log( 'R active = ' + active );
-    } );
-    this.leftHintActiveProperty.link( function( active ){
-      console.log( 'L active = ' + active );
-    } );
-    this.rightHintWidthProperty.link( function( width ){
-      console.log( 'right hint width = ' + width );
-    } );
-    this.leftHintWidthProperty.link( function( width ){
-      console.log( 'left hint width = ' + width );
-    } );
-
     // @public, read and listen only, items should be added and removed via methods
     this.coinTerms = new ObservableArray();
     this.coinTerms.add( anchorCoinTerm );
@@ -146,11 +132,17 @@ define( function( require ) {
         }
       } );
 
-      // update the properties that control the appearance of the hints
+      // update the hint states
       this.rightHintActive = rightHintActive;
-      this.rightHintWidth = rightHintActive ? rightHintMaxCoinWidth + 2 * INSET : 0;
       this.leftHintActive = leftHintActive;
-      this.leftHintWidth = leftHintActive ? leftHintMaxCoinWidth + 2 * INSET : 0;
+
+      // to minimize redraws in the view, only update width when the hints are active
+      if ( this.rightHintActive ){
+        this.rightHintWidth = rightHintMaxCoinWidth + 2 * INSET;
+      }
+      if ( this.leftHintActive ){
+        this.leftHintWidth = leftHintMaxCoinWidth + 2 * INSET;
+      }
 
       // update the overall height of the expression if needed
       var neededHeight = tallestCoinTermHeight + 2 * INSET;
