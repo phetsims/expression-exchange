@@ -18,31 +18,34 @@ define( function( require ) {
   var Property = require( 'AXON/Property' );
   var Shape = require( 'KITE/Shape' );
   var Text = require( 'SCENERY/nodes/Text' );
+  var Vector2 = require( 'DOT/Vector2' );
 
   // constants
   var BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;
-
-  /*
-  Note: zig zag line stuff commented out to avoid lint errors until used
+  var DEFAULT_SHAPE = Shape.rect( 0, 0, 1, 1 ); // arbitrary initial shape
   var NUM_ZIG_ZAGS = 10;
-  var ZIG_ZAG_X_SIZE = 2; // empirically determined
+  var ZIG_ZAG_X_SIZE = 4; // empirically determined
 
-  // TODO: Need to consolidate this with duplicated function in ExpressionHintNode
-  // utility function for drawing a zig zag line on a shape between two endpoints
-  function addZigZagLine( shape, x1, y1, x2, y2, zigRightFirst ) {
+  // TODO: Need to consolidate this with duplicated function in ExpressionHintNode if that node is retained
+  // utility function for drawing a vertical zig zag line on a shape between two endpoints
+  function addVerticalZigZagLine( shape, x1, y1, x2, y2, zigRightFirst ) {
     assert && assert( x1 === x2, 'this function is not general enough to handle non-vertical zig-zag lines' );
-    shape.moveTo( x1, y1 );
-    var segmentYLength = ( y2 - y1 ) / NUM_ZIG_ZAGS;
+    var segmentYLength = ( y2 - y1 ) / ( NUM_ZIG_ZAGS - 1 ); // can be negative if line is headed upwards
+    var nextPoint = new Vector2( x1, y1 );
     _.times( NUM_ZIG_ZAGS - 1, function( index ) {
-      var zig = index % 2 === 0 ? ZIG_ZAG_X_SIZE : -ZIG_ZAG_X_SIZE;
-      if ( !zigRightFirst ) {
-        zig = -zig;
+      if ( index === 0 ){
+        // the first zig is half size so that the line stays centered around a straight line between the two points
+        nextPoint.x = nextPoint.x + ZIG_ZAG_X_SIZE / 2 * ( zigRightFirst ? 1 : -1 );
+        nextPoint.y = nextPoint.y + segmentYLength / 2;
       }
-      shape.lineTo( x1 + zig, y1 + ( index + 1 ) * segmentYLength );
+      else{
+        nextPoint.x = nextPoint.x + ( nextPoint.x > x1 ? -1 : 1 ) * ZIG_ZAG_X_SIZE;
+        nextPoint.y = nextPoint.y + segmentYLength;
+      }
+      shape.lineTo( nextPoint.x, nextPoint.y );
     } );
     shape.lineTo( x2, y2 );
   }
-  */
 
   /**
    * @param {Expression} expression - model of an expression
@@ -53,13 +56,14 @@ define( function( require ) {
     Node.call( this, { pickable: false } );
     var self = this;
 
+    // shape and path used to define and display the background
+    var backgroundShape = DEFAULT_SHAPE;
+    var backgroundPath = new Path( backgroundShape, { fill: BACKGROUND_COLOR } );
+    this.addChild( backgroundPath );
+
     // layer where the plus symbols go
     var plusSymbolsLayer = new Node();
     this.addChild( plusSymbolsLayer );
-
-    // shape and path used to define and display the background
-    var backgroundShape;
-    var backgroundPath = null;
 
     // function to update the background and the plus symbols
     function updateShapeAndPlusSymbols() {
@@ -73,15 +77,30 @@ define( function( require ) {
           return ct1.position.x - ct2.position.x;
         } );
 
-        backgroundShape = new Shape.rect( 0, 0, expression.width, expression.height );
-        if ( backgroundPath === null ) {
-          backgroundPath = new Path( backgroundShape, { fill: BACKGROUND_COLOR } );
-          self.addChild( backgroundPath );
-          plusSymbolsLayer.moveToFront();
+        backgroundShape = new Shape();
+        backgroundShape.moveTo( 0, 0 );
+        backgroundShape.lineTo( expression.width, 0 );
+
+        // if the hint is active, the edge is zig zagged
+        if ( expression.rightHintActive ) {
+          addVerticalZigZagLine( backgroundShape, expression.width, 0, expression.width, expression.height, true );
         }
         else {
-          backgroundPath.shape = backgroundShape;
+          backgroundShape.lineTo( expression.width, expression.height );
         }
+        backgroundShape.lineTo( 0, expression.height );
+
+        // zig zag on left side if hint is active
+        if ( expression.leftHintActive ) {
+          addVerticalZigZagLine( backgroundShape, 0, expression.height, 0, 0, true );
+        }
+        else {
+          backgroundShape.lineTo( 0, 0 );
+        }
+
+        backgroundShape.close();
+        backgroundPath.shape = null;
+        backgroundPath.shape = backgroundShape;
 
         // add the plus signs
         for ( var i = 0; i < coinTermsLeftToRight.length - 1; i++ ) {
@@ -104,11 +123,14 @@ define( function( require ) {
       }
     }
 
-    // update the shape if the height or width change
-    Property.multilink( [ expression.widthProperty, expression.heightProperty ], updateShapeAndPlusSymbols );
+    // update the shape if the height, width, or hint states change
+    Property.multilink(
+      [ expression.widthProperty, expression.heightProperty, expression.leftHintActiveProperty, expression.rightHintActiveProperty ],
+      updateShapeAndPlusSymbols
+    );
 
     // update the position when the expression moves
-    expression.upperLeftCornerProperty.link( function( upperLeftCorner ){
+    expression.upperLeftCornerProperty.link( function( upperLeftCorner ) {
       self.left = upperLeftCorner.x;
       self.top = upperLeftCorner.y;
     } );
