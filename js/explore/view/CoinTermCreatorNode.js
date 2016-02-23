@@ -52,46 +52,43 @@ define( function( require ) {
     assert && assert( coinNodeInputListeners.length === 1, 'unexpected listeners present on coin node' );
     coinNode.removeInputListener( coinNodeInputListeners[ 0 ] );
 
+    var parentScreenView = null; // needed for coordinate transforms
+    var createdCoinTerm;
     // add the listener that will allow the user to click on this node and create a new coin, then position it in the model
     this.addInputListener( new SimpleDragHandler( {
-
-      parentScreenView: null, // needed for coordinate transforms
-      movableShape: null,
 
       // allow moving a finger (on a touchscreen) dragged across this node to interact with it
       allowTouchSnag: true,
 
       start: function( event, trail ) {
-        var thisDragHandler = this;
-
         // find the parent screen if not already found by moving up the scene graph
-        if ( !this.parentScreenView ) {
+        if ( !parentScreenView ) {
           var testNode = self;
           while ( testNode !== null ) {
             if ( testNode instanceof ScreenView ) {
-              this.parentScreenView = testNode;
+              parentScreenView = testNode;
               break;
             }
             testNode = testNode.parents[ 0 ]; // move up the scene graph by one level
           }
-          assert && assert( this.parentScreenView, 'unable to find parent screen view' );
+          assert && assert( parentScreenView, 'unable to find parent screen view' );
         }
 
         // determine the initial position of the new element as a function of the event position and this node's bounds
-        var initialPosition = this.parentScreenView.globalToLocalPoint( event.pointer.point );
+        var initialPosition = parentScreenView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new model element
-        this.createdCoinTerm = creatorFunction();
-        this.createdCoinTerm.position = initialPosition;
-        this.createdCoinTerm.userControlled = true;
-        exploreModel.addCoinTerm( this.createdCoinTerm );
+        createdCoinTerm = creatorFunction();
+        createdCoinTerm.position = initialPosition;
+        createdCoinTerm.userControlled = true;
+        exploreModel.addCoinTerm( createdCoinTerm );
 
         // If the creation count is limited, adjust the value and monitor the created shape for if/when it is returned.
         if ( options.creationLimit < Number.POSITIVE_INFINITY ) {
           // Use an IIFE to keep a reference of the movable shape in a closure.
           (function() {
             createdCountProperty.value++;
-            var localRefToMovableShape = thisDragHandler.createdCoinTerm;
+            var localRefToMovableShape = createdCoinTerm;
             localRefToMovableShape.on( 'returnedToOrigin', function returnedToOriginListener() {
               if ( !localRefToMovableShape.userControlled ) {
                 // the shape has been returned to its origin, so decrement the created count
@@ -104,12 +101,12 @@ define( function( require ) {
       },
 
       translate: function( translationParams ) {
-        this.createdCoinTerm.position = this.createdCoinTerm.position.plus( translationParams.delta );
+        createdCoinTerm.position = createdCoinTerm.position.plus( translationParams.delta );
       },
 
       end: function( event, trail ) {
-        this.createdCoinTerm.userControlled = false;
-        this.createdCoinTerm = null;
+        createdCoinTerm.userControlled = false;
+        createdCoinTerm = null;
       }
     } ) );
   }
