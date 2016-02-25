@@ -189,7 +189,7 @@ define( function( require ) {
 
       // handler that moves the shape in model space
       translate: function( translationParams ) {
-        coinTerm.position = coinTerm.position.plus( translationParams.delta );
+        coinTerm.setPositionAndDestination( coinTerm.position.plus( translationParams.delta ) );
         return translationParams.position;
       },
 

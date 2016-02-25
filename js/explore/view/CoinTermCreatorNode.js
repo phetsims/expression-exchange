@@ -79,7 +79,7 @@ define( function( require ) {
 
         // create and add the new model element
         createdCoinTerm = creatorFunction();
-        createdCoinTerm.position = initialPosition;
+        createdCoinTerm.setPositionAndDestination( initialPosition );
         createdCoinTerm.userControlled = true;
         exploreModel.addCoinTerm( createdCoinTerm );
 
@@ -101,7 +101,7 @@ define( function( require ) {
       },
 
       translate: function( translationParams ) {
-        createdCoinTerm.position = createdCoinTerm.position.plus( translationParams.delta );
+        createdCoinTerm.setPositionAndDestination( createdCoinTerm.position.plus( translationParams.delta ) );
       },
 
       end: function( event, trail ) {

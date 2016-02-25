@@ -75,32 +75,44 @@ define( function( require ) {
       // TODO: Revisit this and verify that this doesn't leak memory
       // TODO: Work through this and see if it can be made more compact and readable (it's evolving a lot as it's being written)
 
-      // add a handler that will check for overlap upon release of a coin and, if found, will combine the coins
+      // Add a handler for when the coin term is released, which may add the coin to an expression or combine it with
+      // another coin term.
       addedCoinTerm.userControlledProperty.onValue( false, function() {
-        var overlappingCoinTerms = self.getOverlappingCoinTerms( addedCoinTerm );
 
-        if ( overlappingCoinTerms.length > 0 ) {
-          var coinToCombineWith = getClosestCoinTermToPosition( addedCoinTerm.position, overlappingCoinTerms );
-          if ( coinToCombineWith.termText === addedCoinTerm.termText ) {
+        // check first for overlap with expressions
+        var mostOverlappingExpression = self.getMostOverlappingExpression( addedCoinTerm );
+        if ( mostOverlappingExpression ){
+          mostOverlappingExpression.addCoinTerm( addedCoinTerm );
+        }
+        else{
+          // there was no overlap with expressions, check for overlap with coin terms
+          var overlappingCoinTerms = self.getOverlappingCoinTerms( addedCoinTerm );
 
-            // same type of coin, so combine them
-            addedCoinTerm.travelToDestination( coinToCombineWith.position );
-            addedCoinTerm.destinationReached.addListener( function() {
-              coinToCombineWith.combinedCount += addedCoinTerm.combinedCount;
-              self.removeCoinTerm( addedCoinTerm );
-            } );
+          if ( overlappingCoinTerms.length > 0 ) {
+            var coinToCombineWith = getClosestCoinTermToPosition( addedCoinTerm.position, overlappingCoinTerms );
+            if ( coinToCombineWith.termText === addedCoinTerm.termText ) {
+
+              // same type of coin, so combine them
+              addedCoinTerm.travelToDestination( coinToCombineWith.position );
+              addedCoinTerm.destinationReached.addListener( function() {
+                coinToCombineWith.combinedCount += addedCoinTerm.combinedCount;
+                self.removeCoinTerm( addedCoinTerm );
+              } );
+            }
+            else {
+              self.expressions.add( new Expression( coinToCombineWith, addedCoinTerm ) );
+            }
           }
           else {
-            self.expressions.add( new Expression( coinToCombineWith, addedCoinTerm ) );
+            // there were no overlapping coin terms, so check if close enough to form an expression
+            var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
+            if ( joinableFreeCoinTerm ) {
+              self.expressions.add( new Expression( joinableFreeCoinTerm, addedCoinTerm ) );
+            }
           }
+
         }
-        else {
-          // there were no overlapping coin terms, so check if close enough to form an expression
-          var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
-          if ( joinableFreeCoinTerm ) {
-            self.expressions.add( new Expression( joinableFreeCoinTerm, addedCoinTerm ) );
-          }
-        }
+
       } );
     } );
   }

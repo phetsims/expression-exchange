@@ -39,7 +39,8 @@ define( function( require ) {
     }, options );
 
     PropertySet.call( this, {
-      position: Vector2.ZERO, // @public
+      position: Vector2.ZERO, // @public (read only), set using methods below
+      destination: Vector2.ZERO, // @public (read only), set using methods below
       userControlled: false, // @public, indicate whether user is currently dragging this coin
       combinedCount: options.initialCount, // @public, number of coins/terms combined into this one, must be 1 or more
       combineHaloActive: false, // @public
@@ -71,6 +72,7 @@ define( function( require ) {
      */
     travelToDestination: function( destination ){
       var self = this;
+      this.destination = destination;
       var movementTime = self.position.distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
       new TWEEN.Tween( { x: this.position.x, y: this.position.y } )
         .to( { x: destination.x, y: destination.y }, movementTime )
@@ -82,6 +84,15 @@ define( function( require ) {
           self.destinationReached.emit();
         } )
         .start();
+    },
+
+    /**
+     * set both the position and destination in such a way that no animation is initiated
+     * @param position
+     */
+    setPositionAndDestination: function( position ){
+      this.position = position;
+      this.destination = position;
     }
   }, {
 

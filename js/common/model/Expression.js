@@ -14,6 +14,7 @@ define( function( require ) {
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
+  var Property = require( 'AXON/Property' );
   var PropertySet = require( 'AXON/PropertySet' );
   var Vector2 = require( 'DOT/Vector2' );
 
@@ -55,7 +56,7 @@ define( function( require ) {
                  INTER_COIN_TERM_SPACING;
     this.height = Math.max( anchorCoinTerm.relativeViewBounds.height, floatingCoinTerm.relativeViewBounds.height ) +
                   2 * INSET;
-    if ( floatingCoinTerm.position.x >= anchorCoinTerm.position.x ){
+    if ( floatingCoinTerm.position.x >= anchorCoinTerm.position.x ) {
 
       // the floating one is to the right of the anchor, create a space and destination where it can land
       this.upperLeftCorner = new Vector2(
@@ -65,7 +66,7 @@ define( function( require ) {
       xDestination = anchorCoinTerm.position.x + anchorCoinTerm.relativeViewBounds.maxX + INTER_COIN_TERM_SPACING -
                      floatingCoinTerm.relativeViewBounds.minX;
     }
-    else{
+    else {
       // the floating one is to the left of the anchor, create a space and destination where it can land
       this.upperLeftCorner = new Vector2(
         anchorCoinTerm.position.x + anchorCoinTerm.relativeViewBounds.minX - INTER_COIN_TERM_SPACING -
@@ -84,20 +85,18 @@ define( function( require ) {
       this.upperLeftCorner.y + this.height
     );
 
-    // TODO: I don't think this would property handle a reset that occurs during the animation, so I'll need to add that.
-    // animate the floating coin term to its destination within the expression
-    var destination = new Vector2( xDestination, anchorCoinTerm.position.y );
-    var movementTime = anchorCoinTerm.position.distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
-    new TWEEN.Tween( { x: floatingCoinTerm.position.x, y: floatingCoinTerm.position.y } )
-      .to( { x: destination.x, y: destination.y }, movementTime )
-      .easing( TWEEN.Easing.Cubic.InOut )
-      .onUpdate( function() {
-        floatingCoinTerm.position = new Vector2( this.x, this.y );
-      } )
-      .onComplete( function() {
-        self.coinTerms.add( floatingCoinTerm );
-      } )
-      .start();
+    // update the join zone as the size and/or location of the expression changes
+    Property.multilink( [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
+      function( upperLeftCorner, width, height){
+      self.joinZone.setMinMax(
+        self.upperLeftCorner.x - self.height,
+        self.upperLeftCorner.y,
+        self.upperLeftCorner.x + self.width + self.height,
+        self.upperLeftCorner.y + self.height );
+    } );
+
+    this.coinTerms.add( floatingCoinTerm );
+    floatingCoinTerm.travelToDestination( new Vector2( xDestination, anchorCoinTerm.position.y ) );
   }
 
   return inherit( PropertySet, Expression, {
@@ -106,27 +105,27 @@ define( function( require ) {
      * step this expression in time, which will cause it to make any updates in its state that are needed
      * @param dt
      */
-    step: function( dt ){
+    step: function( dt ) {
 
       var self = this;
-      
+
       // determine the needed height and which hints should be active
       var tallestCoinTermHeight = 0;
-      this.coinTerms.forEach( function( residentCoinTerm ){
+      this.coinTerms.forEach( function( residentCoinTerm ) {
         tallestCoinTermHeight = Math.max( tallestCoinTermHeight, residentCoinTerm.relativeViewBounds.height );
       } );
       var rightHintActive = false;
       var rightHintMaxCoinWidth = 0;
       var leftHintActive = false;
       var leftHintMaxCoinWidth = 0;
-      this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ){
+      this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
         tallestCoinTermHeight = Math.max( tallestCoinTermHeight, hoveringCoinTerm.relativeViewBounds.height );
-        if ( hoveringCoinTerm.position.x > self.upperLeftCorner.x + self.width / 2 ){
+        if ( hoveringCoinTerm.position.x > self.upperLeftCorner.x + self.width / 2 ) {
           // coin is over right half of the expression
           rightHintActive = true;
           rightHintMaxCoinWidth = Math.max( rightHintMaxCoinWidth, hoveringCoinTerm.relativeViewBounds.width );
         }
-        else{
+        else {
           leftHintActive = true;
           leftHintMaxCoinWidth = Math.max( leftHintMaxCoinWidth, hoveringCoinTerm.relativeViewBounds.width );
         }
@@ -137,40 +136,61 @@ define( function( require ) {
       this.leftHintActive = leftHintActive;
 
       // to minimize redraws in the view, only update width when the hints are active
-      if ( this.rightHintActive ){
+      if ( this.rightHintActive ) {
         this.rightHintWidth = rightHintMaxCoinWidth + 2 * INSET;
       }
-      if ( this.leftHintActive ){
+      if ( this.leftHintActive ) {
         this.leftHintWidth = leftHintMaxCoinWidth + 2 * INSET;
       }
 
       // update the overall height of the expression if needed
       var neededHeight = tallestCoinTermHeight + 2 * INSET;
-      if ( this.height !== neededHeight ){
+      if ( this.height !== neededHeight ) {
         this.upperLeftCorner = this.upperLeftCorner.minusXY( 0, ( neededHeight - this.height ) / 2 );
         this.height = tallestCoinTermHeight + 2 * INSET;
       }
-
     },
 
     /**
-     * add the specified coin
+     * add the specified coin term, moving into the correct location
      * @param {CoinTerm} coinTerm
      * @public
      */
     addCoinTerm: function( coinTerm ) {
-      // TODO: implement
+      if ( this.isCoinTermHovering( coinTerm ) ) {
+        this.removeHoveringCoinTerm( coinTerm );
+      }
+      this.coinTerms.push( coinTerm );
+
+      // adjust the expression's width to accomodate the new coin term
+      this.width = this.width + INTER_COIN_TERM_SPACING + coinTerm.relativeViewBounds.width;
+
+      // figure out where the coin term should go
+      var xDestination;
+      if ( coinTerm.position.x > this.upperLeftCorner.x + this.width / 2 ) {
+        // add to the right side
+        xDestination = this.upperLeftCorner.x + this.width - INSET - coinTerm.relativeViewBounds.maxX;
+      }
+      else {
+        // add to the left side, and shift the expression accordingly
+        this.upperLeftCorner = this.upperLeftCorner.minusXY( INTER_COIN_TERM_SPACING + coinTerm.relativeViewBounds.width, 0 );
+        xDestination = this.upperLeftCorner.x + INSET - coinTerm.relativeViewBounds.minX;
+        //xDestination = this.upperLeftCorner;
+      }
+
+      // animate to the new location TODO clean up to use only coin term animzation
+      coinTerm.travelToDestination( new Vector2( xDestination, this.upperLeftCorner.y + this.height / 2 ) );
     },
 
     /**
      * move, a.k.a. translate, by the specified amounts
      * @public
      */
-    translate: function( deltaX, deltaY ){
+    translate: function( deltaX, deltaY ) {
 
       // move the coin terms
-      this.coinTerms.forEach( function( coinTerm ){
-        coinTerm.position = coinTerm.position.plusXY( deltaX, deltaY );
+      this.coinTerms.forEach( function( coinTerm ) {
+        coinTerm.setPositionAndDestination( coinTerm.position.plusXY( deltaX, deltaY ) );
       } );
 
       // move the outline shape
@@ -184,7 +204,7 @@ define( function( require ) {
      * get the amount of overlap between the provided coin term's bounds and this expression's "join zone"
      * @param coinTerm
      */
-    getCoinTermJoinZoneOverlap: function( coinTerm ){
+    getCoinTermJoinZoneOverlap: function( coinTerm ) {
       var coinTermBounds = coinTerm.relativeViewBounds.copy();
       coinTermBounds.shift( coinTerm.position.x, coinTerm.position.y );
       var xOverlap = Math.max( 0, Math.min( coinTermBounds.maxX, this.joinZone.maxX ) - Math.max( coinTermBounds.minX, this.joinZone.minX ) );
@@ -198,8 +218,8 @@ define( function( require ) {
      * @param {CoinTerm} coinTerm
      * @public
      */
-    addHoveringCoinTerm: function( coinTerm ){
-      if ( this.hoveringCoinTerms.indexOf( coinTerm ) === -1 ){
+    addHoveringCoinTerm: function( coinTerm ) {
+      if ( this.hoveringCoinTerms.indexOf( coinTerm ) === -1 ) {
         this.hoveringCoinTerms.push( coinTerm );
       }
     },
@@ -210,9 +230,9 @@ define( function( require ) {
      * @param {CoinTerm} coinTerm
      * @public
      */
-    removeHoveringCoinTerm: function( coinTerm ){
+    removeHoveringCoinTerm: function( coinTerm ) {
       var index = this.hoveringCoinTerms.indexOf( coinTerm );
-      if ( index !== -1 ){
+      if ( index !== -1 ) {
         this.hoveringCoinTerms.splice( index, 1 );
       }
     },
@@ -222,7 +242,7 @@ define( function( require ) {
      * @param {CoinTerm} coinTerm
      * @returns {boolean}
      */
-    isCoinTermHovering: function( coinTerm ){
+    isCoinTermHovering: function( coinTerm ) {
       return this.hoveringCoinTerms.indexOf( coinTerm ) > -1;
     }
   } );

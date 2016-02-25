@@ -18,3 +18,5 @@ but worked well for the needs of the sim.
 A decision was made that if a coin term overlaps multiple expressions, on the one with the most overlap should have its
 hints activated.  This means that the main model has to compare them and decide which one to activate, which means that
 this decision must be centralized in the main model rather than leaving it to the coin terms or expressions.
+
+Term: "join zone".

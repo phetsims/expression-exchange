@@ -86,7 +86,7 @@ define( function( require ) {
       if ( expression.coinTerms.length > 0 ) {
 
         var coinTermsLeftToRight = expression.coinTerms.getArray().slice().sort( function( ct1, ct2 ) {
-          return ct1.position.x - ct2.position.x;
+          return ct1.destination.x - ct2.destination.x;
         } );
 
         backgroundShape = new Shape();
@@ -114,14 +114,14 @@ define( function( require ) {
         backgroundPath.shape = null;
         backgroundPath.shape = backgroundShape;
 
-        // add the plus signs
+        // add the plus symbols
         for ( var i = 0; i < coinTermsLeftToRight.length - 1; i++ ) {
           var plusSign = new Text( '+', {
             font: new PhetFont( 32 ),
-            centerY: coinTermsLeftToRight[ i ].position.y - expression.upperLeftCorner.y,
-            centerX: ( coinTermsLeftToRight[ i ].position.x + coinTermsLeftToRight[ i ].relativeViewBounds.maxX +
-                       coinTermsLeftToRight[ i + 1 ].position.x +
-                       coinTermsLeftToRight[ i + 1 ].relativeViewBounds.minX ) / 2 - expression.upperLeftCorner.x
+            centerX: ( coinTermsLeftToRight[ i ].destination.x + coinTermsLeftToRight[ i ].relativeViewBounds.maxX +
+                       coinTermsLeftToRight[ i + 1 ].destination.x +
+                       coinTermsLeftToRight[ i + 1 ].relativeViewBounds.minX ) / 2 - expression.upperLeftCorner.x,
+            centerY: coinTermsLeftToRight[ i ].destination.y - expression.upperLeftCorner.y
           } );
           plusSymbolsLayer.addChild( plusSign );
         }
