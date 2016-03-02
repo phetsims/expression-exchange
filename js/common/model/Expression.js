@@ -26,6 +26,8 @@ define( function( require ) {
    */
   function Expression( anchorCoinTerm, floatingCoinTerm ) {
 
+    var self = this;
+
     PropertySet.call( this, {
       upperLeftCorner: Vector2.ZERO, // @public (read only)
       width: 0, // @public (read only)
@@ -37,24 +39,22 @@ define( function( require ) {
       rightHintWidth: 0 // @public (read only) - width of the right hint
     } );
 
-    var self = this;
-
     // @public, read and listen only, items should be added and removed via methods
     this.coinTerms = new ObservableArray();
 
     // @private, tracks coin terms that are hovering over this expression but are being controlled by the user so are
-    // not yet part of the expression.  This is used to activate and size the hints.  Items should be added and removed
-    // via methods.
+    // not yet part of the expression.  This is used to activate and size the hints.  Coin terms should be added and
+    // removed via methods.
     this.hoveringCoinTerms = [];
 
-    // @private, tracks whether the expression should be resized on the next step, done as an optimization
+    // @private, tracks whether the expression should be resized on the next step
     this.resizeNeeded = false;
 
     // add the initial coin term
     this.coinTerms.push( anchorCoinTerm );
-    anchorCoinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeNeededFlag );
+    anchorCoinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeNeededFlag.bind( this ) );
 
-    // set the initial size of the expression to enclose only the first coin term
+    // set the initial size of the expression, which will enclose only the first coin term
     this.width = anchorCoinTerm.relativeViewBounds.width + 2 * INSET;
     this.height = anchorCoinTerm.relativeViewBounds.height + 2 * INSET;
     this.upperLeftCorner = new Vector2(
@@ -62,7 +62,8 @@ define( function( require ) {
       anchorCoinTerm.position.y - this.height / 2
     );
 
-    // @private - a rectangle used to decide if coin terms or other expressions are in a position to join this expression
+    // create the bounds that will be used to decide if coin terms or other expressions are in a position to join this one
+    // @private
     this.joinZone = new Bounds2(
       this.upperLeftCorner.x - this.height,
       this.upperLeftCorner.y,
@@ -94,6 +95,14 @@ define( function( require ) {
     step: function( dt ) {
 
       var self = this;
+
+      // If needed, adjust the size of the expression and the positions of the contained coin terms.  This is done here
+      // in the step function so that it is only done a max of once per animation frame rather than redoing it for each
+      // coin term whose bounds change.
+      if ( this.resizeNeeded ){
+        this.handleResizedCoinTerms();
+        this.resizeNeeded = false;
+      }
 
       // determine the needed height and which hints should be active
       var tallestCoinTermHeight = 0;
@@ -138,6 +147,56 @@ define( function( require ) {
     },
 
     /**
+     * Size the expression and, if necessary, move the contained coin terms so that all coin terms are appropriately
+     * positioned.  This is generally done when something affects the view bounds of the coin terms, such as turning
+     * on coefficients or switching from coin view to variable view.
+     * @private
+     */
+    handleResizedCoinTerms: function(){
+
+      // get an array of the coin terms sorted from left to right
+      var coinTermsLeftToRight = this.coinTerms.getArray().slice().sort( function( ct1, ct2 ) {
+        return ct1.destination.x - ct2.destination.x;
+      } );
+
+      var middleCoinTermIndex = Math.floor( ( coinTermsLeftToRight.length - 1 ) / 2 );
+      var xPos;
+      var yPos = coinTermsLeftToRight[ middleCoinTermIndex ].destination.y;
+
+      // adjust the positions of coin terms to the right of the middle
+      for ( var i = middleCoinTermIndex + 1; i < coinTermsLeftToRight.length; i++ ){
+        // adjust the position of this coin term to be the correct distance from its neighbor to the left
+        var leftNeighbor = coinTermsLeftToRight[ i - 1 ];
+        xPos = leftNeighbor.destination.x + leftNeighbor.relativeViewBounds.maxX + INTER_COIN_TERM_SPACING -
+               coinTermsLeftToRight[ i ].relativeViewBounds.minX;
+        coinTermsLeftToRight[ i ].travelToDestination( new Vector2( xPos, yPos ) );
+      }
+
+      // adjust the positions of coin terms to the left of the middle
+      for ( i = middleCoinTermIndex - 1; i >= 0; i-- ){
+        // adjust the position of this coin term to be the correct distance from its neighbor to the right
+        var rightNeighbor = coinTermsLeftToRight[ i + 1 ];
+        xPos = rightNeighbor.destination.x + rightNeighbor.relativeViewBounds.minX - INTER_COIN_TERM_SPACING -
+               coinTermsLeftToRight[ i ].relativeViewBounds.maxX;
+        coinTermsLeftToRight[ i ].travelToDestination( new Vector2( xPos, yPos ) );
+      }
+
+      // adjust the size and position of the background
+      var maxHeight = 0;
+      var totalWidth = 0;
+      coinTermsLeftToRight.forEach( function( coinTerm ){
+        maxHeight = coinTerm.relativeViewBounds.height > maxHeight ? coinTerm.relativeViewBounds.height : maxHeight;
+        totalWidth+= coinTerm.relativeViewBounds.width;
+      } );
+      this.upperLeftCorner = new Vector2(
+        coinTermsLeftToRight[ 0 ].destination.x + coinTermsLeftToRight[ 0 ].relativeViewBounds.minX - INSET,
+        yPos - maxHeight / 2 - INSET
+      );
+      this.height = maxHeight + 2 * INSET;
+      this.width = totalWidth + 2 * INSET + INTER_COIN_TERM_SPACING * ( coinTermsLeftToRight.length - 1 );
+    },
+
+    /**
      * add the specified coin term, moving into the correct location
      * @param {CoinTerm} coinTerm
      * @public
@@ -166,21 +225,18 @@ define( function( require ) {
 
       // animate to the new location
       coinTerm.travelToDestination( new Vector2( xDestination, this.upperLeftCorner.y + this.height / 2 ) );
+
+      // add a listener to resize the expression if this coin term's bound changes
+      coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeNeededFlag.bind( this ) );
+    },
+
+    removeCoinTerm: function( coinTerm ){
+      // TODO: Implement, and don't forget to unhook listeners that set the resize flag
     },
 
     // @private, function to set flag indicating that a resize is needed, used as a listener function
     setResizeNeededFlag: function() {
       this.resizeNeeded = true;
-    },
-
-    // @private, add resize listener to a coin term
-    addResizeListener: function( coinTerm ) {
-      coinTerm.relativeViewBounds.lazyLink( this.setResizeNeededFlag );
-    },
-
-    //
-    removeResizeListener: function( coinTerm ) {
-      coinTerm.relativeViewBounds.removeListener( this.setResizeNeededFlag );
     },
 
     /**

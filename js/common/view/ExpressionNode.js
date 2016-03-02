@@ -136,6 +136,7 @@ define( function( require ) {
     }
 
     // update the shape of the background if the height, width, or hint states of the expression change
+    // TODO: For best performance, I should perhaps consider a 'resized' event coming from the Expression class
     Property.multilink(
       [ expression.widthProperty, expression.heightProperty, expression.leftHintActiveProperty, expression.rightHintActiveProperty ],
       updateShapeAndPlusSymbols
