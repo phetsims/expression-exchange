@@ -41,40 +41,26 @@ define( function( require ) {
 
     // @public, read and listen only, items should be added and removed via methods
     this.coinTerms = new ObservableArray();
-    this.coinTerms.add( anchorCoinTerm );
 
     // @private, tracks coin terms that are hovering over this expression but are being controlled by the user so are
     // not yet part of the expression.  This is used to activate and size the hints.  Items should be added and removed
     // via methods.
     this.hoveringCoinTerms = [];
 
-    // TODO: there will need to be methods that update width and height based on adding and removing of coin terms
-    // set the boundaries of the expression and set up the destination for the floating coin term
-    var xDestination;
-    this.width = anchorCoinTerm.relativeViewBounds.width + floatingCoinTerm.relativeViewBounds.width + 2 * INSET +
-                 INTER_COIN_TERM_SPACING;
-    this.height = Math.max( anchorCoinTerm.relativeViewBounds.height, floatingCoinTerm.relativeViewBounds.height ) +
-                  2 * INSET;
-    if ( floatingCoinTerm.position.x >= anchorCoinTerm.position.x ) {
+    // @private, tracks whether the expression should be resized on the next step, done as an optimization
+    this.resizeNeeded = false;
 
-      // the floating one is to the right of the anchor, create a space and destination where it can land
-      this.upperLeftCorner = new Vector2(
-        anchorCoinTerm.position.x + anchorCoinTerm.relativeViewBounds.minX - INSET,
-        anchorCoinTerm.position.y - this.height / 2
-      );
-      xDestination = anchorCoinTerm.position.x + anchorCoinTerm.relativeViewBounds.maxX + INTER_COIN_TERM_SPACING -
-                     floatingCoinTerm.relativeViewBounds.minX;
-    }
-    else {
-      // the floating one is to the left of the anchor, create a space and destination where it can land
-      this.upperLeftCorner = new Vector2(
-        anchorCoinTerm.position.x + anchorCoinTerm.relativeViewBounds.minX - INTER_COIN_TERM_SPACING -
-        floatingCoinTerm.relativeViewBounds.width - INSET,
-        anchorCoinTerm.position.y - this.height / 2
-      );
-      xDestination = anchorCoinTerm.position.x + anchorCoinTerm.relativeViewBounds.minX - INTER_COIN_TERM_SPACING -
-                     floatingCoinTerm.relativeViewBounds.maxX;
-    }
+    // add the initial coin term
+    this.coinTerms.push( anchorCoinTerm );
+    anchorCoinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeNeededFlag );
+
+    // set the initial size of the expression to enclose only the first coin term
+    this.width = anchorCoinTerm.relativeViewBounds.width + 2 * INSET;
+    this.height = anchorCoinTerm.relativeViewBounds.height + 2 * INSET;
+    this.upperLeftCorner = new Vector2(
+      anchorCoinTerm.position.x + anchorCoinTerm.relativeViewBounds.minX - INSET,
+      anchorCoinTerm.position.y - this.height / 2
+    );
 
     // @private - a rectangle used to decide if coin terms or other expressions are in a position to join this expression
     this.joinZone = new Bounds2(
@@ -86,16 +72,17 @@ define( function( require ) {
 
     // update the join zone as the size and/or location of the expression changes
     Property.multilink( [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
-      function( upperLeftCorner, width, height){
-      self.joinZone.setMinMax(
-        self.upperLeftCorner.x - self.height,
-        self.upperLeftCorner.y,
-        self.upperLeftCorner.x + self.width + self.height,
-        self.upperLeftCorner.y + self.height );
-    } );
+      function( upperLeftCorner, width, height ) {
+        self.joinZone.setMinMax(
+          self.upperLeftCorner.x - self.height,
+          self.upperLeftCorner.y,
+          self.upperLeftCorner.x + self.width + self.height,
+          self.upperLeftCorner.y + self.height );
+      }
+    );
 
-    this.coinTerms.add( floatingCoinTerm );
-    floatingCoinTerm.travelToDestination( new Vector2( xDestination, anchorCoinTerm.position.y ) );
+    // add the second coin term
+    this.addCoinTerm( floatingCoinTerm );
   }
 
   return inherit( PropertySet, Expression, {
@@ -161,7 +148,7 @@ define( function( require ) {
       }
       this.coinTerms.push( coinTerm );
 
-      // adjust the expression's width to accomodate the new coin term
+      // adjust the expression's width to accommodate the new coin term
       this.width = this.width + INTER_COIN_TERM_SPACING + coinTerm.relativeViewBounds.width;
 
       // figure out where the coin term should go
@@ -177,8 +164,23 @@ define( function( require ) {
         //xDestination = this.upperLeftCorner;
       }
 
-      // animate to the new location TODO clean up to use only coin term animzation
+      // animate to the new location
       coinTerm.travelToDestination( new Vector2( xDestination, this.upperLeftCorner.y + this.height / 2 ) );
+    },
+
+    // @private, function to set flag indicating that a resize is needed, used as a listener function
+    setResizeNeededFlag: function() {
+      this.resizeNeeded = true;
+    },
+
+    // @private, add resize listener to a coin term
+    addResizeListener: function( coinTerm ) {
+      coinTerm.relativeViewBounds.lazyLink( this.setResizeNeededFlag );
+    },
+
+    //
+    removeResizeListener: function( coinTerm ) {
+      coinTerm.relativeViewBounds.removeListener( this.setResizeNeededFlag );
     },
 
     /**
