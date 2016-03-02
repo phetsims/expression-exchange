@@ -18,7 +18,7 @@ define( function( require ) {
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
-  var INTER_COIN_TERM_SPACING = 26; // in model units, between the bounds
+  var INTER_COIN_TERM_SPACING = 30; // in model units, empirically determined
   var INSET = 10; // space around coin terms, empirically determined
 
   /**

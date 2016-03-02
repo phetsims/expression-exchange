@@ -242,7 +242,7 @@ define( function( require ) {
       } );
       return new CoinTerm(
         Math.pow( xValueProperty.value, 2 ) * Math.pow( yValueProperty.value, 2 ),
-        65,
+        55,
         coinXSquareYSquaredFrontImage,
         'x<sup>2</sup>y<sup>2</sup>',
         termValueTextProperty,

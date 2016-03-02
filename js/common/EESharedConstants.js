@@ -13,10 +13,9 @@ define( function( require ) {
     TERM_COMBINE_RADIUS: 35,
 
     // speed at which coins and terms move
-    COIN_TERM_MOVEMENT_SPEED: 100, // in model units (which are basically screen coordinates) per second
+    COIN_TERM_MOVEMENT_SPEED: 400, // in model units (which are basically screen coordinates) per second
 
     EXPRESSION_BACKGROUND_COLOR: 'rgba( 255, 255, 255, 0.5 )'
-
-};
+  };
 
 } );
