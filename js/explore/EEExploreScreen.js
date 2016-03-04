@@ -12,7 +12,7 @@ define( function( require ) {
   var EEExploreScreenView = require( 'EXPRESSION_EXCHANGE/explore/view/EEExploreScreenView' );
   var EEExploreModel = require( 'EXPRESSION_EXCHANGE/explore/model/EEExploreModel' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
+  var RandomIcon = require( 'EXPRESSION_EXCHANGE/common/view/RandomIcon' );
   var Screen = require( 'JOIST/Screen' );
 
   // strings
@@ -24,7 +24,7 @@ define( function( require ) {
   function EEExploreScreen() {
 
     // TODO: temporary icon, will need to be replaced
-    var icon = new Rectangle( 0, 0, 548, 373, 0, 0, { fill: 'red' } );
+    var icon = new RandomIcon();
 
     Screen.call( this, exploreString, icon,
       function() { return new EEExploreModel(); },
