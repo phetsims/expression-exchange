@@ -62,7 +62,7 @@ define( function( require ) {
 
     // shape and path used to define and display the background
     var backgroundShape = DEFAULT_SHAPE;
-    var backgroundPath = new Path( backgroundShape, { fill: BACKGROUND_COLOR } );
+    var backgroundPath = new Path( backgroundShape, { fill: BACKGROUND_COLOR, lineWidth: 5 } );
     this.addChild( backgroundPath );
 
     // left and right 'hints' that are used to indicate to the user that a coin term can be added
@@ -155,6 +155,11 @@ define( function( require ) {
     // update the visibility of the left and right hints
     expression.leftHintActiveProperty.linkAttribute( leftHintNode, 'visible' );
     expression.rightHintActiveProperty.linkAttribute( rightHintNode, 'visible' );
+
+    // turn the halo on and off based on the associated property
+    expression.combineHaloActiveProperty.link( function( combineHintActive ){
+      backgroundPath.stroke = combineHintActive ? 'yellow' : null;
+    } );
 
     // update the shape of the left and right hints
     Property.multilink( [ expression.heightProperty, expression.widthProperty, expression.leftHintWidthProperty ],

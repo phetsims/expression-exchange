@@ -44,7 +44,7 @@ define( function( require ) {
     // update the shape if the height or width change
     Property.multilink( [ expression.widthProperty, expression.heightProperty ], updateShape );
 
-    // update the position
+    // update the position as the expression moves
     expression.upperLeftCornerProperty.link( function( upperLeftCorner ){
       self.left = upperLeftCorner.x;
       self.top = upperLeftCorner.y;
@@ -56,13 +56,13 @@ define( function( require ) {
       //When dragging across it in a mobile device, pick it up
       allowTouchSnag: true,
 
-      startDrag: function() {
+      start: function() {
         expression.userControlled = true;
       },
       translate: function( translateParams ){
         expression.translate( translateParams.delta.x, translateParams.delta.y );
       },
-      endDrag: function() {
+      end: function() {
         expression.userControlled = false;
       }
     } ));

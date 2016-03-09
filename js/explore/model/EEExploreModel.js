@@ -80,11 +80,11 @@ define( function( require ) {
       addedCoinTerm.userControlledProperty.onValue( false, function() {
 
         // check first for overlap with expressions
-        var mostOverlappingExpression = self.getMostOverlappingExpression( addedCoinTerm );
-        if ( mostOverlappingExpression ){
+        var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
+        if ( mostOverlappingExpression ) {
           mostOverlappingExpression.addCoinTerm( addedCoinTerm );
         }
-        else{
+        else {
           // there was no overlap with expressions, check for overlap with coin terms
           var overlappingCoinTerms = self.getOverlappingCoinTerms( addedCoinTerm );
 
@@ -123,6 +123,26 @@ define( function( require ) {
 
       var self = this;
 
+      // get a list of user controlled expressions
+      var userControlledExpressions = _.filter( this.expressions.getArray(), function( expression ) {
+        return expression.userControlled;
+      } );
+
+      // check each user controlled expression to see if it is in a position to combine with another expression
+      userControlledExpressions.forEach( function( userControlledExpression ) {
+        var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( userControlledExpression );
+
+        // update hover info for each expression with respect to this expression
+        self.expressions.forEach( function( expression ) {
+          if ( expression === mostOverlappingExpression ) {
+            expression.addHoveringExpression( userControlledExpression );
+          }
+          else {
+            expression.removeHoveringExpression( userControlledExpression );
+          }
+        } );
+      } );
+
       // get a list of all user controlled coins (max of one coin on mouse-based systems, any number on touch-based)
       var userControlledCoinTerms = _.filter( this.coinTerms.getArray(), function( coin ) { return coin.userControlled; } );
 
@@ -131,7 +151,7 @@ define( function( require ) {
       var neededExpressionHints = [];
       userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
 
-        var mostOverlappingExpression = self.getMostOverlappingExpression( userControlledCoinTerm );
+        var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( userControlledCoinTerm );
 
         // update hover info for each expression with respect to this coin term
         self.expressions.forEach( function( expression ) {
@@ -235,16 +255,36 @@ define( function( require ) {
     },
 
     /**
-     * get the expression that overlaps the most with the provided coin term, null of no overlap exists
-     * @param coinTerm
+     * get the expression that overlaps the most with the provided coin term, null if no overlap exists, user controlled
+     * expressions are excluded
+     * @param {CoinTerm} coinTerm
      * @private
      */
-    getMostOverlappingExpression: function( coinTerm ) {
+    getExpressionMostOverlappingWithCoinTerm: function( coinTerm ) {
       var maxOverlap = 0;
       var mostOverlappingExpression = null;
       this.expressions.forEach( function( expression ) {
-        if ( expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
+        if ( !expression.userControlled && expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
           mostOverlappingExpression = expression;
+        }
+      } );
+      return mostOverlappingExpression;
+    },
+
+    /**
+     * get the expression that overlaps the most with the provided expression, null if no overlap exists, user
+     * controlled expressions are excluded
+     * @param {Expression} expression
+     * @private
+     */
+    getExpressionMostOverlappingWithExpression: function( expression ) {
+      var maxOverlap = 0;
+      var mostOverlappingExpression = null;
+      this.expressions.forEach( function( testExpression ) {
+        if ( testExpression !== expression &&
+             !testExpression.userControlled &&
+             expression.getExpressionOverlap( testExpression ) > maxOverlap ) {
+          mostOverlappingExpression = testExpression;
         }
       } );
       return mostOverlappingExpression;

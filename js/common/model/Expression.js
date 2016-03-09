@@ -36,7 +36,8 @@ define( function( require ) {
       leftHintActive: false, // @public (read only) - indicates whether the hint on the left side should be visible
       leftHintWidth: 0, // @public (read only) - width of the left hint
       rightHintActive: false, // @public (read only) - indicates whether the hint on the right side should be visible
-      rightHintWidth: 0 // @public (read only) - width of the right hint
+      rightHintWidth: 0, // @public (read only) - width of the right hint
+      combineHaloActive: false // @public (read only) indicates whether the 'combin halo' should be visible
     } );
 
     // @public, read and listen only, items should be added and removed via methods
@@ -46,6 +47,10 @@ define( function( require ) {
     // not yet part of the expression.  This is used to activate and size the hints.  Coin terms should be added and
     // removed via methods.
     this.hoveringCoinTerms = [];
+
+    // @private, tracks expressions that are hovering over this expression and would be combined with this one if
+    // released by the user.  This is used to activate the 'halo' that indicates that potential combination.
+    this.hoveringExpressions = [];
 
     // @private, tracks whether the expression should be resized on the next step
     this.resizeNeeded = false;
@@ -138,12 +143,30 @@ define( function( require ) {
         this.leftHintWidth = leftHintMaxCoinWidth + 2 * INSET;
       }
 
+      // update the property that indicates whether the combine halo is active
+      this.combineHaloActive = this.hoveringExpressions.length > 0;
+
       // update the overall height of the expression if needed
       var neededHeight = tallestCoinTermHeight + 2 * INSET;
       if ( this.height !== neededHeight ) {
         this.upperLeftCorner = this.upperLeftCorner.minusXY( 0, ( neededHeight - this.height ) / 2 );
         this.height = tallestCoinTermHeight + 2 * INSET;
       }
+    },
+
+    /**
+     * get the current bounds of this expression
+     * @param {Bounds2} [boundsToSet] - optional bounds to set if caller wants to avoid an allocation
+     */
+    getBounds: function( boundsToSet ){
+      var bounds = boundsToSet || new Bounds2( 0, 0, 1, 1 );
+      bounds.setMinMax(
+        this.upperLeftCorner.x,
+        this.upperLeftCorner.y,
+        this.upperLeftCorner.x + this.width,
+        this.upperLeftCorner.y + this.height
+      );
+      return bounds;
     },
 
     /**
@@ -259,13 +282,38 @@ define( function( require ) {
 
     /**
      * get the amount of overlap between the provided coin term's bounds and this expression's "join zone"
-     * @param coinTerm
+     * @param {CoinTerm} coinTerm
      */
     getCoinTermJoinZoneOverlap: function( coinTerm ) {
       var coinTermBounds = coinTerm.relativeViewBounds.copy();
       coinTermBounds.shift( coinTerm.position.x, coinTerm.position.y );
-      var xOverlap = Math.max( 0, Math.min( coinTermBounds.maxX, this.joinZone.maxX ) - Math.max( coinTermBounds.minX, this.joinZone.minX ) );
-      var yOverlap = Math.max( 0, Math.min( coinTermBounds.maxY, this.joinZone.maxY ) - Math.max( coinTermBounds.minY, this.joinZone.minY ) );
+      var xOverlap = Math.max(
+        0,
+        Math.min( coinTermBounds.maxX, this.joinZone.maxX ) - Math.max( coinTermBounds.minX, this.joinZone.minX )
+      );
+      var yOverlap = Math.max(
+        0,
+        Math.min( coinTermBounds.maxY, this.joinZone.maxY ) - Math.max( coinTermBounds.minY, this.joinZone.minY )
+      );
+      return xOverlap * yOverlap;
+    },
+
+    /**
+     * get the amount of overlap between the provided expression and this expression
+     * @param {Expression} otherExpression
+     */
+    getExpressionOverlap: function( otherExpression ) {
+      var otherExpressionBounds = otherExpression.getBounds();
+      var thisExpressionBounds = this.getBounds();
+      var xOverlap = Math.max(
+        0,
+        Math.min( otherExpressionBounds.maxX, thisExpressionBounds.maxX ) - Math.max( otherExpressionBounds.minX, thisExpressionBounds.minX )
+      );
+      var yOverlap = Math.max(
+        0,
+        Math.min( otherExpressionBounds.maxY, thisExpressionBounds.maxY ) - Math.max( otherExpressionBounds.minY, thisExpressionBounds.minY )
+      );
+      console.log( 'expression overlap = ' + ( xOverlap * yOverlap ) );
       return xOverlap * yOverlap;
     },
 
@@ -291,6 +339,31 @@ define( function( require ) {
       var index = this.hoveringCoinTerms.indexOf( coinTerm );
       if ( index !== -1 ) {
         this.hoveringCoinTerms.splice( index, 1 );
+      }
+    },
+
+    /**
+     * Add an expression to the list of those that are hovering over this expression.  This is a no-op if the expression
+     * is already on the list.
+     * @param {Expression} expression
+     * @public
+     */
+    addHoveringExpression: function( expression ) {
+      if ( this.hoveringExpressions.indexOf( expression ) === -1 ) {
+        this.hoveringExpressions.push( expression );
+      }
+    },
+
+    /**
+     * Remove an expression from the list of those that are hovering over this expression.  This is a no-op if the
+     * provided expression is not on the list.
+     * @param {Expression} expression
+     * @public
+     */
+    removeHoveringExpression: function( expression ) {
+      var index = this.hoveringExpressions.indexOf( expression );
+      if ( index !== -1 ) {
+        this.hoveringExpressions.splice( index, 1 );
       }
     },
 
