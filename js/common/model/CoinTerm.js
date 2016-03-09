@@ -44,11 +44,13 @@ define( function( require ) {
       userControlled: false, // @public, indicate whether user is currently dragging this coin
       combinedCount: options.initialCount, // @public, number of coins/terms combined into this one, must be 1 or more
       combineHaloActive: false, // @public
+      inProgressAnimation: null, // @public (read only), tracks the current in-progress animation, if any
 
       // @public - The bounds of this model element's view representation relative to the element's current position.
       // This admittedly breaks the usual model-view rules, but many things in the view need to know this, so having it
       // available on the model element after being set by the view worked out to be the best approach.
-      relativeViewBounds: null
+      relativeViewBounds: null,
+
     } );
 
     // @public, read only, values that describe the nature of this coin term
@@ -74,7 +76,7 @@ define( function( require ) {
       var self = this;
       this.destination = destination;
       var movementTime = self.position.distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
-      new TWEEN.Tween( { x: this.position.x, y: this.position.y } )
+      this.inProgressAnimation = new TWEEN.Tween( { x: this.position.x, y: this.position.y } )
         .to( { x: destination.x, y: destination.y }, movementTime )
         .easing( TWEEN.Easing.Cubic.InOut )
         .onUpdate( function() {
@@ -82,6 +84,7 @@ define( function( require ) {
         } )
         .onComplete( function(){
           self.destinationReached.emit();
+          this.inProgressAnimation = null;
         } )
         .start();
     },

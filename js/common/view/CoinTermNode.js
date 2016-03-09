@@ -204,6 +204,12 @@ define( function( require ) {
 
     // add a listener that will pop this coin to the front when selected by the user
     coinTerm.userControlledProperty.onValue( true, function() { self.moveToFront(); } );
+
+    // Add a listener that will make this node non-pickable when animating, which solves a lot of multi-touch and fuzz
+    // testing issues.
+    coinTerm.inProgressAnimationProperty.link( function( inProgressAnimation ){
+      self.pickable = inProgressAnimation === null;
+    } );
   }
 
   return inherit( Node, CoinTermNode, {} );

@@ -145,7 +145,6 @@ define( function( require ) {
             // TODO: of this animation.  How does the listener get removed in that case, or does it even have to?  I'll
             // TODO: need to do that at some point.
           } );
-          console.log( 'expression released over other expression' );
         }
       } );
     } );

@@ -50,8 +50,7 @@ define( function( require ) {
       self.top = upperLeftCorner.y;
     } );
 
-    // add the listener that implements the dragging behavior
-    this.addInputListener( new SimpleDragHandler( {
+    var dragHandler = new SimpleDragHandler( {
 
       // when dragging across it in a mobile device, pick it up
       allowTouchSnag: true,
@@ -68,7 +67,17 @@ define( function( require ) {
         expression.userControlled = false;
       }
 
-    } ));
+    } );
+
+    // the drag handler is removed if an animation is in progress to prevent problematic race conditions
+    expression.inProgressAnimationProperty.link( function( inProgressAnimation ){
+      if ( inProgressAnimation ){
+        self.removeInputListener( dragHandler );
+      }
+      else{
+        self.addInputListener( dragHandler );
+      }
+    } );
   }
 
   return inherit( Node, ExpressionOverlayNode );

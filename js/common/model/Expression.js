@@ -41,7 +41,8 @@ define( function( require ) {
       leftHintWidth: 0, // @public (read only) - width of the left hint
       rightHintActive: false, // @public (read only) - indicates whether the hint on the right side should be visible
       rightHintWidth: 0, // @public (read only) - width of the right hint
-      combineHaloActive: false // @public (read only) indicates whether the 'combin halo' should be visible
+      combineHaloActive: false, // @public (read only) indicates whether the 'combine halo' should be visible
+      inProgressAnimation: null // @public (read only), tracks the current in-progress animation, if any
     } );
 
     // @public, read and listen only, items should be added and removed via methods
@@ -285,10 +286,17 @@ define( function( require ) {
         return ct1.destination.x - ct2.destination.x;
       } );
 
+      // TODO: Temp asserts for tracking down and issue
+      assert && assert( this.coinTerms.length > 1 );
+      assert && assert( coinTermsLeftToRight.length === this.coinTerms.length );
+
       // remove them from this expression
       coinTermsLeftToRight.forEach( function( coinTerm ){
         self.removeCoinTerm( coinTerm );
       } );
+
+      // TODO: Temp assert for tracking down and issue
+      assert && assert( this.coinTerms.length === 0 );
 
       // return the sorted array
       return coinTermsLeftToRight;
@@ -321,7 +329,7 @@ define( function( require ) {
       var prevX = this.upperLeftCorner.x;
       var prevY = this.upperLeftCorner.y;
       var movementTime = self.upperLeftCorner.distance( upperLeftCornerDestination ) / ANIMATION_SPEED * 1000;
-      new TWEEN.Tween( { x: this.upperLeftCorner.x, y: this.upperLeftCorner.y } )
+      this.inProgressAnimation = new TWEEN.Tween( { x: this.upperLeftCorner.x, y: this.upperLeftCorner.y } )
         .to( { x: upperLeftCornerDestination.x, y: upperLeftCornerDestination.y }, movementTime )
         .easing( TWEEN.Easing.Cubic.InOut )
         .onUpdate( function() {
@@ -330,6 +338,7 @@ define( function( require ) {
           prevY = this.y;
         } )
         .onComplete( function() {
+          self.inProgressAnimation = null;
           self.destinationReached.emit();
         } )
         .start();
