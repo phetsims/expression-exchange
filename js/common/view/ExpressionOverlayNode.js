@@ -50,21 +50,24 @@ define( function( require ) {
       self.top = upperLeftCorner.y;
     } );
 
-    // add the listener that implement the dragging behavior
+    // add the listener that implements the dragging behavior
     this.addInputListener( new SimpleDragHandler( {
 
-      //When dragging across it in a mobile device, pick it up
+      // when dragging across it in a mobile device, pick it up
       allowTouchSnag: true,
 
       start: function() {
         expression.userControlled = true;
       },
+
       translate: function( translateParams ){
         expression.translate( translateParams.delta.x, translateParams.delta.y );
       },
+
       end: function() {
         expression.userControlled = false;
       }
+
     } ));
   }
 

@@ -11,6 +11,7 @@ define( function( require ) {
 
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
+  var Emitter = require( 'AXON/Emitter' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
   var Property = require( 'AXON/Property' );
@@ -20,8 +21,11 @@ define( function( require ) {
   // constants
   var INTER_COIN_TERM_SPACING = 30; // in model units, empirically determined
   var INSET = 10; // space around coin terms, empirically determined
+  var ANIMATION_SPEED = 400; // in model units (which are basically screen coordinates) per second
 
   /**
+   * @param {CoinTerm} anchorCoinTerm
+   * @param {CoinTerm} floatingCoinTerm
    * @constructor
    */
   function Expression( anchorCoinTerm, floatingCoinTerm ) {
@@ -43,6 +47,9 @@ define( function( require ) {
     // @public, read and listen only, items should be added and removed via methods
     this.coinTerms = new ObservableArray();
 
+    // @public, listen only, emits an event when an animation finishes and the destination is reached
+    this.destinationReached = new Emitter();
+
     // @private, tracks coin terms that are hovering over this expression but are being controlled by the user so are
     // not yet part of the expression.  This is used to activate and size the hints.  Coin terms should be added and
     // removed via methods.
@@ -57,7 +64,13 @@ define( function( require ) {
 
     // add the initial coin term
     this.coinTerms.push( anchorCoinTerm );
-    anchorCoinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeNeededFlag.bind( this ) );
+
+    // Define a listener that is bound to this object that will set the resize needed flag when fired.  This is done
+    // in this way so that the listener can be found and removed when the coin term is removed from this expression.
+    this.setResizeFlagFunction = function(){ self.resizeNeeded = true; }; // @private
+
+    // hook up the resize listener to the anchor coin
+    anchorCoinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
 
     // set the initial size of the expression, which will enclose only the first coin term
     this.width = anchorCoinTerm.relativeViewBounds.width + 2 * INSET;
@@ -104,7 +117,7 @@ define( function( require ) {
       // If needed, adjust the size of the expression and the positions of the contained coin terms.  This is done here
       // in the step function so that it is only done a max of once per animation frame rather than redoing it for each
       // coin term whose bounds change.
-      if ( this.resizeNeeded ){
+      if ( this.resizeNeeded ) {
         this.handleResizedCoinTerms();
         this.resizeNeeded = false;
       }
@@ -126,6 +139,7 @@ define( function( require ) {
           rightHintMaxCoinWidth = Math.max( rightHintMaxCoinWidth, hoveringCoinTerm.relativeViewBounds.width );
         }
         else {
+          // coin is over left half of the expression
           leftHintActive = true;
           leftHintMaxCoinWidth = Math.max( leftHintMaxCoinWidth, hoveringCoinTerm.relativeViewBounds.width );
         }
@@ -158,7 +172,7 @@ define( function( require ) {
      * get the current bounds of this expression
      * @param {Bounds2} [boundsToSet] - optional bounds to set if caller wants to avoid an allocation
      */
-    getBounds: function( boundsToSet ){
+    getBounds: function( boundsToSet ) {
       var bounds = boundsToSet || new Bounds2( 0, 0, 1, 1 );
       bounds.setMinMax(
         this.upperLeftCorner.x,
@@ -175,10 +189,10 @@ define( function( require ) {
      * on coefficients or switching from coin view to variable view.
      * @private
      */
-    handleResizedCoinTerms: function(){
+    handleResizedCoinTerms: function() {
 
       // get an array of the coin terms sorted from left to right
-      var coinTermsLeftToRight = this.coinTerms.getArray().slice().sort( function( ct1, ct2 ) {
+      var coinTermsLeftToRight = this.coinTerms.getArray().slice( 0 ).sort( function( ct1, ct2 ) {
         return ct1.destination.x - ct2.destination.x;
       } );
 
@@ -187,7 +201,7 @@ define( function( require ) {
       var yPos = coinTermsLeftToRight[ middleCoinTermIndex ].destination.y;
 
       // adjust the positions of coin terms to the right of the middle
-      for ( var i = middleCoinTermIndex + 1; i < coinTermsLeftToRight.length; i++ ){
+      for ( var i = middleCoinTermIndex + 1; i < coinTermsLeftToRight.length; i++ ) {
         // adjust the position of this coin term to be the correct distance from its neighbor to the left
         var leftNeighbor = coinTermsLeftToRight[ i - 1 ];
         xPos = leftNeighbor.destination.x + leftNeighbor.relativeViewBounds.maxX + INTER_COIN_TERM_SPACING -
@@ -196,7 +210,7 @@ define( function( require ) {
       }
 
       // adjust the positions of coin terms to the left of the middle
-      for ( i = middleCoinTermIndex - 1; i >= 0; i-- ){
+      for ( i = middleCoinTermIndex - 1; i >= 0; i-- ) {
         // adjust the position of this coin term to be the correct distance from its neighbor to the right
         var rightNeighbor = coinTermsLeftToRight[ i + 1 ];
         xPos = rightNeighbor.destination.x + rightNeighbor.relativeViewBounds.minX - INTER_COIN_TERM_SPACING -
@@ -207,9 +221,9 @@ define( function( require ) {
       // adjust the size and position of the background
       var maxHeight = 0;
       var totalWidth = 0;
-      coinTermsLeftToRight.forEach( function( coinTerm ){
+      coinTermsLeftToRight.forEach( function( coinTerm ) {
         maxHeight = coinTerm.relativeViewBounds.height > maxHeight ? coinTerm.relativeViewBounds.height : maxHeight;
-        totalWidth+= coinTerm.relativeViewBounds.width;
+        totalWidth += coinTerm.relativeViewBounds.width;
       } );
       this.upperLeftCorner = new Vector2(
         coinTermsLeftToRight[ 0 ].destination.x + coinTermsLeftToRight[ 0 ].relativeViewBounds.minX - INSET,
@@ -250,16 +264,34 @@ define( function( require ) {
       coinTerm.travelToDestination( new Vector2( xDestination, this.upperLeftCorner.y + this.height / 2 ) );
 
       // add a listener to resize the expression if this coin term's bound changes
-      coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeNeededFlag.bind( this ) );
+      coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
     },
 
-    removeCoinTerm: function( coinTerm ){
-      // TODO: Implement, and don't forget to unhook listeners that set the resize flag
+    removeCoinTerm: function( coinTerm ) {
+      this.coinTerms.remove( coinTerm );
+      coinTerm.relativeViewBoundsProperty.unlink( this.setResizeFlagFunction );
     },
 
-    // @private, function to set flag indicating that a resize is needed, used as a listener function
-    setResizeNeededFlag: function() {
-      this.resizeNeeded = true;
+    /**
+     * remove all coin terms
+     * @return a simple array with all coin terms, sorted in left-to-right order
+     */
+    removeAllCoinTerms: function(){
+
+      var self = this;
+
+      // make a copy of the coin terms and sort them in left to right order
+      var coinTermsLeftToRight = this.coinTerms.getArray().slice( 0 ).sort( function( ct1, ct2 ) {
+        return ct1.destination.x - ct2.destination.x;
+      } );
+
+      // remove them from this expression
+      coinTermsLeftToRight.forEach( function( coinTerm ){
+        self.removeCoinTerm( coinTerm );
+      } );
+
+      // return the sorted array
+      return coinTermsLeftToRight;
     },
 
     /**
@@ -278,6 +310,29 @@ define( function( require ) {
 
       // update the join zone
       this.joinZone.shift( deltaX, deltaY );
+    },
+
+    /**
+     * move to the specified destination, but do so a step at a time rather than all at once
+     * @param {Vector2} upperLeftCornerDestination
+     */
+    travelToDestination: function( upperLeftCornerDestination ) {
+      var self = this;
+      var prevX = this.upperLeftCorner.x;
+      var prevY = this.upperLeftCorner.y;
+      var movementTime = self.upperLeftCorner.distance( upperLeftCornerDestination ) / ANIMATION_SPEED * 1000;
+      new TWEEN.Tween( { x: this.upperLeftCorner.x, y: this.upperLeftCorner.y } )
+        .to( { x: upperLeftCornerDestination.x, y: upperLeftCornerDestination.y }, movementTime )
+        .easing( TWEEN.Easing.Cubic.InOut )
+        .onUpdate( function() {
+          self.translate( this.x - prevX, this.y - prevY );
+          prevX = this.x;
+          prevY = this.y;
+        } )
+        .onComplete( function() {
+          self.destinationReached.emit();
+        } )
+        .start();
     },
 
     /**
@@ -303,6 +358,7 @@ define( function( require ) {
      * @param {Expression} otherExpression
      */
     getExpressionOverlap: function( otherExpression ) {
+      // TODO: Test and see if having pre-allocated bounds helps performance (right now getBounds does an allocation)
       var otherExpressionBounds = otherExpression.getBounds();
       var thisExpressionBounds = this.getBounds();
       var xOverlap = Math.max(
@@ -313,7 +369,6 @@ define( function( require ) {
         0,
         Math.min( otherExpressionBounds.maxY, thisExpressionBounds.maxY ) - Math.max( otherExpressionBounds.minY, thisExpressionBounds.minY )
       );
-      console.log( 'expression overlap = ' + ( xOverlap * yOverlap ) );
       return xOverlap * yOverlap;
     },
 

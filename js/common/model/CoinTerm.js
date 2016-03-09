@@ -60,7 +60,7 @@ define( function( require ) {
     // @public, listen only, a property with contains the text that should be shown when displaying term value
     this.termValueTextProperty = termValueTextProperty;
 
-    // @public, listen only, emits and event when an animation finishes and the destination is reached
+    // @public, listen only, emits an event when an animation finishes and the destination is reached
     this.destinationReached = new Emitter();
   }
 

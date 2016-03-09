@@ -46,6 +46,7 @@ define( function( require ) {
       zTermValue: 10, // @public
       totalCents: 0 // @public, read-only
     } );
+
     var self = this;
 
     // @public, read and listen only, list of all coin terms in the model
@@ -70,7 +71,7 @@ define( function( require ) {
     this.coinTerms.addItemAddedListener( updateTotal );
     this.coinTerms.addItemRemovedListener( updateTotal );
 
-    // add listeners to handle combining coins
+    // when a coin term is added, add listeners to handle it being released
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
       // TODO: Revisit this and verify that this doesn't leak memory
       // TODO: Work through this and see if it can be made more compact and readable (it's evolving a lot as it's being written)
@@ -94,25 +95,58 @@ define( function( require ) {
 
               // same type of coin, so combine them
               addedCoinTerm.travelToDestination( coinToCombineWith.position );
-              addedCoinTerm.destinationReached.addListener( function() {
+              addedCoinTerm.destinationReached.addListener( function destinationReachedListener() {
                 coinToCombineWith.combinedCount += addedCoinTerm.combinedCount;
                 self.removeCoinTerm( addedCoinTerm );
+                addedCoinTerm.destinationReached.removeListener( destinationReachedListener );
               } );
             }
             else {
-              self.expressions.add( new Expression( coinToCombineWith, addedCoinTerm ) );
+              self.expressions.push( new Expression( coinToCombineWith, addedCoinTerm ) );
             }
           }
           else {
             // there were no overlapping coin terms, so check if close enough to form an expression
             var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
             if ( joinableFreeCoinTerm ) {
-              self.expressions.add( new Expression( joinableFreeCoinTerm, addedCoinTerm ) );
+              self.expressions.push( new Expression( joinableFreeCoinTerm, addedCoinTerm ) );
             }
           }
-
         }
+      } );
+    } );
 
+    this.expressions.addItemAddedListener( function( addedExpression ) {
+      // TODO: Revisit this and verify that this doesn't leak memory
+
+      // add a handler for when the expression is released, which may cause it to be combined with another expression
+      addedExpression.userControlledProperty.onValue( false, function() {
+
+        // check for overlap with other expressions, if there is one or more, combine with the one with the most overlap
+        var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( addedExpression );
+        if ( mostOverlappingExpression ) {
+
+          // remove the expression from the list of those hovering
+          mostOverlappingExpression.removeHoveringExpression( addedExpression );
+
+          // send the combining expression to the right side of receiving expression
+          addedExpression.travelToDestination( mostOverlappingExpression.upperLeftCorner.plusXY( mostOverlappingExpression.width, 0 ) );
+
+          // Listen for when the expression is in place and, when it gets there, transfer its coin terms to the
+          // receiving expression.
+          addedExpression.destinationReached.addListener( function destinationReachedListener(){
+            var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
+            self.expressions.remove( addedExpression );
+            coinTermsToBeMoved.forEach( function( coinTerm ){
+              mostOverlappingExpression.addCoinTerm( coinTerm );
+            } );
+            addedExpression.destinationReached.removeListener( destinationReachedListener );
+            // TODO: I haven't thought through and added handling for the case where a reset occurs during the course
+            // TODO: of this animation.  How does the listener get removed in that case, or does it even have to?  I'll
+            // TODO: need to do that at some point.
+          } );
+          console.log( 'expression released over other expression' );
+        }
       } );
     } );
   }
@@ -281,8 +315,7 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingExpression = null;
       this.expressions.forEach( function( testExpression ) {
-        if ( testExpression !== expression &&
-             !testExpression.userControlled &&
+        if ( testExpression !== expression && !testExpression.userControlled &&
              expression.getExpressionOverlap( testExpression ) > maxOverlap ) {
           mostOverlappingExpression = testExpression;
         }
