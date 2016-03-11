@@ -246,11 +246,12 @@ define( function( require ) {
       this.coinTerms.push( coinTerm );
 
       // adjust the expression's width to accommodate the new coin term
+      var originalWidth = this.width;
       this.width = this.width + INTER_COIN_TERM_SPACING + coinTerm.relativeViewBounds.width;
 
       // figure out where the coin term should go
       var xDestination;
-      if ( coinTerm.position.x > this.upperLeftCorner.x + this.width / 2 ) {
+      if ( coinTerm.position.x > this.upperLeftCorner.x + originalWidth / 2 ) {
         // add to the right side
         xDestination = this.upperLeftCorner.x + this.width - INSET - coinTerm.relativeViewBounds.maxX;
       }
@@ -258,7 +259,6 @@ define( function( require ) {
         // add to the left side, and shift the expression accordingly
         this.upperLeftCorner = this.upperLeftCorner.minusXY( INTER_COIN_TERM_SPACING + coinTerm.relativeViewBounds.width, 0 );
         xDestination = this.upperLeftCorner.x + INSET - coinTerm.relativeViewBounds.minX;
-        //xDestination = this.upperLeftCorner;
       }
 
       // animate to the new location
