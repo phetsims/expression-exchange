@@ -35,12 +35,13 @@ define( function( require ) {
   function CoinTerm( coinValue, coinDiameter, coinFrontImage, termText, termValueTextProperty, options ) {
 
     options = _.extend( {
-      initialCount: 1
+      initialCount: 1,
+      initialPosition: Vector2.ZERO
     }, options );
 
     PropertySet.call( this, {
-      position: Vector2.ZERO, // @public (read only), set using methods below
-      destination: Vector2.ZERO, // @public (read only), set using methods below
+      position: options.initialPosition, // @public (read only), set using methods below
+      destination: options.initialPosition, // @public (read only), set using methods below
       userControlled: false, // @public, indicate whether user is currently dragging this coin
       combinedCount: options.initialCount, // @public, number of coins/terms combined into this one, must be 1 or more
       combineHaloActive: false, // @public
@@ -49,7 +50,7 @@ define( function( require ) {
       // @public - The bounds of this model element's view representation relative to the element's current position.
       // This admittedly breaks the usual model-view rules, but many things in the view need to know this, so having it
       // available on the model element after being set by the view worked out to be the best approach.
-      relativeViewBounds: null,
+      relativeViewBounds: null
 
     } );
 
@@ -63,7 +64,10 @@ define( function( require ) {
     this.termValueTextProperty = termValueTextProperty;
 
     // @public, listen only, emits an event when an animation finishes and the destination is reached
-    this.destinationReached = new Emitter();
+    this.destinationReachedEmitter = new Emitter();
+
+    // @public, listen only, emits an event when this coin term should be broken apart
+    this.breakApartEmitter = new Emitter();
   }
 
   return inherit( PropertySet, CoinTerm, {
@@ -83,8 +87,8 @@ define( function( require ) {
           self.position = new Vector2( this.x, this.y );
         } )
         .onComplete( function(){
-          self.destinationReached.emit();
-          this.inProgressAnimation = null;
+          self.destinationReachedEmitter.emit();
+          self.inProgressAnimation = null;
         } )
         .start();
     },
@@ -96,6 +100,31 @@ define( function( require ) {
     setPositionAndDestination: function( position ){
       this.position = position;
       this.destination = position;
+    },
+
+    /**
+     * initiate a break apart, which just emits an event and counts on parent model to handle
+     * @public
+     */
+    breakApart: function(){
+      assert && assert( this.combinedCount > 1, 'can\'t break apart single coin terms' );
+      this.breakApartEmitter.emit();
+    },
+
+    /**
+     * Get a coin term with all of the same fixed attributes and the same position.  Some attributes, such as
+     * userControlled, are not copied.
+     * @returns {CoinTerm}
+     * @public
+     */
+    cloneMostly: function(){
+      return new CoinTerm(
+        this.coinValue,
+        this.coinDiameter,
+        this.coinFrontImage,
+        this.termText,
+        this.termValueTextProperty,
+        { initialCount: this.combinedCount, initialPosition: this.position } );
     }
   }, {
 

@@ -218,7 +218,8 @@ define( function( require ) {
         exploreModel.viewModeProperty,
         exploreModel.showCoinValuesProperty,
         exploreModel.showVariableValuesProperty,
-        exploreModel.showAllCoefficientsProperty
+        exploreModel.showAllCoefficientsProperty,
+        true
       );
       coinLayer.addChild( coinNode );
 

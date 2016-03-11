@@ -15,7 +15,11 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
   var PropertySet = require( 'AXON/PropertySet' );
+  var Vector2 = require( 'DOT/Vector2' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
+
+  // constants
+  var BREAK_APART_SPACING = 10;
 
   // utility function for determining which coin term in a set that is closest to the provided position
   function getClosestCoinTermToPosition( position, coinTerms ) {
@@ -73,47 +77,81 @@ define( function( require ) {
 
     // when a coin term is added, add listeners to handle it being released
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
-      // TODO: Revisit this and verify that this doesn't leak memory
+      // TODO: Revisit this and verify that this doesn't leak memory, making sure that all added listeners are removed
       // TODO: Work through this and see if it can be made more compact and readable (it's evolving a lot as it's being written)
+
 
       // Add a handler for when the coin term is released, which may add the coin to an expression or combine it with
       // another coin term.
-      addedCoinTerm.userControlledProperty.onValue( false, function() {
+      addedCoinTerm.userControlledProperty.lazyLink( function( userControlled ) {
 
-        // check first for overlap with expressions
-        var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
-        if ( mostOverlappingExpression ) {
-          mostOverlappingExpression.addCoinTerm( addedCoinTerm );
-        }
-        else {
-          // there was no overlap with expressions, check for overlap with coin terms
-          var overlappingCoinTerms = self.getOverlappingCoinTerms( addedCoinTerm );
-
-          if ( overlappingCoinTerms.length > 0 ) {
-            var coinToCombineWith = getClosestCoinTermToPosition( addedCoinTerm.position, overlappingCoinTerms );
-            if ( coinToCombineWith.termText === addedCoinTerm.termText ) {
-
-              // same type of coin, so combine them
-              addedCoinTerm.travelToDestination( coinToCombineWith.position );
-              addedCoinTerm.destinationReached.addListener( function destinationReachedListener() {
-                coinToCombineWith.combinedCount += addedCoinTerm.combinedCount;
-                self.removeCoinTerm( addedCoinTerm );
-                addedCoinTerm.destinationReached.removeListener( destinationReachedListener );
-              } );
-            }
-            else {
-              self.expressions.push( new Expression( coinToCombineWith, addedCoinTerm ) );
-            }
+        if ( userControlled === false ){
+          // check first for overlap with expressions
+          var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
+          if ( mostOverlappingExpression ) {
+            mostOverlappingExpression.addCoinTerm( addedCoinTerm );
           }
           else {
-            // there were no overlapping coin terms, so check if close enough to form an expression
-            var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
-            if ( joinableFreeCoinTerm ) {
-              self.expressions.push( new Expression( joinableFreeCoinTerm, addedCoinTerm ) );
+            // there was no overlap with expressions, check for overlap with coin terms
+            var overlappingCoinTerms = self.getOverlappingCoinTerms( addedCoinTerm );
+
+            if ( overlappingCoinTerms.length > 0 ) {
+              var coinToCombineWith = getClosestCoinTermToPosition( addedCoinTerm.position, overlappingCoinTerms );
+              if ( coinToCombineWith.termText === addedCoinTerm.termText ) {
+
+                // same type of coin, so combine them
+                addedCoinTerm.travelToDestination( coinToCombineWith.position );
+                addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
+                  coinToCombineWith.combinedCount += addedCoinTerm.combinedCount;
+                  self.removeCoinTerm( addedCoinTerm );
+                  addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
+                } );
+              }
+              else {
+                self.expressions.push( new Expression( coinToCombineWith, addedCoinTerm ) );
+              }
+            }
+            else {
+              // there were no overlapping coin terms, so check if close enough to form an expression
+              var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
+              if ( joinableFreeCoinTerm ) {
+                self.expressions.push( new Expression( joinableFreeCoinTerm, addedCoinTerm ) );
+              }
             }
           }
         }
       } );
+
+      // add a listener that will handle breaking apart the coin if necessary
+      addedCoinTerm.breakApartEmitter.addListener( function(){
+
+        if ( addedCoinTerm.combinedCount < 2 ){
+          // bail if the coin is a single
+          return;
+        }
+        var numToCreate = addedCoinTerm.combinedCount - 1;
+
+        // set this coin back to being a single
+        addedCoinTerm.combinedCount = 1;
+
+        // add new coin terms to represent those that were broken out from the initial one
+        var interCoinTermDistance = addedCoinTerm.relativeViewBounds.width + BREAK_APART_SPACING;
+        var nextLeftX = addedCoinTerm.position.x - interCoinTermDistance;
+        var nextRightX = addedCoinTerm.position.x + interCoinTermDistance;
+        _.times( numToCreate, function( index ){
+          var clonedCoinTerm = addedCoinTerm.cloneMostly();
+          self.addCoinTerm( clonedCoinTerm );
+          if ( index % 2 === 0 ){
+            clonedCoinTerm.travelToDestination( new Vector2( nextRightX, addedCoinTerm.position.y ) );
+            nextRightX += interCoinTermDistance;
+          }
+          else{
+            clonedCoinTerm.travelToDestination( new Vector2( nextLeftX, addedCoinTerm.position.y ) );
+            nextLeftX -= interCoinTermDistance;
+          }
+        } );
+      } );
+
     } );
 
     this.expressions.addItemAddedListener( function( addedExpression ) {
@@ -134,13 +172,13 @@ define( function( require ) {
 
           // Listen for when the expression is in place and, when it gets there, transfer its coin terms to the
           // receiving expression.
-          addedExpression.destinationReached.addListener( function destinationReachedListener(){
+          addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener(){
             var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
             self.expressions.remove( addedExpression );
             coinTermsToBeMoved.forEach( function( coinTerm ){
               mostOverlappingExpression.addCoinTerm( coinTerm );
             } );
-            addedExpression.destinationReached.removeListener( destinationReachedListener );
+            addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
             // TODO: I haven't thought through and added handling for the case where a reset occurs during the course
             // TODO: of this animation.  How does the listener get removed in that case, or does it even have to?  I'll
             // TODO: need to do that at some point.

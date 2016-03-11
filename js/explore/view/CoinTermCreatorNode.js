@@ -36,7 +36,8 @@ define( function( require ) {
       exploreModel.viewModeProperty,
       exploreModel.showCoinValuesProperty,
       exploreModel.showVariableValuesProperty,
-      exploreModel.showAllCoefficientsProperty
+      exploreModel.showAllCoefficientsProperty,
+      false
     );
     this.addChild( coinNode );
 
@@ -47,13 +48,9 @@ define( function( require ) {
       self.visible = numCreated < options.creationLimit;
     } );
 
-    // remove the default input listener from the coin node so that it can be replaced
-    var coinNodeInputListeners = coinNode.getInputListeners();
-    assert && assert( coinNodeInputListeners.length === 1, 'unexpected listeners present on coin node' );
-    coinNode.removeInputListener( coinNodeInputListeners[ 0 ] );
-
     var parentScreenView = null; // needed for coordinate transforms
     var createdCoinTerm;
+
     // add the listener that will allow the user to click on this node and create a new coin, then position it in the model
     this.addInputListener( new SimpleDragHandler( {
 

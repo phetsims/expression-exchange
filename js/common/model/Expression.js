@@ -49,7 +49,7 @@ define( function( require ) {
     this.coinTerms = new ObservableArray();
 
     // @public, listen only, emits an event when an animation finishes and the destination is reached
-    this.destinationReached = new Emitter();
+    this.destinationReachedEmitter = new Emitter();
 
     // @private, tracks coin terms that are hovering over this expression but are being controlled by the user so are
     // not yet part of the expression.  This is used to activate and size the hints.  Coin terms should be added and
@@ -339,7 +339,7 @@ define( function( require ) {
         } )
         .onComplete( function() {
           self.inProgressAnimation = null;
-          self.destinationReached.emit();
+          self.destinationReachedEmitter.emit();
         } )
         .start();
     },

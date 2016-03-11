@@ -15,9 +15,11 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
+  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
+  var Timer = require( 'PHET_CORE/Timer' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
   var Vector2 = require( 'DOT/Vector2' );
 
@@ -25,6 +27,7 @@ define( function( require ) {
   var TERM_AND_VALUE_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 34, style: 'italic' } );
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_X_SPACING = 3;
+  var DRAG_BEFORE_BREAK_BUTTON_FADES = 10;
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin
@@ -32,9 +35,11 @@ define( function( require ) {
    * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
    * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
    * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
+   * @param {boolean} addDragHandler - controls whether drag handler hooked up, useful for creator nodes
    * @constructor
    */
-  function CoinTermNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty, showAllCoefficientsProperty ) {
+  function CoinTermNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty,
+                         showAllCoefficientsProperty, addDragHandler ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
@@ -174,6 +179,19 @@ define( function( require ) {
     // TODO: This is a workaround because I couldn't figure out how to monitor visible bounds.  This should be removed when possible.
     coefficientVisibleProperty.link( updateBoundsInModel );
 
+    // Add the button that will allow combined coins to be un-combined.  This is done outside of the rootnode so that it
+    // doesn't affect the bounds used in the model.
+    // TODO: Need to add icon thing
+    this.breakApartButton = new RectangularPushButton( {
+      content: new Text( '\u00D7', new PhetFont( { size: 22 } ) ),
+      xMargin: 3,
+      yMargin: 0,
+      baseColor: 'yellow',
+      visible: false,
+      listener: function(){ coinTerm.breakApart(); }
+    } );
+    this.addChild( this.breakApartButton );
+
     // move this node as the model representation moves
     coinTerm.positionProperty.link( function( position ) {
       // the intent here is to position the center of the coin at the position, NOT the center of the node
@@ -181,33 +199,55 @@ define( function( require ) {
       self.y = position.y - coinCenter.y;
     } );
 
-    // add the listener that will allow the user to drag the coin around
-    this.addInputListener( new SimpleDragHandler( {
+    if ( addDragHandler ){
+      // variable to track where drag started
+      var dragStartPosition;
 
-      // allow moving a finger (touch) across a node to pick it up
-      allowTouchSnag: true,
+      // Add the listener that will allow the user to drag the coin around.  This is added only to the node that contains
+      // the term elements, not the button, so that the button won't affect userControlled or be draggable.
+      rootNode.addInputListener( new SimpleDragHandler( {
 
-      // handler that moves the shape in model space
-      translate: function( translationParams ) {
-        coinTerm.setPositionAndDestination( coinTerm.position.plus( translationParams.delta ) );
-        return translationParams.position;
-      },
+        // allow moving a finger (touch) across a node to pick it up
+        allowTouchSnag: true,
 
-      start: function( event, trail ) {
-        coinTerm.userControlled = true;
-      },
+        start: function( event, trail ) {
+          coinTerm.userControlled = true;
+          if ( coinTerm.combinedCount > 1 ){
+            self.breakApartButton.centerX = coinImageNode.width / 2;
+            self.breakApartButton.bottom = 0;
+            self.breakApartButton.visible = true;
+            dragStartPosition = coinTerm.position;
+          }
+        },
 
-      end: function( event, trail ) {
-        coinTerm.userControlled = false;
-      }
-    } ) );
+        // handler that moves the shape in model space
+        translate: function( translationParams ) {
+          coinTerm.setPositionAndDestination( coinTerm.position.plus( translationParams.delta ) );
+          if ( self.breakApartButton.visible && coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ){
+            self.breakApartButton.visible = false;
+          }
+          return translationParams.position;
+        },
+
+        end: function( event, trail ) {
+          coinTerm.userControlled = false;
+
+          // if break apart button is visible, set a timer to hide it
+          if ( self.breakApartButton.visible ){
+            self.hideButtonTimeout = Timer.setTimeout( function(){
+              self.breakApartButton.visible = false;
+            }, 1000 );
+          }
+        }
+      } ) );
+    }
 
     // add a listener that will pop this coin to the front when selected by the user
     coinTerm.userControlledProperty.onValue( true, function() { self.moveToFront(); } );
 
     // Add a listener that will make this node non-pickable when animating, which solves a lot of multi-touch and fuzz
     // testing issues.
-    coinTerm.inProgressAnimationProperty.link( function( inProgressAnimation ){
+    coinTerm.inProgressAnimationProperty.link( function( inProgressAnimation ) {
       self.pickable = inProgressAnimation === null;
     } );
   }
