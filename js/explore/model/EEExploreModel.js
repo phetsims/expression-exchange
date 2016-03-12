@@ -386,8 +386,6 @@ define( function( require ) {
     // @private - test if coinTermB is in the "expression combine zone" of coinTermA
     isCoinTermInExpressionCombineZone: function( coinTermA, coinTermB ) {
 
-      var positionDifferenceVector = coinTermA.position.minus( coinTermB.position );
-
       // TODO: This could end up being a fair amount of allocations and may need some pre-allocated bounds
       var extendedTargetCoinTermBounds = new Bounds2(
         coinTermA.position.x + coinTermA.relativeViewBounds.minX,
