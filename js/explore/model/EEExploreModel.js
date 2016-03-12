@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var Bounds2 = require( 'DOT/Bounds2' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
   var ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
@@ -387,22 +388,22 @@ define( function( require ) {
 
       var positionDifferenceVector = coinTermA.position.minus( coinTermB.position );
 
-      // this test depends upon the view mode, i.e. uses different criteria for coins versus text
-      if ( this.viewMode === ViewMode.COINS ) {
-        var radiusSum = coinTermA.coinDiameter / 2 + coinTermB.coinDiameter / 2;
+      // TODO: This could end up being a fair amount of allocations and may need some pre-allocated bounds
+      var extendedTargetCoinTermBounds = new Bounds2(
+        coinTermA.position.x + coinTermA.relativeViewBounds.minX,
+        coinTermA.position.y + coinTermA.relativeViewBounds.minY,
+        coinTermA.position.x + coinTermA.relativeViewBounds.maxX,
+        coinTermA.position.y + coinTermA.relativeViewBounds.maxY 
+      ).dilatedX( coinTermA.relativeViewBounds.width );
+      
+      var potentiallyJoiningCoinTermBounds = new Bounds2(
+        coinTermB.position.x + coinTermB.relativeViewBounds.minX,
+        coinTermB.position.y + coinTermB.relativeViewBounds.minY,
+        coinTermB.position.x + coinTermB.relativeViewBounds.maxX,
+        coinTermB.position.y + coinTermB.relativeViewBounds.maxY  
+      );
 
-        // tweak alert - the multipliers in this clause were empirically determined
-        return ( Math.abs( positionDifferenceVector.x ) > radiusSum &&
-                 Math.abs( positionDifferenceVector.x ) < radiusSum * 2.5 &&
-                 Math.abs( positionDifferenceVector.y ) < radiusSum / 4 );
-      }
-      else {
-
-        // tweak alert - the multipliers in this clause were empirically determined
-        return ( Math.abs( positionDifferenceVector.x ) > EESharedConstants.TERM_COMBINE_RADIUS &&
-                 Math.abs( positionDifferenceVector.x ) < EESharedConstants.TERM_COMBINE_RADIUS * 3 &&
-                 Math.abs( positionDifferenceVector.y ) < EESharedConstants.TERM_COMBINE_RADIUS / 2 );
-      }
+      return extendedTargetCoinTermBounds.intersectsBounds( potentiallyJoiningCoinTermBounds );
     },
 
     /**
