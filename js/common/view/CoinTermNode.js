@@ -23,6 +23,9 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
   var Vector2 = require( 'DOT/Vector2' );
 
+  // images
+  var breakApartIconImage = require( 'image!EXPRESSION_EXCHANGE/break-apart-icon.png' );
+
   // constants
   var TERM_AND_VALUE_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 34, style: 'italic' } );
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
@@ -187,9 +190,9 @@ define( function( require ) {
     // doesn't affect the bounds used in the model.
     // TODO: Need to add icon thing
     var breakApartButton = new RectangularPushButton( {
-      content: new Text( '\u00D7', new PhetFont( { size: 22 } ) ),
+      content: new Image( breakApartIconImage, { scale: 0.3 } ), // scale empirically determined
       xMargin: 3,
-      yMargin: 0,
+      yMargin: 3,
       baseColor: 'yellow',
       visible: false
     } );
