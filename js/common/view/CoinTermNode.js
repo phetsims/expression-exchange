@@ -179,18 +179,85 @@ define( function( require ) {
     // TODO: This is a workaround because I couldn't figure out how to monitor visible bounds.  This should be removed when possible.
     coefficientVisibleProperty.link( updateBoundsInModel );
 
+    // add the variables that will track the timers used as part of the break apart button visibility control
+    var showButtonTimer = null;
+    var hideButtonTimer = null;
+
     // Add the button that will allow combined coins to be un-combined.  This is done outside of the rootnode so that it
     // doesn't affect the bounds used in the model.
     // TODO: Need to add icon thing
-    this.breakApartButton = new RectangularPushButton( {
+    var breakApartButton = new RectangularPushButton( {
       content: new Text( '\u00D7', new PhetFont( { size: 22 } ) ),
       xMargin: 3,
       yMargin: 0,
       baseColor: 'yellow',
-      visible: false,
-      listener: function(){ coinTerm.breakApart(); }
+      visible: false
     } );
-    this.addChild( this.breakApartButton );
+    this.addChild( breakApartButton );
+
+    // define helper functions for managing the button timers
+    function startHideButtonTimer() {
+      hideButtonTimer = Timer.setTimeout( function() {
+        showBreakApartButton( false );
+        hideButtonTimer = null;
+      }, 2000 );
+    }
+    function clearHideButtonTimer() {
+      Timer.clearTimeout( hideButtonTimer );
+      hideButtonTimer = null;
+    }
+    function startShowButtonTimer() {
+      showButtonTimer = Timer.setTimeout( function() {
+        showBreakApartButton( true );
+        showButtonTimer = null;
+        startHideButtonTimer();
+      }, 1000 );
+    }
+    function clearShowButtonTimer() {
+      Timer.clearTimeout( showButtonTimer );
+      showButtonTimer = null;
+    }
+
+    // add the listener to the break apart button
+    breakApartButton.addListener( function() {
+      coinTerm.breakApart();
+
+      // hide the button after clicking
+      breakApartButton.visible = false;
+
+      // cancel any running timers
+      if ( showButtonTimer ) {
+        clearShowButtonTimer();
+      }
+      if ( hideButtonTimer ) {
+        clearHideButtonTimer();
+      }
+    } );
+
+    // keep the button showing if the user is over it
+    breakApartButton.buttonModel.overProperty.lazyLink( function( overButton ) {
+      if ( overButton ) {
+        assert && assert( !!hideButtonTimer, 'should not be over button without hide timer running' );
+        clearHideButtonTimer();
+      }
+      else {
+        startHideButtonTimer();
+      }
+    } );
+
+    // define a function that will position and hide/show the break apart button
+    function showBreakApartButton( show ) {
+      if ( show ) {
+        breakApartButton.centerX = coinCenter.x;
+        breakApartButton.bottom = -3; // just above the coin, empirically determined
+        breakApartButton.visible = true;
+      }
+      else {
+        // TODO: moving this inside the coin term to keep bounds confined.  Is this necessary?  Simplify if possible.
+        breakApartButton.center = coinCenter;
+        breakApartButton.visible = false;
+      }
+    }
 
     // move this node as the model representation moves
     coinTerm.positionProperty.link( function( position ) {
@@ -199,7 +266,8 @@ define( function( require ) {
       self.y = position.y - coinCenter.y;
     } );
 
-    if ( addDragHandler ){
+    if ( addDragHandler ) {
+
       // variable to track where drag started
       var dragStartPosition;
 
@@ -212,10 +280,10 @@ define( function( require ) {
 
         start: function( event, trail ) {
           coinTerm.userControlled = true;
-          if ( coinTerm.combinedCount > 1 ){
-            self.breakApartButton.centerX = coinImageNode.width / 2;
-            self.breakApartButton.bottom = 0;
-            self.breakApartButton.visible = true;
+
+          // if this is a multi-count coin term, start a timer to show the break apart button
+          if ( coinTerm.combinedCount > 1 ) {
+            startShowButtonTimer();
             dragStartPosition = coinTerm.position;
           }
         },
@@ -223,8 +291,15 @@ define( function( require ) {
         // handler that moves the shape in model space
         translate: function( translationParams ) {
           coinTerm.setPositionAndDestination( coinTerm.position.plus( translationParams.delta ) );
-          if ( self.breakApartButton.visible && coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ){
-            self.breakApartButton.visible = false;
+
+          // update the state of the break apart button and associated timers
+          if ( breakApartButton.visible ) {
+            if ( coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ) {
+              showBreakApartButton( false );
+            }
+          }
+          else if ( showButtonTimer && coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ) {
+            clearShowButtonTimer();
           }
           return translationParams.position;
         },
@@ -232,11 +307,19 @@ define( function( require ) {
         end: function( event, trail ) {
           coinTerm.userControlled = false;
 
-          // if break apart button is visible, set a timer to hide it
-          if ( self.breakApartButton.visible ){
-            self.hideButtonTimeout = Timer.setTimeout( function(){
-              self.breakApartButton.visible = false;
-            }, 1000 );
+          if ( coinTerm.combinedCount > 1 && !breakApartButton.visible &&
+               coinTerm.position.distance( dragStartPosition ) < DRAG_BEFORE_BREAK_BUTTON_FADES ) {
+
+            // the user clicked on the coin term without moving it (much), so show the break apart button
+            showBreakApartButton( true );
+
+            // start a timer to hide the button if not interacted with
+            startHideButtonTimer();
+
+            // cancel timer for showing button if active
+            if ( showButtonTimer ) {
+              clearShowButtonTimer();
+            }
           }
         }
       } ) );
@@ -252,5 +335,5 @@ define( function( require ) {
     } );
   }
 
-  return inherit( Node, CoinTermNode, {} );
+  return inherit( Node, CoinTermNode );
 } );
