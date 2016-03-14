@@ -13,6 +13,6 @@ define( function( require ) {
   return {
 
     // Automatically answer most problems to enable faster testing of level completion.
-    COLLAPSE_EXPRESSIONS: !!getQueryParameter( 'collapseExpressions' )
+    ADJUST_EXPRESSION_WIDTH: !!getQueryParameter( 'adjustExpressionWidth' )
   };
 } );

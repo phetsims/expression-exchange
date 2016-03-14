@@ -165,6 +165,14 @@ define( function( require ) {
     // position the coefficient to line up well with the text or the code
     Property.multilink( [ viewModeProperty, coinTerm.termValueTextProperty, termTextVisibleProperty ], updateCoefficientPosition );
 
+    // TODO: Figure out the max width, used below as part of bounds calculation, may not be kept.
+    console.log( 'termText.text = ' + termText.text );
+    var maxCoinTermWidth = Math.max(
+      coinImageNode.width,
+      termText.width,
+      termWithVariableValuesText.width + ( new Text( '(', { font: TERM_AND_VALUE_FONT } ) ).width * 2
+    );
+
     // helper function to take the view bounds information and communicate it to the model
     function updateBoundsInModel() {
 
@@ -173,10 +181,16 @@ define( function( require ) {
       // TODO: The following is some temporary code to try out making the overall bounds remain the same for the two
       // TODO: different view modes so that the expressions don't expand/collapse as the modes change.  This will need
       // TODO: to be moved out or kept based on the feedback we get.
-      if ( viewModeProperty.value === ViewMode.VARIABLES && !EEQueryParameters.COLLAPSE_EXPRESSIONS ){
+      if ( !EEQueryParameters.ADJUST_EXPRESSION_WIDTH ) {
 
-        // expand the bounds so that they are as large as they would be in coin view mode
-        relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( coinImageNode.bounds.width - termText.bounds.width ) / 2 );
+        var width = maxCoinTermWidth;
+
+        if ( coefficientText.visible || coinTerm.combinedCount > 1 ) {
+          width += coefficientText.width + COEFFICIENT_X_SPACING;
+        }
+
+        // set the view bounds such that the non-coefficient portion is always the same width
+        relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( width - relativeVisibleBounds.width ) / 2 );
       }
 
       if ( !coinTerm.relativeViewBounds || !coinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
@@ -213,23 +227,26 @@ define( function( require ) {
 
     // define helper functions for managing the button timers
     function clearHideButtonTimer() {
-      if ( hideButtonTimer ){
+      if ( hideButtonTimer ) {
         Timer.clearTimeout( hideButtonTimer );
         hideButtonTimer = null;
       }
     }
+
     function startHideButtonTimer() {
       clearHideButtonTimer(); // just in case one is already running
       hideButtonTimer = Timer.setTimeout( function() {
         showBreakApartButton( false );
       }, 2000 );
     }
+
     function clearShowButtonTimer() {
-      if ( showButtonTimer ){
+      if ( showButtonTimer ) {
         Timer.clearTimeout( showButtonTimer );
       }
       showButtonTimer = null;
     }
+
     function startShowButtonTimer() {
       clearShowButtonTimer(); // just in case one is already running
       showButtonTimer = Timer.setTimeout( function() {
@@ -321,7 +338,7 @@ define( function( require ) {
               showBreakApartButton( false );
               clearHideButtonTimer();
             }
-            else if ( showButtonTimer ){
+            else if ( showButtonTimer ) {
               clearShowButtonTimer();
             }
           }
@@ -354,8 +371,8 @@ define( function( require ) {
     coinTerm.userControlledProperty.onValue( true, function() { self.moveToFront(); } );
 
     // add a listener that will pop this coin to the front when another coin is combined with it
-    coinTerm.combinedCountProperty.link( function( newCount, oldCount ){
-      if ( newCount > oldCount ){
+    coinTerm.combinedCountProperty.link( function( newCount, oldCount ) {
+      if ( newCount > oldCount ) {
         self.moveToFront();
       }
     } );
