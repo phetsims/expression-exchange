@@ -10,6 +10,7 @@ define( function( require ) {
 
   // modules
   var DerivedProperty = require( 'AXON/DerivedProperty' );
+  var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -172,7 +173,8 @@ define( function( require ) {
       // TODO: The following is some temporary code to try out making the overall bounds remain the same for the two
       // TODO: different view modes so that the expressions don't expand/collapse as the modes change.  This will need
       // TODO: to be moved out or kept based on the feedback we get.
-      if ( viewModeProperty.value === ViewMode.VARIABLES ){
+      if ( viewModeProperty.value === ViewMode.VARIABLES && !EEQueryParameters.COLLAPSE_EXPRESSIONS ){
+
         // expand the bounds so that they are as large as they would be in coin view mode
         relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( coinImageNode.bounds.width - termText.bounds.width ) / 2 );
       }
