@@ -188,7 +188,9 @@ define( function( require ) {
 
     // Add the button that will allow combined coins to be un-combined.  This is done outside of the rootnode so that it
     // doesn't affect the bounds used in the model.
-    // TODO: Need to add icon thing
+    // TODO: There's a lot of code in here for the break apart button.  Can this be consolidated into a class that
+    // TODO: encapsulates a lot of this behavior, such as hiding automatically after a given time, managing the timers,
+    // TODO: handling hover?  Seems like a good idea.
     var breakApartButton = new RectangularPushButton( {
       content: new Image( breakApartIconImage, { scale: 0.3 } ), // scale empirically determined
       xMargin: 3,
@@ -199,26 +201,31 @@ define( function( require ) {
     this.addChild( breakApartButton );
 
     // define helper functions for managing the button timers
+    function clearHideButtonTimer() {
+      if ( hideButtonTimer ){
+        Timer.clearTimeout( hideButtonTimer );
+        hideButtonTimer = null;
+      }
+    }
     function startHideButtonTimer() {
+      clearHideButtonTimer(); // just in case one is already running
       hideButtonTimer = Timer.setTimeout( function() {
         showBreakApartButton( false );
-        hideButtonTimer = null;
       }, 2000 );
     }
-    function clearHideButtonTimer() {
-      Timer.clearTimeout( hideButtonTimer );
-      hideButtonTimer = null;
+    function clearShowButtonTimer() {
+      if ( showButtonTimer ){
+        Timer.clearTimeout( showButtonTimer );
+      }
+      showButtonTimer = null;
     }
     function startShowButtonTimer() {
+      clearShowButtonTimer(); // just in case one is already running
       showButtonTimer = Timer.setTimeout( function() {
         showBreakApartButton( true );
         showButtonTimer = null;
         startHideButtonTimer();
-      }, 1000 );
-    }
-    function clearShowButtonTimer() {
-      Timer.clearTimeout( showButtonTimer );
-      showButtonTimer = null;
+      }, 500 );
     }
 
     // add the listener to the break apart button
@@ -283,11 +290,12 @@ define( function( require ) {
 
         start: function( event, trail ) {
           coinTerm.userControlled = true;
+          dragStartPosition = coinTerm.position;
 
           // if this is a multi-count coin term, start a timer to show the break apart button
           if ( coinTerm.combinedCount > 1 ) {
+            clearHideButtonTimer(); // just in case one is running
             startShowButtonTimer();
-            dragStartPosition = coinTerm.position;
           }
         },
 
@@ -296,14 +304,17 @@ define( function( require ) {
           coinTerm.setPositionAndDestination( coinTerm.position.plus( translationParams.delta ) );
 
           // update the state of the break apart button and associated timers
-          if ( breakApartButton.visible ) {
-            if ( coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ) {
+          if ( coinTerm.combinedCount > 1 && coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ) {
+            if ( breakApartButton.visible ) {
+              // the button was already visible, so hide it
               showBreakApartButton( false );
+              clearHideButtonTimer();
+            }
+            else if ( showButtonTimer ){
+              clearShowButtonTimer();
             }
           }
-          else if ( showButtonTimer && coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ) {
-            clearShowButtonTimer();
-          }
+
           return translationParams.position;
         },
 
