@@ -164,10 +164,19 @@ define( function( require ) {
     // position the coefficient to line up well with the text or the code
     Property.multilink( [ viewModeProperty, coinTerm.termValueTextProperty, termTextVisibleProperty ], updateCoefficientPosition );
 
-    // helper function to update dimensions
+    // helper function to take the view bounds information and communicate it to the model
     function updateBoundsInModel() {
 
       var relativeVisibleBounds = self.visibleLocalBounds.shifted( -coinTerm.coinDiameter / 2, -coinTerm.coinDiameter / 2 );
+
+      // TODO: The following is some temporary code to try out making the overall bounds remain the same for the two
+      // TODO: different view modes so that the expressions don't expand/collapse as the modes change.  This will need
+      // TODO: to be moved out or kept based on the feedback we get.
+      if ( viewModeProperty.value === ViewMode.VARIABLES ){
+        // expand the bounds so that they are as large as they would be in coin view mode
+        relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( coinImageNode.bounds.width - termText.bounds.width ) / 2 );
+      }
+
       if ( !coinTerm.relativeViewBounds || !coinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
         coinTerm.relativeViewBounds = relativeVisibleBounds;
       }

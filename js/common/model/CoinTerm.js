@@ -51,7 +51,6 @@ define( function( require ) {
       // This admittedly breaks the usual model-view rules, but many things in the view need to know this, so having it
       // available on the model element after being set by the view worked out to be the best approach.
       relativeViewBounds: null
-
     } );
 
     // @public, read only, values that describe the nature of this coin term
