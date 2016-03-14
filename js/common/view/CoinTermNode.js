@@ -185,6 +185,7 @@ define( function( require ) {
         relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( width - relativeVisibleBounds.width ) / 2 );
       }
 
+      // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
       if ( !coinTerm.relativeViewBounds || !coinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
         coinTerm.relativeViewBounds = relativeVisibleBounds;
       }
