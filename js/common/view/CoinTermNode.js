@@ -165,14 +165,6 @@ define( function( require ) {
     // position the coefficient to line up well with the text or the code
     Property.multilink( [ viewModeProperty, coinTerm.termValueTextProperty, termTextVisibleProperty ], updateCoefficientPosition );
 
-    // TODO: Figure out the max width, used below as part of bounds calculation, may not be kept.
-    console.log( 'termText.text = ' + termText.text );
-    var maxCoinTermWidth = Math.max(
-      coinImageNode.width,
-      termText.width,
-      termWithVariableValuesText.width + ( new Text( '(', { font: TERM_AND_VALUE_FONT } ) ).width * 2
-    );
-
     // helper function to take the view bounds information and communicate it to the model
     function updateBoundsInModel() {
 
@@ -183,7 +175,7 @@ define( function( require ) {
       // TODO: to be moved out or kept based on the feedback we get.
       if ( !EEQueryParameters.ADJUST_EXPRESSION_WIDTH ) {
 
-        var width = maxCoinTermWidth;
+        var width = Math.max( coinImageNode.width, termText.width, termWithVariableValuesText.width );
 
         if ( coefficientText.visible || coinTerm.combinedCount > 1 ) {
           width += coefficientText.width + COEFFICIENT_X_SPACING;
