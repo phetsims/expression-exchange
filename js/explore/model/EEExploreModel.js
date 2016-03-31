@@ -159,30 +159,33 @@ define( function( require ) {
       // TODO: Revisit this and verify that this doesn't leak memory
 
       // add a handler for when the expression is released, which may cause it to be combined with another expression
-      addedExpression.userControlledProperty.onValue( false, function() {
+      addedExpression.userControlledProperty.lazyLink( function( userControlled ) {
 
-        // check for overlap with other expressions, if there is one or more, combine with the one with the most overlap
-        var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( addedExpression );
-        if ( mostOverlappingExpression ) {
+        if ( !userControlled ){
 
-          // remove the expression from the list of those hovering
-          mostOverlappingExpression.removeHoveringExpression( addedExpression );
+          // check for overlap with other expressions, if there is one or more, combine with the one with the most overlap
+          var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( addedExpression );
+          if ( mostOverlappingExpression ) {
 
-          // send the combining expression to the right side of receiving expression
-          addedExpression.travelToDestination( mostOverlappingExpression.upperLeftCorner.plusXY( mostOverlappingExpression.width, 0 ) );
+            // remove the expression from the list of those hovering
+            mostOverlappingExpression.removeHoveringExpression( addedExpression );
 
-          // Listen for when the expression is in place and, when it is, transfer its coin terms to the receiving expression.
-          addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener(){
-            var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
-            self.expressions.remove( addedExpression );
-            coinTermsToBeMoved.forEach( function( coinTerm ){
-              mostOverlappingExpression.addCoinTerm( coinTerm );
+            // send the combining expression to the right side of receiving expression
+            addedExpression.travelToDestination( mostOverlappingExpression.upperLeftCorner.plusXY( mostOverlappingExpression.width, 0 ) );
+
+            // Listen for when the expression is in place and, when it is, transfer its coin terms to the receiving expression.
+            addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener(){
+              var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
+              self.expressions.remove( addedExpression );
+              coinTermsToBeMoved.forEach( function( coinTerm ){
+                mostOverlappingExpression.addCoinTerm( coinTerm );
+              } );
+              addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
+              // TODO: I haven't thought through and added handling for the case where a reset occurs during the course
+              // TODO: of this animation.  How does the listener get removed in that case, or does it even have to?  I'll
+              // TODO: need to do that at some point.
             } );
-            addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
-            // TODO: I haven't thought through and added handling for the case where a reset occurs during the course
-            // TODO: of this animation.  How does the listener get removed in that case, or does it even have to?  I'll
-            // TODO: need to do that at some point.
-          } );
+          }
         }
       } );
     } );
