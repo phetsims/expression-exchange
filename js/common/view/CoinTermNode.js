@@ -71,27 +71,29 @@ define( function( require ) {
     rootNode.addChild( coinValueText );
 
     // control the coin value text visibility
-    var coinValueVisibleProperty = new DerivedProperty( [ viewModeProperty, showCoinValuesProperty ],
+    var coinValueVisibleProperty = new DerivedProperty(
+      [ viewModeProperty, showCoinValuesProperty ],
       function( viewMode, showCoinValues ) {
         return ( viewMode === ViewMode.COINS && showCoinValues );
-      } );
+      }
+    );
     coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
 
     // add the 'term' text, e.g. xy
-    var termText = new SubSupText( coinTerm.termText, {
-      font: TERM_AND_VALUE_FONT,
-      center: coinCenter
-    } );
+    var termText = new SubSupText( coinTerm.termText, { font: TERM_AND_VALUE_FONT } );
     // TODO: Can I dilate the mouse and touch areas in the constructor?
     termText.mouseArea = termText.bounds.dilated( 10 );
     termText.touchArea = termText.bounds.dilated( 10 );
+    termText.center = coinCenter;
     rootNode.addChild( termText );
 
     // control the term text visibility
-    var termTextVisibleProperty = new DerivedProperty( [ viewModeProperty, showVariableValuesProperty ],
+    var termTextVisibleProperty = new DerivedProperty(
+      [ viewModeProperty, showVariableValuesProperty ],
       function( viewMode, showVariableValues ) {
         return ( viewMode === ViewMode.VARIABLES && !showVariableValues );
-      } );
+      }
+    );
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
 
     // Add the text that includes the variable values.  This can change, so it starts off blank.
@@ -115,10 +117,12 @@ define( function( require ) {
     coinTerm.termValueTextProperty.link( updateTermValueText );
 
     // control the visibility of the value text
-    var variableTextVisibleProperty = new DerivedProperty( [ viewModeProperty, showVariableValuesProperty ],
+    var variableTextVisibleProperty = new DerivedProperty(
+      [ viewModeProperty, showVariableValuesProperty ],
       function( viewMode, showVariableValues ) {
         return ( viewMode === ViewMode.VARIABLES && showVariableValues );
-      } );
+      }
+    );
     variableTextVisibleProperty.linkAttribute( termWithVariableValuesText, 'visible' );
 
     // add the coefficient value

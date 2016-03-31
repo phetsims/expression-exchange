@@ -111,6 +111,9 @@ define( function( require ) {
         }
 
         backgroundShape.close();
+        if ( !backgroundPath.visible ){
+          backgroundPath.visible = true;
+        }
         backgroundPath.shape = null;
         backgroundPath.shape = backgroundShape;
 
@@ -128,10 +131,7 @@ define( function( require ) {
       }
       else {
         // no terms in this expression, so no background should be shown
-        if ( backgroundPath !== null ) {
-          self.removeChild( backgroundPath );
-          backgroundPath = null;
-        }
+        backgroundPath.visible = false;
       }
     }
 

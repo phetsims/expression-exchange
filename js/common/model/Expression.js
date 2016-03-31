@@ -81,8 +81,7 @@ define( function( require ) {
       anchorCoinTerm.position.y - this.height / 2
     );
 
-    // create the bounds that will be used to decide if coin terms or other expressions are in a position to join this one
-    // @private
+    // @private, bounds that will be used to decide if coin terms or other expressions are in a position to join this one
     this.joinZone = new Bounds2(
       this.upperLeftCorner.x - this.height,
       this.upperLeftCorner.y,
@@ -103,6 +102,15 @@ define( function( require ) {
 
     // add the second coin term
     this.addCoinTerm( floatingCoinTerm );
+
+    // add a listener that will immediately finish animations for incoming coin terms if expression is grabbed
+    this.userControlledProperty.onValue( true, function(){
+      self.coinTerms.forEach( function( coinTerm ){
+        if ( coinTerm.inProgressAnimation ){
+          coinTerm.goImmediatelyToDestination();
+        }
+      } );
+    } );
   }
 
   return inherit( PropertySet, Expression, {
@@ -261,8 +269,15 @@ define( function( require ) {
         xDestination = this.upperLeftCorner.x + INSET - coinTerm.relativeViewBounds.minX;
       }
 
-      // animate to the new location
-      coinTerm.travelToDestination( new Vector2( xDestination, this.upperLeftCorner.y + this.height / 2 ) );
+      var destination = new Vector2( xDestination, this.upperLeftCorner.y + this.height / 2 );
+      if ( !this.userControlled ){
+        // animate to the new location
+        coinTerm.travelToDestination( destination );
+      }
+      else{
+        // if this expression is being moved by the user, don't animate - it won't end well
+        coinTerm.setPositionAndDestination( destination );
+      }
 
       // add a listener to resize the expression if this coin term's bound changes
       coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );

@@ -1,7 +1,8 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * a node that is placed on the top layer of an expression to allow it to be dragged
+ * a node that is placed on the top layer of an expression to allow it to be dragged and to prevent input events from
+ * getting to the constituents of the expression
  *
  * @author John Blanco
  */
@@ -19,7 +20,7 @@ define( function( require ) {
   /**
    * @param {Expression} expression - model of an expression
    * @param {Bounds2} layoutBounds
- * @constructor
+   * @constructor
    */
   function ExpressionOverlayNode( expression, layoutBounds ) {
 
@@ -32,11 +33,11 @@ define( function( require ) {
 
     function updateShape() {
       shape = new Shape.rect( 0, 0, expression.width, expression.height );
-      if ( !path ){
+      if ( !path ) {
         path = new Path( shape, { fill: 'rgba( 255, 255, 255, 0.01 )' } ); // TODO: this works great, but review with JO to see if there is a better way
         self.addChild( path );
       }
-      else{
+      else {
         path.shape = shape;
       }
     }
@@ -45,7 +46,7 @@ define( function( require ) {
     Property.multilink( [ expression.widthProperty, expression.heightProperty ], updateShape );
 
     // update the position as the expression moves
-    expression.upperLeftCornerProperty.link( function( upperLeftCorner ){
+    expression.upperLeftCornerProperty.link( function( upperLeftCorner ) {
       self.left = upperLeftCorner.x;
       self.top = upperLeftCorner.y;
     } );
@@ -59,7 +60,7 @@ define( function( require ) {
         expression.userControlled = true;
       },
 
-      translate: function( translateParams ){
+      translate: function( translateParams ) {
         expression.translate( translateParams.delta.x, translateParams.delta.y );
       },
 
@@ -70,11 +71,11 @@ define( function( require ) {
     } );
 
     // the drag handler is removed if an animation is in progress to prevent problematic race conditions
-    expression.inProgressAnimationProperty.link( function( inProgressAnimation ){
-      if ( inProgressAnimation ){
+    expression.inProgressAnimationProperty.link( function( inProgressAnimation ) {
+      if ( inProgressAnimation ) {
         self.removeInputListener( dragHandler );
       }
-      else{
+      else {
         self.addInputListener( dragHandler );
       }
     } );

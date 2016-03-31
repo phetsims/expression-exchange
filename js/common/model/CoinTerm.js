@@ -95,10 +95,24 @@ define( function( require ) {
     /**
      * set both the position and destination in such a way that no animation is initiated
      * @param position
+     * @public
      */
     setPositionAndDestination: function( position ){
       this.position = position;
       this.destination = position;
+    },
+
+    /**
+     * make the coin term cancel any in progress animation and go immediately to the current destination
+     * @public
+     */
+    goImmediatelyToDestination: function(){
+      if ( this.inProgressAnimation ){
+        // TODO: replace .stop with .cancel once TWEEN is upgraded
+        this.inProgressAnimation.stop();
+        this.inProgressAnimation = null;
+        this.position = this.destination;
+      }
     },
 
     /**

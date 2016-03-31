@@ -171,8 +171,7 @@ define( function( require ) {
           // send the combining expression to the right side of receiving expression
           addedExpression.travelToDestination( mostOverlappingExpression.upperLeftCorner.plusXY( mostOverlappingExpression.width, 0 ) );
 
-          // Listen for when the expression is in place and, when it gets there, transfer its coin terms to the
-          // receiving expression.
+          // Listen for when the expression is in place and, when it is, transfer its coin terms to the receiving expression.
           addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener(){
             var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
             self.expressions.remove( addedExpression );
