@@ -90,6 +90,7 @@ define( function( require ) {
           // check first for overlap with expressions
           var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
           if ( mostOverlappingExpression ) {
+            console.log( 'adding ' + addedCoinTerm.id + ' to ' + mostOverlappingExpression.id  );
             mostOverlappingExpression.addCoinTerm( addedCoinTerm );
           }
           else {
@@ -178,6 +179,7 @@ define( function( require ) {
               var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
               self.expressions.remove( addedExpression );
               coinTermsToBeMoved.forEach( function( coinTerm ){
+                console.log( 'moving ' + coinTerm.id + ' from ' + addedExpression.id + ' to ' + mostOverlappingExpression.id  );
                 mostOverlappingExpression.addCoinTerm( coinTerm );
               } );
               addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );

@@ -28,11 +28,16 @@ define( function( require ) {
   var coinYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
   var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
 
+  // TODO: class var for creating unique IDs, remove this when sim is fully functional and debugged
+  var creationCount = 0;
+
   /**
    * TODO: document parameters thoroughly once finalized.  Make sure to note requirement for subSupText format of some of the string values.
    * @constructor
    */
   function CoinTerm( coinValue, coinDiameter, coinFrontImage, termText, termValueTextProperty, options ) {
+
+    this.id = 'CT-' + (++creationCount);
 
     options = _.extend( {
       initialCount: 1,

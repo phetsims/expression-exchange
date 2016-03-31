@@ -23,6 +23,9 @@ define( function( require ) {
   var INSET = 10; // space around coin terms, empirically determined
   var ANIMATION_SPEED = 400; // in model units (which are basically screen coordinates) per second
 
+  // TODO: class var for creating unique IDs, remove this when sim is fully functional and debugged
+  var creationCount = 0;
+
   /**
    * @param {CoinTerm} anchorCoinTerm
    * @param {CoinTerm} floatingCoinTerm
@@ -31,6 +34,8 @@ define( function( require ) {
   function Expression( anchorCoinTerm, floatingCoinTerm ) {
 
     var self = this;
+    this.id = 'Ex-' + (++creationCount);
+    console.log( 'creating ' + this.id + ' with anchor = ' + anchorCoinTerm.id + ' and floating = ' + floatingCoinTerm.id );
 
     PropertySet.call( this, {
       upperLeftCorner: Vector2.ZERO, // @public (read only)
