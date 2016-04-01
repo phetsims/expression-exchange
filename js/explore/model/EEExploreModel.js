@@ -437,7 +437,7 @@ define( function( require ) {
       var joinableFreeCoinTerm = null;
       var self = this;
       this.coinTerms.forEach( function( ct ) {
-        if ( ct !== testCoinTerm && !self.isCoinTermInExpression( ct ) ) {
+        if ( ct !== testCoinTerm && !self.isCoinTermInExpression( ct ) && !ct.inProgressAnimation ) {
           // test if the provided coin term is in one of the compare coin term's "expression combine zones"
           if ( self.isCoinTermInExpressionCombineZone( testCoinTerm, ct ) ) {
             if ( !joinableFreeCoinTerm || ( joinableFreeCoinTerm.position.distance( ct ) < joinableFreeCoinTerm.position.distance( testCoinTerm ) ) ) {
