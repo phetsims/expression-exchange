@@ -82,9 +82,9 @@ define( function( require ) {
     // add the 'term' text, e.g. xy
     var termText = new SubSupText( coinTerm.termText, { font: TERM_AND_VALUE_FONT } );
     // TODO: Can I dilate the mouse and touch areas in the constructor?
-    termText.mouseArea = termText.bounds.dilated( 10 );
-    termText.touchArea = termText.bounds.dilated( 10 );
     termText.center = coinCenter;
+    termText.mouseArea = termText.localBounds.dilated( 10 );
+    termText.touchArea = termText.localBounds.dilated( 10 );
     rootNode.addChild( termText );
 
     // control the term text visibility
@@ -109,8 +109,8 @@ define( function( require ) {
       }
       termWithVariableValuesText.text = termValueText;
       termWithVariableValuesText.center = coinCenter;
-      termWithVariableValuesText.mouseArea = termWithVariableValuesText.bounds.dilated( 10 );
-      termWithVariableValuesText.touchArea = termWithVariableValuesText.bounds.dilated( 10 );
+      termWithVariableValuesText.mouseArea = termWithVariableValuesText.localBounds.dilated( 10 );
+      termWithVariableValuesText.touchArea = termWithVariableValuesText.localBounds.dilated( 10 );
     }
 
     // update the variable text when it changes, which is triggered by changes to the underlying variable values

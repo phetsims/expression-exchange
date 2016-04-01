@@ -84,6 +84,11 @@ define( function( require ) {
       var self = this;
       this.destination = destination;
       var movementTime = self.position.distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
+      if ( this.inProgressAnimation ){
+        // an animation was in progress - cancel it and start a new one
+        this.inProgressAnimation.stop();
+        this.inProgressAnimation = null;
+      }
       this.inProgressAnimation = new TWEEN.Tween( { x: this.position.x, y: this.position.y } )
         .to( { x: destination.x, y: destination.y }, movementTime )
         .easing( TWEEN.Easing.Cubic.InOut )

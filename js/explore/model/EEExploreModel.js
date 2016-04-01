@@ -340,7 +340,9 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingExpression = null;
       this.expressions.forEach( function( expression ) {
-        if ( !expression.userControlled && expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
+        if ( !expression.userControlled && // exclude expressions that are being moved by a user
+             !expression.inProgressAnimation && // exclude expressions that are animating to a destination
+             expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
           mostOverlappingExpression = expression;
         }
       } );
@@ -357,7 +359,9 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingExpression = null;
       this.expressions.forEach( function( testExpression ) {
-        if ( testExpression !== expression && !testExpression.userControlled &&
+        if ( testExpression !== expression &&
+             !testExpression.userControlled && // exclude expressions that are being moved by a user
+             !testExpression.inProgressAnimation && // exclude expressions that are moving somewhere
              expression.getExpressionOverlap( testExpression ) > maxOverlap ) {
           mostOverlappingExpression = testExpression;
         }
@@ -409,6 +413,20 @@ define( function( require ) {
     },
 
     /**
+     * returns true if coin term is currently part of an expression
+     * @param {CoinTerm} coinTerm
+     * @public
+     */
+    isCoinTermInExpression: function( coinTerm ){
+      for ( var i = 0; i < this.expressions.length; i++ ){
+        if ( this.expressions.get( i ).containsCoinTerm( coinTerm ) ){
+          return true;
+        }
+      }
+      return false;
+    },
+
+    /**
      * Check for coin terms that are not already in expressions that are positioned such that they could combine with
      * the provided coin into an expression.  If more than one possibility exists, the closest is returned.  If none
      * are found, null is returned.
@@ -431,19 +449,15 @@ define( function( require ) {
       return joinableFreeCoinTerm;
     },
 
-    // @private - check if the given cointerm is currently part of an expression
-    isCoinTermInExpression: function( coinTerm ) {
-      // TODO: implement
-      return false;
-    },
-
     // @private, gets a list of coins that overlap with the provided coin
     getOverlappingCoinTerms: function( coinTerm ) {
       assert && assert( this.coinTerms.contains( coinTerm ), 'overlap requested for something that is not in model' );
       var self = this;
       var overlappingCoinTerms = [];
       this.coinTerms.forEach( function( potentiallyOverlappingCoinTerm ) {
-        if ( coinTerm !== potentiallyOverlappingCoinTerm && !potentiallyOverlappingCoinTerm.userControlled &&
+        if ( coinTerm !== potentiallyOverlappingCoinTerm &&
+             !potentiallyOverlappingCoinTerm.userControlled && // exclude coin terms that are being moved by a user
+             !self.isCoinTermInExpression( potentiallyOverlappingCoinTerm ) && // exclude coin terms that are in expressions
              self.doCoinTermsOverlap( coinTerm, potentiallyOverlappingCoinTerm ) ) {
           overlappingCoinTerms.push( potentiallyOverlappingCoinTerm );
         }

@@ -288,9 +288,18 @@ define( function( require ) {
       coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
     },
 
+    // @public
     removeCoinTerm: function( coinTerm ) {
       this.coinTerms.remove( coinTerm );
       coinTerm.relativeViewBoundsProperty.unlink( this.setResizeFlagFunction );
+    },
+
+    /**
+     *
+     * @param coinTerm
+     */
+    containsCoinTerm: function( coinTerm ){
+      return this.coinTerms.contains( coinTerm );
     },
 
     /**
