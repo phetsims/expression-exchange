@@ -234,6 +234,7 @@ define( function( require ) {
       clearHideButtonTimer(); // just in case one is already running
       hideButtonTimer = Timer.setTimeout( function() {
         showBreakApartButton( false );
+        hideButtonTimer = null;
       }, 2000 );
     }
 
@@ -261,12 +262,8 @@ define( function( require ) {
       breakApartButton.visible = false;
 
       // cancel any running timers
-      if ( showButtonTimer ) {
-        clearShowButtonTimer();
-      }
-      if ( hideButtonTimer ) {
-        clearHideButtonTimer();
-      }
+      clearShowButtonTimer();
+      clearHideButtonTimer();
     } );
 
     // keep the button showing if the user is over it
@@ -306,8 +303,8 @@ define( function( require ) {
       // variable to track where drag started
       var dragStartPosition;
 
-      // Add the listener that will allow the user to drag the coin around.  This is added only to the node that contains
-      // the term elements, not the button, so that the button won't affect userControlled or be draggable.
+      // Add the listener that will allow the user to drag the coin around.  This is added only to the node that
+      // contains the term elements, not the button, so that the button won't affect userControlled or be draggable.
       rootNode.addInputListener( new SimpleDragHandler( {
 
         // allow moving a finger (touch) across a node to pick it up
@@ -319,7 +316,12 @@ define( function( require ) {
 
           // if this is a multi-count coin term, start a timer to show the break apart button
           if ( coinTerm.combinedCount > 1 ) {
-            clearHideButtonTimer(); // just in case one is running
+
+            // clear any timers that are running already
+            clearHideButtonTimer();
+            clearShowButtonTimer();
+
+            // start a timer to show the button if the user presses and holds
             startShowButtonTimer();
           }
         },
@@ -346,19 +348,17 @@ define( function( require ) {
         end: function( event, trail ) {
           coinTerm.userControlled = false;
 
-          if ( coinTerm.combinedCount > 1 && !breakApartButton.visible &&
+          if ( coinTerm.combinedCount > 1 &&
                coinTerm.position.distance( dragStartPosition ) < DRAG_BEFORE_BREAK_BUTTON_FADES ) {
 
             // the user clicked on the coin term without moving it (much), so show the break apart button
             showBreakApartButton( true );
 
+            // cancel timer for showing button if active
+            clearShowButtonTimer();
+
             // start a timer to hide the button if not interacted with
             startHideButtonTimer();
-
-            // cancel timer for showing button if active
-            if ( showButtonTimer ) {
-              clearShowButtonTimer();
-            }
           }
         }
       } ) );
