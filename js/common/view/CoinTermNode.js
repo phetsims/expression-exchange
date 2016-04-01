@@ -174,9 +174,10 @@ define( function( require ) {
 
       var relativeVisibleBounds = self.visibleLocalBounds.shifted( -coinTerm.coinDiameter / 2, -coinTerm.coinDiameter / 2 );
 
-      // TODO: The following is some temporary code to try out making the overall bounds remain the same for the two
-      // TODO: different view modes so that the expressions don't expand/collapse as the modes change.  This will need
-      // TODO: to be moved out or kept based on the feedback we get.
+      // TODO:  The following is some temporary code to try out making the overall bounds remain the same for the two
+      // TODO:  different view modes so that the expressions don't expand/collapse as the modes change.  This will need
+      // TODO:  to be moved out or kept based on the feedback we get.  See
+      // TODO:  https://github.com/phetsims/expression-exchange/issues/10
       if ( !EEQueryParameters.ADJUST_EXPRESSION_WIDTH ) {
 
         var width = Math.max( coinImageNode.width, termText.width, termWithVariableValuesText.width );
@@ -259,7 +260,7 @@ define( function( require ) {
       coinTerm.breakApart();
 
       // hide the button after clicking
-      breakApartButton.visible = false;
+      showBreakApartButton( false );
 
       // cancel any running timers
       clearShowButtonTimer();
@@ -289,6 +290,7 @@ define( function( require ) {
         breakApartButton.center = coinCenter;
         breakApartButton.visible = false;
       }
+      updateBoundsInModel();
     }
 
     // move this node as the model representation moves
