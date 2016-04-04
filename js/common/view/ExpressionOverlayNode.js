@@ -16,13 +16,15 @@ define( function( require ) {
   var Path = require( 'SCENERY/nodes/Path' );
   var Property = require( 'AXON/Property' );
   var Shape = require( 'KITE/Shape' );
+  var Util = require( 'DOT/Util' );
+  var Vector2 = require( 'DOT/Vector2' );
 
   /**
    * @param {Expression} expression - model of an expression
-   * @param {Bounds2} layoutBounds
+   * @param {Bounds2} dragBounds
    * @constructor
    */
-  function ExpressionOverlayNode( expression, layoutBounds ) {
+  function ExpressionOverlayNode( expression, dragBounds ) {
 
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
@@ -51,6 +53,10 @@ define( function( require ) {
       self.top = upperLeftCorner.y;
     } );
 
+    // pre-allocated vectors, used for calculating allowable locations for the extpression
+    var unboundedUpperLeftCornerPosition = new Vector2();
+    var boundedUpperLeftCornerPosition = new Vector2();
+
     var dragHandler = new SimpleDragHandler( {
 
       // when dragging across it in a mobile device, pick it up
@@ -58,10 +64,20 @@ define( function( require ) {
 
       start: function() {
         expression.userControlled = true;
+        unboundedUpperLeftCornerPosition.set( expression.upperLeftCorner );
+        boundedUpperLeftCornerPosition.set( unboundedUpperLeftCornerPosition );
       },
 
-      translate: function( translateParams ) {
-        expression.translate( translateParams.delta.x, translateParams.delta.y );
+      translate: function( translationParams ) {
+        unboundedUpperLeftCornerPosition.setXY(
+          unboundedUpperLeftCornerPosition.x + translationParams.delta.x,
+          unboundedUpperLeftCornerPosition.y + translationParams.delta.y
+        );
+
+        expression.setPositionAndDestination( new Vector2(
+          Util.clamp( unboundedUpperLeftCornerPosition.x, dragBounds.minX, dragBounds.maxX - expression.width ),
+          Util.clamp( unboundedUpperLeftCornerPosition.y, dragBounds.minY, dragBounds.maxY - expression.height )
+        ) );
       },
 
       end: function() {

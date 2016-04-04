@@ -374,6 +374,18 @@ define( function( require ) {
     },
 
     /**
+     * set both the position and destination of the upper left corner immediately, i.e. without animation
+     * @param {Vector2} upperLeftCornerDestination
+     * @public
+     */
+    setPositionAndDestination: function( upperLeftCornerDestination ){
+      this.translate(
+        upperLeftCornerDestination.x - this.upperLeftCorner.x,
+        upperLeftCornerDestination.y - this.upperLeftCorner.y
+      );
+    },
+
+    /**
      * get the amount of overlap between the provided coin term's bounds and this expression's "join zone"
      * @param {CoinTerm} coinTerm
      */
