@@ -226,7 +226,7 @@ define( function( require ) {
       // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
       // from the model.
       addedCoinTerm.userControlledProperty.onValue( false, function() {
-        if ( coinNode.bounds.intersectsBounds( carousel.bounds ) ) {
+        if ( coinNode.bounds.intersectsBounds( carousel.bounds ) && !exploreModel.isCoinTermInExpression( addedCoinTerm ) ) {
           exploreModel.removeCoinTerm( addedCoinTerm );
         }
       } );
