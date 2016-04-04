@@ -142,7 +142,11 @@ define( function( require ) {
     // add the carousel that will contain the various coins and expressions
     var carousel = new Carousel(
       [
-        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.X( exploreModel.xTermValueProperty ); } ),
+        new CoinTermCreatorNode(
+          exploreModel,
+          function() { return new CoinTerm.X( exploreModel.xTermValueProperty ); },
+          { dragBounds: this.layoutBounds }
+        ),
         new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.Y( exploreModel.yTermValueProperty ); } ),
         new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.Z( exploreModel.zTermValueProperty ); } ),
         new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.X( exploreModel.xTermValueProperty, 2 ); } ),
@@ -219,7 +223,7 @@ define( function( require ) {
         exploreModel.showCoinValuesProperty,
         exploreModel.showVariableValuesProperty,
         exploreModel.showAllCoefficientsProperty,
-        true
+        { addDragHandler: true, dragBounds: self.layoutBounds }
       );
       coinLayer.addChild( coinNode );
 

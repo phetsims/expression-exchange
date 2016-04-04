@@ -4,12 +4,15 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Property = require( 'AXON/Property' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
+  var Util = require( 'DOT/Util' );
+  var Vector2 = require( 'DOT/Vector2' );
 
   /**
    * @param {EEExploreModel} exploreModel - model where coins are to be added
@@ -22,13 +25,17 @@ define( function( require ) {
    * @constructor
    */
   function CoinTermCreatorNode( exploreModel, creatorFunction, options ) {
-    Node.call( this, { pickable: true, cursor: 'pointer' } );
-    var self = this;
+
     options = _.extend( {
+
+      dragBounds: Bounds2.EVERYTHING,
 
       // max number of coin terms that this can create
       creationLimit: Number.POSITIVE_INFINITY
     }, options );
+
+    Node.call( this, { pickable: true, cursor: 'pointer' } );
+    var self = this;
 
     // add the coin node that will be clicked upon to create coins of the same denomination
     var coinNode = new CoinTermNode(
@@ -37,7 +44,7 @@ define( function( require ) {
       exploreModel.showCoinValuesProperty,
       exploreModel.showVariableValuesProperty,
       exploreModel.showAllCoefficientsProperty,
-      false
+      { addDragHandler: false }
     );
     this.addChild( coinNode );
 
@@ -50,8 +57,10 @@ define( function( require ) {
 
     var parentScreenView = null; // needed for coordinate transforms
     var createdCoinTerm;
+    var unboundedPosition = new Vector2();
 
     // add the listener that will allow the user to click on this node and create a new coin, then position it in the model
+    // TODO: Look at applying the "event forwarding" approach to send events to view object instead of having a separate handler
     this.addInputListener( new SimpleDragHandler( {
 
       // allow moving a finger (on a touchscreen) dragged across this node to interact with it
@@ -79,6 +88,7 @@ define( function( require ) {
         createdCoinTerm.setPositionAndDestination( initialPosition );
         createdCoinTerm.userControlled = true;
         exploreModel.addCoinTerm( createdCoinTerm );
+        unboundedPosition.set( initialPosition );
 
         // If the creation count is limited, adjust the value and monitor the created shape for if/when it is returned.
         if ( options.creationLimit < Number.POSITIVE_INFINITY ) {
@@ -98,7 +108,14 @@ define( function( require ) {
       },
 
       translate: function( translationParams ) {
-        createdCoinTerm.setPositionAndDestination( createdCoinTerm.position.plus( translationParams.delta ) );
+        unboundedPosition.setXY(
+          unboundedPosition.x + translationParams.delta.x,
+          unboundedPosition.y + translationParams.delta.y
+        );
+        createdCoinTerm.setPositionAndDestination( new Vector2(
+          Util.clamp( unboundedPosition.x, options.dragBounds.minX, options.dragBounds.maxX ),
+          Util.clamp( unboundedPosition.y, options.dragBounds.minY, options.dragBounds.maxY )
+        )  );
       },
 
       end: function( event, trail ) {

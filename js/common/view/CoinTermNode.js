@@ -9,7 +9,9 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var Bounds2 = require( 'DOT/Bounds2' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
+  var Util = require( 'DOT/Util' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -43,7 +45,13 @@ define( function( require ) {
    * @constructor
    */
   function CoinTermNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty,
-                         showAllCoefficientsProperty, addDragHandler ) {
+                         showAllCoefficientsProperty, options ) {
+
+    options = _.extend( {}, {
+      addDragHandler: true,
+      dragBounds: Bounds2.EVERYTHING
+    }, options );
+
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
@@ -300,70 +308,84 @@ define( function( require ) {
       self.y = position.y - coinCenter.y;
     } );
 
-    if ( addDragHandler ) {
+    if ( options.addDragHandler ) {
 
       // variable to track where drag started
       var dragStartPosition;
+
+      // vector for calculations, allocated here to avoid an allocation on every drag event
+      var unboundedPosition = new Vector2();
 
       // Add the listener that will allow the user to drag the coin around.  This is added only to the node that
       // contains the term elements, not the button, so that the button won't affect userControlled or be draggable.
       rootNode.addInputListener( new SimpleDragHandler( {
 
-        // allow moving a finger (touch) across a node to pick it up
-        allowTouchSnag: true,
+          // allow moving a finger (touch) across a node to pick it up
+          allowTouchSnag: true,
 
-        start: function( event, trail ) {
-          coinTerm.userControlled = true;
-          dragStartPosition = coinTerm.position;
+          start: function( event, trail ) {
+            coinTerm.userControlled = true;
+            dragStartPosition = coinTerm.position;
+            unboundedPosition.set( dragStartPosition );
 
-          // if this is a multi-count coin term, start a timer to show the break apart button
-          if ( coinTerm.combinedCount > 1 ) {
+            // if this is a multi-count coin term, start a timer to show the break apart button
+            if ( coinTerm.combinedCount > 1 ) {
 
-            // clear any timers that are running already
-            clearHideButtonTimer();
-            clearShowButtonTimer();
-
-            // start a timer to show the button if the user presses and holds
-            startShowButtonTimer();
-          }
-        },
-
-        // handler that moves the shape in model space
-        translate: function( translationParams ) {
-          coinTerm.setPositionAndDestination( coinTerm.position.plus( translationParams.delta ) );
-
-          // update the state of the break apart button and associated timers
-          if ( coinTerm.combinedCount > 1 && coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ) {
-            if ( breakApartButton.visible ) {
-              // the button was already visible, so hide it
-              showBreakApartButton( false );
+              // clear any timers that are running already
               clearHideButtonTimer();
-            }
-            else if ( showButtonTimer ) {
               clearShowButtonTimer();
+
+              // start a timer to show the button if the user presses and holds
+              startShowButtonTimer();
             }
-          }
+          },
 
-          return translationParams.position;
-        },
+          // handler that moves the shape in model space
+          translate: function( translationParams ) {
 
-        end: function( event, trail ) {
-          coinTerm.userControlled = false;
+            unboundedPosition.setXY(
+              unboundedPosition.x + translationParams.delta.x,
+              unboundedPosition.y + translationParams.delta.y
+            );
 
-          if ( coinTerm.combinedCount > 1 &&
-               coinTerm.position.distance( dragStartPosition ) < DRAG_BEFORE_BREAK_BUTTON_FADES ) {
+            coinTerm.setPositionAndDestination( new Vector2(
+              Util.clamp( unboundedPosition.x, options.dragBounds.minX, options.dragBounds.maxX ),
+              Util.clamp( unboundedPosition.y, options.dragBounds.minY, options.dragBounds.maxY )
+            ) );
 
-            // the user clicked on the coin term without moving it (much), so show the break apart button
-            showBreakApartButton( true );
+            // update the state of the break apart button and associated timers
+            if ( coinTerm.combinedCount > 1 && coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ) {
+              if ( breakApartButton.visible ) {
+                // the button was already visible, so hide it
+                showBreakApartButton( false );
+                clearHideButtonTimer();
+              }
+              else if ( showButtonTimer ) {
+                clearShowButtonTimer();
+              }
+            }
 
-            // cancel timer for showing button if active
-            clearShowButtonTimer();
+            return translationParams.position;
+          },
 
-            // start a timer to hide the button if not interacted with
-            startHideButtonTimer();
+          end: function( event, trail ) {
+            coinTerm.userControlled = false;
+
+            if ( coinTerm.combinedCount > 1 &&
+                 coinTerm.position.distance( dragStartPosition ) < DRAG_BEFORE_BREAK_BUTTON_FADES ) {
+
+              // the user clicked on the coin term without moving it (much), so show the break apart button
+              showBreakApartButton( true );
+
+              // cancel timer for showing button if active
+              clearShowButtonTimer();
+
+              // start a timer to hide the button if not interacted with
+              startHideButtonTimer();
+            }
           }
         }
-      } ) );
+      ) );
     }
 
     // add a listener that will pop this coin to the front when selected by the user
@@ -384,4 +406,5 @@ define( function( require ) {
   }
 
   return inherit( Node, CoinTermNode );
-} );
+} )
+;
