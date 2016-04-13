@@ -259,6 +259,14 @@ define( function( require ) {
       var expressionOverlayNode = new ExpressionOverlayNode( addedExpression, self.layoutBounds );
       expressionOverlayLayer.addChild( expressionOverlayNode );
 
+      // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
+      // from the model.
+      addedExpression.userControlledProperty.onValue( false, function() {
+        if ( addedExpression.getBounds().intersectsBounds( carousel.bounds ) ) {
+          exploreModel.removeExpression( addedExpression );
+        }
+      } );
+
       // set up a listener to remove these nodes when the corresponding expression is removed from the model
       exploreModel.expressions.addItemRemovedListener( function removalListener( removedExpression ) {
         if ( removedExpression === addedExpression ) {

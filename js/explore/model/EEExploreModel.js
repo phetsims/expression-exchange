@@ -326,8 +326,17 @@ define( function( require ) {
     },
 
     // @public TODO this will likely be made more fancy at some point, i.e. will include some animation
-    removeCoinTerm: function( coinTerm ) {
-      this.coinTerms.remove( coinTerm );
+    removeCoinTerm: function( coinTerm ) { this.coinTerms.remove( coinTerm );
+    },
+
+    // @public - remove the specified expression
+    removeExpression: function( expression ){
+      var self = this;
+      var coinTermsToRemove = expression.removeAllCoinTerms();
+      coinTermsToRemove.forEach( function( coinTerm ){
+        self.removeCoinTerm( coinTerm );
+      } );
+      this.expressions.remove( expression );
     },
 
     /**
