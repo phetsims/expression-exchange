@@ -39,7 +39,7 @@ define( function( require ) {
 
     // add the coin node that will be clicked upon to create coins of the same denomination
     var coinNode = new CoinTermNode(
-      creatorFunction(),
+      creatorFunction( Vector2.ZERO ),
       exploreModel.viewModeProperty,
       exploreModel.showCoinValuesProperty,
       exploreModel.showVariableValuesProperty,
@@ -84,7 +84,7 @@ define( function( require ) {
         var initialPosition = parentScreenView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new model element
-        createdCoinTerm = creatorFunction();
+        createdCoinTerm = creatorFunction( initialPosition );
         createdCoinTerm.setPositionAndDestination( initialPosition );
         createdCoinTerm.userControlled = true;
         exploreModel.addCoinTerm( createdCoinTerm );

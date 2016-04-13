@@ -37,6 +37,7 @@ define( function( require ) {
    */
   function CoinTerm( coinValue, coinDiameter, coinFrontImage, termText, termValueTextProperty, options ) {
 
+    var self = this;
     this.id = 'CT-' + (++creationCount);
 
     options = _.extend( {
@@ -70,8 +71,21 @@ define( function( require ) {
     // @public, listen only, emits an event when an animation finishes and the destination is reached
     this.destinationReachedEmitter = new Emitter();
 
+    // @public, listen only, emits an event when coin terms returns to original position and is not user controlled
+    this.returnedToOriginEmitter = new Emitter();
+
     // @public, listen only, emits an event when this coin term should be broken apart
     this.breakApartEmitter = new Emitter();
+
+    // @private, used when animating back to original position
+    this.initialPosition = options.initialPosition;
+
+    // monitor position, emit returned to origin event when appropriate
+    this.positionProperty.lazyLink( function( position ){
+      if ( position.equals( self.initialPosition ) && !this.userControlled ){
+        self.returnedToOriginEmitter.emit();
+      }
+    } );
   }
 
   return inherit( PropertySet, CoinTerm, {
@@ -100,6 +114,10 @@ define( function( require ) {
           self.inProgressAnimation = null;
         } )
         .start();
+    },
+
+    returnToOrigin: function(){
+      this.travelToDestination( this.initialPosition );
     },
 
     /**
@@ -157,14 +175,14 @@ define( function( require ) {
 
     /**
      * @param {Property.<number>} xValueProperty
-     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @param {Object} options
      * @returns {CoinTerm}
      * @constructor
      */
-    X: function( xValueProperty, initialCount ){
+    X: function( xValueProperty, options ){
       var termValueTextProperty = new Property();
       xValueProperty.link( function( xValue ){
-        termValueTextProperty.value = xValueProperty.value.toString();
+        termValueTextProperty.value = xValue.toString();
       } );
       return new CoinTerm(
         xValueProperty.value,
@@ -172,20 +190,20 @@ define( function( require ) {
         coinXFrontImage,
         'x',
         termValueTextProperty,
-        { initialCount: initialCount || 1 }
+        options
       );
     },
 
     /**
      * @param {Property.<number>} yValueProperty
-     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @param {Object} options
      * @returns {CoinTerm}
      * @constructor
      */
-    Y: function( yValueProperty, initialCount ){
+    Y: function( yValueProperty, options ){
       var termValueTextProperty = new Property();
       yValueProperty.link( function( yValue ){
-        termValueTextProperty.value = yValueProperty.value.toString();
+        termValueTextProperty.value = yValue.toString();
       } );
       return new CoinTerm(
         yValueProperty.value,
@@ -193,20 +211,20 @@ define( function( require ) {
         coinYFrontImage,
         'y',
         termValueTextProperty,
-        { initialCount: initialCount || 1 }
+        options
       );
     },
 
     /**
      * @param {Property.<number>} zValueProperty
-     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @param {Object} options
      * @returns {CoinTerm}
      * @constructor
      */
-    Z: function( zValueProperty, initialCount ){
+    Z: function( zValueProperty, options ){
       var termValueTextProperty = new Property();
       zValueProperty.link( function( zValue ){
-        termValueTextProperty.value = zValueProperty.value.toString();
+        termValueTextProperty.value = zValue.toString();
       } );
       return new CoinTerm(
         zValueProperty.value,
@@ -214,21 +232,21 @@ define( function( require ) {
         coinZFrontImage,
         'z',
         termValueTextProperty,
-        { initialCount: initialCount || 1 }
+        options
       );
     },
 
     /**
      * @param {Property.<number>} xValueProperty
      * @param {Property.<number>} yValueProperty
-     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @param {Object} options
      * @returns {CoinTerm}
      * @constructor
      */
-    XTimesY: function( xValueProperty, yValueProperty, initialCount ){
+    XTimesY: function( xValueProperty, yValueProperty, options ){
       var termValueTextProperty = new Property();
-      Property.multilink( [ xValueProperty, yValueProperty ], function(){
-        termValueTextProperty.value = xValueProperty.value.toString() + '\u00B7' + yValueProperty.value.toString();
+      Property.multilink( [ xValueProperty, yValueProperty ], function( xValue, yValue ){
+        termValueTextProperty.value = xValue.toString() + '\u00B7' + yValue.toString();
       } );
       return new CoinTerm(
         xValueProperty.value * yValueProperty.value,
@@ -236,20 +254,20 @@ define( function( require ) {
         coinXYFrontImage,
         'xy',
         termValueTextProperty,
-        { initialCount: initialCount || 1 }
+        options
       );
     },
 
     /**
      * @param {Property.<number>} xValueProperty
-     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @param {Object} options
      * @returns {CoinTerm}
      * @constructor
      */
-    XSquared: function( xValueProperty, initialCount ){
+    XSquared: function( xValueProperty, options ){
       var termValueTextProperty = new Property();
       xValueProperty.link( function( xValue ){
-        termValueTextProperty.value = xValueProperty.value.toString() + '<sup>2</sup>';
+        termValueTextProperty.value = xValue.toString() + '<sup>2</sup>';
       } );
       return new CoinTerm(
         xValueProperty.value * xValueProperty.value,
@@ -257,20 +275,20 @@ define( function( require ) {
         coinXSquaredFrontImage,
         'x<sup>2</sup>',
         termValueTextProperty,
-        { initialCount: initialCount || 1 }
+        options
       );
     },
 
     /**
      * @param {Property.<number>} yValueProperty
      * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
-     * @returns {CoinTerm}
+     * @param {Object} options
      * @constructor
      */
-    YSquared: function( yValueProperty, initialCount ){
+    YSquared: function( yValueProperty, options ){
       var termValueTextProperty = new Property();
       yValueProperty.link( function( yValue ){
-        termValueTextProperty.value = yValueProperty.value.toString() + '<sup>' + '2' + '</sup>';
+        termValueTextProperty.value = yValue.toString() + '<sup>' + '2' + '</sup>';
       } );
       return new CoinTerm(
         yValueProperty.value * yValueProperty.value,
@@ -278,22 +296,22 @@ define( function( require ) {
         coinYSquaredFrontImage,
         'y<sup>2</sup>',
         termValueTextProperty,
-        { initialCount: initialCount || 1 }
+        options
       );
     },
 
     /**
      * @param {Property.<number>} xValueProperty
      * @param {Property.<number>} yValueProperty
-     * @param {number} initialCount - count of pre-combined coins/terms, defaults to 1
+     * @param {Object} options
      * @returns {CoinTerm}
      * @constructor
      */
-    XSquaredTimesYSquared: function( xValueProperty, yValueProperty, initialCount ){
+    XSquaredTimesYSquared: function( xValueProperty, yValueProperty, options ){
       var termValueTextProperty = new Property();
-      Property.multilink( [ xValueProperty, yValueProperty ], function(){
-        termValueTextProperty.value = xValueProperty.value.toString() + '<sup>' + '2' + '</sup>'  + '\u00B7' +
-                                      yValueProperty.value.toString() + '<sup>' + '2' + '</sup>';
+      Property.multilink( [ xValueProperty, yValueProperty ], function( xValue, yValue ){
+        termValueTextProperty.value = xValue.toString() + '<sup>' + '2' + '</sup>'  + '\u00B7' +
+                                      yValue.toString() + '<sup>' + '2' + '</sup>';
       } );
       return new CoinTerm(
         Math.pow( xValueProperty.value, 2 ) * Math.pow( yValueProperty.value, 2 ),
@@ -301,7 +319,7 @@ define( function( require ) {
         coinXSquareYSquaredFrontImage,
         'x<sup>2</sup>y<sup>2</sup>',
         termValueTextProperty,
-        { initialCount: initialCount || 1 }
+        options
       );
     }
 

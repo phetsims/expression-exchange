@@ -86,11 +86,11 @@ define( function( require ) {
       // another coin term.
       addedCoinTerm.userControlledProperty.lazyLink( function( userControlled ) {
 
-        if ( userControlled === false ){
+        if ( userControlled === false ) {
           // check first for overlap with expressions
           var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
           if ( mostOverlappingExpression ) {
-            console.log( 'adding ' + addedCoinTerm.id + ' to ' + mostOverlappingExpression.id  );
+            console.log( 'adding ' + addedCoinTerm.id + ' to ' + mostOverlappingExpression.id );
             mostOverlappingExpression.addCoinTerm( addedCoinTerm );
           }
           else {
@@ -105,7 +105,7 @@ define( function( require ) {
                 addedCoinTerm.travelToDestination( coinToCombineWith.position );
                 addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
                   coinToCombineWith.combinedCount += addedCoinTerm.combinedCount;
-                  self.removeCoinTerm( addedCoinTerm );
+                  self.removeCoinTerm( addedCoinTerm, false );
                   addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
                 } );
               }
@@ -125,9 +125,9 @@ define( function( require ) {
       } );
 
       // add a listener that will handle breaking apart the coin if necessary
-      addedCoinTerm.breakApartEmitter.addListener( function(){
+      addedCoinTerm.breakApartEmitter.addListener( function() {
 
-        if ( addedCoinTerm.combinedCount < 2 ){
+        if ( addedCoinTerm.combinedCount < 2 ) {
           // bail if the coin is a single
           return;
         }
@@ -140,20 +140,24 @@ define( function( require ) {
         var interCoinTermDistance = addedCoinTerm.relativeViewBounds.width + BREAK_APART_SPACING;
         var nextLeftX = addedCoinTerm.position.x - interCoinTermDistance;
         var nextRightX = addedCoinTerm.position.x + interCoinTermDistance;
-        _.times( numToCreate, function( index ){
+        _.times( numToCreate, function( index ) {
           var clonedCoinTerm = addedCoinTerm.cloneMostly();
           self.addCoinTerm( clonedCoinTerm );
-          if ( index % 2 === 0 ){
+          if ( index % 2 === 0 ) {
             clonedCoinTerm.travelToDestination( new Vector2( nextRightX, addedCoinTerm.position.y ) );
             nextRightX += interCoinTermDistance;
           }
-          else{
+          else {
             clonedCoinTerm.travelToDestination( new Vector2( nextLeftX, addedCoinTerm.position.y ) );
             nextLeftX -= interCoinTermDistance;
           }
         } );
       } );
 
+      // add a listener that will remove this coin when it returns to its original position
+      addedCoinTerm.returnedToOriginEmitter.addListener( function() {
+        self.removeCoinTerm( addedCoinTerm, false );
+      } );
     } );
 
     this.expressions.addItemAddedListener( function( addedExpression ) {
@@ -162,7 +166,7 @@ define( function( require ) {
       // add a handler for when the expression is released, which may cause it to be combined with another expression
       addedExpression.userControlledProperty.lazyLink( function( userControlled ) {
 
-        if ( !userControlled ){
+        if ( !userControlled ) {
 
           // check for overlap with other expressions, if there is one or more, combine with the one with the most overlap
           var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( addedExpression );
@@ -175,11 +179,11 @@ define( function( require ) {
             addedExpression.travelToDestination( mostOverlappingExpression.upperLeftCorner.plusXY( mostOverlappingExpression.width, 0 ) );
 
             // Listen for when the expression is in place and, when it is, transfer its coin terms to the receiving expression.
-            addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener(){
+            addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener() {
               var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
               self.expressions.remove( addedExpression );
-              coinTermsToBeMoved.forEach( function( coinTerm ){
-                console.log( 'moving ' + coinTerm.id + ' from ' + addedExpression.id + ' to ' + mostOverlappingExpression.id  );
+              coinTermsToBeMoved.forEach( function( coinTerm ) {
+                console.log( 'moving ' + coinTerm.id + ' from ' + addedExpression.id + ' to ' + mostOverlappingExpression.id );
                 mostOverlappingExpression.addCoinTerm( coinTerm );
               } );
               addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
@@ -326,15 +330,21 @@ define( function( require ) {
     },
 
     // @public TODO this will likely be made more fancy at some point, i.e. will include some animation
-    removeCoinTerm: function( coinTerm ) { this.coinTerms.remove( coinTerm );
+    removeCoinTerm: function( coinTerm, animate ) {
+      if ( animate ){
+        coinTerm.returnToOrigin();
+      }
+      else{
+        this.coinTerms.remove( coinTerm );
+      }
     },
 
     // @public - remove the specified expression
-    removeExpression: function( expression ){
+    removeExpression: function( expression ) {
       var self = this;
       var coinTermsToRemove = expression.removeAllCoinTerms();
-      coinTermsToRemove.forEach( function( coinTerm ){
-        self.removeCoinTerm( coinTerm );
+      coinTermsToRemove.forEach( function( coinTerm ) {
+        self.removeCoinTerm( coinTerm, true );
       } );
       this.expressions.remove( expression );
     },
@@ -368,8 +378,7 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingExpression = null;
       this.expressions.forEach( function( testExpression ) {
-        if ( testExpression !== expression &&
-             !testExpression.userControlled && // exclude expressions that are being moved by a user
+        if ( testExpression !== expression && !testExpression.userControlled && // exclude expressions that are being moved by a user
              !testExpression.inProgressAnimation && // exclude expressions that are moving somewhere
              expression.getExpressionOverlap( testExpression ) > maxOverlap ) {
           mostOverlappingExpression = testExpression;
@@ -408,14 +417,14 @@ define( function( require ) {
         coinTermA.position.x + coinTermA.relativeViewBounds.minX,
         coinTermA.position.y + coinTermA.relativeViewBounds.minY,
         coinTermA.position.x + coinTermA.relativeViewBounds.maxX,
-        coinTermA.position.y + coinTermA.relativeViewBounds.maxY 
+        coinTermA.position.y + coinTermA.relativeViewBounds.maxY
       ).dilatedX( coinTermA.relativeViewBounds.width );
-      
+
       var potentiallyJoiningCoinTermBounds = new Bounds2(
         coinTermB.position.x + coinTermB.relativeViewBounds.minX,
         coinTermB.position.y + coinTermB.relativeViewBounds.minY,
         coinTermB.position.x + coinTermB.relativeViewBounds.maxX,
-        coinTermB.position.y + coinTermB.relativeViewBounds.maxY  
+        coinTermB.position.y + coinTermB.relativeViewBounds.maxY
       );
 
       return extendedTargetCoinTermBounds.intersectsBounds( potentiallyJoiningCoinTermBounds );
@@ -426,9 +435,9 @@ define( function( require ) {
      * @param {CoinTerm} coinTerm
      * @public
      */
-    isCoinTermInExpression: function( coinTerm ){
-      for ( var i = 0; i < this.expressions.length; i++ ){
-        if ( this.expressions.get( i ).containsCoinTerm( coinTerm ) ){
+    isCoinTermInExpression: function( coinTerm ) {
+      for ( var i = 0; i < this.expressions.length; i++ ) {
+        if ( this.expressions.get( i ).containsCoinTerm( coinTerm ) ) {
           return true;
         }
       }
@@ -464,8 +473,7 @@ define( function( require ) {
       var self = this;
       var overlappingCoinTerms = [];
       this.coinTerms.forEach( function( potentiallyOverlappingCoinTerm ) {
-        if ( coinTerm !== potentiallyOverlappingCoinTerm &&
-             !potentiallyOverlappingCoinTerm.userControlled && // exclude coin terms that are being moved by a user
+        if ( coinTerm !== potentiallyOverlappingCoinTerm && !potentiallyOverlappingCoinTerm.userControlled && // exclude coin terms that are being moved by a user
              !self.isCoinTermInExpression( potentiallyOverlappingCoinTerm ) && // exclude coin terms that are in expressions
              self.doCoinTermsOverlap( coinTerm, potentiallyOverlappingCoinTerm ) ) {
           overlappingCoinTerms.push( potentiallyOverlappingCoinTerm );

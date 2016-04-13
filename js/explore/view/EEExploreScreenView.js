@@ -141,31 +141,47 @@ define( function( require ) {
 
     // add the carousel that will contain the various coins and expressions
     var carousel = new Carousel(
+
+      // creator nodes for the various coin terms
       [
-        new CoinTermCreatorNode(
-          exploreModel,
-          function() { return new CoinTerm.X( exploreModel.xTermValueProperty ); },
-          { dragBounds: this.layoutBounds }
-        ),
-        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.Y( exploreModel.yTermValueProperty ); } ),
-        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.Z( exploreModel.zTermValueProperty ); } ),
-        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.X( exploreModel.xTermValueProperty, 2 ); } ),
-        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.Y( exploreModel.xTermValueProperty, 3 ); } ),
-        new CoinTermCreatorNode( exploreModel, function() {
+        new CoinTermCreatorNode( exploreModel, function( initialPosition ) {
+          return new CoinTerm.X( exploreModel.xTermValueProperty, { initialPosition: initialPosition } );
+        } ),
+        new CoinTermCreatorNode( exploreModel, function( initialPosition ) {
+          return new CoinTerm.Y( exploreModel.yTermValueProperty, { initialPosition: initialPosition } );
+        } ),
+        new CoinTermCreatorNode( exploreModel, function( initialPosition ) {
+          return new CoinTerm.Z( exploreModel.zTermValueProperty, { initialPosition: initialPosition } );
+        } ),
+        new CoinTermCreatorNode( exploreModel, function( initialPosition ) {
+          return new CoinTerm.X( exploreModel.xTermValueProperty, { initialPosition: initialPosition, initialCount: 2 } );
+        } ),
+        new CoinTermCreatorNode( exploreModel, function( initialPosition ) {
+          return new CoinTerm.Y( exploreModel.xTermValueProperty, { initialPosition: initialPosition, initialCount: 3 } );
+        } ),
+        new CoinTermCreatorNode( exploreModel, function( initialPosition ) {
           return new CoinTerm.XTimesY(
             exploreModel.xTermValueProperty,
-            exploreModel.yTermValueProperty
+            exploreModel.yTermValueProperty,
+            { initialPosition: initialPosition }
           );
         } ),
-        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.XSquared( exploreModel.xTermValueProperty ); } ),
-        new CoinTermCreatorNode( exploreModel, function() { return new CoinTerm.YSquared( exploreModel.yTermValueProperty ); } ),
-        new CoinTermCreatorNode( exploreModel, function() {
+        new CoinTermCreatorNode( exploreModel, function( initialPosition ) {
+          return new CoinTerm.XSquared( exploreModel.xTermValueProperty, { initialPosition: initialPosition } );
+        } ),
+        new CoinTermCreatorNode( exploreModel, function( initialPosition ) {
+          return new CoinTerm.YSquared( exploreModel.yTermValueProperty, { initialPosition: initialPosition } );
+        } ),
+        new CoinTermCreatorNode( exploreModel, function( initialPosition ) {
           return new CoinTerm.XSquaredTimesYSquared(
             exploreModel.xTermValueProperty,
-            exploreModel.yTermValueProperty
+            exploreModel.yTermValueProperty,
+            { initialPosition: initialPosition }
           );
         } )
       ],
+
+      // carousel options
       {
         centerX: this.layoutBounds.width / 2,
         bottom: this.layoutBounds.height - 50,
@@ -231,7 +247,7 @@ define( function( require ) {
       // from the model.
       addedCoinTerm.userControlledProperty.onValue( false, function() {
         if ( coinNode.bounds.intersectsBounds( carousel.bounds ) && !exploreModel.isCoinTermInExpression( addedCoinTerm ) ) {
-          exploreModel.removeCoinTerm( addedCoinTerm );
+          exploreModel.removeCoinTerm( addedCoinTerm, true );
         }
       } );
 
