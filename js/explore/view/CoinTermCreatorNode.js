@@ -1,5 +1,8 @@
 // Copyright 2016, University of Colorado Boulder
 
+/**
+ * a node that is used to create coin terms when clicked upon
+ */
 define( function( require ) {
   'use strict';
 
@@ -80,11 +83,17 @@ define( function( require ) {
           assert && assert( parentScreenView, 'unable to find parent screen view' );
         }
 
-        // determine the initial position of the new element as a function of the event position and this node's bounds
+        // Determine the origin position of the new element based on where the creator node is.  This is done so that
+        // the position to which this element will return when sent to the origin will match the position of this
+        // creator node.
+        var originPosition = parentScreenView.globalToLocalPoint( self.localToGlobalPoint( Vector2.ZERO ) );
+
+        // Now determine the initial position where this element should move to after it's created, which corresponds
+        // to the location of the mouse or touch event.
         var initialPosition = parentScreenView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new model element
-        createdCoinTerm = creatorFunction( initialPosition );
+        createdCoinTerm = creatorFunction( originPosition );
         createdCoinTerm.setPositionAndDestination( initialPosition );
         createdCoinTerm.userControlled = true;
         exploreModel.addCoinTerm( createdCoinTerm );
