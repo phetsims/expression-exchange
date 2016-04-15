@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * possible view modes for the explore screen
+ * possible view modes for the non-game screens
  *
  * @author John Blanco
  */

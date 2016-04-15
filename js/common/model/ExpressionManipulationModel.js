@@ -13,6 +13,7 @@ define( function( require ) {
 
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
+  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
   var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
@@ -52,12 +53,18 @@ define( function( require ) {
       // TODO: once the screen behaviors are fully established and refactor if it makes sense to do so.
 
       // defines the set of coin terms presented to the user in the carousel
-      coinTermCollection: CoinTermCollectionEnum.BASIC
+      coinTermCollection: CoinTermCollectionEnum.BASIC,
+
+      // defines whether to present just coins, just variables, or both to the user
+      allowedRepresentations: AllowedRepresentationsEnum.COINS_AND_VARIABLES
 
     }, options );
 
+    var initialViewMode = options.allowedRepresentations === AllowedRepresentationsEnum.VARIABLES_ONLY ?
+                          ViewModeEnum.VARIABLES : ViewModeEnum.COINS;
+
     PropertySet.call( this, {
-      viewMode: ViewModeEnum.COINS, // @public
+      viewMode: initialViewMode, // @public
       showCoinValues: false, // @public
       showVariableValues: false, // @public
       showAllCoefficients: false, // @public
@@ -69,8 +76,9 @@ define( function( require ) {
 
     var self = this;
 
-    // @public, read only, defines the collection of coin terms to make available to the user
+    // @public, read only, options that control what is available to the user to manipulate
     this.coinTermCollection = options.coinTermCollection;
+    this.allowedRepresentations = options.allowedRepresentations;
 
     // @public, read and listen only, list of all coin terms in the model
     this.coinTerms = new ObservableArray();

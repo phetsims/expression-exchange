@@ -11,6 +11,7 @@ define( function( require ) {
   // modules
   var ABSwitch = require( 'SUN/ABSwitch' );
   var AccordionBox = require( 'SUN/AccordionBox' );
+  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
   var Carousel = require( 'SUN/Carousel' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
@@ -204,15 +205,17 @@ define( function( require ) {
     } );
     this.addChild( carousel );
 
-    // add the switch for switching between coin and term view
-    this.addChild( new ABSwitch(
-      expressionManipulationModel.viewModeProperty,
-      ViewModeEnum.COINS,
-      new Image( switchCoinImage, { scale: 0.6 } ),
-      ViewModeEnum.VARIABLES,
-      new Text( 'x', { font: new PhetFont( { family: '"Times New Roman", serif', size: 32, style: 'italic' } ) } ),
-      { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
-    ) );
+    // if both representations are allowed, add the switch for switching between coin and term view
+    if ( expressionManipulationModel.allowedRepresentations === AllowedRepresentationsEnum.COINS_AND_VARIABLES ){
+      this.addChild( new ABSwitch(
+        expressionManipulationModel.viewModeProperty,
+        ViewModeEnum.COINS,
+        new Image( switchCoinImage, { scale: 0.6 } ),
+        ViewModeEnum.VARIABLES,
+        new Text( 'x', { font: new PhetFont( { family: '"Times New Roman", serif', size: 32, style: 'italic' } ) } ),
+        { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
+      ) );
+    }
 
     // add the node that will act as the layer where the expression backgrounds and expression hints will come and go
     var expressionLayer = new Node();
