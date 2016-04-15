@@ -74,6 +74,11 @@ define( function( require ) {
     // convenience variable for positioning the textual labels created below
     var coinCenter = new Vector2( coinImageNode.width / 2, coinImageNode.height / 2 );
 
+    // TODO: There are a number of individual update functions that update the various representations, all of which
+    // TODO: always exist and their visibility is switched on and off.  This has grown in complexity, and I'm starting
+    // TODO: to that that a single update function would make more sense.  Having separate nodes for the different
+    // TODO: representations probably still makes sense so we're not having to add and remove nodes all the time.
+
     // add the coin value text
     var coinValueText = new Text( coinTerm.coinValue, { font: TERM_AND_VALUE_FONT, center: coinCenter } );
     rootNode.addChild( coinValueText );
@@ -88,12 +93,22 @@ define( function( require ) {
     coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
 
     // add the 'term' text, e.g. xy
-    var termText = new SubSupText( coinTerm.termText, { font: TERM_AND_VALUE_FONT } );
+    var termText = new SubSupText( 'temp', { font: TERM_AND_VALUE_FONT } );
     // TODO: Can I dilate the mouse and touch areas in the constructor?
-    termText.center = coinCenter;
-    termText.mouseArea = termText.localBounds.dilated( 10 );
-    termText.touchArea = termText.localBounds.dilated( 10 );
     rootNode.addChild( termText );
+
+    // create a helper function to update the termText - this basically adds/removes the minus sign
+    function updateTermText( coefficientVisible ){
+      if ( coinTerm.combinedCount < 0 && !coefficientVisible ){
+        termText.text = '-' + coinTerm.termText;
+      }
+      else{
+        termText.text = coinTerm.termText;
+      }
+      termText.center = coinCenter;
+      termText.mouseArea = termText.localBounds.dilated( 10 );
+      termText.touchArea = termText.localBounds.dilated( 10 );
+    }
 
     // control the term text visibility
     var termTextVisibleProperty = new DerivedProperty(
@@ -105,14 +120,17 @@ define( function( require ) {
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
 
     // Add the text that includes the variable values.  This can change, so it starts off blank.
-    var termWithVariableValuesText = new SubSupText( '', { font: TERM_AND_VALUE_FONT } );
+    var termWithVariableValuesText = new SubSupText( ' ', { font: TERM_AND_VALUE_FONT } );
     rootNode.addChild( termWithVariableValuesText );
 
-    // create a helper function to update the term value text, since it needs to be done in multiple places
+    // create a helper function to update the term value text
     function updateTermValueText() {
       var termValueText = coinTerm.termValueTextProperty.value;
-      if ( coinTerm.combinedCount > 1 || showAllCoefficientsProperty.value ) {
-        // wrap the term value text in parentheses
+      if ( coinTerm.combinedCount === -1 && !showAllCoefficientsProperty.value ){
+        // prepend a minus sign
+        termValueText = '-' + termValueText;
+      }
+      if ( Math.abs( coinTerm.combinedCount ) > 1 || showAllCoefficientsProperty.value ) { // wrap the term value text in parentheses
         termValueText = '(' + termValueText + ')';
       }
       termWithVariableValuesText.text = termValueText;
@@ -166,10 +184,11 @@ define( function( require ) {
         coinTerm.combinedCountProperty,
         showAllCoefficientsProperty ],
       function( combinedCount, showAllCoefficients ) {
-        return ( combinedCount > 1 || showAllCoefficients );
+        return ( Math.abs( combinedCount ) !== 1 || showAllCoefficients );
       } );
     coefficientVisibleProperty.link( function( coefficientVisible ) {
       updateTermValueText();
+      updateTermText( coefficientVisible );
       updateCoefficientPosition();
       coefficientText.visible = coefficientVisible;
     } );
@@ -190,7 +209,7 @@ define( function( require ) {
 
         var width = Math.max( coinImageNode.width, termText.width, termWithVariableValuesText.width );
 
-        if ( coefficientText.visible || coinTerm.combinedCount > 1 ) {
+        if ( coefficientText.visible || Math.abs( coinTerm.combinedCount ) > 1 ) {
           width += coefficientText.width + COEFFICIENT_X_SPACING;
         }
 
@@ -329,7 +348,7 @@ define( function( require ) {
             unboundedPosition.set( dragStartPosition );
 
             // if this is a multi-count coin term, start a timer to show the break apart button
-            if ( coinTerm.combinedCount > 1 ) {
+            if ( Math.abs( coinTerm.combinedCount > 1 ) ) {
 
               // clear any timers that are running already
               clearHideButtonTimer();
@@ -354,8 +373,11 @@ define( function( require ) {
             ) );
 
             // update the state of the break apart button and associated timers
-            if ( coinTerm.combinedCount > 1 && coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ) {
+            if ( Math.abs( coinTerm.combinedCount ) > 1 &&
+                 coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ) {
+
               if ( breakApartButton.visible ) {
+
                 // the button was already visible, so hide it
                 showBreakApartButton( false );
                 clearHideButtonTimer();
@@ -371,7 +393,7 @@ define( function( require ) {
           end: function( event, trail ) {
             coinTerm.userControlled = false;
 
-            if ( coinTerm.combinedCount > 1 &&
+            if ( Math.abs( coinTerm.combinedCount ) > 1 &&
                  coinTerm.position.distance( dragStartPosition ) < DRAG_BEFORE_BREAK_BUTTON_FADES ) {
 
               // the user clicked on the coin term without moving it (much), so show the break apart button

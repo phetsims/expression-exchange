@@ -49,7 +49,7 @@ define( function( require ) {
       position: options.initialPosition, // @public (read only), set using methods below
       destination: options.initialPosition, // @public (read only), set using methods below
       userControlled: false, // @public, indicate whether user is currently dragging this coin
-      combinedCount: options.initialCount, // @public, number of coins/terms combined into this one, must be 1 or more
+      combinedCount: options.initialCount, // @public, number of coins/terms combined into this one, can be negative
       combineHaloActive: false, // @public
       inProgressAnimation: null, // @public (read only), tracks the current in-progress animation, if any
 
@@ -148,7 +148,7 @@ define( function( require ) {
      * @public
      */
     breakApart: function(){
-      assert && assert( this.combinedCount > 1, 'can\'t break apart single coin terms' );
+      assert && assert( Math.abs( this.combinedCount ) >  1, 'coin term can\'t be broken apart' );
       this.breakApartEmitter.emit();
     },
 

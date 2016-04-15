@@ -92,8 +92,8 @@ define( function( require ) {
     // function to update the total cents whenever a coin is added or removed
     function updateTotal() {
       var total = 0;
-      self.coinTerms.forEach( function( coin ) {
-        total += coin.coinValue * coin.combinedCount;
+      self.coinTerms.forEach( function( coinTerm ) {
+        total += coinTerm.coinValue * coinTerm.combinedCount;
       } );
       self.totalCents = total;
     }
@@ -153,14 +153,14 @@ define( function( require ) {
       // add a listener that will handle breaking apart the coin if necessary
       addedCoinTerm.breakApartEmitter.addListener( function() {
 
-        if ( addedCoinTerm.combinedCount < 2 ) {
+        if ( Math.abs( addedCoinTerm.combinedCount ) < 2 ) {
           // bail if the coin is a single
           return;
         }
-        var numToCreate = addedCoinTerm.combinedCount - 1;
+        var numToCreate = Math.abs( addedCoinTerm.combinedCount ) - 1;
 
-        // set this coin back to being a single
-        addedCoinTerm.combinedCount = 1;
+        // set this coin back to being a single, keeping the sign the same
+        addedCoinTerm.combinedCount = addedCoinTerm.combinedCount > 0 ? 1 : -1;
 
         // add new coin terms to represent those that were broken out from the initial one
         var interCoinTermDistance = addedCoinTerm.relativeViewBounds.width + BREAK_APART_SPACING;
