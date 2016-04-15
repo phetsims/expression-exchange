@@ -8,8 +8,14 @@
 define( function() {
   'use strict';
 
-  return Object.freeze( {
+  var ViewModeEnum = {
     COINS: 'COINS',
     VARIABLES: 'VARIABLES'
-  } );
+  };
+
+  // verify that enum is immutable, without the runtime penalty in production code
+  if ( assert ) { Object.freeze( ViewModeEnum ); }
+
+  return ViewModeEnum;
+
 } );

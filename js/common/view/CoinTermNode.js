@@ -23,7 +23,7 @@ define( function( require ) {
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var Timer = require( 'PHET_CORE/Timer' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/model/ViewMode' );
+  var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // images
@@ -68,7 +68,7 @@ define( function( require ) {
 
     // control front coin image visibility
     viewModeProperty.link( function( representationMode ) {
-      coinImageNode.visible = representationMode === ViewMode.COINS;
+      coinImageNode.visible = representationMode === ViewModeEnum.COINS;
     } );
 
     // convenience variable for positioning the textual labels created below
@@ -82,7 +82,7 @@ define( function( require ) {
     var coinValueVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showCoinValuesProperty ],
       function( viewMode, showCoinValues ) {
-        return ( viewMode === ViewMode.COINS && showCoinValues );
+        return ( viewMode === ViewModeEnum.COINS && showCoinValues );
       }
     );
     coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
@@ -99,7 +99,7 @@ define( function( require ) {
     var termTextVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showVariableValuesProperty ],
       function( viewMode, showVariableValues ) {
-        return ( viewMode === ViewMode.VARIABLES && !showVariableValues );
+        return ( viewMode === ViewModeEnum.VARIABLES && !showVariableValues );
       }
     );
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
@@ -128,7 +128,7 @@ define( function( require ) {
     var variableTextVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showVariableValuesProperty ],
       function( viewMode, showVariableValues ) {
-        return ( viewMode === ViewMode.VARIABLES && showVariableValues );
+        return ( viewMode === ViewModeEnum.VARIABLES && showVariableValues );
       }
     );
     variableTextVisibleProperty.linkAttribute( termWithVariableValuesText, 'visible' );
@@ -141,7 +141,7 @@ define( function( require ) {
 
     // create a helper function for positioning the coefficient
     function updateCoefficientPosition() {
-      if ( viewModeProperty.value === ViewMode.COINS ) {
+      if ( viewModeProperty.value === ViewModeEnum.COINS ) {
         coefficientText.right = coinImageNode.left - COEFFICIENT_X_SPACING;
         coefficientText.centerY = coinImageNode.centerY;
       }

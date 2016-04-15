@@ -15,7 +15,7 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var RadialGradient = require( 'SCENERY/util/RadialGradient' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/model/ViewMode' );
+  var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
 
   // constants
   var COIN_HALO_COLOR = 'rgba( 255, 255, 0, 0.8 )';
@@ -44,7 +44,7 @@ define( function( require ) {
     // control coin halo visibility
     var coinHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
       function( viewMode, combineHaloActive ){
-        return ( viewMode === ViewMode.COINS ) && combineHaloActive;
+        return ( viewMode === ViewModeEnum.COINS ) && combineHaloActive;
       } );
     coinHaloVisibleProperty.linkAttribute( coinHalo, 'visible' );
 
@@ -60,7 +60,7 @@ define( function( require ) {
     // control term halo visibility
     var termHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
       function( viewMode, combineHaloActive ){
-        return ( viewMode === ViewMode.VARIABLES ) && combineHaloActive;
+        return ( viewMode === ViewModeEnum.VARIABLES ) && combineHaloActive;
       } );
     termHaloVisibleProperty.linkAttribute( termHalo, 'visible' );
 

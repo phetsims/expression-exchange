@@ -31,7 +31,7 @@ define( function( require ) {
   var ScreenView = require( 'JOIST/ScreenView' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/model/ViewMode' );
+  var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
   var VStrut = require( 'SCENERY/nodes/VStrut' );
 
   // strings
@@ -124,8 +124,8 @@ define( function( require ) {
 
     // control whether the coin values or variable values checkbox is visible
     expressionManipulationModel.viewModeProperty.link( function( viewMode ) {
-      showCoinValuesCheckbox.visible = viewMode === ViewMode.COINS;
-      showVariableValuesCheckbox.visible = viewMode === ViewMode.VARIABLES;
+      showCoinValuesCheckbox.visible = viewMode === ViewModeEnum.COINS;
+      showVariableValuesCheckbox.visible = viewMode === ViewModeEnum.VARIABLES;
     } );
 
     // add the checkbox that controls whether all coefficients (including 1) are shown
@@ -207,9 +207,9 @@ define( function( require ) {
     // add the switch for switching between coin and term view
     this.addChild( new ABSwitch(
       expressionManipulationModel.viewModeProperty,
-      ViewMode.COINS,
+      ViewModeEnum.COINS,
       new Image( switchCoinImage, { scale: 0.6 } ),
-      ViewMode.VARIABLES,
+      ViewModeEnum.VARIABLES,
       new Text( 'x', { font: new PhetFont( { family: '"Times New Roman", serif', size: 32, style: 'italic' } ) } ),
       { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
     ) );

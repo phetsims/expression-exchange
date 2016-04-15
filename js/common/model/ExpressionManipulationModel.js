@@ -21,7 +21,7 @@ define( function( require ) {
   var ObservableArray = require( 'AXON/ObservableArray' );
   var PropertySet = require( 'AXON/PropertySet' );
   var Vector2 = require( 'DOT/Vector2' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/model/ViewMode' );
+  var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
 
   // constants
   var BREAK_APART_SPACING = 10;
@@ -57,7 +57,7 @@ define( function( require ) {
     }, options );
 
     PropertySet.call( this, {
-      viewMode: ViewMode.COINS, // @public
+      viewMode: ViewModeEnum.COINS, // @public
       showCoinValues: false, // @public
       showVariableValues: false, // @public
       showAllCoefficients: false, // @public
@@ -418,7 +418,7 @@ define( function( require ) {
       var distanceBetweenCenters = coinTerm1.position.distance( coinTerm2.position );
 
       // the decision about whether these overlap depends upon whether we are in COIN and VARIABLES mode
-      if ( this.viewMode === ViewMode.COINS ) {
+      if ( this.viewMode === ViewModeEnum.COINS ) {
         return distanceBetweenCenters < ( coinTerm1.coinDiameter / 2 ) + ( coinTerm2.coinDiameter / 2 );
       }
       else {
