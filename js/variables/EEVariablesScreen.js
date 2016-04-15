@@ -10,28 +10,28 @@ define( function( require ) {
 
   // modules
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
-  var EEBasicsModel = require( 'EXPRESSION_EXCHANGE/basics/model/EEBasicsModel' );
+  var EEVariablesModel = require( 'EXPRESSION_EXCHANGE/variables/model/EEVariablesModel' );
   var inherit = require( 'PHET_CORE/inherit' );
   var RandomIcon = require( 'EXPRESSION_EXCHANGE/common/view/RandomIcon' );
   var Screen = require( 'JOIST/Screen' );
 
   // strings
-  var basicsString = require( 'string!EXPRESSION_EXCHANGE/basics' );
+  var variablesString = require( 'string!EXPRESSION_EXCHANGE/variables' );
 
   /**
    * @constructor
    */
-  function EEExploreScreen() {
+  function EEVariablesScreen() {
 
     // TODO: temporary icon, will need to be replaced
     var icon = new RandomIcon();
 
-    Screen.call( this, basicsString, icon,
-      function() { return new EEBasicsModel(); },
+    Screen.call( this, variablesString, icon,
+      function() { return new EEVariablesModel(); },
       function( model ) { return new ExpressionManipulationView( model ); },
       { backgroundColor: '#AFF6CC' }
     );
   }
 
-  return inherit( Screen, EEExploreScreen );
+  return inherit( Screen, EEVariablesScreen );
 } );
