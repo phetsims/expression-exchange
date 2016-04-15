@@ -10,8 +10,10 @@ define( function( require ) {
 
   // modules
   var inherit = require( 'PHET_CORE/inherit' );
-  var ScreenView = require( 'JOIST/ScreenView' );
+  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
+  var ScreenView = require( 'JOIST/ScreenView' );
+  var Text = require( 'SCENERY/nodes/Text' );
 
   /**
    * @param {EEGameModel} gameModel
@@ -20,6 +22,13 @@ define( function( require ) {
   function EEGameScreenView( gameModel ) {
 
     ScreenView.call( this );
+
+    this.addChild( new Text( 'Game coming soon', {
+      font: new PhetFont( { size: 60 } ),
+      fill: 'rgba( 0, 0, 0, 0.5 )',
+      centerX: this.layoutBounds.centerX,
+      centerY: this.layoutBounds.height * 0.3
+    } ) );
 
     // Reset All button
     var resetAllButton = new ResetAllButton( {
