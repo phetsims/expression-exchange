@@ -9,7 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var EEExploreScreenView = require( 'EXPRESSION_EXCHANGE/explore/view/EEExploreScreenView' );
+  var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var EEExploreModel = require( 'EXPRESSION_EXCHANGE/explore/model/EEExploreModel' );
   var inherit = require( 'PHET_CORE/inherit' );
   var RandomIcon = require( 'EXPRESSION_EXCHANGE/common/view/RandomIcon' );
@@ -28,7 +28,7 @@ define( function( require ) {
 
     Screen.call( this, exploreString, icon,
       function() { return new EEExploreModel(); },
-      function( model ) { return new EEExploreScreenView( model ); },
+      function( model ) { return new ExpressionManipulationView( model ); },
       { backgroundColor: '#AFF6CC' }
     );
   }
