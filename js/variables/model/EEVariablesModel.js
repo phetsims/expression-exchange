@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var inherit = require( 'PHET_CORE/inherit' );
 
@@ -17,7 +18,7 @@ define( function( require ) {
    */
   function EEVariablesModel() {
 
-    ExpressionManipulationModel.call( this );
+    ExpressionManipulationModel.call( this, { coinTermCollection: CoinTermCollectionEnum.ADVANCED } );
 
   }
 

@@ -13,6 +13,7 @@ define( function( require ) {
 
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
+  var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
   var ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
@@ -42,7 +43,18 @@ define( function( require ) {
   /**
    * @constructor
    */
-  function ExpressionManipulationModel() {
+  function ExpressionManipulationModel( options ) {
+
+    options = _.extend( {
+
+      // TODO: As I write this on 4/15/2016, it occurs to me that maybe the view, rather than the model, is where these
+      // TODO: options need to be, and there would be a single model type and variations of the view type.  Revisit this
+      // TODO: once the screen behaviors are fully established and refactor if it makes sense to do so.
+
+      // defines the set of coin terms presented to the user in the carousel
+      coinTermCollection: CoinTermCollectionEnum.BASIC
+
+    }, options );
 
     PropertySet.call( this, {
       viewMode: ViewMode.COINS, // @public
@@ -56,6 +68,9 @@ define( function( require ) {
     } );
 
     var self = this;
+
+    // @public, read only, defines the collection of coin terms to make available to the user
+    this.coinTermCollection = options.coinTermCollection;
 
     // @public, read and listen only, list of all coin terms in the model
     this.coinTerms = new ObservableArray();
