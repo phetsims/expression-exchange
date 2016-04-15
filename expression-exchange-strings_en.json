@@ -8,6 +8,12 @@
   "explore": {
     "value": "Explore"
   },
+  "basics": {
+    "value": "Basics"
+  },
+  "variables": {
+    "value": "Variables"
+  },
   "game": {
     "value": "Game"
   },

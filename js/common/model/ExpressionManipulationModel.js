@@ -20,7 +20,7 @@ define( function( require ) {
   var ObservableArray = require( 'AXON/ObservableArray' );
   var PropertySet = require( 'AXON/PropertySet' );
   var Vector2 = require( 'DOT/Vector2' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/model/ViewMode' );
 
   // constants
   var BREAK_APART_SPACING = 10;

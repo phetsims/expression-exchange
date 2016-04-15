@@ -30,7 +30,7 @@ define( function( require ) {
   var ScreenView = require( 'JOIST/ScreenView' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/model/ViewMode' );
   var VStrut = require( 'SCENERY/nodes/VStrut' );
 
   // strings

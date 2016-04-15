@@ -23,7 +23,7 @@ define( function( require ) {
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var Timer = require( 'PHET_CORE/Timer' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/model/ViewMode' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // images

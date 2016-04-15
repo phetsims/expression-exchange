@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var EEBasicsScreen = require( 'EXPRESSION_EXCHANGE/basics/EEBasicsScreen' );
   var EEExploreScreen = require( 'EXPRESSION_EXCHANGE/explore/EEExploreScreen' );
   var EEGameScreen = require( 'EXPRESSION_EXCHANGE/game/EEGameScreen' );
   var Sim = require( 'JOIST/Sim' );
@@ -30,6 +31,7 @@ define( function( require ) {
     var sim = new Sim(
       expressionExchangeTitleString,
       [
+        new EEBasicsScreen(),
         new EEExploreScreen(),
         new EEGameScreen()
       ],

@@ -15,7 +15,7 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var RadialGradient = require( 'SCENERY/util/RadialGradient' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/explore/model/ViewMode' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/model/ViewMode' );
 
   // constants
   var COIN_HALO_COLOR = 'rgba( 255, 255, 0, 0.8 )';
