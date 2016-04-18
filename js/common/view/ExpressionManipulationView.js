@@ -161,6 +161,18 @@ define( function( require ) {
     else if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.EXPLORE ){
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+        return new CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
+      } ) );
+
+      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+        return new CoinTerm.Y( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
+      } ) );
+
+      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+        return new CoinTerm.Z( expressionManipulationModel.zTermValueProperty, { initialPosition: initialPosition } );
+      } ) );
+
+      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
         return new CoinTerm.X( expressionManipulationModel.xTermValueProperty, {
           initialPosition: initialPosition,
           initialCount: 2
