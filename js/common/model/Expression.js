@@ -315,10 +315,6 @@ define( function( require ) {
         return ct1.destination.x - ct2.destination.x;
       } );
 
-      // TODO: Temp asserts for tracking down and issue
-      assert && assert( this.coinTerms.length > 1 );
-      assert && assert( coinTermsLeftToRight.length === this.coinTerms.length );
-
       // remove them from this expression
       coinTermsLeftToRight.forEach( function( coinTerm ){
         self.removeCoinTerm( coinTerm );
