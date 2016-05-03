@@ -8,6 +8,9 @@
 define( function() {
   'use strict';
 
+  // modules
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+
   var ViewModeEnum = {
     COINS: 'COINS',
     VARIABLES: 'VARIABLES'
@@ -15,6 +18,8 @@ define( function() {
 
   // verify that enum is immutable, without the runtime penalty in production code
   if ( assert ) { Object.freeze( ViewModeEnum ); }
+
+  expressionExchange.register( 'ViewModeEnum', ViewModeEnum );
 
   return ViewModeEnum;
 

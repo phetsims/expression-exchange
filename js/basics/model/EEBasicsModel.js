@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var inherit = require( 'PHET_CORE/inherit' );
 
@@ -20,6 +21,8 @@ define( function( require ) {
     ExpressionManipulationModel.call( this );
 
   }
+
+  expressionExchange.register( 'EEBasicsModel', EEBasicsModel );
 
   return inherit( ExpressionManipulationModel, EEBasicsModel );
 } );

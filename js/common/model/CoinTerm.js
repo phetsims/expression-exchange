@@ -14,6 +14,7 @@ define( function( require ) {
   // modules
   var Emitter = require( 'AXON/Emitter' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
   var PropertySet = require( 'AXON/PropertySet' );
@@ -87,6 +88,8 @@ define( function( require ) {
       }
     } );
   }
+
+  expressionExchange.register( 'CoinTerm', CoinTerm );
 
   return inherit( PropertySet, CoinTerm, {
 

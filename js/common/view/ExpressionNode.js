@@ -11,6 +11,7 @@ define( function( require ) {
 
   // modules
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Matrix3 = require( 'DOT/Matrix3' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -190,6 +191,8 @@ define( function( require ) {
     // do the initial update
     updateShapeAndPlusSymbols();
   }
+
+  expressionExchange.register( 'ExpressionNode', ExpressionNode );
 
   return inherit( Node, ExpressionNode );
 } );

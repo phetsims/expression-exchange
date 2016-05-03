@@ -13,6 +13,7 @@ define( function( require ) {
   var DerivedProperty = require( 'AXON/DerivedProperty' );
   var Util = require( 'DOT/Util' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -426,6 +427,8 @@ define( function( require ) {
       self.pickable = inProgressAnimation === null;
     } );
   }
+
+  expressionExchange.register( 'CoinTermNode', CoinTermNode );
 
   return inherit( Node, CoinTermNode );
 } )

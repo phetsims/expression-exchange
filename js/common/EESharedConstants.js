@@ -7,7 +7,10 @@
 define( function( require ) {
   'use strict';
 
-  return {
+  // modules
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+
+  var EESharedConstants = {
 
     // radius at which terms can be combined
     TERM_COMBINE_RADIUS: 35,
@@ -17,5 +20,9 @@ define( function( require ) {
 
     EXPRESSION_BACKGROUND_COLOR: 'rgba( 255, 255, 255, 0.5 )'
   };
+
+  expressionExchange.register( 'EESharedConstants', EESharedConstants );
+
+  return EESharedConstants;
 
 } );

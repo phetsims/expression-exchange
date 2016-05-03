@@ -7,6 +7,9 @@
 define( function( require ) {
   'use strict';
 
+  // modules
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+
   var CoinTermCollectionEnum = {
     BASIC: 'BASIC',
     EXPLORE: 'EXPLORE',
@@ -15,6 +18,8 @@ define( function( require ) {
 
   // verify that enum is immutable, without the runtime penalty in production code
   if ( assert ) { Object.freeze( CoinTermCollectionEnum ); }
+
+  expressionExchange.register( 'CoinTermCollectionEnum', CoinTermCollectionEnum );
 
   return CoinTermCollectionEnum;
 } );

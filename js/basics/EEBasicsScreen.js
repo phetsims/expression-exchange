@@ -9,8 +9,9 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var EEBasicsModel = require( 'EXPRESSION_EXCHANGE/basics/model/EEBasicsModel' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var inherit = require( 'PHET_CORE/inherit' );
   var RandomIcon = require( 'EXPRESSION_EXCHANGE/common/view/RandomIcon' );
   var Screen = require( 'JOIST/Screen' );
@@ -21,7 +22,7 @@ define( function( require ) {
   /**
    * @constructor
    */
-  function EEExploreScreen() {
+  function EEBasicsScreen() {
 
     // TODO: temporary icon, will need to be replaced
     var icon = new RandomIcon();
@@ -33,5 +34,7 @@ define( function( require ) {
     );
   }
 
-  return inherit( Screen, EEExploreScreen );
+  expressionExchange.register( 'EEBasicsScreen', EEBasicsScreen );
+
+  return inherit( Screen, EEBasicsScreen );
 } );

@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var PropertySet = require( 'AXON/PropertySet' );
 
@@ -19,6 +20,8 @@ define( function( require ) {
 
     PropertySet.call( this, {} );
   }
+
+  expressionExchange.register( 'EEGameModel', EEGameModel );
 
   return inherit( PropertySet, EEGameModel, {
 

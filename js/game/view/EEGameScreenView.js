@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
@@ -40,6 +41,8 @@ define( function( require ) {
     } );
     this.addChild( resetAllButton );
   }
+
+  expressionExchange.register( 'EEGameScreenView', EEGameScreenView );
 
   return inherit( ScreenView, EEGameScreenView, {
 

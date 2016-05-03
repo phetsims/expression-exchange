@@ -20,6 +20,7 @@ define( function( require ) {
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
   var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionHintNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionHintNode' );
   var ExpressionNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionNode' );
   var ExpressionOverlayNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionOverlayNode' );
@@ -382,6 +383,8 @@ define( function( require ) {
     } );
 
   }
+
+  expressionExchange.register( 'ExpressionManipulationView', ExpressionManipulationView );
 
   return inherit( ScreenView, ExpressionManipulationView, {
 

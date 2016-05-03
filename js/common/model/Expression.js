@@ -12,6 +12,7 @@ define( function( require ) {
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
   var Emitter = require( 'AXON/Emitter' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
   var Property = require( 'AXON/Property' );
@@ -117,6 +118,8 @@ define( function( require ) {
       } );
     } );
   }
+
+  expressionExchange.register( 'Expression', Expression );
 
   return inherit( PropertySet, Expression, {
 

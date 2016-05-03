@@ -12,6 +12,7 @@ define( function( require ) {
 
   // modules
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Property = require( 'AXON/Property' );
@@ -116,6 +117,8 @@ define( function( require ) {
 
       } );
   }
+
+  expressionExchange.register( 'ExpressionHintNode', ExpressionHintNode );
 
   return inherit( Node, ExpressionHintNode );
 } );

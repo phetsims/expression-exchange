@@ -8,6 +8,9 @@
 define( function() {
   'use strict';
 
+  // modules
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+
   var AllowedRepresentationsEnum = {
     COINS_ONLY: 'COINS_ONLY',
     VARIABLES_ONLY: 'VARIABLES_ONLY',
@@ -16,6 +19,8 @@ define( function() {
 
   // verify that enum is immutable, without the runtime penalty in production code
   if ( assert ) { Object.freeze( AllowedRepresentationsEnum ); }
+
+  expressionExchange.register( 'AllowedRepresentationsEnum', AllowedRepresentationsEnum );
 
   return AllowedRepresentationsEnum;
 

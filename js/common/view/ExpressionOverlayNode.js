@@ -10,6 +10,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -96,6 +97,8 @@ define( function( require ) {
       }
     } );
   }
+
+  expressionExchange.register( 'ExpressionOverlayNode', ExpressionOverlayNode );
 
   return inherit( Node, ExpressionOverlayNode );
 } );

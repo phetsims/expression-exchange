@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var EEVariablesModel = require( 'EXPRESSION_EXCHANGE/variables/model/EEVariablesModel' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -32,6 +33,8 @@ define( function( require ) {
       { backgroundColor: '#AFF6CC' }
     );
   }
+
+  expressionExchange.register( 'EEVariablesScreen', EEVariablesScreen );
 
   return inherit( Screen, EEVariablesScreen );
 } );

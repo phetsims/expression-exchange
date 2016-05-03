@@ -11,6 +11,7 @@ define( function( require ) {
   // modules
   var EEGameScreenView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameScreenView' );
   var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var RandomIcon = require( 'EXPRESSION_EXCHANGE/common/view/RandomIcon' );
   var Screen = require( 'JOIST/Screen' );
@@ -32,6 +33,8 @@ define( function( require ) {
       { backgroundColor: '#CCE7FF' }
     );
   }
+
+  expressionExchange.register( 'EEGameScreen', EEGameScreen );
 
   return inherit( Screen, EEGameScreen );
 } );

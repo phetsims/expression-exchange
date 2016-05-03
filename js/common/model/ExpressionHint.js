@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
 
   /**
@@ -21,6 +22,8 @@ define( function( require ) {
     this.anchorCoinTerm = anchorCoinTerm;
     this.movingCoinTerm = movingCoinTerm;
   }
+
+  expressionExchange.register( 'ExpressionHint', ExpressionHint );
 
   return inherit( Object, ExpressionHint, {
 

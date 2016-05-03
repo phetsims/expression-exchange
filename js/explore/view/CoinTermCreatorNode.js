@@ -9,6 +9,7 @@ define( function( require ) {
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Property = require( 'AXON/Property' );
@@ -133,6 +134,8 @@ define( function( require ) {
       }
     } ) );
   }
+
+  expressionExchange.register( 'CoinTermCreatorNode', CoinTermCreatorNode );
 
   return inherit( Node, CoinTermCreatorNode );
 } );

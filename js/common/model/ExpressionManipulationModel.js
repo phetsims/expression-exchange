@@ -17,6 +17,7 @@ define( function( require ) {
   var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
@@ -222,6 +223,8 @@ define( function( require ) {
       } );
     } );
   }
+
+  expressionExchange.register( 'ExpressionManipulationModel', ExpressionManipulationModel );
 
   return inherit( PropertySet, ExpressionManipulationModel, {
 

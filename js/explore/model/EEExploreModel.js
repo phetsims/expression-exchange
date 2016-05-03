@@ -10,6 +10,7 @@ define( function( require ) {
 
   // modules
   var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var inherit = require( 'PHET_CORE/inherit' );
 
@@ -21,6 +22,8 @@ define( function( require ) {
     ExpressionManipulationModel.call( this, { coinTermCollection: CoinTermCollectionEnum.EXPLORE } );
 
   }
+
+  expressionExchange.register( 'EEExploreModel', EEExploreModel );
 
   return inherit( ExpressionManipulationModel, EEExploreModel );
 } );

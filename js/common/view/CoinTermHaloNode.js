@@ -12,6 +12,7 @@ define( function( require ) {
   var Circle = require( 'SCENERY/nodes/Circle' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var RadialGradient = require( 'SCENERY/util/RadialGradient' );
@@ -69,6 +70,8 @@ define( function( require ) {
       self.center = position;
     } );
   }
+
+  expressionExchange.register( 'CoinTermHaloNode', CoinTermHaloNode );
 
   return inherit( Node, CoinTermHaloNode );
 } );

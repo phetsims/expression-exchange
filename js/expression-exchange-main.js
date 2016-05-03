@@ -13,6 +13,7 @@ define( function( require ) {
   var EEExploreScreen = require( 'EXPRESSION_EXCHANGE/explore/EEExploreScreen' );
   var EEGameScreen = require( 'EXPRESSION_EXCHANGE/game/EEGameScreen' );
   var EEVariablesScreen = require( 'EXPRESSION_EXCHANGE/variables/EEVariablesScreen' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Sim = require( 'JOIST/Sim' );
   var SimLauncher = require( 'JOIST/SimLauncher' );
 
