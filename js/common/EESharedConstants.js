@@ -21,9 +21,9 @@ define( function( require ) {
     EXPRESSION_BACKGROUND_COLOR: 'rgba( 255, 255, 255, 0.5 )',
 
     // the characters to use for the various variables depicted in the sim
-    X_VARIABLE_CHAR: 'x',
-    Y_VARIABLE_CHAR: 'y',
-    Z_VARIABLE_CHAR: 'z'
+    X_VARIABLE_CHAR: '\uD835\uDC65',
+    Y_VARIABLE_CHAR: '\uD835\uDC66',
+    Z_VARIABLE_CHAR: '\uD835\uDC67'
 
   };
 

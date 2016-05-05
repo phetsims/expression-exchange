@@ -270,7 +270,7 @@ define( function( require ) {
         new Image( switchCoinImage, { scale: 0.6 } ),
         ViewModeEnum.VARIABLES,
         new Text( EESharedConstants.X_VARIABLE_CHAR, {
-          font: new PhetFont( { family: '"Times New Roman", serif', size: 32, style: 'italic' } )
+          font: new PhetFont( { family: '"Times New Roman", serif', size: 32 } )
         } ),
         { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
       ) );
