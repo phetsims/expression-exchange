@@ -20,6 +20,7 @@ define( function( require ) {
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
   var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionHintNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionHintNode' );
   var ExpressionNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionNode' );
@@ -268,7 +269,9 @@ define( function( require ) {
         ViewModeEnum.COINS,
         new Image( switchCoinImage, { scale: 0.6 } ),
         ViewModeEnum.VARIABLES,
-        new Text( 'x', { font: new PhetFont( { family: '"Times New Roman", serif', size: 32, style: 'italic' } ) } ),
+        new Text( EESharedConstants.X_VARIABLE_CHAR, {
+          font: new PhetFont( { family: '"Times New Roman", serif', size: 32, style: 'italic' } )
+        } ),
         { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
       ) );
     }

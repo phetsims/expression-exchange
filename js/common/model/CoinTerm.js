@@ -191,7 +191,7 @@ define( function( require ) {
         xValueProperty.value,
         45,
         coinXFrontImage,
-        'x',
+        EESharedConstants.X_VARIABLE_CHAR,
         termValueTextProperty,
         options
       );
@@ -212,7 +212,7 @@ define( function( require ) {
         yValueProperty.value,
         45,
         coinYFrontImage,
-        'y',
+        EESharedConstants.Y_VARIABLE_CHAR,
         termValueTextProperty,
         options
       );
@@ -233,7 +233,7 @@ define( function( require ) {
         zValueProperty.value,
         50,
         coinZFrontImage,
-        'z',
+        EESharedConstants.Z_VARIABLE_CHAR,
         termValueTextProperty,
         options
       );
@@ -255,7 +255,7 @@ define( function( require ) {
         xValueProperty.value * yValueProperty.value,
         50,
         coinXYFrontImage,
-        'xy',
+        EESharedConstants.X_VARIABLE_CHAR + EESharedConstants.Y_VARIABLE_CHAR,
         termValueTextProperty,
         options
       );
@@ -276,7 +276,7 @@ define( function( require ) {
         xValueProperty.value * xValueProperty.value,
         55,
         coinXSquaredFrontImage,
-        'x<sup>2</sup>',
+        EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>',
         termValueTextProperty,
         options
       );
@@ -297,7 +297,7 @@ define( function( require ) {
         yValueProperty.value * yValueProperty.value,
         60,
         coinYSquaredFrontImage,
-        'y<sup>2</sup>',
+        EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>',
         termValueTextProperty,
         options
       );
@@ -320,7 +320,7 @@ define( function( require ) {
         Math.pow( xValueProperty.value, 2 ) * Math.pow( yValueProperty.value, 2 ),
         55,
         coinXSquareYSquaredFrontImage,
-        'x<sup>2</sup>y<sup>2</sup>',
+        EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>' + EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>',
         termValueTextProperty,
         options
       );

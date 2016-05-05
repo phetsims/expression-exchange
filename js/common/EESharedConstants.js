@@ -18,7 +18,13 @@ define( function( require ) {
     // speed at which coins and terms move
     COIN_TERM_MOVEMENT_SPEED: 400, // in model units (which are basically screen coordinates) per second
 
-    EXPRESSION_BACKGROUND_COLOR: 'rgba( 255, 255, 255, 0.5 )'
+    EXPRESSION_BACKGROUND_COLOR: 'rgba( 255, 255, 255, 0.5 )',
+
+    // the characters to use for the various variables depicted in the sim
+    X_VARIABLE_CHAR: 'x',
+    Y_VARIABLE_CHAR: 'y',
+    Z_VARIABLE_CHAR: 'z'
+
   };
 
   expressionExchange.register( 'EESharedConstants', EESharedConstants );
