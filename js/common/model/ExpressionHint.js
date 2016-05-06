@@ -21,6 +21,7 @@ define( function( require ) {
     // @public, read only
     this.anchorCoinTerm = anchorCoinTerm;
     this.movingCoinTerm = movingCoinTerm;
+    this.anchorOnLeft = anchorCoinTerm.position.x < movingCoinTerm.position.x;
   }
 
   expressionExchange.register( 'ExpressionHint', ExpressionHint );
@@ -37,8 +38,11 @@ define( function( require ) {
     },
 
     // @public
-    equals: function( expressionHint ){
-      return ( expressionHint.anchorCoinTerm === this.anchorCoinTerm && expressionHint.movingCoinTerm === this.movingCoinTerm );
+    equals: function( otherExpressionHint ){
+      return ( otherExpressionHint.anchorCoinTerm === this.anchorCoinTerm &&
+               otherExpressionHint.movingCoinTerm === this.movingCoinTerm &&
+               otherExpressionHint.anchorOnLeft === this.anchorOnLeft
+      );
     }
   } );
 } );

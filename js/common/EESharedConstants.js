@@ -13,7 +13,7 @@ define( function( require ) {
   var EESharedConstants = {
 
     // radius at which terms can be combined
-    TERM_COMBINE_RADIUS: 35,
+    TERM_COMBINE_DISTANCE: 35,
 
     // speed at which coins and terms move
     COIN_TERM_MOVEMENT_SPEED: 400, // in model units (which are basically screen coordinates) per second

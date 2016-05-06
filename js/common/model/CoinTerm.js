@@ -169,6 +169,15 @@ define( function( require ) {
         this.termText,
         this.termValueTextProperty,
         { initialCount: this.combinedCount, initialPosition: this.position } );
+    },
+
+    /**
+     * tests if this coin term can be legitimately combined with another coin term
+     * @param {CoinTerm} coinTerm
+     * @returns {boolean}
+     */
+    canCombineWith: function( coinTerm ){
+      return this.termText === coinTerm.termText && !( coinTerm === this );
     }
   }, {
 

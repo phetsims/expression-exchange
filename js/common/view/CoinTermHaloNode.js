@@ -50,8 +50,8 @@ define( function( require ) {
     coinHaloVisibleProperty.linkAttribute( coinHalo, 'visible' );
 
     // add the term halo
-    var termHalo = new Circle( EESharedConstants.TERM_COMBINE_RADIUS, {
-      fill: new RadialGradient( 0, 0, 0, 0, 0, EESharedConstants.TERM_COMBINE_RADIUS ).
+    var termHalo = new Circle( EESharedConstants.TERM_COMBINE_DISTANCE, {
+      fill: new RadialGradient( 0, 0, 0, 0, 0, EESharedConstants.TERM_COMBINE_DISTANCE ).
         addColorStop( 0, TERM_HALO_COLOR_CENTER ).
         addColorStop( 0.5, TERM_HALO_COLOR_CENTER ).
         addColorStop( 1, TERM_HALO_EDGE_COLOR )
