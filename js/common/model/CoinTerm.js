@@ -12,6 +12,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var Bounds2 = require( 'DOT/Bounds2' );
   var Emitter = require( 'AXON/Emitter' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -178,6 +179,19 @@ define( function( require ) {
      */
     canCombineWith: function( coinTerm ){
       return this.termText === coinTerm.termText && !( coinTerm === this );
+    },
+
+    /**
+     * return the bounds of this model elements representation in the view
+     * @public
+     */
+    getViewBounds: function(){
+      return new Bounds2(
+        this.position.x + this.relativeViewBounds.minX,
+        this.position.y + this.relativeViewBounds.minY,
+        this.position.x + this.relativeViewBounds.maxX,
+        this.position.y + this.relativeViewBounds.maxY
+      );
     }
   }, {
 

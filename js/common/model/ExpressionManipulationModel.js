@@ -12,8 +12,8 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var Bounds2 = require( 'DOT/Bounds2' );
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
+  var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
@@ -27,20 +27,6 @@ define( function( require ) {
 
   // constants
   var BREAK_APART_SPACING = 10;
-
-  // utility function for determining which coin term in a set that is closest to the provided position
-  function getClosestCoinTermToPosition( position, coinTerms ) {
-    assert && assert( coinTerms.length > 0, 'coinTerms must be an array with at least one coin' );
-    var distanceToClosestCoin = Number.POSITIVE_INFINITY;
-    var closestCoin = null;
-    coinTerms.forEach( function( coin ) {
-      if ( position.distance( coin.position ) < distanceToClosestCoin ) {
-        closestCoin = coin;
-        distanceToClosestCoin = position.distance( closestCoin.position );
-      }
-    } );
-    return closestCoin;
-  }
 
   /**
    * @constructor
@@ -460,26 +446,27 @@ define( function( require ) {
       }
     },
 
-    // @private, get the amount of overlap for a pair of coin terms
     // @private - test if coinTermB is in the "expression combine zone" of coinTermA
     isCoinTermInExpressionCombineZone: function( coinTermA, coinTermB ) {
 
-      // TODO: This could end up being a fair amount of allocations and may need some pre-allocated bounds
-      var extendedTargetCoinTermBounds = new Bounds2(
-        coinTermA.position.x + coinTermA.relativeViewBounds.minX,
-        coinTermA.position.y + coinTermA.relativeViewBounds.minY,
-        coinTermA.position.x + coinTermA.relativeViewBounds.maxX,
-        coinTermA.position.y + coinTermA.relativeViewBounds.maxY
-      ).dilatedX( coinTermA.relativeViewBounds.width );
+      // The determination is made based on adjusted bounds, and the adjustements are a little different based on the
+      // view mode.  The adjustment values were empirically determined.
+      var boundsHeightAdjustmentFactor;
+      if ( this.viewMode === ViewModeEnum.COINS ){
+        boundsHeightAdjustmentFactor = 0.25;
+      }
+      else{
+        boundsHeightAdjustmentFactor = 0.5;
+      }
 
-      var potentiallyJoiningCoinTermBounds = new Bounds2(
-        coinTermB.position.x + coinTermB.relativeViewBounds.minX,
-        coinTermB.position.y + coinTermB.relativeViewBounds.minY,
-        coinTermB.position.x + coinTermB.relativeViewBounds.maxX,
-        coinTermB.position.y + coinTermB.relativeViewBounds.maxY
+      // TODO: This could end up being a fair amount of allocations and may need some pre-allocated bounds for good performance
+      // Make the combine zone wider, but vertically shorter, than the actual bounds, as this gives the most desirable behavior
+      var extendedTargetCoinTermBounds = coinTermA.getViewBounds().dilatedXY(
+        coinTermA.relativeViewBounds.width,
+        -coinTermA.relativeViewBounds.height * boundsHeightAdjustmentFactor
       );
 
-      return extendedTargetCoinTermBounds.intersectsBounds( potentiallyJoiningCoinTermBounds );
+      return extendedTargetCoinTermBounds.intersectsBounds( coinTermB.getViewBounds() );
     },
 
     /**
@@ -498,7 +485,7 @@ define( function( require ) {
 
     /**
      * Check for coin terms that are not already in expressions that are positioned such that they could combine with
-     * the provided coin into an expression.  If more than one possibility exists, the closest is returned.  If none
+     * the provided coin into a new expression.  If more than one possibility exists, the closest is returned.  If none
      * are found, null is returned.
      * @param testCoinTerm
      * @private
@@ -519,18 +506,20 @@ define( function( require ) {
       return joinableFreeCoinTerm;
     },
 
-    getOverlapAmount: function( coinTerm1, coinTerm2 ) {
+    // @private, get the amount of overlap given two coin terms by comparning position and coin diameter
+    getCoinOverlapAmount: function( coinTerm1, coinTerm2 ) {
       var distanceBetweenCenters = coinTerm1.position.distance( coinTerm2.position );
-      var overlapAmount = 0;
+      return Math.max( ( coinTerm1.coinDiameter / 2 + coinTerm2.coinDiameter / 2 ) - distanceBetweenCenters, 0 );
+    },
 
-      // the amount of overlap depends upon whether we are in COIN and VARIABLES view mode
-      if ( this.viewMode === ViewModeEnum.COINS ) {
-        overlapAmount = Math.max( ( coinTerm1.coinDiameter / 2 + coinTerm2.coinDiameter / 2 ) - distanceBetweenCenters, 0 );
+    getViewBoundsOverlapAmount: function( coinTerm1, coinTerm2 ){
+      var overlap = 0;
+
+      if ( coinTerm1.getViewBounds().intersectsBounds( coinTerm2.getViewBounds() ) ){
+        var intersection = coinTerm1.getViewBounds().intersection( coinTerm2.getViewBounds() );
+        overlap = intersection.width * intersection.height;
       }
-      else {
-        overlapAmount = Math.max( EESharedConstants.TERM_COMBINE_DISTANCE - distanceBetweenCenters, 0 );
-      }
-      return overlapAmount;
+      return overlap;
     },
 
     // @private, get the coin term that overlaps most with the provided coin term, null of there is no overlap with any
@@ -541,9 +530,17 @@ define( function( require ) {
       var maxOverlapAmount = 0;
       this.coinTerms.forEach( function( potentiallyOverlappingCoinTerm ) {
         if ( coinTerm !== potentiallyOverlappingCoinTerm && !potentiallyOverlappingCoinTerm.userControlled &&
-             !self.isCoinTermInExpression( potentiallyOverlappingCoinTerm ) &&
-             self.doCoinTermsOverlap( coinTerm, potentiallyOverlappingCoinTerm ) ) {
-          var overlapAmount = self.getOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
+             !self.isCoinTermInExpression( potentiallyOverlappingCoinTerm ) ) {
+
+          // calculate and compare the relative overlap amounds, done a bit differently in the different view modes
+          var overlapAmount;
+          if ( self.viewMode === ViewModeEnum.COINS ){
+            overlapAmount = self.getCoinOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
+          }
+          else{
+            overlapAmount = self.getViewBoundsOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
+          }
+
           if ( overlapAmount > maxOverlapAmount ){
             maxOverlapAmount = overlapAmount;
             mostOverlappingCoinTerm = potentiallyOverlappingCoinTerm;
