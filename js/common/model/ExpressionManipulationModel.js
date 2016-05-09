@@ -187,12 +187,13 @@ define( function( require ) {
       addedCoinTerm.combinedCountProperty.link( coinTermCombinedCountListener );
 
       // clean up the listeners added above if and when this coin term is removed from the model
-      self.coinTerms.addItemRemovedListener( function( removedCoinTerm ){
+      self.coinTerms.addItemRemovedListener( function coinTermRemovalListener( removedCoinTerm ){
         if ( removedCoinTerm === addedCoinTerm ){
           addedCoinTerm.userControlledProperty.unlink( coinTermUserControlledListener );
           addedCoinTerm.breakApartEmitter.removeListener( coinTermBreakApartListener );
           addedCoinTerm.returnedToOriginEmitter.removeListener( coinTermReturnedToOriginListener );
           addedCoinTerm.combinedCountProperty.unlink( coinTermCombinedCountListener );
+          self.coinTerms.removeItemRemovedListener( coinTermRemovalListener );
         }
       } );
     } );
