@@ -89,15 +89,13 @@ define( function( require ) {
     this.coinTerms.addItemAddedListener( updateTotal );
     this.coinTerms.addItemRemovedListener( updateTotal );
 
-    // when a coin term is added, add listeners to handle it being released
+    // when a coin term is added, add listeners to handle the things about it that are dynmaic and can affect the model
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
-      // TODO: Revisit this and verify that this doesn't leak memory, making sure that all added listeners are removed
-      // TODO: Work through this and see if it can be made more compact and readable (it's evolving a lot as it's being written)
+      // TODO: Once this is pretty much fully function, revisit this and verify that it doesn't leak memory, making
+      // TODO: sure that all added listeners are removed.  Also, work through this and see if it can be made more
+      // TODO: compact and readable (it's evolving a lot as it's being written)
 
-
-      // Add a handler for when the coin term is released, which may add the coin to an expression or combine it with
-      // another coin term.
-      addedCoinTerm.userControlledProperty.lazyLink( function( userControlled ) {
+      function coinTermUserControlledListener( userControlled ) {
 
         if ( userControlled === false ) {
 
@@ -112,8 +110,8 @@ define( function( require ) {
             // there was no overlap with expressions, check for overlap with coin terms
             var mostOverlappingCoinTerm = self.getMostOverlappingCoinTerm( addedCoinTerm );
 
-            if ( mostOverlappingCoinTerm ){
-              if ( addedCoinTerm.canCombineWith( mostOverlappingCoinTerm ) ){
+            if ( mostOverlappingCoinTerm ) {
+              if ( addedCoinTerm.canCombineWith( mostOverlappingCoinTerm ) ) {
 
                 // these coins can be combined into a single coin term with a higher "combine count"
                 addedCoinTerm.travelToDestination( mostOverlappingCoinTerm.position );
@@ -123,7 +121,7 @@ define( function( require ) {
                   addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
                 } );
               }
-              else{
+              else {
 
                 // create a new expression with these two coin terms
                 self.expressions.push( new Expression( mostOverlappingCoinTerm, addedCoinTerm ) );
@@ -139,10 +137,11 @@ define( function( require ) {
             }
           }
         }
-      } );
+      }
 
-      // add a listener that will handle breaking apart the coin if necessary
-      addedCoinTerm.breakApartEmitter.addListener( function() {
+      addedCoinTerm.userControlledProperty.lazyLink( coinTermUserControlledListener );
+
+      function coinTermBreakApartListner() {
 
         if ( Math.abs( addedCoinTerm.combinedCount ) < 2 ) {
           // bail if the coin is a single
@@ -169,11 +168,21 @@ define( function( require ) {
             nextLeftX -= interCoinTermDistance;
           }
         } );
-      } );
+      }
+
+      // add a listener that will handle breaking apart the coin if necessary
+      addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListner() );
 
       // add a listener that will remove this coin when it returns to its original position
       addedCoinTerm.returnedToOriginEmitter.addListener( function() {
         self.removeCoinTerm( addedCoinTerm, false );
+      } );
+
+      // add a listener that will remove this coin if its combined count goes to zero
+      addedCoinTerm.combinedCountProperty.link( function( combinedCount ) {
+        if ( combinedCount === 0 ){
+          self.removeCoinTerm( addedCoinTerm, false );
+        }
       } );
     } );
 
@@ -276,14 +285,14 @@ define( function( require ) {
           // method to get the most overlapping, and overlap is determined using the view bounds.
           var mostOverlappingCoinTerm = self.getMostOverlappingCoinTerm( userControlledCoinTerm );
 
-          if ( mostOverlappingCoinTerm ){
-            if ( userControlledCoinTerm.canCombineWith( mostOverlappingCoinTerm ) ){
+          if ( mostOverlappingCoinTerm ) {
+            if ( userControlledCoinTerm.canCombineWith( mostOverlappingCoinTerm ) ) {
 
               // these coin terms can be combined, so they should have their halos activated
               coinTermsWithHalos.push( userControlledCoinTerm );
               coinTermsWithHalos.push( mostOverlappingCoinTerm );
             }
-            else{
+            else {
 
               // these are two different types of coins, so we need an expression hint
               neededExpressionHints.push( new ExpressionHint( mostOverlappingCoinTerm, userControlledCoinTerm ) );
@@ -452,10 +461,10 @@ define( function( require ) {
       // The determination is made based on adjusted bounds, and the adjustements are a little different based on the
       // view mode.  The adjustment values were empirically determined.
       var boundsHeightAdjustmentFactor;
-      if ( this.viewMode === ViewModeEnum.COINS ){
+      if ( this.viewMode === ViewModeEnum.COINS ) {
         boundsHeightAdjustmentFactor = 0.25;
       }
-      else{
+      else {
         boundsHeightAdjustmentFactor = 0.5;
       }
 
@@ -512,10 +521,10 @@ define( function( require ) {
       return Math.max( ( coinTerm1.coinDiameter / 2 + coinTerm2.coinDiameter / 2 ) - distanceBetweenCenters, 0 );
     },
 
-    getViewBoundsOverlapAmount: function( coinTerm1, coinTerm2 ){
+    getViewBoundsOverlapAmount: function( coinTerm1, coinTerm2 ) {
       var overlap = 0;
 
-      if ( coinTerm1.getViewBounds().intersectsBounds( coinTerm2.getViewBounds() ) ){
+      if ( coinTerm1.getViewBounds().intersectsBounds( coinTerm2.getViewBounds() ) ) {
         var intersection = coinTerm1.getViewBounds().intersection( coinTerm2.getViewBounds() );
         overlap = intersection.width * intersection.height;
       }
@@ -529,19 +538,18 @@ define( function( require ) {
       var mostOverlappingCoinTerm = null;
       var maxOverlapAmount = 0;
       this.coinTerms.forEach( function( potentiallyOverlappingCoinTerm ) {
-        if ( coinTerm !== potentiallyOverlappingCoinTerm && !potentiallyOverlappingCoinTerm.userControlled &&
-             !self.isCoinTermInExpression( potentiallyOverlappingCoinTerm ) ) {
+        if ( coinTerm !== potentiallyOverlappingCoinTerm && !potentiallyOverlappingCoinTerm.userControlled && !self.isCoinTermInExpression( potentiallyOverlappingCoinTerm ) ) {
 
           // calculate and compare the relative overlap amounds, done a bit differently in the different view modes
           var overlapAmount;
-          if ( self.viewMode === ViewModeEnum.COINS ){
+          if ( self.viewMode === ViewModeEnum.COINS ) {
             overlapAmount = self.getCoinOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
           }
-          else{
+          else {
             overlapAmount = self.getViewBoundsOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
           }
 
-          if ( overlapAmount > maxOverlapAmount ){
+          if ( overlapAmount > maxOverlapAmount ) {
             maxOverlapAmount = overlapAmount;
             mostOverlappingCoinTerm = potentiallyOverlappingCoinTerm;
           }
