@@ -35,6 +35,8 @@ define( function( require ) {
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_X_SPACING = 3;
   var DRAG_BEFORE_BREAK_BUTTON_FADES = 10;
+  var FADE_TIME = 0.5; // in seconds
+  var NUM_FADE_STEPS = 10; // number of steps for fade out to occur
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin
@@ -99,11 +101,11 @@ define( function( require ) {
     rootNode.addChild( termText );
 
     // create a helper function to update the termText - this basically adds/removes the minus sign
-    function updateTermText( coefficientVisible ){
-      if ( coinTerm.combinedCount < 0 && !coefficientVisible ){
+    function updateTermText( coefficientVisible ) {
+      if ( coinTerm.combinedCount < 0 && !coefficientVisible ) {
         termText.text = '-' + coinTerm.termText;
       }
-      else{
+      else {
         termText.text = coinTerm.termText;
       }
       termText.center = coinCenter;
@@ -127,7 +129,7 @@ define( function( require ) {
     // create a helper function to update the term value text
     function updateTermValueText() {
       var termValueText = coinTerm.termValueTextProperty.value;
-      if ( coinTerm.combinedCount === -1 && !showAllCoefficientsProperty.value ){
+      if ( coinTerm.combinedCount === -1 && !showAllCoefficientsProperty.value ) {
         // prepend a minus sign
         termValueText = '-' + termValueText;
       }
@@ -430,6 +432,36 @@ define( function( require ) {
 
   expressionExchange.register( 'CoinTermNode', CoinTermNode );
 
-  return inherit( Node, CoinTermNode );
-} )
-;
+  return inherit( Node, CoinTermNode, {
+
+    /**
+     * cause this node to fade away (by reducing opacity) and then remove itself from the scene graph
+     * @public
+     */
+    fadeAway: function() {
+      var self = this;
+      var fadeOutCount = 0;
+
+      // prevent any further interaction
+      this.pickable = false;
+
+      // start the periodic timer that will cause the fade
+      var timerInterval = Timer.setInterval( function(){
+        fadeOutCount++;
+        if ( fadeOutCount < NUM_FADE_STEPS ){
+          // reduce opacity
+          self.opacity = 1 - fadeOutCount / NUM_FADE_STEPS;
+        }
+        else{
+          // remove this node from the scene graph
+          self.getParents().forEach( function( parent){
+            parent.removeChild( self );
+          } );
+
+          // stop the timer
+          Timer.clearInterval( timerInterval );
+        }
+      }, Math.max( FADE_TIME / NUM_FADE_STEPS * 1000, 1 / 60 * 1000 ) ); // interval should be at least one animation frame
+    }
+  } );
+} );

@@ -145,7 +145,7 @@ define( function( require ) {
 
     // create the collection of coin term creator nodes that will be presented to the user, varies based on options
     var coinTermCollection = [];
-    if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.BASIC ){
+    if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.BASIC ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
         return new CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
@@ -160,7 +160,7 @@ define( function( require ) {
       } ) );
 
     }
-    else if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.EXPLORE ){
+    else if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.EXPLORE ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
         return new CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
@@ -214,7 +214,7 @@ define( function( require ) {
       );
 
     }
-    else if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.ADVANCED ){
+    else if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.ADVANCED ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
         return new CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
@@ -250,7 +250,7 @@ define( function( require ) {
       } ) );
 
     }
-    else{
+    else {
       assert( false, 'unknown value for coinTermCollection' );
     }
 
@@ -263,7 +263,7 @@ define( function( require ) {
     this.addChild( carousel );
 
     // if both representations are allowed, add the switch for switching between coin and term view
-    if ( expressionManipulationModel.allowedRepresentations === AllowedRepresentationsEnum.COINS_AND_VARIABLES ){
+    if ( expressionManipulationModel.allowedRepresentations === AllowedRepresentationsEnum.COINS_AND_VARIABLES ) {
       this.addChild( new ABSwitch(
         expressionManipulationModel.viewModeProperty,
         ViewModeEnum.COINS,
@@ -309,7 +309,7 @@ define( function( require ) {
     expressionManipulationModel.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
 
       // add a representation of the coin
-      var coinNode = new CoinTermNode(
+      var coinTermNode = new CoinTermNode(
         addedCoinTerm,
         expressionManipulationModel.viewModeProperty,
         expressionManipulationModel.showCoinValuesProperty,
@@ -317,12 +317,13 @@ define( function( require ) {
         expressionManipulationModel.showAllCoefficientsProperty,
         { addDragHandler: true, dragBounds: self.layoutBounds }
       );
-      coinLayer.addChild( coinNode );
+      coinLayer.addChild( coinTermNode );
 
       // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
       // from the model.
       addedCoinTerm.userControlledProperty.onValue( false, function() {
-        if ( coinNode.bounds.intersectsBounds( carousel.bounds ) && !expressionManipulationModel.isCoinTermInExpression( addedCoinTerm ) ) {
+        if ( coinTermNode.bounds.intersectsBounds( carousel.bounds ) &&
+             !expressionManipulationModel.isCoinTermInExpression( addedCoinTerm ) ) {
           expressionManipulationModel.removeCoinTerm( addedCoinTerm, true );
         }
       } );
@@ -334,7 +335,13 @@ define( function( require ) {
       // set up a listener to remove the nodes when the corresponding coin is removed from the model
       expressionManipulationModel.coinTerms.addItemRemovedListener( function removalListener( removedCoin ) {
         if ( removedCoin === addedCoinTerm ) {
-          coinLayer.removeChild( coinNode );
+          if ( removedCoin.combinedCount === 0 ) {
+            // if the coin term being removed has a combined count of zero, it should fade out rather than disappearing
+            coinTermNode.fadeAway();
+          }
+          else{
+            coinLayer.removeChild( coinTermNode );
+          }
           coinHaloLayer.removeChild( coinHaloNode );
           expressionManipulationModel.coinTerms.removeItemRemovedListener( removalListener );
         }
