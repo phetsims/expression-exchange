@@ -95,6 +95,7 @@ define( function( require ) {
       // TODO: sure that all added listeners are removed.  Also, work through this and see if it can be made more
       // TODO: compact and readable (it's evolving a lot as it's being written)
 
+      // add a listener that will potentially combine this coin term with expressions or other coin terms when released
       function coinTermUserControlledListener( userControlled ) {
 
         if ( userControlled === false ) {
@@ -138,9 +139,9 @@ define( function( require ) {
           }
         }
       }
-
       addedCoinTerm.userControlledProperty.lazyLink( coinTermUserControlledListener );
 
+      // add a listener that will handle breaking apart the coin if necessary
       function coinTermBreakApartListener() {
 
         if ( Math.abs( addedCoinTerm.combinedCount ) < 2 ) {
@@ -169,19 +170,29 @@ define( function( require ) {
           }
         } );
       }
+      addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListener );
 
-      // add a listener that will handle breaking apart the coin if necessary
-      addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListener() );
-
-      // add a listener that will remove this coin when it returns to its original position
-      addedCoinTerm.returnedToOriginEmitter.addListener( function() {
+      // add a listener that will remove this coin if and when it returns to its original position
+      function coinTermReturnedToOriginListener() {
         self.removeCoinTerm( addedCoinTerm, false );
-      } );
+      }
+      addedCoinTerm.returnedToOriginEmitter.addListener( coinTermReturnedToOriginListener );
 
       // add a listener that will remove this coin if its combined count goes to zero
-      addedCoinTerm.combinedCountProperty.link( function( combinedCount ) {
+      function coinTermCombinedCountListener( combinedCount ) {
         if ( combinedCount === 0 ){
           self.removeCoinTerm( addedCoinTerm, false );
+        }
+      }
+      addedCoinTerm.combinedCountProperty.link( coinTermCombinedCountListener );
+
+      // clean up the listeners added above if and when this coin term is removed from the model
+      self.coinTerms.addItemRemovedListener( function( removedCoinTerm ){
+        if ( removedCoinTerm === addedCoinTerm ){
+          addedCoinTerm.userControlledProperty.unlink( coinTermUserControlledListener );
+          addedCoinTerm.breakApartEmitter.removeListener( coinTermBreakApartListener );
+          addedCoinTerm.returnedToOriginEmitter.removeListener( coinTermReturnedToOriginListener );
+          addedCoinTerm.combinedCountProperty.unlink( coinTermCombinedCountListener );
         }
       } );
     } );
