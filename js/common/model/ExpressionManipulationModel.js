@@ -141,7 +141,7 @@ define( function( require ) {
 
       addedCoinTerm.userControlledProperty.lazyLink( coinTermUserControlledListener );
 
-      function coinTermBreakApartListner() {
+      function coinTermBreakApartListener() {
 
         if ( Math.abs( addedCoinTerm.combinedCount ) < 2 ) {
           // bail if the coin is a single
@@ -171,7 +171,7 @@ define( function( require ) {
       }
 
       // add a listener that will handle breaking apart the coin if necessary
-      addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListner() );
+      addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListener() );
 
       // add a listener that will remove this coin when it returns to its original position
       addedCoinTerm.returnedToOriginEmitter.addListener( function() {
