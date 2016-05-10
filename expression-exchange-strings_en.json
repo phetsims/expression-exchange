@@ -31,5 +31,8 @@
   },
   "total": {
     "value": "Total"
+  },
+  "values": {
+    "value": "Values"
   }
 }

@@ -34,7 +34,9 @@ define( function( require ) {
   var ScreenView = require( 'JOIST/ScreenView' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
+  var VariableValueTweaker = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueTweaker' );
   var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
+  var VBox = require( 'SCENERY/nodes/VBox' );
   var VStrut = require( 'SCENERY/nodes/VStrut' );
 
   // strings
@@ -43,6 +45,7 @@ define( function( require ) {
   var allCoefficientsString = require( 'string!EXPRESSION_EXCHANGE/allCoefficients' );
   var coinValuesString = require( 'string!EXPRESSION_EXCHANGE/coinValues' );
   var totalString = require( 'string!EXPRESSION_EXCHANGE/total' );
+  var valuesString = require( 'string!EXPRESSION_EXCHANGE/values' );
   var variableValuesString = require( 'string!EXPRESSION_EXCHANGE/variableValues' );
 
   // images
@@ -88,6 +91,33 @@ define( function( require ) {
       minWidth: totalCentsReadout.width * 1.8 // multiplier empirically determined
     } );
     this.addChild( totalCentsAccordionBox );
+
+    // add the control that allows the user to adjust the values of the variables
+    var variableValuesAccordionBox = new AccordionBox(
+      new VBox( {
+        children: [
+          new VariableValueTweaker( expressionManipulationModel.xTermValueProperty, EESharedConstants.X_VARIABLE_CHAR ),
+          new VariableValueTweaker( expressionManipulationModel.yTermValueProperty, EESharedConstants.Y_VARIABLE_CHAR ),
+          new VariableValueTweaker( expressionManipulationModel.zTermValueProperty, EESharedConstants.Z_VARIABLE_CHAR )
+        ],
+        spacing: 20
+      } ),
+      {
+        titleNode: new Text( valuesString, { font: ACCORDION_BOX_TITLE_FONT } ),
+        left: INSET,
+        top: totalCentsAccordionBox.bottom + 10,
+        cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
+        buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
+        buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN
+      }
+    );
+    variableValuesAccordionBox.expandedProperty.value = false; // initially closed
+    this.addChild( variableValuesAccordionBox );
+
+    // the values control is only visible when in variable mode
+    expressionManipulationModel.viewModeProperty.link( function( viewMode ){
+      variableValuesAccordionBox.visible = viewMode === ViewModeEnum.VARIABLES;
+    } );
 
     // add accordion box that will contain the user's coin collection
     var myCollectionAccordionBox = new AccordionBox( new VStrut( 350 ), {
@@ -299,6 +329,7 @@ define( function( require ) {
         myCollectionAccordionBox.expandedProperty.reset();
         totalCentsAccordionBox.expandedProperty.reset();
         carousel.pageNumberProperty.reset();
+        variableValuesAccordionBox.expandedProperty.value = false;
       },
       right: this.layoutBounds.maxX - 10,
       bottom: this.layoutBounds.maxY - 10
@@ -322,8 +353,7 @@ define( function( require ) {
       // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
       // from the model.
       addedCoinTerm.userControlledProperty.onValue( false, function() {
-        if ( coinTermNode.bounds.intersectsBounds( carousel.bounds ) &&
-             !expressionManipulationModel.isCoinTermInExpression( addedCoinTerm ) ) {
+        if ( coinTermNode.bounds.intersectsBounds( carousel.bounds ) && !expressionManipulationModel.isCoinTermInExpression( addedCoinTerm ) ) {
           expressionManipulationModel.removeCoinTerm( addedCoinTerm, true );
         }
       } );
@@ -339,7 +369,7 @@ define( function( require ) {
             // if the coin term being removed has a combined count of zero, it should fade out rather than disappearing
             coinTermNode.fadeAway();
           }
-          else{
+          else {
             coinLayer.removeChild( coinTermNode );
           }
           coinHaloLayer.removeChild( coinHaloNode );
