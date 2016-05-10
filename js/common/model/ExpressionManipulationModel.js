@@ -13,7 +13,6 @@ define( function( require ) {
 
   // modules
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
-  var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
@@ -21,6 +20,7 @@ define( function( require ) {
   var ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
+  var Property = require( 'AXON/Property' );
   var PropertySet = require( 'AXON/PropertySet' );
   var Vector2 = require( 'DOT/Vector2' );
   var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
@@ -58,7 +58,7 @@ define( function( require ) {
       xTermValue: 2, // @public
       yTermValue: 5, // @public
       zTermValue: 10, // @public
-      totalCents: 0 // @public, read-only
+      totalValue: 0 // @public, read-only
     } );
 
     var self = this;
@@ -82,12 +82,22 @@ define( function( require ) {
       self.coinTerms.forEach( function( coinTerm ) {
         total += coinTerm.coinValue * coinTerm.combinedCount;
       } );
-      self.totalCents = total;
+      self.totalValue = total;
     }
 
     // add listeners for updating the total coin value
     this.coinTerms.addItemAddedListener( updateTotal );
     this.coinTerms.addItemRemovedListener( updateTotal );
+    Property.multilink( [ this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty ], updateTotal );
+
+    // add a listener that resets the coin term values when the view mode switches from variables the coins
+    this.viewModeProperty.link( function( newViewMode, oldViewMode ){
+      if ( newViewMode === ViewModeEnum.COINS && oldViewMode === ViewModeEnum.VARIABLES ){
+        self.xTermValueProperty.reset();
+        self.yTermValueProperty.reset();
+        self.zTermValueProperty.reset();
+      }
+    } );
 
     // when a coin term is added, add listeners to handle the things about it that are dynmaic and can affect the model
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {

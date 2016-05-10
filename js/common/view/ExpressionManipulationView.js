@@ -30,6 +30,7 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var Panel = require( 'SUN/Panel' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var Property = require( 'AXON/Property' );
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
@@ -68,29 +69,41 @@ define( function( require ) {
     ScreenView.call( this );
     var self = this;
 
-    // create the readout that will display the total accumulated cents
-    var totalCentsText = new Text( '', { font: new PhetFont( { size: 14 } ) } );
-    var totalCentsReadout = new Panel( totalCentsText, {
+    // create the readout that will display the total accumulated value, use max length string initially
+    var totalValueText = new Text( StringUtils.format( numberCentsString, 9999 ), { font: new PhetFont( { size: 14 } ) } );
+    var totalValueReadoutWidth = totalValueText.width + 20;
+    var totalValueReadout = new Panel( totalValueText, {
       fill: 'white',
       stroke: 'black',
       cornerRadius: 5,
-      xMargin: 10
+      xMargin: 10,
+      align: 'center',
+      minWidth: totalValueReadoutWidth,
+      maxWidth: totalValueReadoutWidth
     } );
-    expressionManipulationModel.totalCentsProperty.link( function( totalCents ) {
-      totalCentsText.text = StringUtils.format( numberCentsString, totalCents );
-    } );
+    Property.multilink(
+      [ expressionManipulationModel.totalValueProperty, expressionManipulationModel.viewModeProperty ],
+      function( totalValue ) {
+        if ( expressionManipulationModel.viewMode === ViewModeEnum.COINS ) {
+          totalValueText.text = StringUtils.format( numberCentsString, totalValue );
+        }
+        else {
+          totalValueText.text = totalValue;
+        }
+      }
+    );
 
-    // add accordion box that will contain the total cents readout
-    var totalCentsAccordionBox = new AccordionBox( totalCentsReadout, {
+    // add accordion box that will contain the total value readout
+    var totalValueAccordionBox = new AccordionBox( totalValueReadout, {
       titleNode: new Text( totalString, { font: ACCORDION_BOX_TITLE_FONT } ),
       left: INSET,
       top: INSET,
       cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
       buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
       buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
-      minWidth: totalCentsReadout.width * 1.8 // multiplier empirically determined
+      minWidth: totalValueReadout.width * 1.8 // multiplier empirically determined
     } );
-    this.addChild( totalCentsAccordionBox );
+    this.addChild( totalValueAccordionBox );
 
     // add the control that allows the user to adjust the values of the variables
     var variableValuesAccordionBox = new AccordionBox(
@@ -105,7 +118,7 @@ define( function( require ) {
       {
         titleNode: new Text( valuesString, { font: ACCORDION_BOX_TITLE_FONT } ),
         left: INSET,
-        top: totalCentsAccordionBox.bottom + 10,
+        top: totalValueAccordionBox.bottom + 10,
         cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
         buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
         buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN
@@ -115,7 +128,7 @@ define( function( require ) {
     this.addChild( variableValuesAccordionBox );
 
     // the values control is only visible when in variable mode
-    expressionManipulationModel.viewModeProperty.link( function( viewMode ){
+    expressionManipulationModel.viewModeProperty.link( function( viewMode ) {
       variableValuesAccordionBox.visible = viewMode === ViewModeEnum.VARIABLES;
     } );
 
@@ -327,7 +340,7 @@ define( function( require ) {
       listener: function() {
         expressionManipulationModel.reset();
         myCollectionAccordionBox.expandedProperty.reset();
-        totalCentsAccordionBox.expandedProperty.reset();
+        totalValueAccordionBox.expandedProperty.reset();
         carousel.pageNumberProperty.reset();
         variableValuesAccordionBox.expandedProperty.value = false;
       },
