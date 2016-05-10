@@ -83,7 +83,7 @@ define( function( require ) {
     // TODO: representations probably still makes sense so we're not having to add and remove nodes all the time.
 
     // add the coin value text
-    var coinValueText = new Text( coinTerm.coinValue, { font: TERM_AND_VALUE_FONT, center: coinCenter } );
+    var coinValueText = new Text( coinTerm.valueProperty.value, { font: TERM_AND_VALUE_FONT, center: coinCenter } );
     rootNode.addChild( coinValueText );
 
     // control the coin value text visibility

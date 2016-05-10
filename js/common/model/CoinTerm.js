@@ -37,7 +37,7 @@ define( function( require ) {
    * TODO: document parameters thoroughly once finalized.  Make sure to note requirement for subSupText format of some of the string values.
    * @constructor
    */
-  function CoinTerm( coinValue, coinDiameter, coinFrontImage, termText, termValueTextProperty, options ) {
+  function CoinTerm( valueProperty, coinDiameter, coinFrontImage, termText, termValueTextProperty, options ) {
 
     var self = this;
     this.id = 'CT-' + (++creationCount);
@@ -62,7 +62,7 @@ define( function( require ) {
     } );
 
     // @public, read only, values that describe the nature of this coin term
-    this.coinValue = coinValue;
+    this.valueProperty = valueProperty;
     this.termText = termText;
     this.coinDiameter = coinDiameter;
     this.coinFrontImage = coinFrontImage;
@@ -164,7 +164,7 @@ define( function( require ) {
      */
     cloneMostly: function(){
       return new CoinTerm(
-        this.coinValue,
+        this.valueProperty,
         this.coinDiameter,
         this.coinFrontImage,
         this.termText,
@@ -211,7 +211,7 @@ define( function( require ) {
         termValueTextProperty.value = xValue.toString();
       } );
       return new CoinTerm(
-        xValueProperty.value,
+        xValueProperty,
         45,
         coinXFrontImage,
         EESharedConstants.X_VARIABLE_CHAR,
@@ -232,7 +232,7 @@ define( function( require ) {
         termValueTextProperty.value = yValue.toString();
       } );
       return new CoinTerm(
-        yValueProperty.value,
+        yValueProperty,
         45,
         coinYFrontImage,
         EESharedConstants.Y_VARIABLE_CHAR,
@@ -253,7 +253,7 @@ define( function( require ) {
         termValueTextProperty.value = zValue.toString();
       } );
       return new CoinTerm(
-        zValueProperty.value,
+        zValueProperty,
         50,
         coinZFrontImage,
         EESharedConstants.Z_VARIABLE_CHAR,
@@ -270,12 +270,14 @@ define( function( require ) {
      * @constructor
      */
     XTimesY: function( xValueProperty, yValueProperty, options ){
+      var valueProperty = new Property( xValueProperty.value * yValueProperty.value );
       var termValueTextProperty = new Property();
       Property.multilink( [ xValueProperty, yValueProperty ], function( xValue, yValue ){
+        valueProperty.value = xValue * yValue;
         termValueTextProperty.value = xValue.toString() + '\u00B7' + yValue.toString();
       } );
       return new CoinTerm(
-        xValueProperty.value * yValueProperty.value,
+        valueProperty,
         50,
         coinXYFrontImage,
         EESharedConstants.X_VARIABLE_CHAR + EESharedConstants.Y_VARIABLE_CHAR,
@@ -291,12 +293,14 @@ define( function( require ) {
      * @constructor
      */
     XSquared: function( xValueProperty, options ){
+      var valueProperty = new Property( xValueProperty.value * xValueProperty.value );
       var termValueTextProperty = new Property();
       xValueProperty.link( function( xValue ){
+        valueProperty.value = xValue * xValue;
         termValueTextProperty.value = xValue.toString() + '<sup>2</sup>';
       } );
       return new CoinTerm(
-        xValueProperty.value * xValueProperty.value,
+        valueProperty,
         55,
         coinXSquaredFrontImage,
         EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>',
@@ -312,12 +316,14 @@ define( function( require ) {
      * @constructor
      */
     YSquared: function( yValueProperty, options ){
+      var valueProperty = new Property( yValueProperty.value * yValueProperty.value );
       var termValueTextProperty = new Property();
       yValueProperty.link( function( yValue ){
+        valueProperty.value = yValue * yValue;
         termValueTextProperty.value = yValue.toString() + '<sup>' + '2' + '</sup>';
       } );
       return new CoinTerm(
-        yValueProperty.value * yValueProperty.value,
+        valueProperty,
         60,
         coinYSquaredFrontImage,
         EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>',
@@ -334,13 +340,15 @@ define( function( require ) {
      * @constructor
      */
     XSquaredTimesYSquared: function( xValueProperty, yValueProperty, options ){
+      var valueProperty = new Property( xValueProperty.value * xValueProperty.value * yValueProperty.value * yValueProperty.value );
       var termValueTextProperty = new Property();
       Property.multilink( [ xValueProperty, yValueProperty ], function( xValue, yValue ){
+        valueProperty.value = xValue * xValue * yValue * yValue;
         termValueTextProperty.value = xValue.toString() + '<sup>' + '2' + '</sup>'  + '\u00B7' +
                                       yValue.toString() + '<sup>' + '2' + '</sup>';
       } );
       return new CoinTerm(
-        Math.pow( xValueProperty.value, 2 ) * Math.pow( yValueProperty.value, 2 ),
+        valueProperty,
         55,
         coinXSquareYSquaredFrontImage,
         EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>' + EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>',

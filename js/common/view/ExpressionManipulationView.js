@@ -191,48 +191,48 @@ define( function( require ) {
     if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.BASIC ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
+        return CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.Y( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
+        return CoinTerm.Y( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.Z( expressionManipulationModel.zTermValueProperty, { initialPosition: initialPosition } );
+        return CoinTerm.Z( expressionManipulationModel.zTermValueProperty, { initialPosition: initialPosition } );
       } ) );
 
     }
     else if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.EXPLORE ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
+        return CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.Y( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
+        return CoinTerm.Y( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.Z( expressionManipulationModel.zTermValueProperty, { initialPosition: initialPosition } );
+        return CoinTerm.Z( expressionManipulationModel.zTermValueProperty, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.X( expressionManipulationModel.xTermValueProperty, {
+        return CoinTerm.X( expressionManipulationModel.xTermValueProperty, {
           initialPosition: initialPosition,
           initialCount: 2
         } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.Y( expressionManipulationModel.xTermValueProperty, {
+        return CoinTerm.Y( expressionManipulationModel.yTermValueProperty, {
           initialPosition: initialPosition,
           initialCount: 3
         } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.XTimesY(
+        return CoinTerm.XTimesY(
           expressionManipulationModel.xTermValueProperty,
           expressionManipulationModel.yTermValueProperty,
           { initialPosition: initialPosition }
@@ -240,53 +240,52 @@ define( function( require ) {
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.XSquared( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
+        return CoinTerm.XSquared( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.YSquared( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
+        return CoinTerm.YSquared( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-          return new CoinTerm.XSquaredTimesYSquared(
+          return CoinTerm.XSquaredTimesYSquared(
             expressionManipulationModel.xTermValueProperty,
             expressionManipulationModel.yTermValueProperty,
             { initialPosition: initialPosition }
           );
         } )
       );
-
     }
     else if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.ADVANCED ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
+        return CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.X( expressionManipulationModel.xTermValueProperty, {
+        return CoinTerm.X( expressionManipulationModel.xTermValueProperty, {
           initialPosition: initialPosition,
           initialCount: -1
         } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.Y( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
+        return CoinTerm.Y( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.Y( expressionManipulationModel.yTermValueProperty, {
+        return CoinTerm.Y( expressionManipulationModel.yTermValueProperty, {
           initialPosition: initialPosition,
           initialCount: -1
         } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.Z( expressionManipulationModel.zTermValueProperty, { initialPosition: initialPosition } );
+        return CoinTerm.Z( expressionManipulationModel.zTermValueProperty, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return new CoinTerm.Z( expressionManipulationModel.zTermValueProperty, {
+        return CoinTerm.Z( expressionManipulationModel.zTermValueProperty, {
           initialPosition: initialPosition,
           initialCount: -1
         } );

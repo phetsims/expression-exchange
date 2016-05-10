@@ -80,7 +80,7 @@ define( function( require ) {
     function updateTotal() {
       var total = 0;
       self.coinTerms.forEach( function( coinTerm ) {
-        total += coinTerm.coinValue * coinTerm.combinedCount;
+        total += coinTerm.valueProperty.value * coinTerm.combinedCount;
       } );
       self.totalValue = total;
     }
@@ -88,9 +88,8 @@ define( function( require ) {
     // add listeners for updating the total coin value
     this.coinTerms.addItemAddedListener( updateTotal );
     this.coinTerms.addItemRemovedListener( updateTotal );
-    Property.multilink( [ this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty ], updateTotal );
 
-    // add a listener that resets the coin term values when the view mode switches from variables the coins
+    // add a listener that resets the coin term values when the view mode switches from variables to coins
     this.viewModeProperty.link( function( newViewMode, oldViewMode ){
       if ( newViewMode === ViewModeEnum.COINS && oldViewMode === ViewModeEnum.VARIABLES ){
         self.xTermValueProperty.reset();
@@ -105,7 +104,8 @@ define( function( require ) {
       // TODO: sure that all added listeners are removed.  Also, work through this and see if it can be made more
       // TODO: compact and readable (it's evolving a lot as it's being written)
 
-      // add a listener that will potentially combine this coin term with expressions or other coin terms when released
+      // Add a listener that will potentially combine this coin term with expressions or other coin terms based on
+      // where it is released.
       function coinTermUserControlledListener( userControlled ) {
 
         if ( userControlled === false ) {
@@ -182,6 +182,9 @@ define( function( require ) {
       }
       addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListener );
 
+      // add a listener that will update the total value of the coin terms when this one's value changes
+      addedCoinTerm.valueProperty.link( updateTotal );
+
       // add a listener that will remove this coin if and when it returns to its original position
       function coinTermReturnedToOriginListener() {
         self.removeCoinTerm( addedCoinTerm, false );
@@ -203,6 +206,7 @@ define( function( require ) {
           addedCoinTerm.breakApartEmitter.removeListener( coinTermBreakApartListener );
           addedCoinTerm.returnedToOriginEmitter.removeListener( coinTermReturnedToOriginListener );
           addedCoinTerm.combinedCountProperty.unlink( coinTermCombinedCountListener );
+          addedCoinTerm.valueProperty.unlink( updateTotal );
           self.coinTerms.removeItemRemovedListener( coinTermRemovalListener );
         }
       } );
