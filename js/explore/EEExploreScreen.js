@@ -27,9 +27,19 @@ define( function( require ) {
     // TODO: temporary icon, will need to be replaced
     var icon = new RandomIcon();
 
-    Screen.call( this, exploreString, icon,
+    Screen.call(
+      this,
+      exploreString,
+      icon,
       function() { return new EEExploreModel(); },
-      function( model ) { return new ExpressionManipulationView( model ); },
+      function( model ) {
+        return new ExpressionManipulationView( model, {
+
+            // spacing need to be large to accommodate worst case expression length
+            carouselSpacing: 60
+          }
+        );
+      },
       { backgroundColor: '#AFF6CC' }
     );
   }

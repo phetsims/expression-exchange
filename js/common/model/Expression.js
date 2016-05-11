@@ -109,7 +109,7 @@ define( function( require ) {
     // add the second coin term
     this.addCoinTerm( floatingCoinTerm );
 
-    // add a listener that will immediately finish animations for incoming coin terms if expression is grabbed
+    // add a listener that will immediately finish animations for incoming coin terms if the expression is grabbed
     this.userControlledProperty.onValue( true, function(){
       self.coinTerms.forEach( function( coinTerm ){
         if ( coinTerm.inProgressAnimation ){

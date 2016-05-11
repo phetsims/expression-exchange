@@ -64,10 +64,12 @@ define( function( require ) {
    * @param {ExpressionManipulationModel} expressionManipulationModel
    * @constructor
    */
-  function ExpressionManipulationView( expressionManipulationModel ) {
+  function ExpressionManipulationView( expressionManipulationModel, options ) {
 
     ScreenView.call( this );
     var self = this;
+
+    options = _.extend( { carouselSpacing: 20 }, options );
 
     // create the readout that will display the total accumulated value, use max length string initially
     var totalValueText = new Text( StringUtils.format( numberCentsString, 9999 ), { font: new PhetFont( { size: 14 } ) } );
@@ -300,7 +302,8 @@ define( function( require ) {
     var carousel = new Carousel( coinTermCollection, {
       centerX: this.layoutBounds.width / 2,
       bottom: this.layoutBounds.height - 50,
-      itemsPerPage: 3
+      itemsPerPage: 3,
+      spacing: options.carouselSpacing
     } );
     this.addChild( carousel );
 

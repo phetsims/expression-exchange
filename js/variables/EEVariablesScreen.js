@@ -29,7 +29,7 @@ define( function( require ) {
 
     Screen.call( this, variablesString, icon,
       function() { return new EEVariablesModel(); },
-      function( model ) { return new ExpressionManipulationView( model ); },
+      function( model ) { return new ExpressionManipulationView( model, { carouselSpacing: 35 } ); },
       { backgroundColor: '#AFF6CC' }
     );
   }
