@@ -25,6 +25,7 @@ define( function( require ) {
   var ExpressionHintNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionHintNode' );
   var ExpressionNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionNode' );
   var ExpressionOverlayNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionOverlayNode' );
+  var HBox = require( 'SCENERY/nodes/HBox' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -296,14 +297,33 @@ define( function( require ) {
       assert( false, 'unknown value for coinTermCollection' );
     }
 
-    // add the carousel that will contain the various coin terms that the user can create
-    var carousel = new Carousel( coinTermCollection, {
-      centerX: this.layoutBounds.width / 2,
-      bottom: this.layoutBounds.height - 50,
-      itemsPerPage: 3,
-      spacing: 60 // empirically determined to handle worst case term test
-    } );
-    this.addChild( carousel );
+    // add the panel or carousel that will contain the various coin terms that the user can create
+    var coinTermCreatorHolder;
+    var coinTermHolderCenterX = this.layoutBounds.width / 2;
+    var coinTermHolderBottom = this.layoutBounds.height - 50;
+    if ( coinTermCollection.length > 3 ){
+      var coinTermCreatorHolder = new Carousel( coinTermCollection, {
+        centerX: coinTermHolderCenterX,
+        bottom: coinTermHolderBottom,
+        itemsPerPage: 3,
+        spacing: 60 // empirically determined to handle worst case term test
+      } );
+    }
+    else{
+      // use a panel instead of a carousel
+      // Many of the numbers in the following constructors were empirically determined to match the size of the
+      // carousels on the other screens.
+      var coinTermCreatorHBox = new HBox( { children: coinTermCollection, spacing: 75, resize: false } );
+      var coinTermCreatorHolder = new Panel( coinTermCreatorHBox, {
+        centerX: coinTermHolderCenterX,
+        bottom: coinTermHolderBottom,
+        cornerRadius: 4,
+        xMargin: 75,
+        yMargin: 14,
+        resize: false
+      } );
+    }
+    this.addChild( coinTermCreatorHolder );
 
     // if both representations are allowed, add the switch for switching between coin and term view
     if ( expressionManipulationModel.allowedRepresentations === AllowedRepresentationsEnum.COINS_AND_VARIABLES ) {
@@ -315,7 +335,7 @@ define( function( require ) {
         new Text( EESharedConstants.X_VARIABLE_CHAR, {
           font: new PhetFont( { family: '"Times New Roman", serif', size: 32 } )
         } ),
-        { switchSize: new Dimension2( 40, 20 ), top: carousel.bottom + 10, centerX: carousel.centerX }
+        { switchSize: new Dimension2( 40, 20 ), top: coinTermCreatorHolder.bottom + 10, centerX: coinTermCreatorHolder.centerX }
       ) );
     }
 
@@ -341,7 +361,9 @@ define( function( require ) {
         expressionManipulationModel.reset();
         myCollectionAccordionBox.expandedProperty.reset();
         totalValueAccordionBox.expandedProperty.reset();
-        carousel.pageNumberProperty.reset();
+        if ( coinTermCreatorHolder.pageNumberProperty ){
+          coinTermCreatorCarousel.pageNumberProperty.reset();
+        }
         variableValuesAccordionBox.expandedProperty.value = false;
       },
       right: this.layoutBounds.maxX - 10,
@@ -366,7 +388,8 @@ define( function( require ) {
       // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
       // from the model.
       addedCoinTerm.userControlledProperty.onValue( false, function() {
-        if ( coinTermNode.bounds.intersectsBounds( carousel.bounds ) && !expressionManipulationModel.isCoinTermInExpression( addedCoinTerm ) ) {
+        if ( coinTermNode.bounds.intersectsBounds( coinTermCreatorHolder.bounds ) &&
+             !expressionManipulationModel.isCoinTermInExpression( addedCoinTerm ) ) {
           expressionManipulationModel.removeCoinTerm( addedCoinTerm, true );
         }
       } );
@@ -401,10 +424,10 @@ define( function( require ) {
       var expressionOverlayNode = new ExpressionOverlayNode( addedExpression, self.layoutBounds );
       expressionOverlayLayer.addChild( expressionOverlayNode );
 
-      // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
-      // from the model.
+      // Add a listener to the coin to detect when it overlaps with the panel or carousel, at which point it will be
+      // removed from the model.
       addedExpression.userControlledProperty.onValue( false, function() {
-        if ( addedExpression.getBounds().intersectsBounds( carousel.bounds ) ) {
+        if ( addedExpression.getBounds().intersectsBounds( coinTermCreatorHolder.bounds ) ) {
           expressionManipulationModel.removeExpression( addedExpression );
         }
       } );
