@@ -31,7 +31,7 @@ define( function( require ) {
   var breakApartIconImage = require( 'image!EXPRESSION_EXCHANGE/break-apart-icon.png' );
 
   // constants
-  var TERM_AND_VALUE_FONT = new PhetFont( { family: '"Times New Roman", serif', size: 34 } );
+  var TERM_AND_VALUE_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_X_SPACING = 3;
   var DRAG_BEFORE_BREAK_BUTTON_FADES = 10;
