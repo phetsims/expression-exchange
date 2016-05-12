@@ -35,7 +35,7 @@ define( function( require ) {
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_X_SPACING = 3;
   var DRAG_BEFORE_BREAK_BUTTON_FADES = 10;
-  var FADE_TIME = 0.5; // in seconds
+  var FADE_TIME = 0.75; // in seconds
   var NUM_FADE_STEPS = 10; // number of steps for fade out to occur
 
   /**
