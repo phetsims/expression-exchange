@@ -32,14 +32,7 @@ define( function( require ) {
       exploreString,
       icon,
       function() { return new EEExploreModel(); },
-      function( model ) {
-        return new ExpressionManipulationView( model, {
-
-            // spacing need to be large to accommodate worst case expression length
-            carouselSpacing: 60
-          }
-        );
-      },
+      function( model ) { return new ExpressionManipulationView( model ); },
       { backgroundColor: '#AFF6CC' }
     );
   }
