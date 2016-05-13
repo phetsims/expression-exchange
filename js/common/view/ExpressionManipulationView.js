@@ -302,7 +302,7 @@ define( function( require ) {
     var coinTermHolderCenterX = this.layoutBounds.width / 2;
     var coinTermHolderBottom = this.layoutBounds.height - 50;
     if ( coinTermCollection.length > 3 ){
-      var coinTermCreatorHolder = new Carousel( coinTermCollection, {
+      coinTermCreatorHolder = new Carousel( coinTermCollection, {
         centerX: coinTermHolderCenterX,
         bottom: coinTermHolderBottom,
         itemsPerPage: 3,
@@ -314,7 +314,7 @@ define( function( require ) {
       // Many of the numbers in the following constructors were empirically determined to match the size of the
       // carousels on the other screens.
       var coinTermCreatorHBox = new HBox( { children: coinTermCollection, spacing: 75, resize: false } );
-      var coinTermCreatorHolder = new Panel( coinTermCreatorHBox, {
+      coinTermCreatorHolder = new Panel( coinTermCreatorHBox, {
         centerX: coinTermHolderCenterX,
         bottom: coinTermHolderBottom,
         cornerRadius: 4,
@@ -362,7 +362,7 @@ define( function( require ) {
         myCollectionAccordionBox.expandedProperty.reset();
         totalValueAccordionBox.expandedProperty.reset();
         if ( coinTermCreatorHolder.pageNumberProperty ){
-          coinTermCreatorCarousel.pageNumberProperty.reset();
+          coinTermCreatorHolder.pageNumberProperty.reset();
         }
         variableValuesAccordionBox.expandedProperty.value = false;
       },
