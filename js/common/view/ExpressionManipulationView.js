@@ -15,7 +15,7 @@ define( function( require ) {
   var Carousel = require( 'SUN/Carousel' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
-  var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/explore/view/CoinTermCreatorNode' );
+  var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
   var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
   var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );

@@ -37,7 +37,7 @@ define( function( require ) {
    * TODO: document parameters thoroughly once finalized.  Make sure to note requirement for subSupText format of some of the string values.
    * @constructor
    */
-  function CoinTerm( valueProperty, coinDiameter, coinFrontImage, termText, termValueTextProperty, options ) {
+  function CoinTerm( valueProperty, coinDiameter, coinFrontImage, termText, termValueTextProperty, type, options ) {
 
     var self = this;
     this.id = 'CT-' + (++creationCount);
@@ -62,6 +62,7 @@ define( function( require ) {
     } );
 
     // @public, read only, values that describe the nature of this coin term
+    this.type = type;
     this.valueProperty = valueProperty;
     this.termText = termText;
     this.coinDiameter = coinDiameter;

@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * a node that is used to create coin terms when clicked upon
+ * a UI component that is used to create coin terms when clicked upon
  */
 define( function( require ) {
   'use strict';
