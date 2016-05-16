@@ -65,7 +65,7 @@ define( function( require ) {
     this.addChild( rootNode );
 
     // add the image that represents the front of the coin
-    var image = CoinTermImageMap[ coinTerm.type ].frontFullSize;
+    var image = CoinTermImageMap[ coinTerm.typeID ].frontFullSize;
     var coinImageNode = new Image( image );
     coinImageNode.scale( coinTerm.coinDiameter / coinImageNode.width );
     rootNode.addChild( coinImageNode );

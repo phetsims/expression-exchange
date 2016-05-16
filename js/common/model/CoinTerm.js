@@ -27,7 +27,7 @@ define( function( require ) {
    * TODO: document parameters thoroughly once finalized.  Make sure to note requirement for subSupText format of some of the string values.
    * @constructor
    */
-  function CoinTerm( valueProperty, coinDiameter, termText, termValueTextProperty, type, options ) {
+  function CoinTerm( valueProperty, coinDiameter, termText, termValueTextProperty, typeID, options ) {
 
     var self = this;
     this.id = 'CT-' + (++creationCount);
@@ -52,7 +52,7 @@ define( function( require ) {
     } );
 
     // @public, read only, values that describe the nature of this coin term
-    this.type = type;
+    this.typeID = typeID;
     this.valueProperty = valueProperty;
     this.termText = termText;
     this.coinDiameter = coinDiameter;
@@ -167,7 +167,7 @@ define( function( require ) {
      * @returns {boolean}
      */
     canCombineWith: function( coinTerm ){
-      return this.termText === coinTerm.termText && !( coinTerm === this );
+      return !( coinTerm === this ) && this.typeID === coinTerm.typeID;
     },
 
     /**
