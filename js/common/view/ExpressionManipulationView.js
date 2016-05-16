@@ -14,7 +14,7 @@ define( function( require ) {
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
   var Carousel = require( 'SUN/Carousel' );
   var CheckBox = require( 'SUN/CheckBox' );
-  var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
+  var CoinTermCollection = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCollection' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
   var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
@@ -191,7 +191,7 @@ define( function( require ) {
     // create the collection of coin term creator nodes that will be presented to the user, varies based on options
     var coinTermFactory = expressionManipulationModel.coinTermFactory; // convenience var
     var coinTermCollection = [];
-    if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.BASIC ) {
+    if ( expressionManipulationModel.coinTermCollection === CoinTermCollection.BASIC ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );
@@ -206,7 +206,7 @@ define( function( require ) {
       } ) );
 
     }
-    else if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.EXPLORE ) {
+    else if ( expressionManipulationModel.coinTermCollection === CoinTermCollection.EXPLORE ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );
@@ -250,7 +250,7 @@ define( function( require ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, { initialPosition: initialPosition } );
       } ) );
     }
-    else if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.ADVANCED ) {
+    else if ( expressionManipulationModel.coinTermCollection === CoinTermCollection.ADVANCED ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );

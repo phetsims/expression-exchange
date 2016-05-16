@@ -13,7 +13,7 @@ define( function( require ) {
 
   // modules
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
-  var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
+  var CoinTermCollection = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCollection' );
   var CoinTermFactory = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermFactory' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
@@ -40,7 +40,7 @@ define( function( require ) {
       // TODO: once the screen behaviors are fully established and refactor if it makes sense to do so.
 
       // defines the set of coin terms presented to the user in the carousel
-      coinTermCollection: CoinTermCollectionEnum.BASIC,
+      coinTermCollection: CoinTermCollection.BASIC,
 
       // defines whether to present just coins, just variables, or both to the user
       allowedRepresentations: AllowedRepresentationsEnum.COINS_AND_VARIABLES

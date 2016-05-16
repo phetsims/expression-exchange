@@ -9,7 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
+  var CoinTermCollection = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCollection' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -19,7 +19,7 @@ define( function( require ) {
    */
   function EEExploreModel() {
 
-    ExpressionManipulationModel.call( this, { coinTermCollection: CoinTermCollectionEnum.EXPLORE } );
+    ExpressionManipulationModel.call( this, { coinTermCollection: CoinTermCollection.EXPLORE } );
 
   }
 
