@@ -14,6 +14,7 @@ define( function( require ) {
   // modules
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
   var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
+  var CoinTermFactory = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermFactory' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -61,6 +62,9 @@ define( function( require ) {
     } );
 
     var self = this;
+
+    // @public, read only, factory used to create coin terms
+    this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
 
     // @public, read only, options that control what is available to the user to manipulate
     this.coinTermCollection = options.coinTermCollection;

@@ -15,6 +15,7 @@ define( function( require ) {
   var Carousel = require( 'SUN/Carousel' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCollectionEnum = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermCollectionEnum' );
+  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
   var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
@@ -188,110 +189,107 @@ define( function( require ) {
     this.addChild( showAllCoefficientsCheckbox );
 
     // create the collection of coin term creator nodes that will be presented to the user, varies based on options
+    var coinTermFactory = expressionManipulationModel.coinTermFactory; // convenience var
     var coinTermCollection = [];
     if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.BASIC ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.Y( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.Z( expressionManipulationModel.zTermValueProperty, { initialPosition: initialPosition } );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, { initialPosition: initialPosition } );
       } ) );
 
     }
     else if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.EXPLORE ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.Y( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.Z( expressionManipulationModel.zTermValueProperty, { initialPosition: initialPosition } );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.X( expressionManipulationModel.xTermValueProperty, {
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.X, {
           initialPosition: initialPosition,
           initialCount: 2
         } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.Y( expressionManipulationModel.yTermValueProperty, {
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, {
           initialPosition: initialPosition,
           initialCount: 3
         } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.XTimesY(
-          expressionManipulationModel.xTermValueProperty,
-          expressionManipulationModel.yTermValueProperty,
-          { initialPosition: initialPosition }
-        );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.X_TIMES_Y, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.XSquared( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.X_SQUARED, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.YSquared( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y_SQUARED, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-          return CoinTerm.XSquaredTimesYSquared(
-            expressionManipulationModel.xTermValueProperty,
-            expressionManipulationModel.yTermValueProperty,
-            { initialPosition: initialPosition }
-          );
-        } )
-      );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, { initialPosition: initialPosition } );
+      } ) );
     }
     else if ( expressionManipulationModel.coinTermCollection === CoinTermCollectionEnum.ADVANCED ) {
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.X( expressionManipulationModel.xTermValueProperty, { initialPosition: initialPosition } );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.X( expressionManipulationModel.xTermValueProperty, {
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.X, {
           initialPosition: initialPosition,
           initialCount: -1
         } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.Y( expressionManipulationModel.yTermValueProperty, { initialPosition: initialPosition } );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, {
+          initialPosition: initialPosition,
+          initialCount: 1
+        } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.Y( expressionManipulationModel.yTermValueProperty, {
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, {
           initialPosition: initialPosition,
           initialCount: -1
         } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.Z( expressionManipulationModel.zTermValueProperty, { initialPosition: initialPosition } );
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, {
+          initialPosition: initialPosition,
+          initialCount: 1
+        } );
       } ) );
 
       coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
-        return CoinTerm.Z( expressionManipulationModel.zTermValueProperty, {
+        return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, {
           initialPosition: initialPosition,
           initialCount: -1
         } );
       } ) );
-
     }
     else {
       assert( false, 'unknown value for coinTermCollection' );

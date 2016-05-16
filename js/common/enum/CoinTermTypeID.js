@@ -13,6 +13,7 @@ define( function( require ) {
   var CoinTermTypeID = {
     X: 'X',
     Y: 'Y',
+    Z: 'Z',
     X_TIMES_Y: 'X_TIMES_Y',
     X_SQUARED: 'X_SQUARED',
     Y_SQUARED: 'Y_SQUARED',
