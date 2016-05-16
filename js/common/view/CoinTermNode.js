@@ -10,8 +10,8 @@ define( function( require ) {
 
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
+  var CoinTermImageMap = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermImageMap' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
-  var Util = require( 'DOT/Util' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Image = require( 'SCENERY/nodes/Image' );
@@ -24,6 +24,7 @@ define( function( require ) {
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var Timer = require( 'PHET_CORE/Timer' );
+  var Util = require( 'DOT/Util' );
   var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
   var Vector2 = require( 'DOT/Vector2' );
 
@@ -64,7 +65,7 @@ define( function( require ) {
     this.addChild( rootNode );
 
     // add the image that represents the front of the coin
-    var image = coinTerm.coinFrontImage;
+    var image = CoinTermImageMap[ coinTerm.type ].frontFullSize;
     var coinImageNode = new Image( image );
     coinImageNode.scale( coinTerm.coinDiameter / coinImageNode.width );
     rootNode.addChild( coinImageNode );

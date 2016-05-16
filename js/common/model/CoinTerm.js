@@ -17,18 +17,8 @@ define( function( require ) {
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var Property = require( 'AXON/Property' );
   var PropertySet = require( 'AXON/PropertySet' );
   var Vector2 = require( 'DOT/Vector2' );
-
-  // images
-  var coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
-  var coinXSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared.png' );
-  var coinXSquareYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
-  var coinXYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy.png' );
-  var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
-  var coinYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
-  var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
 
   // TODO: class var for creating unique IDs, remove this when sim is fully functional and debugged
   var creationCount = 0;
@@ -37,7 +27,7 @@ define( function( require ) {
    * TODO: document parameters thoroughly once finalized.  Make sure to note requirement for subSupText format of some of the string values.
    * @constructor
    */
-  function CoinTerm( valueProperty, coinDiameter, coinFrontImage, termText, termValueTextProperty, type, options ) {
+  function CoinTerm( valueProperty, coinDiameter, termText, termValueTextProperty, type, options ) {
 
     var self = this;
     this.id = 'CT-' + (++creationCount);
@@ -66,7 +56,6 @@ define( function( require ) {
     this.valueProperty = valueProperty;
     this.termText = termText;
     this.coinDiameter = coinDiameter;
-    this.coinFrontImage = coinFrontImage;
 
     // @public, listen only, a property with contains the text that should be shown when displaying term value
     this.termValueTextProperty = termValueTextProperty;
@@ -167,7 +156,6 @@ define( function( require ) {
       return new CoinTerm(
         this.valueProperty,
         this.coinDiameter,
-        this.coinFrontImage,
         this.termText,
         this.termValueTextProperty,
         { initialCount: this.combinedCount, initialPosition: this.position } );

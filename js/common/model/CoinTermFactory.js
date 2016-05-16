@@ -19,16 +19,6 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
-  var Vector2 = require( 'DOT/Vector2' );
-
-  // images
-  var coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
-  var coinXSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared.png' );
-  var coinXSquaredYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
-  var coinXYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy.png' );
-  var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
-  var coinYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
-  var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
 
   /**
    * {number} xValueProperty
@@ -143,7 +133,6 @@ define( function( require ) {
 
       var valueProperty;
       var coinDiameter;
-      var coinFrontImage;
       var termText;
       var termValueTextProperty;
 
@@ -153,7 +142,6 @@ define( function( require ) {
         case CoinTermTypeID.X:
           valueProperty = this.xValueProperty;
           coinDiameter = 45;
-          coinFrontImage = coinXFrontImage;
           termText = EESharedConstants.X_VARIABLE_CHAR;
           termValueTextProperty = this.xValueStringProperty;
           break;
@@ -161,7 +149,6 @@ define( function( require ) {
         case CoinTermTypeID.Y:
           valueProperty = this.yValueProperty;
           coinDiameter = 45;
-          coinFrontImage = coinYFrontImage;
           termText = EESharedConstants.Y_VARIABLE_CHAR;
           termValueTextProperty = this.yValueStringProperty;
           break;
@@ -169,7 +156,6 @@ define( function( require ) {
         case CoinTermTypeID.Z:
           valueProperty = this.zValueProperty;
           coinDiameter = 50;
-          coinFrontImage = coinZFrontImage;
           termText = EESharedConstants.Z_VARIABLE_CHAR;
           termValueTextProperty = this.zValueStringProperty;
           break;
@@ -177,7 +163,6 @@ define( function( require ) {
         case CoinTermTypeID.X_TIMES_Y:
           valueProperty = this.xTimesYValueProperty;
           coinDiameter = 50;
-          coinFrontImage = coinXYFrontImage;
           termText = EESharedConstants.X_VARIABLE_CHAR + EESharedConstants.Y_VARIABLE_CHAR;
           termValueTextProperty = this.xTimesYValueStringProperty;
           break;
@@ -185,7 +170,6 @@ define( function( require ) {
         case CoinTermTypeID.X_SQUARED:
           valueProperty = this.xSquaredValueProperty;
           coinDiameter = 55;
-          coinFrontImage = coinXSquaredFrontImage;
           termText = EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>',
           termValueTextProperty = this.xSquaredValueStringProperty;
           break;
@@ -193,7 +177,6 @@ define( function( require ) {
         case CoinTermTypeID.Y_SQUARED:
           valueProperty = this.ySquaredValueProperty;
           coinDiameter = 55;
-          coinFrontImage = coinYSquaredFrontImage;
           termText = EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>',
           termValueTextProperty = this.ySquaredValueStringProperty;
           break;
@@ -201,7 +184,6 @@ define( function( require ) {
         case CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED:
           valueProperty = this.xSquaredTimesYSquaredValueProperty;
           coinDiameter = 55;
-          coinFrontImage = coinXSquaredYSquaredFrontImage;
           termText = EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>' + EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>',
           termValueTextProperty = this.xSquaredTimesYSquaredValueStringProperty;
           break;
@@ -213,7 +195,6 @@ define( function( require ) {
       return new CoinTerm(
         valueProperty,
         coinDiameter,
-        coinFrontImage,
         termText,
         termValueTextProperty,
         typeID,
