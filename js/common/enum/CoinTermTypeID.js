@@ -10,7 +10,7 @@ define( function( require ) {
   // modules
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  var CoinTermType = {
+  var CoinTermTypeID = {
     X: 'X',
     Y: 'Y',
     X_TIMES_Y: 'X_TIMES_Y',
@@ -20,9 +20,9 @@ define( function( require ) {
   };
 
   // verify that enum is immutable, without the runtime penalty in production code
-  if ( assert ) { Object.freeze( CoinTermType ); }
+  if ( assert ) { Object.freeze( CoinTermTypeID ); }
 
-  expressionExchange.register( 'CoinTermType', CoinTermType );
+  expressionExchange.register( 'CoinTermTypeID', CoinTermTypeID );
 
-  return CoinTermType;
+  return CoinTermTypeID;
 } );

@@ -13,7 +13,7 @@ define( function( require ) {
 
   // modules
   var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
-  var CoinTermType = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermType' );
+  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -37,7 +37,9 @@ define( function( require ) {
   };
 
   /**
-   * TODO: document parameters thoroughly once finalized.  Make sure to note requirement for subSupText format of some of the string values.
+   * {number} xValueProperty
+   * {number} yValueProperty
+   * {number} zValueProperty
    * @constructor
    */
   function CoinTermFactory( xValueProperty, yValueProperty, zValueProperty ) {
@@ -144,7 +146,7 @@ define( function( require ) {
         coinXFrontImage,
         EESharedConstants.X_VARIABLE_CHAR,
         this.xValueStringProperty,
-        CoinTermType.X,
+        CoinTermTypeID.X,
         options
       );
     },
@@ -157,7 +159,7 @@ define( function( require ) {
         coinYFrontImage,
         EESharedConstants.Y_VARIABLE_CHAR,
         this.yValueStringProperty,
-        CoinTermType.Y,
+        CoinTermTypeID.Y,
         options
       );
     },
@@ -170,7 +172,7 @@ define( function( require ) {
         coinZFrontImage,
         EESharedConstants.Z_VARIABLE_CHAR,
         this.zValueStringProperty,
-        CoinTermType.Z,
+        CoinTermTypeID.Z,
         options
       );
     },
@@ -183,7 +185,7 @@ define( function( require ) {
         coinXYFrontImage,
         EESharedConstants.X_VARIABLE_CHAR + EESharedConstants.Y_VARIABLE_CHAR,
         this.xTimesYValueStringProperty,
-        CoinTermType.XTimesY,
+        CoinTermTypeID.XTimesY,
         options
       );
     },
@@ -196,7 +198,7 @@ define( function( require ) {
         coinXSquaredFrontImage,
         EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>',
         this.xSquaredValueStringProperty,
-        CoinTermType.XSquared,
+        CoinTermTypeID.XSquared,
         options
       );
     },
@@ -209,7 +211,7 @@ define( function( require ) {
         coinYSquaredFrontImage,
         EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>',
         this.ySquaredValueStringProperty,
-        CoinTermType.YSquared,
+        CoinTermTypeID.YSquared,
         options
       );
     },
@@ -222,7 +224,7 @@ define( function( require ) {
         coinXSquareYSquaredFrontImage,
         EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>' + EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>',
         this.xSquaredTimesYSquaredValueStringProperty,
-        CoinTermType.XSquaredTimesYSquared,
+        CoinTermTypeID.XSquaredTimesYSquared,
         options
       );
     }
