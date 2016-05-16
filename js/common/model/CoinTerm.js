@@ -152,12 +152,13 @@ define( function( require ) {
      * @returns {CoinTerm}
      * @public
      */
-    cloneMostly: function(){
+    clone: function(){
       return new CoinTerm(
         this.valueProperty,
         this.coinDiameter,
         this.termText,
         this.termValueTextProperty,
+        this.typeID,
         { initialCount: this.combinedCount, initialPosition: this.position } );
     },
 

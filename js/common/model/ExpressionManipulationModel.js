@@ -15,7 +15,6 @@ define( function( require ) {
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
   var CoinTermCollection = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCollection' );
   var CoinTermFactory = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermFactory' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
@@ -171,7 +170,7 @@ define( function( require ) {
         var nextLeftX = addedCoinTerm.position.x - interCoinTermDistance;
         var nextRightX = addedCoinTerm.position.x + interCoinTermDistance;
         _.times( numToCreate, function( index ) {
-          var clonedCoinTerm = addedCoinTerm.cloneMostly();
+          var clonedCoinTerm = addedCoinTerm.clone();
           self.addCoinTerm( clonedCoinTerm );
           if ( index % 2 === 0 ) {
             clonedCoinTerm.travelToDestination( new Vector2( nextRightX, addedCoinTerm.position.y ) );
@@ -387,18 +386,6 @@ define( function( require ) {
       } );
     },
 
-    // @private - returns the first hint encountered that contains the provided coin term
-    getExpressionHintContainingCoinTerm: function( coinTerm ) {
-      var hint;
-      for ( var i = 0; i < this.expressionHints.length; i++ ) {
-        if ( this.expressionHints.get( i ).containsCoinTerm( coinTerm ) ) {
-          hint = this.expressionHints.get( i );
-          break;
-        }
-      }
-      return hint;
-    },
-
     // @public
     addCoinTerm: function( coinTerm ) {
       this.coinTerms.add( coinTerm );
@@ -470,20 +457,6 @@ define( function( require ) {
       PropertySet.prototype.reset.call( this );
     },
 
-    // @private - utility function for determining whether two coin terms overlap
-    doCoinTermsOverlap: function( coinTerm1, coinTerm2 ) {
-      var distanceBetweenCenters = coinTerm1.position.distance( coinTerm2.position );
-
-      // the decision about whether these overlap depends upon whether we are in COIN and VARIABLES mode
-      if ( this.viewMode === ViewModeEnum.COINS ) {
-        return distanceBetweenCenters < ( coinTerm1.coinDiameter / 2 ) + ( coinTerm2.coinDiameter / 2 );
-      }
-      else {
-        // multiplier in test below was empirically determined
-        return distanceBetweenCenters < EESharedConstants.TERM_COMBINE_DISTANCE * 1.15;
-      }
-    },
-
     // @private - test if coinTermB is in the "expression combine zone" of coinTermA
     isCoinTermInExpressionCombineZone: function( coinTermA, coinTermB ) {
 
@@ -544,12 +517,27 @@ define( function( require ) {
       return joinableFreeCoinTerm;
     },
 
+    /**
+     * get the number of the specified coin term type currently in the model
+     * @param {CoinTermTypeID} typeID
+     */
+    getCoinTermCount: function( typeID ){
+      var count = 0;
+      this.coinTerms.forEach( function( coinTerm ){
+        if ( typeID === coinTerm.typeID ){
+          count += coinTerm.combinedCount;
+        }
+      } );
+      return count;
+    },
+
     // @private, get the amount of overlap given two coin terms by comparning position and coin diameter
     getCoinOverlapAmount: function( coinTerm1, coinTerm2 ) {
       var distanceBetweenCenters = coinTerm1.position.distance( coinTerm2.position );
       return Math.max( ( coinTerm1.coinDiameter / 2 + coinTerm2.coinDiameter / 2 ) - distanceBetweenCenters, 0 );
     },
 
+    // @private, get the amount of overlap between the view bounds for two coin terms
     getViewBoundsOverlapAmount: function( coinTerm1, coinTerm2 ) {
       var overlap = 0;
 

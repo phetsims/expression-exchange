@@ -19,6 +19,7 @@ define( function( require ) {
   var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
   var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );
+  var CollectionDisplayNode = require( 'EXPRESSION_EXCHANGE/common/view/CollectionDisplayNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -39,7 +40,6 @@ define( function( require ) {
   var VariableValueTweaker = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueTweaker' );
   var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
   var VBox = require( 'SCENERY/nodes/VBox' );
-  var VStrut = require( 'SCENERY/nodes/VStrut' );
 
   // strings
   var myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
@@ -134,14 +134,13 @@ define( function( require ) {
     } );
 
     // add accordion box that will contain the user's coin collection
-    var myCollectionAccordionBox = new AccordionBox( new VStrut( 350 ), {
+    var myCollectionAccordionBox = new AccordionBox( new CollectionDisplayNode( expressionManipulationModel ), {
       titleNode: new Text( myCollectionString, { font: ACCORDION_BOX_TITLE_FONT } ),
       right: this.layoutBounds.width - INSET,
       top: INSET,
       cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
       buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
-      buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
-      minWidth: 200 // empirically determined
+      buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN
     } );
     this.addChild( myCollectionAccordionBox );
 
