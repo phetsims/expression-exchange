@@ -13,35 +13,49 @@ define( function( require ) {
 
   // images
   var coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
+  var coinXIconImage = require( 'image!EXPRESSION_EXCHANGE/coin-x-small.png' );
   var coinXSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared.png' );
+  var coinXSquaredIconImage = require( 'image!EXPRESSION_EXCHANGE/coin-x-squared-small.png' );
   var coinXSquaredYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
+  var coinXSquaredYSquaredIconImage = require( 'image!EXPRESSION_EXCHANGE/coin-x-squared-y-squared-small.png' );
   var coinXYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy.png' );
+  var coinXYIconImage = require( 'image!EXPRESSION_EXCHANGE/coin-xy-small.png' );
   var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
+  var coinYIconImage = require( 'image!EXPRESSION_EXCHANGE/coin-y-small.png' );
   var coinYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
+  var coinYSquaredIconImage = require( 'image!EXPRESSION_EXCHANGE/coin-y-squared-small.png' );
   var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
+  var coinZIconImage = require( 'image!EXPRESSION_EXCHANGE/coin-z-small.png' );
 
   // constant table that matches coin term type IDs to the images used to represent them
   var CoinTermImageMap = {};
   CoinTermImageMap[ CoinTermTypeID.X ] = {
-    frontFullSize: coinXFrontImage
+    frontFullSize: coinXFrontImage,
+    icon: coinXIconImage
   };
   CoinTermImageMap[ CoinTermTypeID.Y ] = {
-    frontFullSize: coinYFrontImage
+    frontFullSize: coinYFrontImage,
+    icon: coinYIconImage
   };
   CoinTermImageMap[ CoinTermTypeID.Z ] = {
-    frontFullSize: coinZFrontImage
+    frontFullSize: coinZFrontImage,
+    icon: coinZIconImage
   };
   CoinTermImageMap[ CoinTermTypeID.X_TIMES_Y ] = {
-    frontFullSize: coinXYFrontImage
+    frontFullSize: coinXYFrontImage,
+    icon: coinXYIconImage
   };
   CoinTermImageMap[ CoinTermTypeID.X_SQUARED ] = {
-    frontFullSize: coinXSquaredFrontImage
+    frontFullSize: coinXSquaredFrontImage,
+    icon: coinXSquaredIconImage
   };
   CoinTermImageMap[ CoinTermTypeID.Y_SQUARED ] = {
-    frontFullSize: coinYSquaredFrontImage
+    frontFullSize: coinYSquaredFrontImage,
+    icon: coinYSquaredIconImage
   };
   CoinTermImageMap[ CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED ] = {
-    frontFullSize: coinXSquaredYSquaredFrontImage
+    frontFullSize: coinXSquaredYSquaredFrontImage,
+    icon: coinXSquaredYSquaredIconImage
   };
 
   expressionExchange.register( 'CoinTermImageMap', CoinTermImageMap );
