@@ -170,7 +170,7 @@ define( function( require ) {
         var nextLeftX = addedCoinTerm.position.x - interCoinTermDistance;
         var nextRightX = addedCoinTerm.position.x + interCoinTermDistance;
         _.times( numToCreate, function( index ) {
-          var clonedCoinTerm = addedCoinTerm.clone();
+          var clonedCoinTerm = addedCoinTerm.cloneMostly();
           self.addCoinTerm( clonedCoinTerm );
           if ( index % 2 === 0 ) {
             clonedCoinTerm.travelToDestination( new Vector2( nextRightX, addedCoinTerm.position.y ) );

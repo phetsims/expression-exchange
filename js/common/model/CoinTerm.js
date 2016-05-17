@@ -152,14 +152,16 @@ define( function( require ) {
      * @returns {CoinTerm}
      * @public
      */
-    clone: function(){
-      return new CoinTerm(
+    cloneMostly: function(){
+      var clone = new CoinTerm(
         this.valueProperty,
         this.coinDiameter,
         this.termText,
         this.termValueTextProperty,
         this.typeID,
-        { initialCount: this.combinedCount, initialPosition: this.position } );
+        { initialCount: this.combinedCount, initialPosition: this.initialPosition } );
+      clone.setPositionAndDestination( this.position );
+      return clone;
     },
 
     /**

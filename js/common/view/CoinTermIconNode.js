@@ -22,7 +22,8 @@ define( function( require ) {
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
-  var TERM_AND_VALUE_FONT = new PhetFont( { size: 11 } );
+  var COIN_VALUE_FONT = new PhetFont( { size: 12, weight: 'bold' } );
+  var VARIABLE_FONT = new PhetFont( { size: 14, weight: 'bold' } );
   var SCALING_FACTOR = 0.4; // empirically determined to yield coin icons of the desired size
 
   /**
@@ -52,7 +53,7 @@ define( function( require ) {
     var coinCenter = new Vector2( coinIconNode.width / 2, coinIconNode.height / 2 );
 
     // add the coin value text
-    var coinValueText = new Text( coinTerm.valueProperty.value, { font: TERM_AND_VALUE_FONT, center: coinCenter } );
+    var coinValueText = new Text( coinTerm.valueProperty.value, { font: COIN_VALUE_FONT, center: coinCenter } );
     this.addChild( coinValueText );
 
     // control the coin value text visibility
@@ -65,7 +66,7 @@ define( function( require ) {
     coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
 
     // add the 'term' text, e.g. xy
-    var termText = new SubSupText( coinTerm.termText, { font: TERM_AND_VALUE_FONT, center: coinCenter } );
+    var termText = new SubSupText( coinTerm.termText, { font: VARIABLE_FONT, center: coinCenter } );
     this.addChild( termText );
 
     // control the term text visibility
@@ -78,7 +79,7 @@ define( function( require ) {
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
 
     // Add the text that includes the variable values.  This can change, so it starts off blank.
-    var termWithVariableValuesText = new SubSupText( ' ', { font: TERM_AND_VALUE_FONT } );
+    var termWithVariableValuesText = new SubSupText( ' ', { font: VARIABLE_FONT } );
     this.addChild( termWithVariableValuesText );
 
     // create a helper function to update the term value text
