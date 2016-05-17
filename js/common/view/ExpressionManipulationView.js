@@ -40,7 +40,6 @@ define( function( require ) {
   var VariableValueTweaker = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueTweaker' );
   var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
   var VBox = require( 'SCENERY/nodes/VBox' );
-  var CoinTermIconNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermIconNode' );
 
   // strings
   var myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
