@@ -23,7 +23,7 @@ define( function( require ) {
 
   // constants
   var TERM_AND_VALUE_FONT = new PhetFont( { size: 11 } );
-  var SCALING_FACTOR = 1; // empirically determined to yield coin icons of the needed size
+  var SCALING_FACTOR = 0.4; // empirically determined to yield coin icons of the desired size
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin
@@ -39,7 +39,8 @@ define( function( require ) {
 
     // add the image that represents the front of the coin
     var iconImage = CoinTermImageMap[ coinTerm.typeID ].icon;
-    var coinIconNode = new Image( iconImage, { scale: SCALING_FACTOR} );
+    var coinIconNode = new Image( iconImage );
+    coinIconNode.scale( coinTerm.coinDiameter / coinIconNode.width * SCALING_FACTOR );
     this.addChild( coinIconNode );
 
     // control coin icon visibility
