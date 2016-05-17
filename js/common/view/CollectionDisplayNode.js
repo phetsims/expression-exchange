@@ -10,6 +10,7 @@ define( function( require ) {
   // modules
   var CoinTermIconNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermIconNode' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -44,7 +45,7 @@ define( function( require ) {
     var self = this;
 
     // add the background
-    this.addChild( new Rectangle( 0, 0, WIDTH, HEIGHT, 0, 0, { fill: 'white' } ) );
+    this.addChild( new Rectangle( 0, 0, WIDTH, HEIGHT, 0, 0, { fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR } ) );
 
     // an object that uses coin term IDs as the keys and has arrays of icons as the values
     var iconMap = {};

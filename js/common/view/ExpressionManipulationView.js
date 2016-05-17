@@ -97,6 +97,7 @@ define( function( require ) {
     // add accordion box that will contain the total value readout
     var totalValueAccordionBox = new AccordionBox( totalValueReadout, {
       titleNode: new Text( totalString, { font: ACCORDION_BOX_TITLE_FONT } ),
+      fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
       left: INSET,
       top: INSET,
       cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
@@ -118,6 +119,7 @@ define( function( require ) {
       } ),
       {
         titleNode: new Text( valuesString, { font: ACCORDION_BOX_TITLE_FONT } ),
+        fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
         left: INSET,
         top: totalValueAccordionBox.bottom + 10,
         cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
@@ -136,6 +138,7 @@ define( function( require ) {
     // add accordion box that will contain the user's coin collection
     var myCollectionAccordionBox = new AccordionBox( new CollectionDisplayNode( expressionManipulationModel ), {
       titleNode: new Text( myCollectionString, { font: ACCORDION_BOX_TITLE_FONT } ),
+      fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
       right: this.layoutBounds.width - INSET,
       top: INSET,
       cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
