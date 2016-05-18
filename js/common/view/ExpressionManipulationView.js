@@ -41,6 +41,7 @@ define( function( require ) {
   var VariableValueTweaker = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueTweaker' );
   var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
   var VBox = require( 'SCENERY/nodes/VBox' );
+  var VStrut = require( 'SCENERY/nodes/VStrut' );
 
   // strings
   var myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
@@ -327,12 +328,27 @@ define( function( require ) {
 
     // if both representations are allowed, add the switch for switching between coin and term view
     if ( expressionManipulationModel.allowedRepresentations === AllowedRepresentationsEnum.COINS_AND_VARIABLES ) {
+
+      var coinImageNode = new Image( switchCoinImage, { scale: 0.6 } ); // scale empirically determined
+
+      // enclose the variable text in a node so that its vertical position can be accurately set
+      var variableIconNode = new Node( { children: [
+        new VStrut( coinImageNode.bounds.height ),
+        new Text( EESharedConstants.X_VARIABLE_CHAR, {
+          font: new MathSymbolFont( 36 ),
+          boundsMethod: 'accurate',
+          centerX: 0,
+          centerY: coinImageNode.height / 2
+        } )
+      ] } );
+
+      // add the switch
       this.addChild( new ABSwitch(
         expressionManipulationModel.viewModeProperty,
         ViewModeEnum.COINS,
-        new Image( switchCoinImage, { scale: 0.6 } ),
+        coinImageNode,
         ViewModeEnum.VARIABLES,
-        new Text( EESharedConstants.X_VARIABLE_CHAR, new MathSymbolFont( 36 ) ),
+        variableIconNode,
         { switchSize: new Dimension2( 40, 20 ), top: coinTermCreatorHolder.bottom + 10, centerX: coinTermCreatorHolder.centerX }
       ) );
     }
