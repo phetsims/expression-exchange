@@ -22,9 +22,9 @@ define( function( require ) {
     EXPRESSION_BACKGROUND_COLOR: 'rgba( 255, 255, 255, 0.5 )',
 
     // characters used for the variables depicted in the sim
-    X_VARIABLE_CHAR: '\uD835\uDC65',
-    Y_VARIABLE_CHAR: '\uD835\uDC66',
-    Z_VARIABLE_CHAR: '\uD835\uDC67',
+    X_VARIABLE_CHAR: 'x',
+    Y_VARIABLE_CHAR: 'y',
+    Z_VARIABLE_CHAR: 'z',
 
     // background color for control panels
     CONTROL_PANEL_BACKGROUND_COLOR: new Color( 'rgb( 235, 235, 235 )' )
