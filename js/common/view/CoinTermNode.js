@@ -10,6 +10,7 @@ define( function( require ) {
 
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
+  var BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
   var CoinTermImageMap = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermImageMap' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
@@ -20,7 +21,6 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
-  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
@@ -28,9 +28,6 @@ define( function( require ) {
   var Util = require( 'DOT/Util' );
   var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
   var Vector2 = require( 'DOT/Vector2' );
-
-  // images
-  var breakApartIconImage = require( 'image!EXPRESSION_EXCHANGE/break-apart-icon.png' );
 
   // constants
   var VALUE_FONT = new PhetFont( { size: 34 } );
@@ -247,13 +244,7 @@ define( function( require ) {
     // TODO: There's a lot of code in here for the break apart button.  Can this be consolidated into a class that
     // TODO: encapsulates a lot of this behavior, such as hiding automatically after a given time, managing the timers,
     // TODO: handling hover?  Seems like a good idea.
-    var breakApartButton = new RectangularPushButton( {
-      content: new Image( breakApartIconImage, { scale: 0.3 } ), // scale empirically determined
-      xMargin: 3,
-      yMargin: 3,
-      baseColor: 'yellow',
-      visible: false
-    } );
+    var breakApartButton = new BreakApartButton( { visible: false } );
     this.addChild( breakApartButton );
 
     // define helper functions for managing the button timers
