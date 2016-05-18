@@ -38,7 +38,7 @@ define( function( require ) {
   var ScreenView = require( 'JOIST/ScreenView' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
-  var VariableValueTweaker = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueTweaker' );
+  var VariableValueControl = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueControl' );
   var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
   var VBox = require( 'SCENERY/nodes/VBox' );
   var VStrut = require( 'SCENERY/nodes/VStrut' );
@@ -64,10 +64,10 @@ define( function( require ) {
   var INSET = 10; // inset from edges of layout bounds, in screen coords
 
   /**
-   * @param {ExpressionManipulationModel} expressionManipulationModel
+   * @param {ExpressionManipulationModel} model
    * @constructor
    */
-  function ExpressionManipulationView( expressionManipulationModel ) {
+  function ExpressionManipulationView( model ) {
 
     ScreenView.call( this );
     var self = this;
@@ -85,9 +85,9 @@ define( function( require ) {
       maxWidth: totalValueReadoutWidth
     } );
     Property.multilink(
-      [ expressionManipulationModel.totalValueProperty, expressionManipulationModel.viewModeProperty ],
+      [ model.totalValueProperty, model.viewModeProperty ],
       function( totalValue ) {
-        if ( expressionManipulationModel.viewMode === ViewModeEnum.COINS ) {
+        if ( model.viewMode === ViewModeEnum.COINS ) {
           totalValueText.text = StringUtils.format( numberCentsString, totalValue );
         }
         else {
@@ -111,17 +111,11 @@ define( function( require ) {
 
     // add the control that allows the user to adjust the values of the variables
     var variableValuesAccordionBox = new AccordionBox(
-      new VBox( {
-        children: [
-          new VariableValueTweaker( expressionManipulationModel.xTermValueProperty, EESharedConstants.X_VARIABLE_CHAR ),
-          new VariableValueTweaker( expressionManipulationModel.yTermValueProperty, EESharedConstants.Y_VARIABLE_CHAR ),
-          new VariableValueTweaker( expressionManipulationModel.zTermValueProperty, EESharedConstants.Z_VARIABLE_CHAR )
-        ],
-        spacing: 20
-      } ),
+      new VariableValueControl( model.xTermValueProperty,  model.yTermValueProperty,  model.zTermValueProperty ),
       {
         titleNode: new Text( valuesString, { font: ACCORDION_BOX_TITLE_FONT } ),
         fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
+        contentYMargin: 20,
         left: INSET,
         top: totalValueAccordionBox.bottom + 10,
         cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
@@ -133,12 +127,12 @@ define( function( require ) {
     this.addChild( variableValuesAccordionBox );
 
     // the values control is only visible when in variable mode
-    expressionManipulationModel.viewModeProperty.link( function( viewMode ) {
+    model.viewModeProperty.link( function( viewMode ) {
       variableValuesAccordionBox.visible = viewMode === ViewModeEnum.VARIABLES;
     } );
 
     // add accordion box that will contain the user's coin collection
-    var myCollectionAccordionBox = new AccordionBox( new CollectionDisplayNode( expressionManipulationModel ), {
+    var myCollectionAccordionBox = new AccordionBox( new CollectionDisplayNode( model ), {
       titleNode: new Text( myCollectionString, { font: ACCORDION_BOX_TITLE_FONT } ),
       fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
       right: this.layoutBounds.width - INSET,
@@ -152,7 +146,7 @@ define( function( require ) {
     // add the checkbox that controls visibility of coin values
     var showCoinValuesCheckbox = new CheckBox(
       new Text( coinValuesString, { font: CHECK_BOX_FONT } ),
-      expressionManipulationModel.showCoinValuesProperty,
+      model.showCoinValuesProperty,
       {
         top: myCollectionAccordionBox.bottom + 6,
         left: myCollectionAccordionBox.left,
@@ -164,7 +158,7 @@ define( function( require ) {
     // add the checkbox that controls visibility of variable values
     var showVariableValuesCheckbox = new CheckBox(
       new Text( variableValuesString, { font: CHECK_BOX_FONT } ),
-      expressionManipulationModel.showVariableValuesProperty,
+      model.showVariableValuesProperty,
       {
         top: myCollectionAccordionBox.bottom + 6,
         left: myCollectionAccordionBox.left,
@@ -174,7 +168,7 @@ define( function( require ) {
     this.addChild( showVariableValuesCheckbox );
 
     // control whether the coin values or variable values checkbox is visible
-    expressionManipulationModel.viewModeProperty.link( function( viewMode ) {
+    model.viewModeProperty.link( function( viewMode ) {
       showCoinValuesCheckbox.visible = viewMode === ViewModeEnum.COINS;
       showVariableValuesCheckbox.visible = viewMode === ViewModeEnum.VARIABLES;
     } );
@@ -182,7 +176,7 @@ define( function( require ) {
     // add the checkbox that controls whether all coefficients (including 1) are shown
     var showAllCoefficientsCheckbox = new CheckBox(
       new Text( allCoefficientsString, { font: CHECK_BOX_FONT } ),
-      expressionManipulationModel.showAllCoefficientsProperty,
+      model.showAllCoefficientsProperty,
       {
         top: showCoinValuesCheckbox.bottom + 6,
         left: myCollectionAccordionBox.left,
@@ -192,102 +186,102 @@ define( function( require ) {
     this.addChild( showAllCoefficientsCheckbox );
 
     // create the collection of coin term creator nodes that will be presented to the user, varies based on options
-    var coinTermFactory = expressionManipulationModel.coinTermFactory; // convenience var
+    var coinTermFactory = model.coinTermFactory; // convenience var
     var coinTermCollection = [];
-    if ( expressionManipulationModel.coinTermCollection === CoinTermCollection.BASIC ) {
+    if ( model.coinTermCollection === CoinTermCollection.BASIC ) {
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, { initialPosition: initialPosition } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, { initialPosition: initialPosition } );
       } ) );
 
     }
-    else if ( expressionManipulationModel.coinTermCollection === CoinTermCollection.EXPLORE ) {
+    else if ( model.coinTermCollection === CoinTermCollection.EXPLORE ) {
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, { initialPosition: initialPosition } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, { initialPosition: initialPosition } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X, {
           initialPosition: initialPosition,
           initialCount: 2
         } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, {
           initialPosition: initialPosition,
           initialCount: 3
         } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X_TIMES_Y, { initialPosition: initialPosition } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X_SQUARED, { initialPosition: initialPosition } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.Y_SQUARED, { initialPosition: initialPosition } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, { initialPosition: initialPosition } );
       } ) );
     }
-    else if ( expressionManipulationModel.coinTermCollection === CoinTermCollection.ADVANCED ) {
+    else if ( model.coinTermCollection === CoinTermCollection.ADVANCED ) {
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.X, {
           initialPosition: initialPosition,
           initialCount: -1
         } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, {
           initialPosition: initialPosition,
           initialCount: 1
         } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, {
           initialPosition: initialPosition,
           initialCount: -1
         } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, {
           initialPosition: initialPosition,
           initialCount: 1
         } );
       } ) );
 
-      coinTermCollection.push( new CoinTermCreatorNode( expressionManipulationModel, function( initialPosition ) {
+      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
         return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, {
           initialPosition: initialPosition,
           initialCount: -1
@@ -327,7 +321,7 @@ define( function( require ) {
     this.addChild( coinTermCreatorHolder );
 
     // if both representations are allowed, add the switch for switching between coin and term view
-    if ( expressionManipulationModel.allowedRepresentations === AllowedRepresentationsEnum.COINS_AND_VARIABLES ) {
+    if ( model.allowedRepresentations === AllowedRepresentationsEnum.COINS_AND_VARIABLES ) {
 
       var coinImageNode = new Image( switchCoinImage, { scale: 0.6 } ); // scale empirically determined
 
@@ -344,7 +338,7 @@ define( function( require ) {
 
       // add the switch
       this.addChild( new ABSwitch(
-        expressionManipulationModel.viewModeProperty,
+        model.viewModeProperty,
         ViewModeEnum.COINS,
         coinImageNode,
         ViewModeEnum.VARIABLES,
@@ -372,7 +366,7 @@ define( function( require ) {
     // add the 'Reset All' button
     var resetAllButton = new ResetAllButton( {
       listener: function() {
-        expressionManipulationModel.reset();
+        model.reset();
         myCollectionAccordionBox.expandedProperty.reset();
         totalValueAccordionBox.expandedProperty.reset();
         if ( coinTermCreatorHolder.pageNumberProperty ){
@@ -386,15 +380,15 @@ define( function( require ) {
     this.addChild( resetAllButton );
 
     // add and remove coin nodes as coins are added and removed from the model
-    expressionManipulationModel.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
+    model.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
 
       // add a representation of the coin
       var coinTermNode = new CoinTermNode(
         addedCoinTerm,
-        expressionManipulationModel.viewModeProperty,
-        expressionManipulationModel.showCoinValuesProperty,
-        expressionManipulationModel.showVariableValuesProperty,
-        expressionManipulationModel.showAllCoefficientsProperty,
+        model.viewModeProperty,
+        model.showCoinValuesProperty,
+        model.showVariableValuesProperty,
+        model.showAllCoefficientsProperty,
         { addDragHandler: true, dragBounds: self.layoutBounds }
       );
       coinLayer.addChild( coinTermNode );
@@ -403,17 +397,17 @@ define( function( require ) {
       // from the model.
       addedCoinTerm.userControlledProperty.onValue( false, function() {
         if ( coinTermNode.bounds.intersectsBounds( coinTermCreatorHolder.bounds ) &&
-             !expressionManipulationModel.isCoinTermInExpression( addedCoinTerm ) ) {
-          expressionManipulationModel.removeCoinTerm( addedCoinTerm, true );
+             !model.isCoinTermInExpression( addedCoinTerm ) ) {
+          model.removeCoinTerm( addedCoinTerm, true );
         }
       } );
 
       // add the coin halo
-      var coinHaloNode = new CoinTermHaloNode( addedCoinTerm, expressionManipulationModel.viewModeProperty );
+      var coinHaloNode = new CoinTermHaloNode( addedCoinTerm, model.viewModeProperty );
       coinHaloLayer.addChild( coinHaloNode );
 
       // set up a listener to remove the nodes when the corresponding coin is removed from the model
-      expressionManipulationModel.coinTerms.addItemRemovedListener( function removalListener( removedCoin ) {
+      model.coinTerms.addItemRemovedListener( function removalListener( removedCoin ) {
         if ( removedCoin === addedCoinTerm ) {
           if ( removedCoin.combinedCount === 0 ) {
             // if the coin term being removed has a combined count of zero, it should fade out rather than disappearing
@@ -423,16 +417,16 @@ define( function( require ) {
             coinLayer.removeChild( coinTermNode );
           }
           coinHaloLayer.removeChild( coinHaloNode );
-          expressionManipulationModel.coinTerms.removeItemRemovedListener( removalListener );
+          model.coinTerms.removeItemRemovedListener( removalListener );
         }
       } );
 
     } );
 
     // add and remove expressions and expression overlays as they come and go
-    expressionManipulationModel.expressions.addItemAddedListener( function( addedExpression ) {
+    model.expressions.addItemAddedListener( function( addedExpression ) {
 
-      var expressionNode = new ExpressionNode( addedExpression, expressionManipulationModel.viewModeProperty );
+      var expressionNode = new ExpressionNode( addedExpression, model.viewModeProperty );
       expressionLayer.addChild( expressionNode );
 
       var expressionOverlayNode = new ExpressionOverlayNode( addedExpression, self.layoutBounds );
@@ -442,31 +436,31 @@ define( function( require ) {
       // removed from the model.
       addedExpression.userControlledProperty.onValue( false, function() {
         if ( addedExpression.getBounds().intersectsBounds( coinTermCreatorHolder.bounds ) ) {
-          expressionManipulationModel.removeExpression( addedExpression );
+          model.removeExpression( addedExpression );
         }
       } );
 
       // set up a listener to remove these nodes when the corresponding expression is removed from the model
-      expressionManipulationModel.expressions.addItemRemovedListener( function removalListener( removedExpression ) {
+      model.expressions.addItemRemovedListener( function removalListener( removedExpression ) {
         if ( removedExpression === addedExpression ) {
           expressionLayer.removeChild( expressionNode );
           expressionOverlayLayer.removeChild( expressionOverlayNode );
-          expressionManipulationModel.expressions.removeItemRemovedListener( removalListener );
+          model.expressions.removeItemRemovedListener( removalListener );
         }
       } );
     } );
 
     // add and remove expression hints as they come and go
-    expressionManipulationModel.expressionHints.addItemAddedListener( function( addedExpressionHint ) {
+    model.expressionHints.addItemAddedListener( function( addedExpressionHint ) {
 
-      var expressionHintNode = new ExpressionHintNode( addedExpressionHint, expressionManipulationModel.viewModeProperty );
+      var expressionHintNode = new ExpressionHintNode( addedExpressionHint, model.viewModeProperty );
       expressionLayer.addChild( expressionHintNode );
 
       // set up a listener to remove the hint node when the corresponding hint is removed from the model
-      expressionManipulationModel.expressionHints.addItemRemovedListener( function removalListener( removedExpressionHint ) {
+      model.expressionHints.addItemRemovedListener( function removalListener( removedExpressionHint ) {
         if ( removedExpressionHint === addedExpressionHint ) {
           expressionLayer.removeChild( expressionHintNode );
-          expressionManipulationModel.expressionHints.removeItemRemovedListener( removalListener );
+          model.expressionHints.removeItemRemovedListener( removalListener );
         }
       } );
 
