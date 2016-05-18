@@ -14,15 +14,15 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
-  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
 
   // constants
   var WIDTH = 170; // empirically determined
-  var HEIGHT = 330; // empirically determined
-  var MAX_COINS_PER_TYPE = 5;
-  var INSET = 20;
-  var INTER_COIN_H_SPACING = ( WIDTH - ( 2 * INSET ) ) / ( MAX_COINS_PER_TYPE - 1 );
-  var INTER_COIN_V_SPACING = ( HEIGHT - ( 2 * INSET ) ) / ( Object.keys( CoinTermTypeID ).length - 1 );
+  var MAX_COIN_TERMS_PER_ROW = 5;
+  var MAX_COINS_TERMS_PER_TYPE = 10;
+  var COIN_CENTER_INSET = 20;
+  var INTER_COIN_H_SPACING = ( WIDTH - ( 2 * COIN_CENTER_INSET ) ) / ( MAX_COIN_TERMS_PER_ROW - 1 );
+  var SAME_TYPE_V_SPACING = 2;
+  var DIFFERENT_TYPE_V_SPACING = 8;
 
   // create a list of the coin term type IDs in the order in which we want the icons to appear in this node
   var COIN_TERM_TYPE_IDS = [
@@ -44,14 +44,12 @@ define( function( require ) {
     Node.call( this );
     var self = this;
 
-    // add the background
-    this.addChild( new Rectangle( 0, 0, WIDTH, HEIGHT, 0, 0, { fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR } ) );
-
     // an object that uses coin term IDs as the keys and has arrays of icons as the values
     var iconMap = {};
 
     // add the arrays of icon nodes to the map
-    COIN_TERM_TYPE_IDS.forEach( function( coinTermTypeID, coinTermIndex ){
+    var bottomOfPreviousRow;
+    COIN_TERM_TYPE_IDS.forEach( function( coinTermTypeID ){
 
       // add the array that will maintain references to the icon nodes
       iconMap[ coinTermTypeID ] = [];
@@ -64,16 +62,23 @@ define( function( require ) {
         model.showVariableValuesProperty
       );
 
+      if ( !bottomOfPreviousRow ){
+        bottomOfPreviousRow = COIN_CENTER_INSET - coinTermIcon.height / 2;
+      }
+
       // wrap the icon in separate nodes so that it can appear in multiple places
-      _.times( MAX_COINS_PER_TYPE, function( index ){
-        var wrappedIconNode = new Node( {
-          children: [ coinTermIcon ],
-          centerX: INSET + index * INTER_COIN_H_SPACING,
-          centerY: INSET + coinTermIndex * INTER_COIN_V_SPACING
-        } );
-        self.addChild( wrappedIconNode );
-        iconMap[ coinTermTypeID ].push( wrappedIconNode );
-      } );
+      for ( var i = 0; i < MAX_COINS_TERMS_PER_TYPE / MAX_COIN_TERMS_PER_ROW; i++ ){
+        for ( var j = 0; j < MAX_COIN_TERMS_PER_ROW; j++ ){
+          var wrappedIconNode = new Node( {
+            children: [ coinTermIcon ],
+            centerX: COIN_CENTER_INSET + j * INTER_COIN_H_SPACING,
+            top: i === 0 ? bottomOfPreviousRow + DIFFERENT_TYPE_V_SPACING : bottomOfPreviousRow + SAME_TYPE_V_SPACING
+          } );
+          self.addChild( wrappedIconNode );
+          iconMap[ coinTermTypeID ].push( wrappedIconNode );
+        }
+        bottomOfPreviousRow = wrappedIconNode.bottom;
+      }
     } );
 
 
@@ -81,7 +86,7 @@ define( function( require ) {
     function updateIconVisibility(){
       COIN_TERM_TYPE_IDS.forEach( function( coinTermTypeID ){
         var count =  model.getCoinTermCount( coinTermTypeID );
-        for ( var i = 0; i < MAX_COINS_PER_TYPE; i++ ){
+        for ( var i = 0; i < MAX_COINS_TERMS_PER_TYPE; i++ ){
           iconMap[ coinTermTypeID ][ i ].visible = i < count;
         }
       } );
