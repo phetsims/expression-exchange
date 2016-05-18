@@ -14,6 +14,7 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
@@ -23,7 +24,7 @@ define( function( require ) {
 
   // constants
   var COIN_VALUE_FONT = new PhetFont( { size: 12, weight: 'bold' } );
-  var VARIABLE_FONT = new PhetFont( { size: 14, weight: 'bold' } );
+  var VARIABLE_FONT = new MathSymbolFont( 16 );
   var SCALING_FACTOR = 0.4; // empirically determined to yield coin icons of the desired size
 
   /**

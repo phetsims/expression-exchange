@@ -29,6 +29,7 @@ define( function( require ) {
   var HBox = require( 'SCENERY/nodes/HBox' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Panel = require( 'SUN/Panel' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
@@ -331,9 +332,7 @@ define( function( require ) {
         ViewModeEnum.COINS,
         new Image( switchCoinImage, { scale: 0.6 } ),
         ViewModeEnum.VARIABLES,
-        new Text( EESharedConstants.X_VARIABLE_CHAR, {
-          font: new PhetFont( { family: '"Times New Roman", serif', size: 32 } )
-        } ),
+        new Text( EESharedConstants.X_VARIABLE_CHAR, new MathSymbolFont( 36 ) ),
         { switchSize: new Dimension2( 40, 20 ), top: coinTermCreatorHolder.bottom + 10, centerX: coinTermCreatorHolder.centerX }
       ) );
     }

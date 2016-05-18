@@ -16,6 +16,7 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
@@ -32,7 +33,8 @@ define( function( require ) {
   var breakApartIconImage = require( 'image!EXPRESSION_EXCHANGE/break-apart-icon.png' );
 
   // constants
-  var TERM_AND_VALUE_FONT = new PhetFont( { size: 34 } );
+  var VALUE_FONT = new PhetFont( { size: 34 } );
+  var VARIABLE_FONT = new MathSymbolFont( 36 );
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_X_SPACING = 3;
   var DRAG_BEFORE_BREAK_BUTTON_FADES = 10;
@@ -84,7 +86,7 @@ define( function( require ) {
     // TODO: representations probably still makes sense so we're not having to add and remove nodes all the time.
 
     // add the coin value text
-    var coinValueText = new Text( coinTerm.valueProperty.value, { font: TERM_AND_VALUE_FONT, center: coinCenter } );
+    var coinValueText = new Text( coinTerm.valueProperty.value, { font: VALUE_FONT, center: coinCenter } );
     rootNode.addChild( coinValueText );
 
     // control the coin value text visibility
@@ -97,7 +99,7 @@ define( function( require ) {
     coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
 
     // add the 'term' text, e.g. xy
-    var termText = new SubSupText( 'temp', { font: TERM_AND_VALUE_FONT } );
+    var termText = new SubSupText( 'temp', { font: VARIABLE_FONT } );
     // TODO: Can I dilate the mouse and touch areas in the constructor?
     rootNode.addChild( termText );
 
@@ -124,7 +126,7 @@ define( function( require ) {
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
 
     // Add the text that includes the variable values.  This can change, so it starts off blank.
-    var termWithVariableValuesText = new SubSupText( ' ', { font: TERM_AND_VALUE_FONT } );
+    var termWithVariableValuesText = new SubSupText( ' ', { font: VARIABLE_FONT } );
     rootNode.addChild( termWithVariableValuesText );
 
     // create a helper function to update the term value text
