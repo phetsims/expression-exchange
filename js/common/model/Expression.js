@@ -57,6 +57,9 @@ define( function( require ) {
     // @public, listen only, emits an event when an animation finishes and the destination is reached
     this.destinationReachedEmitter = new Emitter();
 
+    // @public, listen only, emits an event when this expression should be broken apart
+    this.breakApartEmitter = new Emitter();
+
     // @private, tracks coin terms that are hovering over this expression but are being controlled by the user so are
     // not yet part of the expression.  This is used to activate and size the hints.  Coin terms should be added and
     // removed via methods.
@@ -382,6 +385,14 @@ define( function( require ) {
         upperLeftCornerDestination.x - this.upperLeftCorner.x,
         upperLeftCornerDestination.y - this.upperLeftCorner.y
       );
+    },
+
+    /**
+     * initiate a break apart, which just emits an event and counts on parent model to handle
+     * @public
+     */
+    breakApart: function(){
+      this.breakApartEmitter.emit();
     },
 
     /**

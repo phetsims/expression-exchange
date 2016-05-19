@@ -11,6 +11,7 @@ define( function( require ) {
 
   // modules
   var BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
+  var Emitter = require( 'AXON/Emitter' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
@@ -85,6 +86,7 @@ define( function( require ) {
 
     // add the listener that will initiate the break apart, and will also hide the button and cancel the timer
     breakApartButton.addListener( function(){
+      expression.breakApart();
       hideBreakApartButton();
       if ( hideButtonTimer ){
         Timer.clearTimeout( hideButtonTimer );

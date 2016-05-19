@@ -217,8 +217,8 @@ define( function( require ) {
     this.expressions.addItemAddedListener( function( addedExpression ) {
       // TODO: Revisit this and verify that this doesn't leak memory
 
-      // add a handler for when the expression is released, which may cause it to be combined with another expression
-      addedExpression.userControlledProperty.lazyLink( function( userControlled ) {
+      // add a listener for when the expression is released, which may cause it to be combined with another expression
+      function expressionUserControlledListener( userControlled ) {
 
         if ( !userControlled ) {
 
@@ -246,6 +246,25 @@ define( function( require ) {
               // TODO: need to do that at some point.
             } );
           }
+        }
+      }
+
+      addedExpression.userControlledProperty.lazyLink( expressionUserControlledListener );
+
+      // add a listener to break apart this expression if necessary
+      function breakApartExpressionListener(){
+        console.log( 'expression break apart event occurred' );
+        addedExpression.removeAllCoinTerms();
+        self.expressions.remove( addedExpression );
+      }
+
+      addedExpression.breakApartEmitter.addListener( breakApartExpressionListener );
+
+      // remove the listeners when this expression is removed
+      self.expressions.addItemRemovedListener( function( removedExpression ){
+        if ( removedExpression === addedExpression ){
+          addedExpression.userControlledProperty.unlink( expressionUserControlledListener );
+          addedExpression.breakApartEmitter.removeListener( breakApartExpressionListener );
         }
       } );
     } );

@@ -431,8 +431,8 @@ define( function( require ) {
       var expressionOverlayNode = new ExpressionOverlayNode( addedExpression, self.layoutBounds );
       expressionOverlayLayer.addChild( expressionOverlayNode );
 
-      // Add a listener to the coin to detect when it overlaps with the panel or carousel, at which point it will be
-      // removed from the model.
+      // Add a listener to the expression to detect when it overlaps with the panel or carousel, at which point it will
+      // be removed from the model.
       addedExpression.userControlledProperty.onValue( false, function() {
         if ( addedExpression.getBounds().intersectsBounds( coinTermCreatorHolder.bounds ) ) {
           model.removeExpression( addedExpression );
