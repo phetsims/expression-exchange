@@ -10,6 +10,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
@@ -17,8 +18,12 @@ define( function( require ) {
   var Path = require( 'SCENERY/nodes/Path' );
   var Property = require( 'AXON/Property' );
   var Shape = require( 'KITE/Shape' );
+  var Timer = require( 'PHET_CORE/Timer' );
   var Util = require( 'DOT/Util' );
   var Vector2 = require( 'DOT/Vector2' );
+
+  // constants
+  var HIDE_BUTTON_TIMEOUT = 1500; // in milliseconds
 
   /**
    * @param {Expression} expression - model of an expression
@@ -34,6 +39,7 @@ define( function( require ) {
     var shape;
     var path = null;
 
+    // define a function that will create or update the shape based on the width and height
     function updateShape() {
       shape = new Shape.rect( 0, 0, expression.width, expression.height );
       if ( !path ) {
@@ -50,11 +56,43 @@ define( function( require ) {
 
     // update the position as the expression moves
     expression.upperLeftCornerProperty.link( function( upperLeftCorner ) {
-      self.left = upperLeftCorner.x;
-      self.top = upperLeftCorner.y;
+      self.x = upperLeftCorner.x;
+      self.y = upperLeftCorner.y;
     } );
 
-    // pre-allocated vectors, used for calculating allowable locations for the extpression
+    // add the button used to break apart the expression
+    var breakApartButton = new BreakApartButton( {
+      visible: false
+    } );
+    this.addChild( breakApartButton );
+
+    function showBreakApartButton( xLocation ){
+      breakApartButton.visible = true;
+      breakApartButton.centerX = xLocation;
+      breakApartButton.bottom = -2;
+    }
+
+    function hideBreakApartButton(){
+      breakApartButton.visible = false;
+
+      // put it in a place where it doesn't affect the overall bounds
+      breakApartButton.x = 0;
+      breakApartButton.y = 0;
+    }
+
+    // timer used to hide the button
+    var hideButtonTimer = null;
+
+    // add the listener that will initiate the break apart, and will also hide the button and cancel the timer
+    breakApartButton.addListener( function(){
+      hideBreakApartButton();
+      if ( hideButtonTimer ){
+        Timer.clearTimeout( hideButtonTimer );
+        hideButtonTimer = null;
+      }
+    } );
+
+    // pre-allocated vectors, used for calculating allowable locations for the expression
     var unboundedUpperLeftCornerPosition = new Vector2();
     var boundedUpperLeftCornerPosition = new Vector2();
 
@@ -63,10 +101,15 @@ define( function( require ) {
       // when dragging across it in a mobile device, pick it up
       allowTouchSnag: true,
 
-      start: function() {
+      start: function( event ) {
         expression.userControlled = true;
         unboundedUpperLeftCornerPosition.set( expression.upperLeftCorner );
         boundedUpperLeftCornerPosition.set( unboundedUpperLeftCornerPosition );
+        showBreakApartButton( self.globalToLocalPoint( event.pointer.point ).x );
+        if ( hideButtonTimer ){
+          Timer.clearTimeout( hideButtonTimer );
+          hideButtonTimer = null;
+        }
       },
 
       translate: function( translationParams ) {
@@ -83,6 +126,9 @@ define( function( require ) {
 
       end: function() {
         expression.userControlled = false;
+        assert && assert( breakApartButton.visible, 'break apart button should be visible at end of drag' );
+        assert && assert( hideButtonTimer === null, 'a timer for hiding the buttons was running at end of drag' );
+        hideButtonTimer = Timer.setTimeout( hideBreakApartButton, HIDE_BUTTON_TIMEOUT );
       }
 
     } );
