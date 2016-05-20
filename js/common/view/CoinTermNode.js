@@ -79,12 +79,18 @@ define( function( require ) {
 
     // TODO: There are a number of individual update functions that update the various representations, all of which
     // TODO: always exist and their visibility is switched on and off.  This has grown in complexity, and I'm starting
-    // TODO: to that that a single update function would make more sense.  Having separate nodes for the different
+    // TODO: to thing that a single update function would make more sense.  Having separate nodes for the different
     // TODO: representations probably still makes sense so we're not having to add and remove nodes all the time.
 
     // add the coin value text
-    var coinValueText = new Text( coinTerm.valueProperty.value, { font: VALUE_FONT, center: coinCenter } );
+    var coinValueText = new Text( '', { font: VALUE_FONT } );
     rootNode.addChild( coinValueText );
+
+    // update the coin value text
+    coinTerm.valueProperty.link( function( coinValue ){
+      coinValueText.text = coinValue;
+      coinValueText.center = coinCenter;
+    } );
 
     // control the coin value text visibility
     var coinValueVisibleProperty = new DerivedProperty(
