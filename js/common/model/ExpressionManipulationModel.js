@@ -84,8 +84,6 @@ define( function( require ) {
       self.coinTerms.forEach( function( coinTerm ) {
         total += coinTerm.valueProperty.value * coinTerm.combinedCount;
       } );
-      console.log( 'Math.random() = ' + Math.random() );
-      console.log( 'total = ' + total );
       self.totalValue = total;
     }
 
@@ -256,7 +254,6 @@ define( function( require ) {
 
       // add a listener to break apart this expression if necessary
       function breakApartExpressionListener(){
-        console.log( 'expression break apart event occurred' );
         addedExpression.removeAllCoinTerms();
         self.expressions.remove( addedExpression );
       }

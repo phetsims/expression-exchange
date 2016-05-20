@@ -182,12 +182,6 @@ define( function( require ) {
       }
     }
 
-    // update the coefficient text when the value changes
-    coinTerm.combinedCountProperty.link( function( combinedCount ) {
-      coefficientText.text = combinedCount;
-      updateCoefficientPosition();
-    } );
-
     // control the visibility of the coefficient text
     var coefficientVisibleProperty = new DerivedProperty( [
         coinTerm.combinedCountProperty,
@@ -200,6 +194,13 @@ define( function( require ) {
       updateTermText( coefficientVisible );
       updateCoefficientPosition();
       coefficientText.visible = coefficientVisible;
+    } );
+
+    // update the coefficient text when the value changes
+    coinTerm.combinedCountProperty.link( function( combinedCount ) {
+      coefficientText.text = combinedCount;
+      updateCoefficientPosition();
+      updateTermText( coefficientVisibleProperty.value );
     } );
 
     // position the coefficient to line up well with the text or the code
