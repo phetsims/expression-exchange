@@ -26,7 +26,7 @@ define( function( require ) {
   var Text = require( 'SCENERY/nodes/Text' );
   var Timer = require( 'PHET_CORE/Timer' );
   var Util = require( 'DOT/Util' );
-  var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
@@ -44,7 +44,7 @@ define( function( require ) {
    * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
    * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
    * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
-   * @param {boolean} addDragHandler - controls whether drag handler hooked up, useful for creator nodes
+   * @param {Object} options
    * @constructor
    */
   function CoinTermNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty,
@@ -71,7 +71,7 @@ define( function( require ) {
 
     // control front coin image visibility
     viewModeProperty.link( function( representationMode ) {
-      coinImageNode.visible = representationMode === ViewModeEnum.COINS;
+      coinImageNode.visible = representationMode === ViewMode.COINS;
     } );
 
     // convenience variable for positioning the textual labels created below
@@ -90,7 +90,7 @@ define( function( require ) {
     var coinValueVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showCoinValuesProperty ],
       function( viewMode, showCoinValues ) {
-        return ( viewMode === ViewModeEnum.COINS && showCoinValues );
+        return ( viewMode === ViewMode.COINS && showCoinValues );
       }
     );
     coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
@@ -117,7 +117,7 @@ define( function( require ) {
     var termTextVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showVariableValuesProperty ],
       function( viewMode, showVariableValues ) {
-        return ( viewMode === ViewModeEnum.VARIABLES && !showVariableValues );
+        return ( viewMode === ViewMode.VARIABLES && !showVariableValues );
       }
     );
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
@@ -149,7 +149,7 @@ define( function( require ) {
     var variableTextVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showVariableValuesProperty ],
       function( viewMode, showVariableValues ) {
-        return ( viewMode === ViewModeEnum.VARIABLES && showVariableValues );
+        return ( viewMode === ViewMode.VARIABLES && showVariableValues );
       }
     );
     variableTextVisibleProperty.linkAttribute( termWithVariableValuesText, 'visible' );
@@ -162,7 +162,7 @@ define( function( require ) {
 
     // create a helper function for positioning the coefficient
     function updateCoefficientPosition() {
-      if ( viewModeProperty.value === ViewModeEnum.COINS ) {
+      if ( viewModeProperty.value === ViewMode.COINS ) {
         coefficientText.right = coinImageNode.left - COEFFICIENT_X_SPACING;
         coefficientText.centerY = coinImageNode.centerY;
       }

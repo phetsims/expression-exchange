@@ -19,7 +19,7 @@ define( function( require ) {
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
-  var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
@@ -47,7 +47,7 @@ define( function( require ) {
 
     // control coin icon visibility
     viewModeProperty.link( function( representationMode ) {
-      coinIconNode.visible = representationMode === ViewModeEnum.COINS;
+      coinIconNode.visible = representationMode === ViewMode.COINS;
     } );
 
     // convenience variable for positioning the textual labels created below
@@ -61,7 +61,7 @@ define( function( require ) {
     var coinValueVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showCoinValuesProperty ],
       function( viewMode, showCoinValues ) {
-        return ( viewMode === ViewModeEnum.COINS && showCoinValues );
+        return ( viewMode === ViewMode.COINS && showCoinValues );
       }
     );
     coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
@@ -74,7 +74,7 @@ define( function( require ) {
     var termTextVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showVariableValuesProperty ],
       function( viewMode, showVariableValues ) {
-        return ( viewMode === ViewModeEnum.VARIABLES && !showVariableValues );
+        return ( viewMode === ViewMode.VARIABLES && !showVariableValues );
       }
     );
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
@@ -97,7 +97,7 @@ define( function( require ) {
     var variableTextVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showVariableValuesProperty ],
       function( viewMode, showVariableValues ) {
-        return ( viewMode === ViewModeEnum.VARIABLES && showVariableValues );
+        return ( viewMode === ViewMode.VARIABLES && showVariableValues );
       }
     );
     variableTextVisibleProperty.linkAttribute( termWithVariableValuesText, 'visible' );

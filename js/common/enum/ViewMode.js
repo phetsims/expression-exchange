@@ -11,16 +11,16 @@ define( function( require ) {
   // modules
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  var ViewModeEnum = {
+  var ViewMode = {
     COINS: 'COINS',
     VARIABLES: 'VARIABLES'
   };
 
   // verify that enum is immutable, without the runtime penalty in production code
-  if ( assert ) { Object.freeze( ViewModeEnum ); }
+  if ( assert ) { Object.freeze( ViewMode ); }
 
-  expressionExchange.register( 'ViewModeEnum', ViewModeEnum );
+  expressionExchange.register( 'ViewMode', ViewMode );
 
-  return ViewModeEnum;
+  return ViewMode;
 
 } );

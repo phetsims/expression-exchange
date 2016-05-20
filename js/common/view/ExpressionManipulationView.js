@@ -39,7 +39,7 @@ define( function( require ) {
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
   var VariableValueControl = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueControl' );
-  var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
   var VStrut = require( 'SCENERY/nodes/VStrut' );
 
   // strings
@@ -86,7 +86,7 @@ define( function( require ) {
     Property.multilink(
       [ model.totalValueProperty, model.viewModeProperty ],
       function( totalValue ) {
-        if ( model.viewMode === ViewModeEnum.COINS ) {
+        if ( model.viewMode === ViewMode.COINS ) {
           totalValueText.text = StringUtils.format( numberCentsString, totalValue );
         }
         else {
@@ -127,7 +127,7 @@ define( function( require ) {
 
     // the values control is only visible when in variable mode
     model.viewModeProperty.link( function( viewMode ) {
-      variableValuesAccordionBox.visible = viewMode === ViewModeEnum.VARIABLES;
+      variableValuesAccordionBox.visible = viewMode === ViewMode.VARIABLES;
     } );
 
     // add accordion box that will contain the user's coin collection
@@ -168,8 +168,8 @@ define( function( require ) {
 
     // control whether the coin values or variable values checkbox is visible
     model.viewModeProperty.link( function( viewMode ) {
-      showCoinValuesCheckbox.visible = viewMode === ViewModeEnum.COINS;
-      showVariableValuesCheckbox.visible = viewMode === ViewModeEnum.VARIABLES;
+      showCoinValuesCheckbox.visible = viewMode === ViewMode.COINS;
+      showVariableValuesCheckbox.visible = viewMode === ViewMode.VARIABLES;
     } );
 
     // add the checkbox that controls whether all coefficients (including 1) are shown
@@ -338,9 +338,9 @@ define( function( require ) {
       // add the switch
       this.addChild( new ABSwitch(
         model.viewModeProperty,
-        ViewModeEnum.COINS,
+        ViewMode.COINS,
         coinImageNode,
-        ViewModeEnum.VARIABLES,
+        ViewMode.VARIABLES,
         variableIconNode,
         { switchSize: new Dimension2( 40, 20 ), top: coinTermCreatorHolder.bottom + 10, centerX: coinTermCreatorHolder.centerX }
       ) );

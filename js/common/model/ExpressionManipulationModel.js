@@ -22,7 +22,7 @@ define( function( require ) {
   var ObservableArray = require( 'AXON/ObservableArray' );
   var PropertySet = require( 'AXON/PropertySet' );
   var Vector2 = require( 'DOT/Vector2' );
-  var ViewModeEnum = require( 'EXPRESSION_EXCHANGE/common/model/ViewModeEnum' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var BREAK_APART_SPACING = 10;
@@ -47,7 +47,7 @@ define( function( require ) {
     }, options );
 
     var initialViewMode = options.allowedRepresentations === AllowedRepresentationsEnum.VARIABLES_ONLY ?
-                          ViewModeEnum.VARIABLES : ViewModeEnum.COINS;
+                          ViewMode.VARIABLES : ViewMode.COINS;
 
     PropertySet.call( this, {
       viewMode: initialViewMode, // @public
@@ -93,7 +93,7 @@ define( function( require ) {
 
     // add a listener that resets the coin term values when the view mode switches from variables to coins
     this.viewModeProperty.link( function( newViewMode, oldViewMode ){
-      if ( newViewMode === ViewModeEnum.COINS && oldViewMode === ViewModeEnum.VARIABLES ){
+      if ( newViewMode === ViewMode.COINS && oldViewMode === ViewMode.VARIABLES ){
         self.xTermValueProperty.reset();
         self.yTermValueProperty.reset();
         self.zTermValueProperty.reset();
@@ -482,7 +482,7 @@ define( function( require ) {
       // The determination is made based on adjusted bounds, and the adjustements are a little different based on the
       // view mode.  The adjustment values were empirically determined.
       var boundsHeightAdjustmentFactor;
-      if ( this.viewMode === ViewModeEnum.COINS ) {
+      if ( this.viewMode === ViewMode.COINS ) {
         boundsHeightAdjustmentFactor = 0.25;
       }
       else {
@@ -578,7 +578,7 @@ define( function( require ) {
 
           // calculate and compare the relative overlap amounds, done a bit differently in the different view modes
           var overlapAmount;
-          if ( self.viewMode === ViewModeEnum.COINS ) {
+          if ( self.viewMode === ViewMode.COINS ) {
             overlapAmount = self.getCoinOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
           }
           else {
