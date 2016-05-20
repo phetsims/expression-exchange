@@ -78,18 +78,16 @@ define( function( require ) {
     // @public, read and listen only, list of expression hints in the model
     this.expressionHints = new ObservableArray();
 
-    // function to update the total cents whenever a coin is added or removed
+    // function to update the total value of the coin terms
     function updateTotal() {
       var total = 0;
       self.coinTerms.forEach( function( coinTerm ) {
         total += coinTerm.valueProperty.value * coinTerm.combinedCount;
       } );
+      console.log( 'Math.random() = ' + Math.random() );
+      console.log( 'total = ' + total );
       self.totalValue = total;
     }
-
-    // add listeners for updating the total coin value
-    this.coinTerms.addItemAddedListener( updateTotal );
-    this.coinTerms.addItemRemovedListener( updateTotal );
 
     // add a listener that resets the coin term values when the view mode switches from variables to coins
     this.viewModeProperty.link( function( newViewMode, oldViewMode ){
@@ -185,7 +183,9 @@ define( function( require ) {
       addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListener );
 
       // add a listener that will update the total value of the coin terms when this one's value changes
-      addedCoinTerm.valueProperty.link( updateTotal );
+      addedCoinTerm.valueProperty.link( function(){
+        updateTotal();
+      } );
 
       // add a listener that will remove this coin if and when it returns to its original position
       function coinTermReturnedToOriginListener() {
@@ -210,6 +210,9 @@ define( function( require ) {
           addedCoinTerm.combinedCountProperty.unlink( coinTermCombinedCountListener );
           addedCoinTerm.valueProperty.unlink( updateTotal );
           self.coinTerms.removeItemRemovedListener( coinTermRemovalListener );
+
+          // update the total now that this coin term has been removed
+          updateTotal();
         }
       } );
     } );
