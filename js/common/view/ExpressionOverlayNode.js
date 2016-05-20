@@ -11,7 +11,6 @@ define( function( require ) {
 
   // modules
   var BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
-  var Emitter = require( 'AXON/Emitter' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
