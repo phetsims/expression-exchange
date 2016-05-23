@@ -30,6 +30,7 @@ define( function( require ) {
     options.xMargin = MARGIN;
     options.yMargin = MARGIN;
     options.baseColor = 'yellow';
+    options.cursor = 'pointer';
 
     RectangularPushButton.call( this, options );
 

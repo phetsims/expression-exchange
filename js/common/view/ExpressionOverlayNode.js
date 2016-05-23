@@ -24,6 +24,7 @@ define( function( require ) {
 
   // constants
   var HIDE_BUTTON_TIMEOUT = 1500; // in milliseconds
+  var DRAG_DISTANCE_HIDE_THRESHOLD = 10; // in screen coords, determined empirically
 
   /**
    * @param {Expression} expression - model of an expression
@@ -83,20 +84,48 @@ define( function( require ) {
     // timer used to hide the button
     var hideButtonTimer = null;
 
+    // define helper functions for managing the button timer
+    function clearHideButtonTimer() {
+      if ( hideButtonTimer ) {
+        Timer.clearTimeout( hideButtonTimer );
+        hideButtonTimer = null;
+      }
+    }
+
+    function startHideButtonTimer() {
+      clearHideButtonTimer(); // just in case one is already running
+      hideButtonTimer = Timer.setTimeout( function() {
+        hideBreakApartButton();
+        hideButtonTimer = null;
+      }, 2000 );
+    }
+
+    // keep the button showing if the user is over it
+    breakApartButton.buttonModel.overProperty.lazyLink( function( overButton ) {
+      if ( overButton ) {
+        assert && assert( !!hideButtonTimer, 'should not be over button without hide timer running' );
+        clearHideButtonTimer();
+      }
+      else {
+        startHideButtonTimer();
+      }
+    } );
+
     // add the listener that will initiate the break apart, and will also hide the button and cancel the timer
     breakApartButton.addListener( function(){
       expression.breakApart();
       hideBreakApartButton();
-      if ( hideButtonTimer ){
-        Timer.clearTimeout( hideButtonTimer );
-        hideButtonTimer = null;
-      }
+      clearHideButtonTimer();
     } );
 
     // pre-allocated vectors, used for calculating allowable locations for the expression
     var unboundedUpperLeftCornerPosition = new Vector2();
     var boundedUpperLeftCornerPosition = new Vector2();
 
+    // TODO: doc
+    var dragDistance = 0;
+
+    // add the handler that will allow the expression to be dragged and will hide and show the buttons
     var dragHandler = new SimpleDragHandler( {
 
       // when dragging across it in a mobile device, pick it up
@@ -104,32 +133,40 @@ define( function( require ) {
 
       start: function( event ) {
         expression.userControlled = true;
+        dragDistance = 0;
         unboundedUpperLeftCornerPosition.set( expression.upperLeftCorner );
         boundedUpperLeftCornerPosition.set( unboundedUpperLeftCornerPosition );
         showBreakApartButton( self.globalToLocalPoint( event.pointer.point ).x );
-        if ( hideButtonTimer ){
-          Timer.clearTimeout( hideButtonTimer );
-          hideButtonTimer = null;
-        }
+        clearHideButtonTimer(); // in case it's running
       },
 
       translate: function( translationParams ) {
+
+        // figure out where the expression would go if unbounded
         unboundedUpperLeftCornerPosition.setXY(
           unboundedUpperLeftCornerPosition.x + translationParams.delta.x,
           unboundedUpperLeftCornerPosition.y + translationParams.delta.y
         );
 
+        // set the expression position, but bound it so the user doesn't drag it outside of the usable area
         expression.setPositionAndDestination( new Vector2(
           Util.clamp( unboundedUpperLeftCornerPosition.x, dragBounds.minX, dragBounds.maxX - expression.width ),
           Util.clamp( unboundedUpperLeftCornerPosition.y, dragBounds.minY, dragBounds.maxY - expression.height )
         ) );
+
+        // update the drag distance and hide the button if the drag threshold is reached
+        dragDistance += translationParams.delta.magnitude();
+        if ( dragDistance > DRAG_DISTANCE_HIDE_THRESHOLD && breakApartButton.visible ){
+          hideBreakApartButton();
+        }
       },
 
       end: function() {
         expression.userControlled = false;
-        assert && assert( breakApartButton.visible, 'break apart button should be visible at end of drag' );
         assert && assert( hideButtonTimer === null, 'a timer for hiding the buttons was running at end of drag' );
-        hideButtonTimer = Timer.setTimeout( hideBreakApartButton, HIDE_BUTTON_TIMEOUT );
+        if ( breakApartButton.visible ){
+          startHideButtonTimer();
+        }
       }
 
     } );
