@@ -33,12 +33,12 @@ define( function( require ) {
      * @param {CoinTerm} coinTerm
      * @public
      */
-    containsCoinTerm: function( coinTerm ){
+    containsCoinTerm: function( coinTerm ) {
       return ( coinTerm === this.anchorCoinTerm || coinTerm === this.movingCoinTerm );
     },
 
     // @public
-    equals: function( otherExpressionHint ){
+    equals: function( otherExpressionHint ) {
       return ( otherExpressionHint.anchorCoinTerm === this.anchorCoinTerm &&
                otherExpressionHint.movingCoinTerm === this.movingCoinTerm &&
                otherExpressionHint.anchorOnLeft === this.anchorOnLeft

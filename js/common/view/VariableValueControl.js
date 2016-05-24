@@ -20,7 +20,7 @@ define( function( require ) {
     // create button that will be used to restore the default values
     var restoreDefaultsButton = new RefreshButton( {
       iconWidth: 20,
-      listener: function(){
+      listener: function() {
         xTermValueProperty.reset();
         yTermValueProperty.reset();
         zTermValueProperty.reset();
@@ -30,7 +30,7 @@ define( function( require ) {
     // update the enabled state of the 'restore default values' button
     Property.multilink(
       [ xTermValueProperty, yTermValueProperty, zTermValueProperty ],
-      function( xValue, yValue, zValue ){
+      function( xValue, yValue, zValue ) {
         restoreDefaultsButton.enabled = xValue !== xTermValueProperty.initialValue ||
                                         yValue !== yTermValueProperty.initialValue ||
                                         zValue !== zTermValueProperty.initialValue;

@@ -87,7 +87,7 @@ define( function( require ) {
     rootNode.addChild( coinValueText );
 
     // update the coin value text
-    coinTerm.valueProperty.link( function( coinValue ){
+    coinTerm.valueProperty.link( function( coinValue ) {
       coinValueText.text = coinValue;
       coinValueText.center = coinCenter;
     } );
@@ -447,15 +447,15 @@ define( function( require ) {
       this.pickable = false;
 
       // start the periodic timer that will cause the fade
-      var timerInterval = Timer.setInterval( function(){
+      var timerInterval = Timer.setInterval( function() {
         fadeOutCount++;
-        if ( fadeOutCount < NUM_FADE_STEPS ){
+        if ( fadeOutCount < NUM_FADE_STEPS ) {
           // reduce opacity
           self.opacity = 1 - fadeOutCount / NUM_FADE_STEPS;
         }
-        else{
+        else {
           // remove this node from the scene graph
-          self.getParents().forEach( function( parent){
+          self.getParents().forEach( function( parent ) {
             parent.removeChild( self );
           } );
 

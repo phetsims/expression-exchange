@@ -110,7 +110,7 @@ define( function( require ) {
 
     // add the control that allows the user to adjust the values of the variables
     var variableValuesAccordionBox = new AccordionBox(
-      new VariableValueControl( model.xTermValueProperty,  model.yTermValueProperty,  model.zTermValueProperty ),
+      new VariableValueControl( model.xTermValueProperty, model.yTermValueProperty, model.zTermValueProperty ),
       {
         titleNode: new Text( valuesString, { font: ACCORDION_BOX_TITLE_FONT } ),
         fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
@@ -295,7 +295,7 @@ define( function( require ) {
     var coinTermCreatorHolder;
     var coinTermHolderCenterX = this.layoutBounds.width / 2;
     var coinTermHolderBottom = this.layoutBounds.height - 50;
-    if ( coinTermCollection.length > 3 ){
+    if ( coinTermCollection.length > 3 ) {
       coinTermCreatorHolder = new Carousel( coinTermCollection, {
         centerX: coinTermHolderCenterX,
         bottom: coinTermHolderBottom,
@@ -303,7 +303,7 @@ define( function( require ) {
         spacing: 60 // empirically determined to handle worst case term test
       } );
     }
-    else{
+    else {
       // use a panel instead of a carousel
       // Many of the numbers in the following constructors were empirically determined to match the size of the
       // carousels on the other screens.
@@ -325,15 +325,17 @@ define( function( require ) {
       var coinImageNode = new Image( switchCoinImage, { scale: 0.6 } ); // scale empirically determined
 
       // enclose the variable text in a node so that its vertical position can be accurately set
-      var variableIconNode = new Node( { children: [
-        new VStrut( coinImageNode.bounds.height ),
-        new Text( EESharedConstants.X_VARIABLE_CHAR, {
-          font: new MathSymbolFont( 36 ),
-          boundsMethod: 'accurate',
-          centerX: 0,
-          centerY: coinImageNode.height / 2
-        } )
-      ] } );
+      var variableIconNode = new Node( {
+        children: [
+          new VStrut( coinImageNode.bounds.height ),
+          new Text( EESharedConstants.X_VARIABLE_CHAR, {
+            font: new MathSymbolFont( 36 ),
+            boundsMethod: 'accurate',
+            centerX: 0,
+            centerY: coinImageNode.height / 2
+          } )
+        ]
+      } );
 
       // add the switch
       this.addChild( new ABSwitch(
@@ -342,7 +344,11 @@ define( function( require ) {
         coinImageNode,
         ViewMode.VARIABLES,
         variableIconNode,
-        { switchSize: new Dimension2( 40, 20 ), top: coinTermCreatorHolder.bottom + 10, centerX: coinTermCreatorHolder.centerX }
+        {
+          switchSize: new Dimension2( 40, 20 ),
+          top: coinTermCreatorHolder.bottom + 10,
+          centerX: coinTermCreatorHolder.centerX
+        }
       ) );
     }
 
@@ -368,7 +374,7 @@ define( function( require ) {
         model.reset();
         myCollectionAccordionBox.expandedProperty.reset();
         totalValueAccordionBox.expandedProperty.reset();
-        if ( coinTermCreatorHolder.pageNumberProperty ){
+        if ( coinTermCreatorHolder.pageNumberProperty ) {
           coinTermCreatorHolder.pageNumberProperty.reset();
         }
         variableValuesAccordionBox.expandedProperty.value = false;
@@ -395,8 +401,7 @@ define( function( require ) {
       // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
       // from the model.
       addedCoinTerm.userControlledProperty.onValue( false, function() {
-        if ( coinTermNode.bounds.intersectsBounds( coinTermCreatorHolder.bounds ) &&
-             !model.isCoinTermInExpression( addedCoinTerm ) ) {
+        if ( coinTermNode.bounds.intersectsBounds( coinTermCreatorHolder.bounds ) && !model.isCoinTermInExpression( addedCoinTerm ) ) {
           model.removeCoinTerm( addedCoinTerm, true );
         }
       } );

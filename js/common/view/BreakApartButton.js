@@ -36,10 +36,10 @@ define( function( require ) {
 
     // add a listener that will prevent events from bubbling to the parent
     this.addInputListener( {
-      down: function( event ){
+      down: function( event ) {
         event.handle();
       },
-      up: function( event ){
+      up: function( event ) {
         event.handle();
       }
     } );

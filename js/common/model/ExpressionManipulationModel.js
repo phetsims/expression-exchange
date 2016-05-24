@@ -306,7 +306,7 @@ define( function( require ) {
         // update overlap info with respect to free coin terms
         var mostOverlappingCoinTerm = self.getFreeCoinTermMostOverlappingWithExpression( userControlledExpression );
         userControlledExpression.clearHoveringCoinTerms();
-        if ( mostOverlappingCoinTerm ){
+        if ( mostOverlappingCoinTerm ) {
 
           // there can only be one most overlapping coin terms, so out with the old, in with the new
           userControlledExpression.addHoveringCoinTerm( mostOverlappingCoinTerm );
@@ -473,9 +473,8 @@ define( function( require ) {
       var self = this;
       var maxOverlap = 0;
       var mostOverlappingFreeCoinTerm = null;
-      this.coinTerms.forEach( function( coinTerm ){
-        if ( !coinTerm.userControlled &&
-             !self.isCoinTermInExpression( coinTerm ) &&
+      this.coinTerms.forEach( function( coinTerm ) {
+        if ( !coinTerm.userControlled && !self.isCoinTermInExpression( coinTerm ) &&
              expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
           maxOverlap = expression.getCoinTermJoinZoneOverlap( coinTerm );
           mostOverlappingFreeCoinTerm = coinTerm;

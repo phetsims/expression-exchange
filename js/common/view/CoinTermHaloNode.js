@@ -44,7 +44,7 @@ define( function( require ) {
 
     // control coin halo visibility
     var coinHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
-      function( viewMode, combineHaloActive ){
+      function( viewMode, combineHaloActive ) {
         return ( viewMode === ViewMode.COINS ) && combineHaloActive;
       } );
     coinHaloVisibleProperty.linkAttribute( coinHalo, 'visible' );
@@ -52,15 +52,15 @@ define( function( require ) {
     // add the term halo
     var termHalo = new Circle( EESharedConstants.TERM_COMBINE_DISTANCE, {
       fill: new RadialGradient( 0, 0, 0, 0, 0, EESharedConstants.TERM_COMBINE_DISTANCE ).
-        addColorStop( 0, TERM_HALO_COLOR_CENTER ).
-        addColorStop( 0.5, TERM_HALO_COLOR_CENTER ).
-        addColorStop( 1, TERM_HALO_EDGE_COLOR )
+      addColorStop( 0, TERM_HALO_COLOR_CENTER ).
+      addColorStop( 0.5, TERM_HALO_COLOR_CENTER ).
+      addColorStop( 1, TERM_HALO_EDGE_COLOR )
     } );
     this.addChild( termHalo );
 
     // control term halo visibility
     var termHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
-      function( viewMode, combineHaloActive ){
+      function( viewMode, combineHaloActive ) {
         return ( viewMode === ViewMode.VARIABLES ) && combineHaloActive;
       } );
     termHaloVisibleProperty.linkAttribute( termHalo, 'visible' );

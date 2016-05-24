@@ -67,13 +67,13 @@ define( function( require ) {
     } );
     this.addChild( breakApartButton );
 
-    function showBreakApartButton( xLocation ){
+    function showBreakApartButton( xLocation ) {
       breakApartButton.visible = true;
       breakApartButton.centerX = xLocation;
       breakApartButton.bottom = -2;
     }
 
-    function hideBreakApartButton(){
+    function hideBreakApartButton() {
       breakApartButton.visible = false;
 
       // put it in a place where it doesn't affect the overall bounds
@@ -112,7 +112,7 @@ define( function( require ) {
     } );
 
     // add the listener that will initiate the break apart, and will also hide the button and cancel the timer
-    breakApartButton.addListener( function(){
+    breakApartButton.addListener( function() {
       expression.breakApart();
       hideBreakApartButton();
       clearHideButtonTimer();
@@ -156,7 +156,7 @@ define( function( require ) {
 
         // update the drag distance and hide the button if the drag threshold is reached
         dragDistance += translationParams.delta.magnitude();
-        if ( dragDistance > DRAG_DISTANCE_HIDE_THRESHOLD && breakApartButton.visible ){
+        if ( dragDistance > DRAG_DISTANCE_HIDE_THRESHOLD && breakApartButton.visible ) {
           hideBreakApartButton();
         }
       },
@@ -164,7 +164,7 @@ define( function( require ) {
       end: function() {
         expression.userControlled = false;
         assert && assert( hideButtonTimer === null, 'a timer for hiding the buttons was running at end of drag' );
-        if ( breakApartButton.visible ){
+        if ( breakApartButton.visible ) {
           startHideButtonTimer();
         }
       }

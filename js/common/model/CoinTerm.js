@@ -73,8 +73,8 @@ define( function( require ) {
     this.initialPosition = options.initialPosition;
 
     // monitor position, emit returned to origin event when appropriate
-    this.positionProperty.lazyLink( function( position ){
-      if ( position.equals( self.initialPosition ) && !this.userControlled ){
+    this.positionProperty.lazyLink( function( position ) {
+      if ( position.equals( self.initialPosition ) && !this.userControlled ) {
         self.returnedToOriginEmitter.emit();
       }
     } );
@@ -88,11 +88,11 @@ define( function( require ) {
      * move to the specified destination, but do so a step at a time rather than all at once
      * @param {Vector2} destination
      */
-    travelToDestination: function( destination ){
+    travelToDestination: function( destination ) {
       var self = this;
       this.destination = destination;
       var movementTime = self.position.distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
-      if ( this.inProgressAnimation ){
+      if ( this.inProgressAnimation ) {
         // an animation was in progress - cancel it and start a new one
         this.inProgressAnimation.stop();
         this.inProgressAnimation = null;
@@ -103,14 +103,14 @@ define( function( require ) {
         .onUpdate( function() {
           self.position = new Vector2( this.x, this.y );
         } )
-        .onComplete( function(){
+        .onComplete( function() {
           self.destinationReachedEmitter.emit();
           self.inProgressAnimation = null;
         } )
         .start();
     },
 
-    returnToOrigin: function(){
+    returnToOrigin: function() {
       this.travelToDestination( this.initialPosition );
     },
 
@@ -119,7 +119,7 @@ define( function( require ) {
      * @param position
      * @public
      */
-    setPositionAndDestination: function( position ){
+    setPositionAndDestination: function( position ) {
       this.position = position;
       this.destination = position;
     },
@@ -128,8 +128,8 @@ define( function( require ) {
      * make the coin term cancel any in progress animation and go immediately to the current destination
      * @public
      */
-    goImmediatelyToDestination: function(){
-      if ( this.inProgressAnimation ){
+    goImmediatelyToDestination: function() {
+      if ( this.inProgressAnimation ) {
         // TODO: replace .stop with .cancel once TWEEN is upgraded
         this.inProgressAnimation.stop();
         this.inProgressAnimation = null;
@@ -141,8 +141,8 @@ define( function( require ) {
      * initiate a break apart, which just emits an event and counts on parent model to handle
      * @public
      */
-    breakApart: function(){
-      assert && assert( Math.abs( this.combinedCount ) >  1, 'coin term can\'t be broken apart' );
+    breakApart: function() {
+      assert && assert( Math.abs( this.combinedCount ) > 1, 'coin term can\'t be broken apart' );
       this.breakApartEmitter.emit();
     },
 
@@ -152,7 +152,7 @@ define( function( require ) {
      * @returns {CoinTerm}
      * @public
      */
-    cloneMostly: function(){
+    cloneMostly: function() {
       var clone = new CoinTerm(
         this.valueProperty,
         this.coinDiameter,
@@ -169,7 +169,7 @@ define( function( require ) {
      * @param {CoinTerm} coinTerm
      * @returns {boolean}
      */
-    canCombineWith: function( coinTerm ){
+    canCombineWith: function( coinTerm ) {
       return !( coinTerm === this ) && this.typeID === coinTerm.typeID;
     },
 
@@ -177,7 +177,7 @@ define( function( require ) {
      * return the bounds of this model elements representation in the view
      * @public
      */
-    getViewBounds: function(){
+    getViewBounds: function() {
       return new Bounds2(
         this.position.x + this.relativeViewBounds.minX,
         this.position.y + this.relativeViewBounds.minY,

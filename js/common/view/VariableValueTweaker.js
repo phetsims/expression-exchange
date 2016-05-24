@@ -46,7 +46,7 @@ define( function( require ) {
     var rightArrowButton = new ArrowButton( 'right', function() { variableValueProperty.value++; }, arrowButtonOptions );
 
     // set the enabled states of the arrow buttons
-    variableValueProperty.link( function( variableValue ){
+    variableValueProperty.link( function( variableValue ) {
       leftArrowButton.enabled = variableValue > MIN_VALUE;
       rightArrowButton.enabled = variableValue < MAX_VALUE;
     } );

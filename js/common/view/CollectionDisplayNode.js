@@ -48,7 +48,7 @@ define( function( require ) {
 
     // add the arrays of icon nodes to the map
     var bottomOfPreviousRow;
-    COIN_TERM_TYPE_IDS.forEach( function( coinTermTypeID ){
+    COIN_TERM_TYPE_IDS.forEach( function( coinTermTypeID ) {
 
       // add the array that will maintain references to the icon nodes
       iconMap[ coinTermTypeID ] = [];
@@ -61,13 +61,13 @@ define( function( require ) {
         model.showVariableValuesProperty
       );
 
-      if ( !bottomOfPreviousRow ){
+      if ( !bottomOfPreviousRow ) {
         bottomOfPreviousRow = COIN_CENTER_INSET - coinTermIcon.height / 2;
       }
 
       // wrap the icon in separate nodes so that it can appear in multiple places
-      for ( var i = 0; i < MAX_COINS_TERMS_PER_TYPE / MAX_COIN_TERMS_PER_ROW; i++ ){
-        for ( var j = 0; j < MAX_COIN_TERMS_PER_ROW; j++ ){
+      for ( var i = 0; i < MAX_COINS_TERMS_PER_TYPE / MAX_COIN_TERMS_PER_ROW; i++ ) {
+        for ( var j = 0; j < MAX_COIN_TERMS_PER_ROW; j++ ) {
           var wrappedIconNode = new Node( {
             children: [ coinTermIcon ],
             centerX: COIN_CENTER_INSET + j * INTER_COIN_H_SPACING,
@@ -82,10 +82,10 @@ define( function( require ) {
 
 
     // define a function that will update the visibility of the icons based on the number of corresponding coin types
-    function updateIconVisibility(){
-      COIN_TERM_TYPE_IDS.forEach( function( coinTermTypeID ){
-        var count =  model.getCoinTermCount( coinTermTypeID );
-        for ( var i = 0; i < MAX_COINS_TERMS_PER_TYPE; i++ ){
+    function updateIconVisibility() {
+      COIN_TERM_TYPE_IDS.forEach( function( coinTermTypeID ) {
+        var count = model.getCoinTermCount( coinTermTypeID );
+        for ( var i = 0; i < MAX_COINS_TERMS_PER_TYPE; i++ ) {
           iconMap[ coinTermTypeID ][ i ].visible = i < count;
         }
       } );

@@ -125,7 +125,7 @@ define( function( require ) {
         createdCoinTerm.setPositionAndDestination( new Vector2(
           Util.clamp( unboundedPosition.x, options.dragBounds.minX, options.dragBounds.maxX ),
           Util.clamp( unboundedPosition.y, options.dragBounds.minY, options.dragBounds.maxY )
-        )  );
+        ) );
       },
 
       end: function( event, trail ) {

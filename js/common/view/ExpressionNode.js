@@ -112,7 +112,7 @@ define( function( require ) {
         }
 
         backgroundShape.close();
-        if ( !backgroundPath.visible ){
+        if ( !backgroundPath.visible ) {
           backgroundPath.visible = true;
         }
         backgroundPath.shape = null;
@@ -158,7 +158,7 @@ define( function( require ) {
     expression.rightHintActiveProperty.linkAttribute( rightHintNode, 'visible' );
 
     // turn the halo on and off based on the associated property
-    expression.combineHaloActiveProperty.link( function( combineHintActive ){
+    expression.combineHaloActiveProperty.link( function( combineHintActive ) {
       backgroundPath.stroke = combineHintActive ? 'yellow' : null;
     } );
 

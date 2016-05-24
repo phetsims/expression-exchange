@@ -32,7 +32,7 @@ define( function( require ) {
     var segmentYLength = ( y2 - y1 ) / NUM_ZIG_ZAGS;
     _.times( NUM_ZIG_ZAGS - 1, function( index ) {
       var zig = index % 2 === 0 ? ZIG_ZAG_X_SIZE : -ZIG_ZAG_X_SIZE;
-      if ( !zigRightFirst ){
+      if ( !zigRightFirst ) {
         zig = -zig;
       }
       shape.lineTo( x1 + zig, y1 + ( index + 1 ) * segmentYLength );
@@ -81,8 +81,8 @@ define( function( require ) {
           rightHalfWidth = anchorCTBounds.width + 2 * INSET;
           leftHalfCenterX = expressionHint.anchorCoinTerm.position.x +
                             ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2 -
-                            anchorCTBounds.width / 2 -INSET -
-                            movingCTBounds.width / 2 - INSET;
+                            anchorCTBounds.width / 2                          - INSET -
+                            movingCTBounds.width / 2                          -                        INSET;
         }
 
         var leftHalfShape = new Shape()
