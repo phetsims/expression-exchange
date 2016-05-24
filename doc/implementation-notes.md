@@ -20,3 +20,9 @@ hints activated.  This means that the main model has to compare them and decide 
 this decision must be centralized in the main model rather than leaving it to the coin terms or expressions.
 
 Term: "join zone".
+
+The interactions between coin terms and expressions gets fairly complicated, which results in a fair amount of code to
+enforce the behavioral rules, update the various visual cues that indicate what will combine with what when released.
+Some of this code had to be hooked to properties, while some of it was implemented in step functions.  The interactions
+can be complicated, so it will be important to have a good understanding of such interactions if some of these
+behavioral rules need to be changed or fixed.
