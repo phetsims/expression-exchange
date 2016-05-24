@@ -77,7 +77,7 @@ define( function( require ) {
 
     // Define a listener that is bound to this object that will set the resize needed flag when fired.  This is done
     // in this way so that the listener can be found and removed when the coin term is removed from this expression.
-    this.setResizeFlagFunction = function(){ self.resizeNeeded = true; }; // @private
+    this.setResizeFlagFunction = function() { self.resizeNeeded = true; }; // @private
 
     // hook up the resize listener to the anchor coin
     anchorCoinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
@@ -113,9 +113,9 @@ define( function( require ) {
     this.addCoinTerm( floatingCoinTerm );
 
     // add a listener that will immediately finish animations for incoming coin terms if the expression is grabbed
-    this.userControlledProperty.onValue( true, function(){
-      self.coinTerms.forEach( function( coinTerm ){
-        if ( coinTerm.inProgressAnimation ){
+    this.userControlledProperty.onValue( true, function() {
+      self.coinTerms.forEach( function( coinTerm ) {
+        if ( coinTerm.inProgressAnimation ) {
           coinTerm.goImmediatelyToDestination();
         }
       } );
@@ -281,11 +281,11 @@ define( function( require ) {
       }
 
       var destination = new Vector2( xDestination, this.upperLeftCorner.y + this.height / 2 );
-      if ( !this.userControlled ){
+      if ( !this.userControlled ) {
         // animate to the new location
         coinTerm.travelToDestination( destination );
       }
-      else{
+      else {
         // if this expression is being moved by the user, don't animate - it won't end well
         coinTerm.setPositionAndDestination( destination );
       }
@@ -304,7 +304,7 @@ define( function( require ) {
      *
      * @param coinTerm
      */
-    containsCoinTerm: function( coinTerm ){
+    containsCoinTerm: function( coinTerm ) {
       return this.coinTerms.contains( coinTerm );
     },
 
@@ -312,7 +312,7 @@ define( function( require ) {
      * remove all coin terms
      * @return a simple array with all coin terms, sorted in left-to-right order
      */
-    removeAllCoinTerms: function(){
+    removeAllCoinTerms: function() {
 
       var self = this;
 
@@ -322,7 +322,7 @@ define( function( require ) {
       } );
 
       // remove them from this expression
-      coinTermsLeftToRight.forEach( function( coinTerm ){
+      coinTermsLeftToRight.forEach( function( coinTerm ) {
         self.removeCoinTerm( coinTerm );
       } );
 
@@ -346,9 +346,6 @@ define( function( require ) {
 
       // move the outline shape
       this.upperLeftCorner = this.upperLeftCorner.plusXY( deltaX, deltaY );
-
-      // update the join zone
-      this.joinZone.shift( deltaX, deltaY );
     },
 
     /**
@@ -380,7 +377,7 @@ define( function( require ) {
      * @param {Vector2} upperLeftCornerDestination
      * @public
      */
-    setPositionAndDestination: function( upperLeftCornerDestination ){
+    setPositionAndDestination: function( upperLeftCornerDestination ) {
       this.translate(
         upperLeftCornerDestination.x - this.upperLeftCorner.x,
         upperLeftCornerDestination.y - this.upperLeftCorner.y
@@ -391,7 +388,7 @@ define( function( require ) {
      * initiate a break apart, which just emits an event and counts on parent model to handle
      * @public
      */
-    breakApart: function(){
+    breakApart: function() {
       this.breakApartEmitter.emit();
     },
 
@@ -400,8 +397,7 @@ define( function( require ) {
      * @param {CoinTerm} coinTerm
      */
     getCoinTermJoinZoneOverlap: function( coinTerm ) {
-      var coinTermBounds = coinTerm.relativeViewBounds.copy();
-      coinTermBounds.shift( coinTerm.position.x, coinTerm.position.y );
+      var coinTermBounds = coinTerm.getViewBounds();
       var xOverlap = Math.max(
         0,
         Math.min( coinTermBounds.maxX, this.joinZone.maxX ) - Math.max( coinTermBounds.minX, this.joinZone.minX )
@@ -455,6 +451,19 @@ define( function( require ) {
       if ( index !== -1 ) {
         this.hoveringCoinTerms.splice( index, 1 );
       }
+    },
+
+    /**
+     * TODO: doc once finalized
+     * @param coinTerm
+     * @returns {boolean}
+     */
+    isHoveringCoinTerm: function( coinTerm ) {
+      return this.hoveringCoinTerms.indexOf( coinTerm ) > -1;
+    },
+
+    clearHoveringCoinTerms: function() {
+      this.hoveringCoinTerms.length = 0;
     },
 
     /**

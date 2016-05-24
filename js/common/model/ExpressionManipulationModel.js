@@ -88,8 +88,8 @@ define( function( require ) {
     }
 
     // add a listener that resets the coin term values when the view mode switches from variables to coins
-    this.viewModeProperty.link( function( newViewMode, oldViewMode ){
-      if ( newViewMode === ViewMode.COINS && oldViewMode === ViewMode.VARIABLES ){
+    this.viewModeProperty.link( function( newViewMode, oldViewMode ) {
+      if ( newViewMode === ViewMode.COINS && oldViewMode === ViewMode.VARIABLES ) {
         self.xTermValueProperty.reset();
         self.yTermValueProperty.reset();
         self.zTermValueProperty.reset();
@@ -147,6 +147,7 @@ define( function( require ) {
           }
         }
       }
+
       addedCoinTerm.userControlledProperty.lazyLink( coinTermUserControlledListener );
 
       // add a listener that will handle breaking apart the coin if necessary
@@ -178,10 +179,11 @@ define( function( require ) {
           }
         } );
       }
+
       addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListener );
 
       // add a listener that will update the total value of the coin terms when this one's value changes
-      addedCoinTerm.valueProperty.link( function(){
+      addedCoinTerm.valueProperty.link( function() {
         updateTotal();
       } );
 
@@ -189,19 +191,21 @@ define( function( require ) {
       function coinTermReturnedToOriginListener() {
         self.removeCoinTerm( addedCoinTerm, false );
       }
+
       addedCoinTerm.returnedToOriginEmitter.addListener( coinTermReturnedToOriginListener );
 
       // add a listener that will remove this coin if its combined count goes to zero
       function coinTermCombinedCountListener( combinedCount ) {
-        if ( combinedCount === 0 ){
+        if ( combinedCount === 0 ) {
           self.removeCoinTerm( addedCoinTerm, false );
         }
       }
+
       addedCoinTerm.combinedCountProperty.link( coinTermCombinedCountListener );
 
       // clean up the listeners added above if and when this coin term is removed from the model
-      self.coinTerms.addItemRemovedListener( function coinTermRemovalListener( removedCoinTerm ){
-        if ( removedCoinTerm === addedCoinTerm ){
+      self.coinTerms.addItemRemovedListener( function coinTermRemovalListener( removedCoinTerm ) {
+        if ( removedCoinTerm === addedCoinTerm ) {
           addedCoinTerm.userControlledProperty.unlink( coinTermUserControlledListener );
           addedCoinTerm.breakApartEmitter.removeListener( coinTermBreakApartListener );
           addedCoinTerm.returnedToOriginEmitter.removeListener( coinTermReturnedToOriginListener );
@@ -253,7 +257,7 @@ define( function( require ) {
       addedExpression.userControlledProperty.lazyLink( expressionUserControlledListener );
 
       // add a listener to break apart this expression if necessary
-      function breakApartExpressionListener(){
+      function breakApartExpressionListener() {
         addedExpression.removeAllCoinTerms();
         self.expressions.remove( addedExpression );
       }
@@ -261,8 +265,8 @@ define( function( require ) {
       addedExpression.breakApartEmitter.addListener( breakApartExpressionListener );
 
       // remove the listeners when this expression is removed
-      self.expressions.addItemRemovedListener( function( removedExpression ){
-        if ( removedExpression === addedExpression ){
+      self.expressions.addItemRemovedListener( function( removedExpression ) {
+        if ( removedExpression === addedExpression ) {
           addedExpression.userControlledProperty.unlink( expressionUserControlledListener );
           addedExpression.breakApartEmitter.removeListener( breakApartExpressionListener );
         }
@@ -298,6 +302,15 @@ define( function( require ) {
             expression.removeHoveringExpression( userControlledExpression );
           }
         } );
+
+        // update overlap info with respect to free coin terms
+        var mostOverlappingCoinTerm = self.getFreeCoinTermMostOverlappingWithExpression( userControlledExpression );
+        userControlledExpression.clearHoveringCoinTerms();
+        if ( mostOverlappingCoinTerm ){
+
+          // there can only be one most overlapping coin terms, so out with the old, in with the new
+          userControlledExpression.addHoveringCoinTerm( mostOverlappingCoinTerm );
+        }
       } );
 
       // get a list of all user controlled coins, max of one coin on mouse-based systems, any number on touch devices
@@ -450,6 +463,28 @@ define( function( require ) {
     },
 
     /**
+     * get the free coin term (i.e. one that is not in an expression) that overlaps the most with the provided
+     * expression, null if no overlapping coin terms exist
+     * @param {Expression} expression
+     * @return {CoinTerm}
+     * @private
+     */
+    getFreeCoinTermMostOverlappingWithExpression: function( expression ) {
+      var self = this;
+      var maxOverlap = 0;
+      var mostOverlappingFreeCoinTerm = null;
+      this.coinTerms.forEach( function( coinTerm ){
+        if ( !coinTerm.userControlled &&
+             !self.isCoinTermInExpression( coinTerm ) &&
+             expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
+          maxOverlap = expression.getCoinTermJoinZoneOverlap( coinTerm );
+          mostOverlappingFreeCoinTerm = coinTerm;
+        }
+      } );
+      return mostOverlappingFreeCoinTerm;
+    },
+
+    /**
      * get the expression that overlaps the most with the provided expression, null if no overlap exists, user
      * controlled expressions are excluded
      * @param {Expression} expression
@@ -540,10 +575,10 @@ define( function( require ) {
      * get the number of the specified coin term type currently in the model
      * @param {CoinTermTypeID} typeID
      */
-    getCoinTermCount: function( typeID ){
+    getCoinTermCount: function( typeID ) {
       var count = 0;
-      this.coinTerms.forEach( function( coinTerm ){
-        if ( typeID === coinTerm.typeID ){
+      this.coinTerms.forEach( function( coinTerm ) {
+        if ( typeID === coinTerm.typeID ) {
           count += coinTerm.combinedCount;
         }
       } );
