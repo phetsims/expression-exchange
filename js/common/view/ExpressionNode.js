@@ -71,7 +71,7 @@ define( function( require ) {
     var leftHintNode = new Path( leftHintShape, { fill: BACKGROUND_COLOR } );
     this.addChild( leftHintNode );
     var rightHintShape = DEFAULT_SHAPE;
-    var rightHintNode = new Path( leftHintShape, { fill: BACKGROUND_COLOR } );
+    var rightHintNode = new Path( rightHintShape, { fill: BACKGROUND_COLOR } );
     this.addChild( rightHintNode );
 
     // layer where the plus symbols go

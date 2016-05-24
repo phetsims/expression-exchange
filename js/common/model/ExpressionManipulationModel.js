@@ -251,6 +251,51 @@ define( function( require ) {
               // TODO: need to do that at some point.
             } );
           }
+          else {
+
+            // check for free coin terms that overlap with this expression and thus should be combined with it
+            var numOverlappingCoinTerms = addedExpression.hoveringCoinTerms.length;
+
+            assert && assert(
+              numOverlappingCoinTerms === 0 || numOverlappingCoinTerms === 1,
+              'max of one overlapping free coin term when expression is released, seeing ' + numOverlappingCoinTerms
+            );
+
+            if ( numOverlappingCoinTerms === 1 ) {
+              var coinTermToAddToExpression = addedExpression.hoveringCoinTerms[ 0 ];
+              if ( addedExpression.rightHintActive ) {
+
+                // move to the left side of the coin term
+                addedExpression.travelToDestination(
+                  coinTermToAddToExpression.position.plusXY(
+                    -addedExpression.width - addedExpression.rightHintWidth / 2,
+                    -addedExpression.height / 2
+                  )
+                );
+              }
+              else {
+
+                assert && assert(
+                  addedExpression.leftHintActive,
+                  'at least one hint should be active if there is a hovering coin term'
+                );
+
+                // move to the right side of the coin term
+                addedExpression.travelToDestination(
+                  coinTermToAddToExpression.position.plusXY(
+                    addedExpression.leftHintWidth / 2,
+                    -addedExpression.height / 2
+                  )
+                );
+              }
+
+              addedExpression.destinationReachedEmitter.addListener( function addCoinTermAfterAnimation() {
+                addedExpression.addCoinTerm( coinTermToAddToExpression );
+                addedExpression.destinationReachedEmitter.removeListener( addCoinTermAfterAnimation );
+              } );
+
+            }
+          }
         }
       }
 
