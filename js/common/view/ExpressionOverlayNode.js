@@ -23,7 +23,6 @@ define( function( require ) {
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
-  var HIDE_BUTTON_TIMEOUT = 1500; // in milliseconds
   var DRAG_DISTANCE_HIDE_THRESHOLD = 10; // in screen coords, determined empirically
 
   /**

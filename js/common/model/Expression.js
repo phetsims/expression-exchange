@@ -261,8 +261,11 @@ define( function( require ) {
     addCoinTerm: function( coinTerm ) {
       if ( this.isCoinTermHovering( coinTerm ) ) {
         this.removeHoveringCoinTerm( coinTerm );
+        if ( this.hoveringCoinTerms.length === 0 ) {
+          this.rightHintActive = false;
+          this.leftHintActive = false;
+        }
       }
-      this.coinTerms.push( coinTerm );
 
       // adjust the expression's width to accommodate the new coin term
       var originalWidth = this.width;
@@ -289,6 +292,9 @@ define( function( require ) {
         // if this expression is being moved by the user, don't animate - it won't end well
         coinTerm.setPositionAndDestination( destination );
       }
+
+      // add the coin term
+      this.coinTerms.push( coinTerm );
 
       // add a listener to resize the expression if this coin term's bound changes
       coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );

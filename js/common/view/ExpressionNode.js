@@ -30,6 +30,7 @@ define( function( require ) {
   var HINT_OFFSET = 3; // in screen coordinates, empirically determined
   var LEFT_HINT_TRANSLATION = Matrix3.translation( -HINT_OFFSET, 0 );
   var RIGHT_HINT_TRANSLATION = Matrix3.translation( HINT_OFFSET, 0 );
+  var PLUS_SIGN_FONT = new PhetFont( 32 );
 
   // TODO: Need to consolidate this with duplicated function in ExpressionHintNode if that node is retained
   // utility function for drawing a vertical zig zag line on a shape between two endpoints
@@ -121,11 +122,11 @@ define( function( require ) {
         // add the plus symbols
         for ( var i = 0; i < coinTermsLeftToRight.length - 1; i++ ) {
           var plusSign = new Text( '+', {
-            font: new PhetFont( 32 ),
+            font: PLUS_SIGN_FONT,
             centerX: ( coinTermsLeftToRight[ i ].destination.x + coinTermsLeftToRight[ i ].relativeViewBounds.maxX +
                        coinTermsLeftToRight[ i + 1 ].destination.x +
                        coinTermsLeftToRight[ i + 1 ].relativeViewBounds.minX ) / 2 - expression.upperLeftCorner.x,
-            centerY: coinTermsLeftToRight[ i ].destination.y - expression.upperLeftCorner.y
+            centerY: expression.height / 2
           } );
           plusSymbolsLayer.addChild( plusSign );
         }
