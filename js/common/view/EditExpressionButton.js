@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * button used for breaking things apart
+ * button used for putting expressions into edit mode
  */
 define( function( require ) {
   'use strict';
@@ -13,23 +13,20 @@ define( function( require ) {
   var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
 
   // images
-  var breakApartIconImage = require( 'image!EXPRESSION_EXCHANGE/break-apart-icon.png' );
-
-  // constants
-  var MARGIN = 3.5;
+  var editExpressionIcon = require( 'image!EXPRESSION_EXCHANGE/edit-icon.png' );
 
   /**
    * @constructor
    */
-  function BreakApartButton( options ) {
+  function EditExpressionButton( options ) {
 
     options = options || {};
 
     // the following options can't be overridden
-    options.content = new Image( breakApartIconImage, { scale: 0.35 } ); // scale empirically determined
-    options.xMargin = MARGIN;
-    options.yMargin = MARGIN;
-    options.baseColor = 'yellow';
+    options.content = new Image( editExpressionIcon, { scale: 0.3 } ); // scale empirically determined
+    options.xMargin = 3; // empirically determined
+    options.yMargin = 4; // empirically determined
+    options.baseColor = 'white';
     options.cursor = 'pointer';
 
     RectangularPushButton.call( this, options );
@@ -45,7 +42,7 @@ define( function( require ) {
     } );
   }
 
-  expressionExchange.register( 'BreakApartButton', BreakApartButton );
+  expressionExchange.register( 'EditExpressionButton', EditExpressionButton );
 
-  return inherit( RectangularPushButton, BreakApartButton );
+  return inherit( RectangularPushButton, EditExpressionButton );
 } );

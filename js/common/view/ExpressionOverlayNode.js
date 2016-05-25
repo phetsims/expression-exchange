@@ -11,6 +11,7 @@ define( function( require ) {
 
   // modules
   var BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
+  var EditExpressionButton = require( 'EXPRESSION_EXCHANGE/common/view/EditExpressionButton' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
@@ -60,61 +61,67 @@ define( function( require ) {
       self.y = upperLeftCorner.y;
     } );
 
-    // add the button used to break apart the expression
-    var breakApartButton = new BreakApartButton( {
-      visible: false
-    } );
-    this.addChild( breakApartButton );
+    // add the parent node that will contain the pop-up buttons
+    var popUpButtonsNode = new Node( { visible: false } );
+    this.addChild( popUpButtonsNode );
 
-    function showBreakApartButton( xLocation ) {
-      breakApartButton.visible = true;
-      breakApartButton.centerX = xLocation;
-      breakApartButton.bottom = -2;
+    // add the button used to break apart the expression
+    var breakApartButton = new BreakApartButton();
+    popUpButtonsNode.addChild( breakApartButton );
+
+    // add the button used to put the expression into edit mode
+    var editExpressionButton = new EditExpressionButton( { left: breakApartButton.right + 5 } );
+    popUpButtonsNode.addChild( editExpressionButton );
+
+    function showPopUpButtons( xLocation ) {
+      popUpButtonsNode.visible = true;
+      popUpButtonsNode.centerX = xLocation;
+      popUpButtonsNode.bottom = -2;
     }
 
-    function hideBreakApartButton() {
-      breakApartButton.visible = false;
+    function hidePopUpButtons() {
+      popUpButtonsNode.visible = false;
 
-      // put it in a place where it doesn't affect the overall bounds
-      breakApartButton.x = 0;
-      breakApartButton.y = 0;
+      // put the pop up buttons in a place where they don't affect the overall bounds
+      popUpButtonsNode.x = 0;
+      popUpButtonsNode.y = 0;
     }
 
     // timer used to hide the button
-    var hideButtonTimer = null;
+    var hideButtonsTimer = null;
 
     // define helper functions for managing the button timer
-    function clearHideButtonTimer() {
-      if ( hideButtonTimer ) {
-        Timer.clearTimeout( hideButtonTimer );
-        hideButtonTimer = null;
+    function clearHideButtonsTimer() {
+      if ( hideButtonsTimer ) {
+        Timer.clearTimeout( hideButtonsTimer );
+        hideButtonsTimer = null;
       }
     }
 
-    function startHideButtonTimer() {
-      clearHideButtonTimer(); // just in case one is already running
-      hideButtonTimer = Timer.setTimeout( function() {
-        hideBreakApartButton();
-        hideButtonTimer = null;
+    function startHideButtonsTimer() {
+      clearHideButtonsTimer(); // just in case one is already running
+      hideButtonsTimer = Timer.setTimeout( function() {
+        hidePopUpButtons();
+        hideButtonsTimer = null;
       }, 2000 );
     }
 
     // keep the button showing if the user is over it
     breakApartButton.buttonModel.overProperty.lazyLink( function( overButton ) {
       if ( overButton ) {
-        assert && assert( !!hideButtonTimer, 'should not be over button without hide timer running' );
-        clearHideButtonTimer();
+        assert && assert( !!hideButtonsTimer, 'should not be over button without hide timer running' );
+        clearHideButtonsTimer();
       }
       else {
-        startHideButtonTimer();
+        startHideButtonsTimer();
       }
     } );
 
     // add the listener that will initiate the break apart, and will also hide the button and cancel the timer
     breakApartButton.addListener( function() {
       expression.breakApart();
-      hideBreakApartButton();
-      clearHideButtonTimer();
+      hidePopUpButtons();
+      clearHideButtonsTimer();
     } );
 
     // pre-allocated vectors, used for calculating allowable locations for the expression
@@ -135,8 +142,8 @@ define( function( require ) {
         dragDistance = 0;
         unboundedUpperLeftCornerPosition.set( expression.upperLeftCorner );
         boundedUpperLeftCornerPosition.set( unboundedUpperLeftCornerPosition );
-        showBreakApartButton( self.globalToLocalPoint( event.pointer.point ).x );
-        clearHideButtonTimer(); // in case it's running
+        showPopUpButtons( self.globalToLocalPoint( event.pointer.point ).x );
+        clearHideButtonsTimer(); // in case it's running
       },
 
       translate: function( translationParams ) {
@@ -156,15 +163,15 @@ define( function( require ) {
         // update the drag distance and hide the button if the drag threshold is reached
         dragDistance += translationParams.delta.magnitude();
         if ( dragDistance > DRAG_DISTANCE_HIDE_THRESHOLD && breakApartButton.visible ) {
-          hideBreakApartButton();
+          hidePopUpButtons();
         }
       },
 
       end: function() {
         expression.userControlled = false;
-        assert && assert( hideButtonTimer === null, 'a timer for hiding the buttons was running at end of drag' );
+        assert && assert( hideButtonsTimer === null, 'a timer for hiding the buttons was running at end of drag' );
         if ( breakApartButton.visible ) {
-          startHideButtonTimer();
+          startHideButtonsTimer();
         }
       }
 
