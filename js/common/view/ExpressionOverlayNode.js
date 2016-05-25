@@ -106,20 +106,27 @@ define( function( require ) {
       }, 2000 );
     }
 
-    // keep the button showing if the user is over it
-    breakApartButton.buttonModel.overProperty.lazyLink( function( overButton ) {
-      if ( overButton ) {
-        assert && assert( !!hideButtonsTimer, 'should not be over button without hide timer running' );
+    // add a listener to the pop up button node to prevent it from disappearing if the user is hovering over it
+    popUpButtonsNode.addInputListener( {
+      enter: function() {
+        assert && assert( hideButtonsTimer !== null, 'hide button timer should be running if pop up buttons are visible' );
         clearHideButtonsTimer();
-      }
-      else {
+      },
+      exit: function() {
         startHideButtonsTimer();
       }
     } );
 
-    // add the listener that will initiate the break apart, and will also hide the button and cancel the timer
+    // add the listener that will initiate the break apart, and will also hide the buttons
     breakApartButton.addListener( function() {
       expression.breakApart();
+      hidePopUpButtons();
+      clearHideButtonsTimer();
+    } );
+
+    // add the listener that will put the expression into edit mode, and will also hide the buttons
+    editExpressionButton.addListener( function() {
+      // TODO: Doesn't start edit yet
       hidePopUpButtons();
       clearHideButtonsTimer();
     } );
