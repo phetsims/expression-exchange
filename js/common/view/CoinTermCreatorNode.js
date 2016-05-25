@@ -133,6 +133,11 @@ define( function( require ) {
         createdCoinTerm = null;
       }
     } ) );
+
+    // disable this creator node if the limit for this type of coin term has been reached in the model
+    // TODO: finish
+    //this.pickable = false;
+    //this.opacity = 0.25;
   }
 
   expressionExchange.register( 'CoinTermCreatorNode', CoinTermCreatorNode );
