@@ -1,11 +1,11 @@
 {
-  "comment": "# expression-exchange 1.0.0-dev.8 Fri May 20 2016 17:37:26 GMT-0600 (Mountain Daylight Time)",
+  "comment": "# expression-exchange 1.0.0-dev.9 Tue May 31 2016 17:28:03 GMT-0600 (Mountain Daylight Time)",
   "assert": {
     "sha": "7d27130a4d27da15aa7f8a21bbfb9245288c1b44",
     "branch": "master"
   },
   "axon": {
-    "sha": "9bf8f88c0496820bccff4a7fe5da00fdeeb851a4",
+    "sha": "1f8073474acc627fb24ff7766cb837928cfb374c",
     "branch": "master"
   },
   "brand": {
@@ -13,7 +13,7 @@
     "branch": "master"
   },
   "chipper": {
-    "sha": "22a9ffe2c2459f170413df31031d67f11365735e",
+    "sha": "a01a8e0f000fd53eaba1cb0d912ae16521b6c2af",
     "branch": "master"
   },
   "dot": {
@@ -21,11 +21,11 @@
     "branch": "master"
   },
   "expression-exchange": {
-    "sha": "9b68287ea6542db7bc494671915e18dde26d6497",
+    "sha": "ecf60bcabeb631feb0d18ed22d139137ad781d59",
     "branch": "master"
   },
   "joist": {
-    "sha": "3931eb7696b29a1697219826728325b403ac72f6",
+    "sha": "76d9aa21721aa8ee62ce7b8c5f7ad08981241901",
     "branch": "master"
   },
   "kite": {
@@ -37,15 +37,15 @@
     "branch": "master"
   },
   "phetcommon": {
-    "sha": "eab7fb7f41ae9bd31935d2ee95f84e7546a9253f",
+    "sha": "35ef94ad2852b567a056b5f3b8c1e3906b8da7c1",
     "branch": "master"
   },
   "scenery": {
-    "sha": "204093556dd415cb4a2796e1374dccdd04b4bcaa",
+    "sha": "30a080091cf58cae387a69f4a3522f9d4c0fbe04",
     "branch": "master"
   },
   "scenery-phet": {
-    "sha": "2b60b8e4d52c4bbfbc4226e905c5cc56ceb0e0cb",
+    "sha": "124a6a033406e8addd6a09cb1a0608e148581dda",
     "branch": "master"
   },
   "sherpa": {
@@ -53,11 +53,11 @@
     "branch": "master"
   },
   "sun": {
-    "sha": "6f66368fd9cee088af7e481377ed91dbf2ba82dc",
+    "sha": "9ae0a8e110692ad798ef476a8f8e67b5de0faed0",
     "branch": "master"
   },
   "tandem": {
-    "sha": "29f642332a94dbabc1802cdbee2dbb6481a7614f",
+    "sha": "0e40c775bba846e5c9f5003d79c0a5d095671759",
     "branch": "master"
   }
 }
