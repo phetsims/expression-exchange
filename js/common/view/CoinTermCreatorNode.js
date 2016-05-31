@@ -12,7 +12,6 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
-  var Property = require( 'AXON/Property' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var Util = require( 'DOT/Util' );
@@ -20,6 +19,7 @@ define( function( require ) {
 
   /**
    * @param {ExpressionManipulationModel} exploreModel - model where coins are to be added
+   * @param {CoinTermTypeID} typeID - type of coin term to create
    * @param {function} creatorFunction - the function that will be invoked in order to create the model element.  This
    * will be used both for creating a local model instance that will then be used for creating the view node, and it
    * will also be used to create the elements that will be added to the model.  The function should take no parameters
@@ -28,22 +28,35 @@ define( function( require ) {
    * TODO: This type may need to be moved and generalized if used in the game
    * @constructor
    */
-  function CoinTermCreatorNode( exploreModel, creatorFunction, options ) {
+  function CoinTermCreatorNode( exploreModel, typeID, creatorFunction, options ) {
 
     options = _.extend( {
 
       dragBounds: Bounds2.EVERYTHING,
 
+      // initial combined count of the coin term that will be created
+      initialCount: 1,
+
       // max number of coin terms that this can create
-      creationLimit: Number.POSITIVE_INFINITY
+      creationLimit: Number.POSITIVE_INFINITY,
+
+      // property that indicates the number of this type of coin term in the model
+      createdCountProperty: null
+
     }, options );
+
+    // if a creation limit is set, the createdCountProperty must also be set
+    assert && assert(
+      options.creationLimit === Number.POSITIVE_INFINITY || options.createdCountProperty,
+      'must have a createdCountProperty if the creation limit is finite'
+    );
 
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
 
     // add the coin node that will be clicked upon to create coins of the same denomination
     var coinNode = new CoinTermNode(
-      creatorFunction( Vector2.ZERO ),
+      creatorFunction( typeID, { initialPosition: Vector2.ZERO, initialCount: options.initialCount } ),
       exploreModel.viewModeProperty,
       exploreModel.showCoinValuesProperty,
       exploreModel.showVariableValuesProperty,
@@ -52,13 +65,7 @@ define( function( require ) {
     );
     this.addChild( coinNode );
 
-    var createdCountProperty = new Property( 0 ); // Used to track the number of shapes created and not returned.
-
-    // If the created count exceeds the max, make this node invisible (which also makes it unusable).
-    createdCountProperty.link( function( numCreated ) {
-      self.visible = numCreated < options.creationLimit;
-    } );
-
+    // variables used by the input listener
     var parentScreenView = null; // needed for coordinate transforms
     var createdCoinTerm;
     var unboundedPosition = new Vector2();
@@ -93,28 +100,15 @@ define( function( require ) {
         // to the location of the mouse or touch event.
         var initialPosition = parentScreenView.globalToLocalPoint( event.pointer.point );
 
-        // create and add the new model element
-        createdCoinTerm = creatorFunction( originPosition );
+        // create and add the new coin term
+        createdCoinTerm = creatorFunction( typeID, {
+          initialPosition: originPosition,
+          initialCount: options.initialCount
+        } );
         createdCoinTerm.setPositionAndDestination( initialPosition );
         createdCoinTerm.userControlled = true;
         exploreModel.addCoinTerm( createdCoinTerm );
         unboundedPosition.set( initialPosition );
-
-        // If the creation count is limited, adjust the value and monitor the created shape for if/when it is returned.
-        if ( options.creationLimit < Number.POSITIVE_INFINITY ) {
-          // Use an IIFE to keep a reference of the movable shape in a closure.
-          (function() {
-            createdCountProperty.value++;
-            var localRefToMovableShape = createdCoinTerm;
-            localRefToMovableShape.on( 'returnedToOrigin', function returnedToOriginListener() {
-              if ( !localRefToMovableShape.userControlled ) {
-                // the shape has been returned to its origin, so decrement the created count
-                createdCountProperty.value--;
-                localRefToMovableShape.off( 'returnedToOrigin', returnedToOriginListener );
-              }
-            } );
-          })();
-        }
       },
 
       translate: function( translationParams ) {
@@ -134,10 +128,19 @@ define( function( require ) {
       }
     } ) );
 
-    // disable this creator node if the limit for this type of coin term has been reached in the model
-    // TODO: finish
-    //this.pickable = false;
-    //this.opacity = 0.25;
+    // update the enabled state of this creator node - will be disabled if creation limits are reached
+    if ( options.createdCountProperty ) {
+      options.createdCountProperty.link( function( count ) {
+        if ( count + options.initialCount > options.creationLimit ) {
+          self.pickable = false;
+          self.opacity = 0.25;
+        }
+        else {
+          self.pickable = true;
+          self.opacity = 1;
+        }
+      } );
+    }
   }
 
   expressionExchange.register( 'CoinTermCreatorNode', CoinTermCreatorNode );

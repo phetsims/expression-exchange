@@ -14,7 +14,7 @@ define( function( require ) {
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
   var Carousel = require( 'SUN/Carousel' );
   var CheckBox = require( 'SUN/CheckBox' );
-  var CoinTermCollection = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCollection' );
+  var CoinTermCreatorSet = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSet' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
   var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
@@ -61,6 +61,7 @@ define( function( require ) {
   var ACCORDION_BOX_CORNER_RADIUS = 7;
   var CHECK_BOX_FONT = new PhetFont( { size: 16 } );
   var INSET = 10; // inset from edges of layout bounds, in screen coords
+  var MAX_COIN_TERMS_PER_TYPE = 10;
 
   /**
    * @param {ExpressionManipulationModel} model
@@ -184,108 +185,45 @@ define( function( require ) {
     );
     this.addChild( showAllCoefficientsCheckbox );
 
-    // create the collection of coin term creator nodes that will be presented to the user, varies based on options
+    // variables used to create the coin term creator nodes
     var coinTermFactory = model.coinTermFactory; // convenience var
-    var coinTermCollection = [];
-    if ( model.coinTermCollection === CoinTermCollection.BASIC ) {
+    var coinTermCreatorSet = [];
 
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, { initialPosition: initialPosition } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, { initialPosition: initialPosition } );
-      } ) );
-
+    // convenience function for adding coin terms to the collection that will appear on the carousel
+    function addCoinTermToCreatorSet( typeID, initialCount ) {
+      coinTermCreatorSet.push( new CoinTermCreatorNode(
+        model,
+        typeID,
+        coinTermFactory.createCoinTerm.bind( coinTermFactory ),
+        {
+          initialCount: initialCount,
+          creationLimit: MAX_COIN_TERMS_PER_TYPE,
+          createdCountProperty: model.getCountPropertyForType( typeID )
+        }
+      ) );
     }
-    else if ( model.coinTermCollection === CoinTermCollection.EXPLORE ) {
 
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, { initialPosition: initialPosition } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, { initialPosition: initialPosition } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.X, {
-          initialPosition: initialPosition,
-          initialCount: 2
-        } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, {
-          initialPosition: initialPosition,
-          initialCount: 3
-        } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.X_TIMES_Y, { initialPosition: initialPosition } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.X_SQUARED, { initialPosition: initialPosition } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y_SQUARED, { initialPosition: initialPosition } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, { initialPosition: initialPosition } );
-      } ) );
+    // create the collection of coin term creator nodes that will be presented to the user, varies based on options
+    if ( model.coinTermCollection === CoinTermCreatorSet.BASIC ) {
+      addCoinTermToCreatorSet( CoinTermTypeID.X, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.Y, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.Z, 1 );
     }
-    else if ( model.coinTermCollection === CoinTermCollection.ADVANCED ) {
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.X, { initialPosition: initialPosition } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.X, {
-          initialPosition: initialPosition,
-          initialCount: -1
-        } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, {
-          initialPosition: initialPosition,
-          initialCount: 1
-        } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.Y, {
-          initialPosition: initialPosition,
-          initialCount: -1
-        } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, {
-          initialPosition: initialPosition,
-          initialCount: 1
-        } );
-      } ) );
-
-      coinTermCollection.push( new CoinTermCreatorNode( model, function( initialPosition ) {
-        return coinTermFactory.createCoinTerm( CoinTermTypeID.Z, {
-          initialPosition: initialPosition,
-          initialCount: -1
-        } );
-      } ) );
+    else if ( model.coinTermCollection === CoinTermCreatorSet.EXPLORE ) {
+      addCoinTermToCreatorSet( CoinTermTypeID.X, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.Y, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.Z, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.X, 2 );
+      addCoinTermToCreatorSet( CoinTermTypeID.Y, 3 );
+      addCoinTermToCreatorSet( CoinTermTypeID.X_TIMES_Y, 3 );
+      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED, 3 );
+      addCoinTermToCreatorSet( CoinTermTypeID.Y_SQUARED, 3 );
+      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, 3 );
+    }
+    else if ( model.coinTermCollection === CoinTermCreatorSet.ADVANCED ) {
+      addCoinTermToCreatorSet( CoinTermTypeID.X, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.Y, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.Z, 1 );
     }
     else {
       assert( false, 'unknown value for coinTermCollection' );
@@ -295,8 +233,8 @@ define( function( require ) {
     var coinTermCreatorHolder;
     var coinTermHolderCenterX = this.layoutBounds.width / 2;
     var coinTermHolderBottom = this.layoutBounds.height - 50;
-    if ( coinTermCollection.length > 3 ) {
-      coinTermCreatorHolder = new Carousel( coinTermCollection, {
+    if ( coinTermCreatorSet.length > 3 ) {
+      coinTermCreatorHolder = new Carousel( coinTermCreatorSet, {
         centerX: coinTermHolderCenterX,
         bottom: coinTermHolderBottom,
         itemsPerPage: 3,
@@ -307,7 +245,7 @@ define( function( require ) {
       // use a panel instead of a carousel
       // Many of the numbers in the following constructors were empirically determined to match the size of the
       // carousels on the other screens.
-      var coinTermCreatorHBox = new HBox( { children: coinTermCollection, spacing: 75, resize: false } );
+      var coinTermCreatorHBox = new HBox( { children: coinTermCreatorSet, spacing: 75, resize: false } );
       coinTermCreatorHolder = new Panel( coinTermCreatorHBox, {
         centerX: coinTermHolderCenterX,
         bottom: coinTermHolderBottom,

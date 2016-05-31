@@ -13,8 +13,9 @@ define( function( require ) {
 
   // modules
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
-  var CoinTermCollection = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCollection' );
+  var CoinTermCreatorSet = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSet' );
   var CoinTermFactory = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermFactory' );
+  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
@@ -26,6 +27,23 @@ define( function( require ) {
 
   // constants
   var BREAK_APART_SPACING = 10;
+
+  // convenience function used to convert a constant name to a camel-cased variable name
+  function constantToCamelCase( str ) {
+
+    var lowerCaseString = str.toLowerCase();
+
+    // anything after an underscore should be a capital letter
+    var previousChar = null;
+    var stringWithCaps = '';
+    for ( var i = 0; i < lowerCaseString.length; i++ ) {
+      stringWithCaps += previousChar === '_' ? lowerCaseString[ i ].toUpperCase() : lowerCaseString[ i ];
+      previousChar = lowerCaseString[ i ];
+    }
+
+    // remove the underscores
+    return stringWithCaps.replace( /_/g, '' );
+  }
 
   /**
    * @constructor
@@ -39,7 +57,7 @@ define( function( require ) {
       // TODO: once the screen behaviors are fully established and refactor if it makes sense to do so.
 
       // defines the set of coin terms presented to the user in the carousel
-      coinTermCollection: CoinTermCollection.BASIC,
+      coinTermCollection: CoinTermCreatorSet.BASIC,
 
       // defines whether to present just coins, just variables, or both to the user
       allowedRepresentations: AllowedRepresentationsEnum.COINS_AND_VARIABLES
@@ -64,6 +82,15 @@ define( function( require ) {
 
     // @public, read only, factory used to create coin terms
     this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
+
+    // @public, read and listen only, tracks the number of coin terms by type
+    this.coinTermCountsByType = new PropertySet( {} );
+    for ( var key in CoinTermTypeID ) {
+      if ( !CoinTermTypeID.hasOwnProperty( key ) ) {
+        continue;
+      }
+      this.coinTermCountsByType.addProperty( constantToCamelCase( key ), 0 );
+    }
 
     // @public, read only, options that control what is available to the user to manipulate
     this.coinTermCollection = options.coinTermCollection;
@@ -466,6 +493,7 @@ define( function( require ) {
     // @public
     addCoinTerm: function( coinTerm ) {
       this.coinTerms.add( coinTerm );
+      this.updateCoinTermCount( coinTerm.typeID );
     },
 
     // @public TODO this will likely be made more fancy at some point, i.e. will include some animation
@@ -475,7 +503,35 @@ define( function( require ) {
       }
       else {
         this.coinTerms.remove( coinTerm );
+        this.updateCoinTermCount( coinTerm.typeID );
       }
+    },
+
+    // @private - update the
+    updateCoinTermCount: function( coinTermTypeID ) {
+      var coinTermsOfThisType = 0;
+      var convertedTypeID = constantToCamelCase( coinTermTypeID );
+      assert && assert( typeof( this.coinTermCountsByType[ convertedTypeID ] ) === 'number', 'no matching type in count tracking properties ' );
+      this.coinTerms.forEach( function( coinTerm ) {
+        if ( coinTerm.typeID === coinTermTypeID ) {
+          coinTermsOfThisType += coinTerm.combinedCount;
+        }
+      } );
+      this.coinTermCountsByType[ convertedTypeID ] = coinTermsOfThisType;
+    },
+
+    /**
+     * get the count property for the coin terms with the given type ID
+     * @param {CoinTermTypeID} typeID
+     * @public
+     */
+    getCountPropertyForType: function( typeID ) {
+      var convertedTypeID = constantToCamelCase( typeID );
+      assert && assert(
+        typeof( this.coinTermCountsByType[ convertedTypeID ] === 'number' ),
+        'no count for coin term type ' + convertedTypeID
+      );
+      return this.coinTermCountsByType[ convertedTypeID + 'Property' ];
     },
 
     // @public - remove the specified expression
@@ -552,6 +608,7 @@ define( function( require ) {
       // TODO: Probably need to reset expressions here so that they can cancel any in-progress animations.
       this.expressions.clear();
       this.coinTerms.clear();
+      this.coinTermCountsByType.reset();
       PropertySet.prototype.reset.call( this );
     },
 

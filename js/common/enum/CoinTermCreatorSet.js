@@ -10,16 +10,16 @@ define( function( require ) {
   // modules
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  var CoinTermCollection = {
+  var CoinTermCreatorSet = {
     BASIC: 'BASIC',
     EXPLORE: 'EXPLORE',
     ADVANCED: 'ADVANCED'
   };
 
   // verify that enum is immutable, without the runtime penalty in production code
-  if ( assert ) { Object.freeze( CoinTermCollection ); }
+  if ( assert ) { Object.freeze( CoinTermCreatorSet ); }
 
-  expressionExchange.register( 'CoinTermCollection', CoinTermCollection );
+  expressionExchange.register( 'CoinTermCreatorSet', CoinTermCreatorSet );
 
-  return CoinTermCollection;
+  return CoinTermCreatorSet;
 } );
