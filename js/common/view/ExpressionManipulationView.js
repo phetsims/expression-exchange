@@ -32,10 +32,12 @@ define( function( require ) {
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Panel = require( 'SUN/Panel' );
+  var Path = require( 'SCENERY/nodes/Path' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   var ScreenView = require( 'JOIST/ScreenView' );
+  var Shape = require( 'KITE/Shape' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
   var VariableValueControl = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueControl' );
@@ -321,6 +323,48 @@ define( function( require ) {
       bottom: this.layoutBounds.maxY - 10
     } );
     this.addChild( resetAllButton );
+
+    // add the node that will act as the barrier to interaction with other expressions when editing an expression
+    var barrierRectangleShape = Shape.rect( 0, 0, 100, 100 );
+    var barrierRectanglePath = new Path( barrierRectangleShape, { fill: 'rgba( 100, 100, 100, 0.5 )' } );
+    barrierRectanglePath.visible = false; // initially invisible, will become visible when editing an expression
+    this.addChild( barrierRectanglePath );
+
+    // adjust the size of the barrier rectangle to match that of the view port
+    this.visibleBoundsProperty.link( function( visibleBounds ) {
+      barrierRectangleShape = Shape.rect(
+        visibleBounds.minX,
+        visibleBounds.minY,
+        visibleBounds.maxX - visibleBounds.minX,
+        visibleBounds.maxY - visibleBounds.minY
+      );
+      barrierRectanglePath.setShape( barrierRectangleShape );
+
+      //barrierRectanglePath.clipArea = new Shape().
+      //  moveTo( visibleBounds.minX, visibleBounds.minY ).
+      //  lineTo( visibleBounds.maxX, visibleBounds.minY ).
+      //  lineTo( visibleBounds.maxX, visibleBounds.maxY ).
+      //  lineTo( visibleBounds.minX, visibleBounds.maxY ).
+      //  lineTo( visibleBounds.minX, visibleBounds.minY ).
+      //  moveTo( 100, 100 ).
+      //  lineTo( 300, 100 ).
+      //  lineTo( 300, 150 ).
+      //  lineTo( 100, 150 ).
+      //  lineTo( 100, 100 );
+      //barrierRectanglePath.setShape( new Shape().
+      //  moveTo( visibleBounds.minX, visibleBounds.minY ).
+      //  lineTo( visibleBounds.maxX, visibleBounds.minY ).
+      //  lineTo( visibleBounds.maxX, visibleBounds.maxY ).
+      //  lineTo( visibleBounds.minX, visibleBounds.maxY ).
+      //  lineTo( visibleBounds.minX, visibleBounds.minY ).
+      //  moveTo( 100, 100 ).
+      //  lineTo( 300, 100 ).
+      //  lineTo( 300, 150 ).
+      //  lineTo( 100, 150 ).
+      //  lineTo( 100, 100 ).
+      //  close()
+      //);
+    } );
 
     // add and remove coin nodes as coins are added and removed from the model
     model.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
