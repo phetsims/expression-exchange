@@ -524,6 +524,7 @@ define( function( require ) {
      * stop editing the expression that is currently selected for edit, does nothing if no expression selected
      */
     stopEditingExpression: function() {
+      this.expressionBeingEdited.exitEditMode();
       this.expressionBeingEdited = null;
     },
 

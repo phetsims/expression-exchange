@@ -61,6 +61,12 @@ define( function( require ) {
       self.y = upperLeftCorner.y;
     } );
 
+    // become invisible if the expression goes into edit mode so that the user can interact with the coin terms within
+    expression.inEditModeProperty.link( function( inEditMode ) {
+      console.log( 'inEditMode = ' + inEditMode );
+      self.visible = !inEditMode;
+    } );
+
     // add the parent node that will contain the pop-up buttons
     var popUpButtonsNode = new Node( { visible: false } );
     this.addChild( popUpButtonsNode );

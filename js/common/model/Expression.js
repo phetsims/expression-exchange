@@ -48,7 +48,8 @@ define( function( require ) {
       rightHintActive: false, // @public (read only) - indicates whether the hint on the right side should be visible
       rightHintWidth: 0, // @public (read only) - width of the right hint
       combineHaloActive: false, // @public (read only) indicates whether the 'combine halo' should be visible
-      inProgressAnimation: null // @public (read only), tracks the current in-progress animation, if any
+      inProgressAnimation: null, // @public (read only), tracks the current in-progress animation, if any
+      inEditMode: false // @public, indicates whether this expression is being edited
     } );
 
     // @public, read and listen only, items should be added and removed via methods
@@ -406,7 +407,16 @@ define( function( require ) {
      * @public
      */
     enterEditMode: function() {
+      this.inEditMode = true;
       this.selectedForEditEmitter.emit();
+    },
+
+    /**
+     * clear the edit mode, provided essentially for API symmetry
+     * @public
+     */
+    exitEditMode: function() {
+      this.inEditMode = false;
     },
 
     /**
