@@ -57,6 +57,9 @@ define( function( require ) {
     // @public, listen only, emits an event when an animation finishes and the destination is reached
     this.destinationReachedEmitter = new Emitter();
 
+    // @public, listen only, emits an event when this expression has been selected by the user to be edited
+    this.selectedForEditEmitter = new Emitter();
+
     // @public, listen only, emits an event when this expression should be broken apart
     this.breakApartEmitter = new Emitter();
 
@@ -396,6 +399,14 @@ define( function( require ) {
      */
     breakApart: function() {
       this.breakApartEmitter.emit();
+    },
+
+    /**
+     * emit an event that signifies that this expression has been selected for editing
+     * @public
+     */
+    enterEditMode: function() {
+      this.selectedForEditEmitter.emit();
     },
 
     /**

@@ -126,7 +126,7 @@ define( function( require ) {
 
     // add the listener that will put the expression into edit mode, and will also hide the buttons
     editExpressionButton.addListener( function() {
-      // TODO: Doesn't start edit yet
+      expression.enterEditMode();
       hidePopUpButtons();
       clearHideButtonsTimer();
     } );

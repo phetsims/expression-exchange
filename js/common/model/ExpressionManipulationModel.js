@@ -75,7 +75,8 @@ define( function( require ) {
       xTermValue: 2, // @public
       yTermValue: 5, // @public
       zTermValue: 10, // @public
-      totalValue: 0 // @public, read-only
+      totalValue: 0, // @public, read-only
+      expressionBeingEdited: null // @public, read-only, null when no expression is in edit mode
     } );
 
     var self = this;
@@ -177,7 +178,7 @@ define( function( require ) {
 
       addedCoinTerm.userControlledProperty.lazyLink( coinTermUserControlledListener );
 
-      // add a listener that will handle breaking apart the coin if necessary
+      // add a listener that will handle requests to break apart the coin term
       function coinTermBreakApartListener() {
 
         if ( Math.abs( addedCoinTerm.combinedCount ) < 2 ) {
@@ -328,19 +329,26 @@ define( function( require ) {
 
       addedExpression.userControlledProperty.lazyLink( expressionUserControlledListener );
 
-      // add a listener to break apart this expression if necessary
+      // add a listener that will handle requests to break apart this expression
       function breakApartExpressionListener() {
         addedExpression.removeAllCoinTerms();
         self.expressions.remove( addedExpression );
       }
-
       addedExpression.breakApartEmitter.addListener( breakApartExpressionListener );
+
+      // add a listener that will handle requests to edit this expression
+      function editExpressionListener() {
+        self.expressionBeingEdited = addedExpression;
+      }
+
+      addedExpression.selectedForEditEmitter.addListener( editExpressionListener );
 
       // remove the listeners when this expression is removed
       self.expressions.addItemRemovedListener( function( removedExpression ) {
         if ( removedExpression === addedExpression ) {
           addedExpression.userControlledProperty.unlink( expressionUserControlledListener );
           addedExpression.breakApartEmitter.removeListener( breakApartExpressionListener );
+          addedExpression.selectedForEditEmitter.removeListener( editExpressionListener );
         }
       } );
     } );
@@ -350,6 +358,11 @@ define( function( require ) {
 
   return inherit( PropertySet, ExpressionManipulationModel, {
 
+    /**
+     * main step function for this model, should only be called by the framework
+     * @param {number} dt
+     * @public
+     */
     step: function( dt ) {
 
       var self = this;
@@ -507,7 +520,14 @@ define( function( require ) {
       }
     },
 
-    // @private - update the
+    /**
+     * stop editing the expression that is currently selected for edit, does nothing if no expression selected
+     */
+    stopEditingExpression: function() {
+      this.expressionBeingEdited = null;
+    },
+
+    // @private - update the couns of coin terms
     updateCoinTermCount: function( coinTermTypeID ) {
       var coinTermsOfThisType = 0;
       var convertedTypeID = constantToCamelCase( coinTermTypeID );
@@ -675,6 +695,7 @@ define( function( require ) {
     /**
      * get the number of the specified coin term type currently in the model
      * @param {CoinTermTypeID} typeID
+     * @public
      */
     getCoinTermCount: function( typeID ) {
       var count = 0;

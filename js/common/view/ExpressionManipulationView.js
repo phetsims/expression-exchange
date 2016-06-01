@@ -41,6 +41,7 @@ define( function( require ) {
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
   var VariableValueControl = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueControl' );
+  var Vector2 = require( 'DOT/Vector2' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
   var VStrut = require( 'SCENERY/nodes/VStrut' );
 
@@ -325,45 +326,56 @@ define( function( require ) {
     this.addChild( resetAllButton );
 
     // add the node that will act as the barrier to interaction with other expressions when editing an expression
-    var barrierRectangleShape = Shape.rect( 0, 0, 100, 100 );
-    var barrierRectanglePath = new Path( barrierRectangleShape, { fill: 'rgba( 100, 100, 100, 0.5 )' } );
-    barrierRectanglePath.visible = false; // initially invisible, will become visible when editing an expression
+    var barrierRectangleBounds = null;
+    var barrierRectangleHoleBounds = null;
+    var barrierRectangleShape = new Shape();
+    var barrierRectanglePath = new Path( barrierRectangleShape, {
+      fill: 'rgba( 100, 100, 100, 0.5 )',
+      visible: false, // initially invisible, will become visible when editing an expression
+      cursor: 'pointer'
+    } );
     this.addChild( barrierRectanglePath );
 
-    // adjust the size of the barrier rectangle to match that of the view port
-    this.visibleBoundsProperty.link( function( visibleBounds ) {
-      barrierRectangleShape = Shape.rect(
-        visibleBounds.minX,
-        visibleBounds.minY,
-        visibleBounds.maxX - visibleBounds.minX,
-        visibleBounds.maxY - visibleBounds.minY
-      );
-      barrierRectanglePath.setShape( barrierRectangleShape );
+    // add a listener to the barrier rectangle that will exit the expression editing mode when clicked upon
+    barrierRectanglePath.addInputListener( {
+      up: function() {
+        model.stopEditingExpression();
+      }
+    } );
 
-      //barrierRectanglePath.clipArea = new Shape().
-      //  moveTo( visibleBounds.minX, visibleBounds.minY ).
-      //  lineTo( visibleBounds.maxX, visibleBounds.minY ).
-      //  lineTo( visibleBounds.maxX, visibleBounds.maxY ).
-      //  lineTo( visibleBounds.minX, visibleBounds.maxY ).
-      //  lineTo( visibleBounds.minX, visibleBounds.minY ).
-      //  moveTo( 100, 100 ).
-      //  lineTo( 300, 100 ).
-      //  lineTo( 300, 150 ).
-      //  lineTo( 100, 150 ).
-      //  lineTo( 100, 100 );
-      //barrierRectanglePath.setShape( new Shape().
-      //  moveTo( visibleBounds.minX, visibleBounds.minY ).
-      //  lineTo( visibleBounds.maxX, visibleBounds.minY ).
-      //  lineTo( visibleBounds.maxX, visibleBounds.maxY ).
-      //  lineTo( visibleBounds.minX, visibleBounds.maxY ).
-      //  lineTo( visibleBounds.minX, visibleBounds.minY ).
-      //  moveTo( 100, 100 ).
-      //  lineTo( 300, 100 ).
-      //  lineTo( 300, 150 ).
-      //  lineTo( 100, 150 ).
-      //  lineTo( 100, 100 ).
-      //  close()
-      //);
+    // define a function that will update the shape of the barrier rectangle
+    function updateBarrierRectangle() {
+      barrierRectangleShape = Shape.rect(
+        barrierRectangleBounds.minX,
+        barrierRectangleBounds.minY,
+        barrierRectangleBounds.maxX - barrierRectangleBounds.minX,
+        barrierRectangleBounds.maxY - barrierRectangleBounds.minY
+      );
+      if ( barrierRectangleHoleBounds ) {
+        // note - must travel counterclockwise to create a hole
+        barrierRectangleShape.moveTo( barrierRectangleHoleBounds.minX, barrierRectangleHoleBounds.minY );
+        barrierRectangleShape.lineTo( barrierRectangleHoleBounds.minX, barrierRectangleHoleBounds.maxY );
+        barrierRectangleShape.lineTo( barrierRectangleHoleBounds.maxX, barrierRectangleHoleBounds.maxY );
+        barrierRectangleShape.lineTo( barrierRectangleHoleBounds.maxX, barrierRectangleHoleBounds.minY );
+        barrierRectangleShape.moveTo( barrierRectangleHoleBounds.minX, barrierRectangleHoleBounds.minY );
+        barrierRectangleShape.close();
+      }
+      barrierRectanglePath.setShape( barrierRectangleShape );
+    }
+
+    // monitor the view bounds and update the barrier rectangle if they change
+    this.visibleBoundsProperty.link( function( visibleBounds ) {
+      barrierRectangleBounds = visibleBounds;
+      updateBarrierRectangle();
+    } );
+
+    // show the barrier rectangle when an expression is being edited
+    model.expressionBeingEditedProperty.link( function( expressionBeingEdited ) {
+      barrierRectanglePath.visible = expressionBeingEdited !== null;
+      if ( expressionBeingEdited ) {
+        barrierRectangleHoleBounds = expressionBeingEdited.getBounds();
+        updateBarrierRectangle();
+      }
     } );
 
     // add and remove coin nodes as coins are added and removed from the model
