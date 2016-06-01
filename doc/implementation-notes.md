@@ -26,3 +26,5 @@ enforce the behavioral rules, update the various visual cues that indicate what 
 Some of this code had to be hooked to properties, while some of it was implemented in step functions.  The interactions
 can be complicated, so it will be important to have a good understanding of such interactions if some of these
 behavioral rules need to be changed or fixed.
+
+Only one expression can be edited at a time.
