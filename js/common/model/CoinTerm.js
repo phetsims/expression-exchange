@@ -170,7 +170,7 @@ define( function( require ) {
      * @returns {boolean}
      */
     canCombineWith: function( coinTerm ) {
-      return !( coinTerm === this ) && this.typeID === coinTerm.typeID;
+      return coinTerm !== this && coinTerm.typeID === this.typeID;
     },
 
     /**

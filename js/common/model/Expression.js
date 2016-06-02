@@ -142,7 +142,7 @@ define( function( require ) {
       // in the step function so that it is only done a max of once per animation frame rather than redoing it for each
       // coin term whose bounds change.
       if ( this.resizeNeeded ) {
-        this.handleResizedCoinTerms();
+        this.updateSizeAndCoinTermPositions();
         this.resizeNeeded = false;
       }
 
@@ -213,7 +213,7 @@ define( function( require ) {
      * on coefficients or switching from coin view to variable view.
      * @private
      */
-    handleResizedCoinTerms: function() {
+    updateSizeAndCoinTermPositions: function() {
 
       // get an array of the coin terms sorted from left to right
       var coinTermsLeftToRight = this.coinTerms.getArray().slice( 0 ).sort( function( ct1, ct2 ) {
@@ -263,6 +263,8 @@ define( function( require ) {
      * @public
      */
     addCoinTerm: function( coinTerm ) {
+
+      // if the coin term being added is currently on the list of hovering coin terms, remove it
       if ( this.isCoinTermHovering( coinTerm ) ) {
         this.removeHoveringCoinTerm( coinTerm );
         if ( this.hoveringCoinTerms.length === 0 ) {
@@ -306,13 +308,16 @@ define( function( require ) {
 
     // @public
     removeCoinTerm: function( coinTerm ) {
-      this.coinTerms.remove( coinTerm );
       coinTerm.relativeViewBoundsProperty.unlink( this.setResizeFlagFunction );
+      this.coinTerms.remove( coinTerm );
+      if ( this.coinTerms.length > 0 ) {
+        this.updateSizeAndCoinTermPositions();
+      }
     },
 
     /**
-     *
-     * @param coinTerm
+     * @param {CoinTerm} coinTerm
+     * @private
      */
     containsCoinTerm: function( coinTerm ) {
       return this.coinTerms.contains( coinTerm );
@@ -321,6 +326,7 @@ define( function( require ) {
     /**
      * remove all coin terms
      * @return a simple array with all coin terms, sorted in left-to-right order
+     * @public
      */
     removeAllCoinTerms: function() {
 
@@ -341,6 +347,19 @@ define( function( require ) {
 
       // return the sorted array
       return coinTermsLeftToRight;
+    },
+
+    /**
+     * add back a coin term that is already part of this expression, but something about it (most likely its position)
+     * has changed
+     * @param {CoinTerm} coinTerm
+     * @public
+     */
+    reintegrateCoinTerm: function( coinTerm ) {
+
+      assert && assert( this.containsCoinTerm( coinTerm ), 'coin term is not part of this expression, can\'t be reintegrated' );
+
+      this.updateSizeAndCoinTermPositions();
     },
 
     /**
