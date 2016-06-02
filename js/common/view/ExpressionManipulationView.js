@@ -337,9 +337,18 @@ define( function( require ) {
     this.addChild( barrierRectanglePath );
 
     // add a listener to the barrier rectangle that will exit the expression editing mode when clicked upon
+    var barrierRectangleArmedForRemoval = false;
     barrierRectanglePath.addInputListener( {
+
+      down: function() {
+        barrierRectangleArmedForRemoval = true;
+      },
+
       up: function() {
-        model.stopEditingExpression();
+        if ( barrierRectangleArmedForRemoval ) {
+          model.stopEditingExpression();
+          barrierRectangleArmedForRemoval = false;
+        }
       }
     } );
 

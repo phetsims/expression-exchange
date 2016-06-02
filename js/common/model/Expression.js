@@ -359,7 +359,18 @@ define( function( require ) {
 
       assert && assert( this.containsCoinTerm( coinTerm ), 'coin term is not part of this expression, can\'t be reintegrated' );
 
-      this.updateSizeAndCoinTermPositions();
+      // get an array of the coin terms sorted from left to right
+      var coinTermsLeftToRight = this.coinTerms.getArray().slice( 0 ).sort( function( ct1, ct2 ) {
+        return ct1.destination.x - ct2.destination.x;
+      } );
+
+      // set the position of each coin term based on its order
+      var leftEdge = this.upperLeftCorner.x + INSET;
+      var centerY = this.upperLeftCorner.y + this.height / 2;
+      coinTermsLeftToRight.forEach( function( orderedCoinTerm ) {
+        orderedCoinTerm.travelToDestination( new Vector2( leftEdge - orderedCoinTerm.relativeViewBounds.minX, centerY ) );
+        leftEdge += orderedCoinTerm.relativeViewBounds.width + INTER_COIN_TERM_SPACING;
+      } );
     },
 
     /**
