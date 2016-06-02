@@ -133,7 +133,7 @@ define( function( require ) {
       options.createdCountProperty.link( function( count ) {
         if ( count + options.initialCount > options.creationLimit ) {
           self.pickable = false;
-          self.opacity = 0.25;
+          self.opacity = 0.4;
         }
         else {
           self.pickable = true;
