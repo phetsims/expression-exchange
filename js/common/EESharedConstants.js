@@ -27,7 +27,10 @@ define( function( require ) {
     Z_VARIABLE_CHAR: 'z',
 
     // background color for control panels
-    CONTROL_PANEL_BACKGROUND_COLOR: new Color( 'rgb( 235, 235, 235 )' )
+    CONTROL_PANEL_BACKGROUND_COLOR: new Color( 'rgb( 235, 235, 235 )' ),
+
+    // amount of time that the popup buttons are shown
+    POPUP_BUTTON_SHOW_TIME: 1.5 // in seconds
   };
 
   expressionExchange.register( 'EESharedConstants', EESharedConstants );

@@ -12,6 +12,7 @@ define( function( require ) {
   // modules
   var BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
   var EditExpressionButton = require( 'EXPRESSION_EXCHANGE/common/view/EditExpressionButton' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
@@ -22,9 +23,6 @@ define( function( require ) {
   var Timer = require( 'PHET_CORE/Timer' );
   var Util = require( 'DOT/Util' );
   var Vector2 = require( 'DOT/Vector2' );
-
-  // constants
-  var DRAG_DISTANCE_HIDE_THRESHOLD = 10; // in screen coords, determined empirically
 
   /**
    * @param {Expression} expression - model of an expression
@@ -108,7 +106,7 @@ define( function( require ) {
       hideButtonsTimer = Timer.setTimeout( function() {
         hidePopUpButtons();
         hideButtonsTimer = null;
-      }, 2000 );
+      }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );
     }
 
     // add a listener to the pop up button node to prevent it from disappearing if the user is hovering over it
@@ -154,8 +152,8 @@ define( function( require ) {
         dragDistance = 0;
         unboundedUpperLeftCornerPosition.set( expression.upperLeftCorner );
         boundedUpperLeftCornerPosition.set( unboundedUpperLeftCornerPosition );
-        showPopUpButtons( self.globalToLocalPoint( event.pointer.point ).x );
         clearHideButtonsTimer(); // in case it's running
+        showPopUpButtons( self.globalToLocalPoint( event.pointer.point ).x );
       },
 
       translate: function( translationParams ) {
@@ -171,12 +169,6 @@ define( function( require ) {
           Util.clamp( unboundedUpperLeftCornerPosition.x, dragBounds.minX, dragBounds.maxX - expression.width ),
           Util.clamp( unboundedUpperLeftCornerPosition.y, dragBounds.minY, dragBounds.maxY - expression.height )
         ) );
-
-        // update the drag distance and hide the button if the drag threshold is reached
-        dragDistance += translationParams.delta.magnitude();
-        if ( dragDistance > DRAG_DISTANCE_HIDE_THRESHOLD && breakApartButton.visible ) {
-          hidePopUpButtons();
-        }
       },
 
       end: function() {
@@ -186,7 +178,6 @@ define( function( require ) {
           startHideButtonsTimer();
         }
       }
-
     } );
 
     // the drag handler is removed if an animation is in progress to prevent problematic race conditions

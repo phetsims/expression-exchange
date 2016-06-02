@@ -14,6 +14,7 @@ define( function( require ) {
   var CoinTermImageMap = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermImageMap' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -34,7 +35,6 @@ define( function( require ) {
   var VARIABLE_FONT = new MathSymbolFont( 36 );
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_X_SPACING = 3;
-  var DRAG_BEFORE_BREAK_BUTTON_FADES = 10;
   var FADE_TIME = 0.75; // in seconds
   var NUM_FADE_STEPS = 10; // number of steps for fade out to occur
 
@@ -265,25 +265,9 @@ define( function( require ) {
     function startHideButtonTimer() {
       clearHideButtonTimer(); // just in case one is already running
       hideButtonTimer = Timer.setTimeout( function() {
-        showBreakApartButton( false );
+        hideBreakApartButton();
         hideButtonTimer = null;
-      }, 2000 );
-    }
-
-    function clearShowButtonTimer() {
-      if ( showButtonTimer ) {
-        Timer.clearTimeout( showButtonTimer );
-      }
-      showButtonTimer = null;
-    }
-
-    function startShowButtonTimer() {
-      clearShowButtonTimer(); // just in case one is already running
-      showButtonTimer = Timer.setTimeout( function() {
-        showBreakApartButton( true );
-        showButtonTimer = null;
-        startHideButtonTimer();
-      }, 500 );
+      }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );
     }
 
     // add the listener to the break apart button
@@ -291,10 +275,9 @@ define( function( require ) {
       coinTerm.breakApart();
 
       // hide the button after clicking
-      showBreakApartButton( false );
+      hideBreakApartButton();
 
-      // cancel any running timers
-      clearShowButtonTimer();
+      // cancel timer if running
       clearHideButtonTimer();
     } );
 
@@ -309,18 +292,18 @@ define( function( require ) {
       }
     } );
 
-    // define a function that will position and hide/show the break apart button
-    function showBreakApartButton( show ) {
-      if ( show ) {
-        breakApartButton.centerX = coinCenter.x;
-        breakApartButton.bottom = -3; // just above the coin, empirically determined
-        breakApartButton.visible = true;
-      }
-      else {
-        // TODO: moving this inside the coin term to keep bounds confined.  Is this necessary?  Simplify if possible.
-        breakApartButton.center = coinCenter;
-        breakApartButton.visible = false;
-      }
+    // define a function that will position and show the break apart button
+    function showBreakApartButton() {
+      breakApartButton.centerX = coinCenter.x;
+      breakApartButton.bottom = -3; // just above the coin, empirically determined
+      breakApartButton.visible = true;
+      updateBoundsInModel();
+    }
+
+    // define a function that will position and hide the break apart button
+    function hideBreakApartButton() {
+      breakApartButton.center = coinCenter; // position within coin term so bounds aren't affected
+      breakApartButton.visible = false;
       updateBoundsInModel();
     }
 
@@ -351,15 +334,14 @@ define( function( require ) {
             dragStartPosition = coinTerm.position;
             unboundedPosition.set( dragStartPosition );
 
-            // if this is a multi-count coin term, start a timer to show the break apart button
+            // if this is a multi-count coin term, show the break apart button
             if ( Math.abs( coinTerm.combinedCount > 1 ) ) {
 
-              // clear any timers that are running already
+              // clear the hide button timer if it is running
               clearHideButtonTimer();
-              clearShowButtonTimer();
 
-              // start a timer to show the button if the user presses and holds
-              startShowButtonTimer();
+              // show the button
+              showBreakApartButton();
             }
           },
 
@@ -376,37 +358,13 @@ define( function( require ) {
               Util.clamp( unboundedPosition.y, options.dragBounds.minY, options.dragBounds.maxY )
             ) );
 
-            // update the state of the break apart button and associated timers
-            if ( Math.abs( coinTerm.combinedCount ) > 1 &&
-                 coinTerm.position.distance( dragStartPosition ) > DRAG_BEFORE_BREAK_BUTTON_FADES ) {
-
-              if ( breakApartButton.visible ) {
-
-                // the button was already visible, so hide it
-                showBreakApartButton( false );
-                clearHideButtonTimer();
-              }
-              else if ( showButtonTimer ) {
-                clearShowButtonTimer();
-              }
-            }
-
             return translationParams.position;
           },
 
           end: function( event, trail ) {
             coinTerm.userControlled = false;
 
-            if ( Math.abs( coinTerm.combinedCount ) > 1 &&
-                 coinTerm.position.distance( dragStartPosition ) < DRAG_BEFORE_BREAK_BUTTON_FADES ) {
-
-              // the user clicked on the coin term without moving it (much), so show the break apart button
-              showBreakApartButton( true );
-
-              // cancel timer for showing button if active
-              clearShowButtonTimer();
-
-              // start a timer to hide the button if not interacted with
+            if ( breakApartButton.visible ) {
               startHideButtonTimer();
             }
           }
