@@ -325,9 +325,9 @@ define( function( require ) {
     } );
     this.addChild( resetAllButton );
 
+    // TODO: Consider putting the barrier rectangle into its own class for modularity
     // add the node that will act as the barrier to interaction with other expressions when editing an expression
     var barrierRectangleBounds = null;
-    var barrierRectangleHoleBounds = null;
     var barrierRectangleShape = new Shape();
     var barrierRectanglePath = new Path( barrierRectangleShape, {
       fill: 'rgba( 100, 100, 100, 0.5 )',
@@ -351,7 +351,8 @@ define( function( require ) {
         barrierRectangleBounds.maxX - barrierRectangleBounds.minX,
         barrierRectangleBounds.maxY - barrierRectangleBounds.minY
       );
-      if ( barrierRectangleHoleBounds ) {
+      if ( model.expressionBeingEdited ) {
+        var barrierRectangleHoleBounds = model.expressionBeingEdited.getBounds();
         // note - must travel counterclockwise to create a hole
         barrierRectangleShape.moveTo( barrierRectangleHoleBounds.minX, barrierRectangleHoleBounds.minY );
         barrierRectangleShape.lineTo( barrierRectangleHoleBounds.minX, barrierRectangleHoleBounds.maxY );
@@ -370,11 +371,32 @@ define( function( require ) {
     } );
 
     // show the barrier rectangle when an expression is being edited
-    model.expressionBeingEditedProperty.link( function( expressionBeingEdited ) {
-      barrierRectanglePath.visible = expressionBeingEdited !== null;
-      if ( expressionBeingEdited ) {
-        barrierRectangleHoleBounds = expressionBeingEdited.getBounds();
-        updateBarrierRectangle();
+    var updateHoleMultilink = null;
+    model.expressionBeingEditedProperty.link( function( currentExpressionBeingEdited, previousExpressionBeingEdited ) {
+
+      // if there is an expression being edited, the barrier rectangle should be visible
+      barrierRectanglePath.visible = currentExpressionBeingEdited !== null;
+
+      // if there previously was an expression being edited, we need to release the multilink that was watching its size
+      if ( previousExpressionBeingEdited ) {
+        assert && assert( updateHoleMultilink, 'expected a multilink to be present' );
+        Property.unmultilink( updateHoleMultilink );
+        updateHoleMultilink = null;
+      }
+
+      // If there is a new expression being edited, we need to listen to its size and adjust the hole in the barrier if
+      // the size changes.
+      if ( currentExpressionBeingEdited !== null ) {
+        updateHoleMultilink = Property.multilink(
+          [
+            currentExpressionBeingEdited.upperLeftCornerProperty,
+            currentExpressionBeingEdited.widthProperty,
+            currentExpressionBeingEdited.heightProperty
+          ],
+          function() {
+            updateBarrierRectangle();
+          }
+        );
       }
     } );
 

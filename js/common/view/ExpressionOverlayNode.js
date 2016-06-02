@@ -63,7 +63,6 @@ define( function( require ) {
 
     // become invisible if the expression goes into edit mode so that the user can interact with the coin terms within
     expression.inEditModeProperty.link( function( inEditMode ) {
-      console.log( 'inEditMode = ' + inEditMode );
       self.visible = !inEditMode;
     } );
 
