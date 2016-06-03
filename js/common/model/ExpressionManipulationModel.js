@@ -360,12 +360,26 @@ define( function( require ) {
       addedExpression.userControlledProperty.lazyLink( expressionUserControlledListener );
 
       // add a listener that will handle requests to break apart this expression
-      function breakApartExpressionListener() {
-        addedExpression.removeAllCoinTerms();
+      function expressionBreakApartListener() {
+
+        // keep a reference to the center for when we spread out the coin terms
+        var expressionCenterX = addedExpression.getBounds().centerX;
+
+        // remove the coin terms from the expression and the expression from the model
+        var newlyFreedCoinTerms = addedExpression.removeAllCoinTerms();
         self.expressions.remove( addedExpression );
+
+        // spread the released coin terms out horizontally
+        newlyFreedCoinTerms.forEach( function( newlyFreedCoinTerm ) {
+          var horizontalDistanceFromExpressionCenter = newlyFreedCoinTerm.position.x - expressionCenterX;
+          newlyFreedCoinTerm.travelToDestination( new Vector2(
+            newlyFreedCoinTerm.position.x + horizontalDistanceFromExpressionCenter * 0.15, // spread factor empirically determined
+            newlyFreedCoinTerm.position.y
+          ) );
+        } );
       }
 
-      addedExpression.breakApartEmitter.addListener( breakApartExpressionListener );
+      addedExpression.breakApartEmitter.addListener( expressionBreakApartListener );
 
       // add a listener that will handle requests to edit this expression
       function editExpressionListener() {
@@ -378,7 +392,7 @@ define( function( require ) {
       self.expressions.addItemRemovedListener( function( removedExpression ) {
         if ( removedExpression === addedExpression ) {
           addedExpression.userControlledProperty.unlink( expressionUserControlledListener );
-          addedExpression.breakApartEmitter.removeListener( breakApartExpressionListener );
+          addedExpression.breakApartEmitter.removeListener( expressionBreakApartListener );
           addedExpression.selectedForEditEmitter.removeListener( editExpressionListener );
         }
       } );
