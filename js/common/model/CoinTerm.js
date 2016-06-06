@@ -45,6 +45,9 @@ define( function( require ) {
       combineHaloActive: false, // @public
       inProgressAnimation: null, // @public (read only), tracks the current in-progress animation, if any
 
+      // @public, flag used to disallow breaking apart, generally when the coin term is part of an expression
+      breakApartAllowed: true,
+
       // @public - The bounds of this model element's view representation relative to the element's current position.
       // This admittedly breaks the usual model-view rules, but many things in the view need to know this, so having it
       // available on the model element after being set by the view worked out to be the best approach.

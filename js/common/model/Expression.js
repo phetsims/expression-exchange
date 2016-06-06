@@ -78,6 +78,7 @@ define( function( require ) {
 
     // add the initial coin term
     this.coinTerms.push( anchorCoinTerm );
+    anchorCoinTerm.breakApartAllowed = false;
 
     // Define a listener that is bound to this object that will set the resize needed flag when fired.  This is done
     // in this way so that the listener can be found and removed when the coin term is removed from this expression.
@@ -258,7 +259,7 @@ define( function( require ) {
     },
 
     /**
-     * add the specified coin term, moving into the correct location
+     * add the specified coin term to this expression, moving it to the correct location
      * @param {CoinTerm} coinTerm
      * @public
      */
@@ -272,6 +273,9 @@ define( function( require ) {
           this.leftHintActive = false;
         }
       }
+
+      console.log( 'setting false in expression' );
+      coinTerm.breakApartAllowed = false;
 
       // adjust the expression's width to accommodate the new coin term
       var originalWidth = this.width;
@@ -302,13 +306,14 @@ define( function( require ) {
       // add the coin term
       this.coinTerms.push( coinTerm );
 
-      // add a listener to resize the expression if this coin term's bound changes
+      // add a listener to resize the expression if the bounds of this coin term change
       coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
     },
 
     // @public
     removeCoinTerm: function( coinTerm ) {
       coinTerm.relativeViewBoundsProperty.unlink( this.setResizeFlagFunction );
+      coinTerm.breakApartAllowed = true;
       this.coinTerms.remove( coinTerm );
       if ( this.coinTerms.length > 0 ) {
         this.updateSizeAndCoinTermPositions();
@@ -494,6 +499,7 @@ define( function( require ) {
     addHoveringCoinTerm: function( coinTerm ) {
       if ( this.hoveringCoinTerms.indexOf( coinTerm ) === -1 ) {
         this.hoveringCoinTerms.push( coinTerm );
+        coinTerm.breakApartAllowed = false;
       }
     },
 
@@ -507,6 +513,8 @@ define( function( require ) {
       var index = this.hoveringCoinTerms.indexOf( coinTerm );
       if ( index !== -1 ) {
         this.hoveringCoinTerms.splice( index, 1 );
+        console.log( 'remove hovering' );
+        coinTerm.breakApartAllowed = true;
       }
     },
 
@@ -520,6 +528,9 @@ define( function( require ) {
     },
 
     clearHoveringCoinTerms: function() {
+      this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
+        hoveringCoinTerm.breakApartAllowed = true;
+      } );
       this.hoveringCoinTerms.length = 0;
     },
 

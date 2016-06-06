@@ -138,9 +138,6 @@ define( function( require ) {
     var unboundedUpperLeftCornerPosition = new Vector2();
     var boundedUpperLeftCornerPosition = new Vector2();
 
-    // TODO: doc
-    var dragDistance = 0;
-
     // add the handler that will allow the expression to be dragged and will hide and show the buttons
     var dragHandler = new SimpleDragHandler( {
 
@@ -149,7 +146,6 @@ define( function( require ) {
 
       start: function( event ) {
         expression.userControlled = true;
-        dragDistance = 0;
         unboundedUpperLeftCornerPosition.set( expression.upperLeftCorner );
         boundedUpperLeftCornerPosition.set( unboundedUpperLeftCornerPosition );
         clearHideButtonsTimer(); // in case it's running

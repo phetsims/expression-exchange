@@ -242,8 +242,7 @@ define( function( require ) {
     // TODO: This is a workaround because I couldn't figure out how to monitor visible bounds.  This should be removed when possible.
     coefficientVisibleProperty.link( updateBoundsInModel );
 
-    // add the variables that will track the timers used as part of the break apart button visibility control
-    var showButtonTimer = null;
+    // timer that will be used to hide the break apart button if user doesn't use it
     var hideButtonTimer = null;
 
     // Add the button that will allow combined coins to be un-combined.  This is done outside of the rootnode so that it
@@ -314,6 +313,31 @@ define( function( require ) {
       self.y = position.y - coinCenter.y;
     } );
 
+    // update the state of the break apart button when the userControlled state changes
+    coinTerm.userControlledProperty.link( function( userControlled ) {
+      console.log( 'userControlled = ' + userControlled );
+      if ( coinTerm.combinedCount > 1 && coinTerm.breakApartAllowed ) {
+        if ( userControlled ) {
+          clearHideButtonTimer(); // called in case the timer was running
+          showBreakApartButton();
+        }
+        else if ( breakApartButton.visible ) {
+
+          // the userControlled flag transitioned to false while the button was visible, start the time to hide it
+          startHideButtonTimer();
+        }
+      }
+    } );
+
+    // hide the break apart button if break apart becomes disallowed
+    coinTerm.breakApartAllowedProperty.link( function( breakApartAllowed ) {
+      console.log( 'breakApartAllowed = ' + breakApartAllowed );
+      if ( !breakApartAllowed && breakApartButton.visible ) {
+        clearHideButtonTimer();
+        hideBreakApartButton();
+      }
+    } );
+
     if ( options.addDragHandler ) {
 
       // variable to track where drag started
@@ -333,16 +357,6 @@ define( function( require ) {
             coinTerm.userControlled = true;
             dragStartPosition = coinTerm.position;
             unboundedPosition.set( dragStartPosition );
-
-            // if this is a multi-count coin term, show the break apart button
-            if ( Math.abs( coinTerm.combinedCount > 1 ) ) {
-
-              // clear the hide button timer if it is running
-              clearHideButtonTimer();
-
-              // show the button
-              showBreakApartButton();
-            }
           },
 
           // handler that moves the shape in model space
@@ -363,10 +377,6 @@ define( function( require ) {
 
           end: function( event, trail ) {
             coinTerm.userControlled = false;
-
-            if ( breakApartButton.visible ) {
-              startHideButtonTimer();
-            }
           }
         }
       ) );

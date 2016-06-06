@@ -22,6 +22,10 @@ define( function( require ) {
     this.anchorCoinTerm = anchorCoinTerm;
     this.movingCoinTerm = movingCoinTerm;
     this.anchorOnLeft = anchorCoinTerm.position.x < movingCoinTerm.position.x;
+
+    // disallow break apart of multi-unit coin terms when in an expression hint
+    anchorCoinTerm.breakApartAllowed = false;
+    movingCoinTerm.breakApartAllowed = false;
   }
 
   expressionExchange.register( 'ExpressionHint', ExpressionHint );
@@ -43,6 +47,12 @@ define( function( require ) {
                otherExpressionHint.movingCoinTerm === this.movingCoinTerm &&
                otherExpressionHint.anchorOnLeft === this.anchorOnLeft
       );
+    },
+
+    clear: function() {
+      console.log( 'clear' );
+      this.anchorCoinTerm.breakApartAllowed = true;
+      this.movingCoinTerm.breakApartAllowed = true;
     }
   } );
 } );

@@ -41,7 +41,6 @@ define( function( require ) {
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
   var VariableValueControl = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueControl' );
-  var Vector2 = require( 'DOT/Vector2' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
   var VStrut = require( 'SCENERY/nodes/VStrut' );
 
