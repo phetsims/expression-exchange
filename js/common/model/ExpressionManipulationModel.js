@@ -414,6 +414,11 @@ define( function( require ) {
       var userControlledCoinTerms;
       var coinTermsWithHalos = [];
 
+      // TODO: Part of the state control for expressions, hints, halos, etc, is done where while part of it is done
+      // TODO: with event handlers on the userControlled property for the coin terms and expressions.  At some point,
+      // TODO: when the functionality is fairly mature, I (jbphet) should look at consolidating these in order to make
+      // TODO: the code more understandable and maintainable.
+
       if ( !this.expressionBeingEdited ) {
 
         // get a list of user controlled expressions, max of one on mouse based systems, any number on touch devices
