@@ -274,7 +274,6 @@ define( function( require ) {
         }
       }
 
-      console.log( 'setting false in expression' );
       coinTerm.breakApartAllowed = false;
 
       // adjust the expression's width to accommodate the new coin term
@@ -513,7 +512,6 @@ define( function( require ) {
       var index = this.hoveringCoinTerms.indexOf( coinTerm );
       if ( index !== -1 ) {
         this.hoveringCoinTerms.splice( index, 1 );
-        console.log( 'remove hovering' );
         coinTerm.breakApartAllowed = true;
       }
     },

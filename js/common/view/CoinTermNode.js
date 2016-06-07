@@ -206,42 +206,6 @@ define( function( require ) {
     // position the coefficient to line up well with the text or the code
     Property.multilink( [ viewModeProperty, coinTerm.termValueTextProperty, termTextVisibleProperty ], updateCoefficientPosition );
 
-    // helper function to take the view bounds information and communicate it to the model
-    function updateBoundsInModel() {
-
-      var relativeVisibleBounds = self.visibleLocalBounds.shifted( -coinTerm.coinDiameter / 2, -coinTerm.coinDiameter / 2 );
-
-      // TODO:  The following is some temporary code to try out making the overall bounds remain the same for the two
-      // TODO:  different view modes so that the expressions don't expand/collapse as the modes change.  This will need
-      // TODO:  to be moved out or kept based on the feedback we get.  See
-      // TODO:  https://github.com/phetsims/expression-exchange/issues/10
-      if ( !EEQueryParameters.ADJUST_EXPRESSION_WIDTH ) {
-
-        var width = Math.max( coinImageNode.width, termText.width, termWithVariableValuesText.width );
-
-        if ( coefficientText.visible || Math.abs( coinTerm.combinedCount ) > 1 ) {
-          width += coefficientText.width + COEFFICIENT_X_SPACING;
-        }
-
-        // set the view bounds such that the non-coefficient portion is always the same width
-        relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( width - relativeVisibleBounds.width ) / 2 );
-      }
-
-      // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
-      if ( !coinTerm.relativeViewBounds || !coinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
-        coinTerm.relativeViewBounds = relativeVisibleBounds;
-      }
-    }
-
-    // Update the model with the view's dimensions.  This breaks the whole model-view separation rule a bit, but in this
-    // sim both the model and the view can be affected by the size of the coin terms, so this was a way to get it done.
-    rootNode.on( 'bounds', function() {
-      updateBoundsInModel();
-    } );
-
-    // TODO: This is a workaround because I couldn't figure out how to monitor visible bounds.  This should be removed when possible.
-    coefficientVisibleProperty.link( updateBoundsInModel );
-
     // timer that will be used to hide the break apart button if user doesn't use it
     var hideButtonTimer = null;
 
@@ -296,15 +260,75 @@ define( function( require ) {
       breakApartButton.centerX = coinCenter.x;
       breakApartButton.bottom = -3; // just above the coin, empirically determined
       breakApartButton.visible = true;
-      updateBoundsInModel();
     }
 
     // define a function that will position and hide the break apart button
     function hideBreakApartButton() {
       breakApartButton.center = coinCenter; // position within coin term so bounds aren't affected
       breakApartButton.visible = false;
-      updateBoundsInModel();
     }
+
+    // helper function to take the view bounds information and communicate it to the model
+    function updateBoundsInModel() {
+
+      // make the bounds relative to the coin term's position, which corresponds to the center of the coin
+      var relativeVisibleBounds = self.visibleLocalBounds.shifted( -coinTerm.coinDiameter / 2, -coinTerm.coinDiameter / 2 );
+
+      if ( breakApartButton.visible ) {
+        // Subtract off the contribution from the break apart button, since we don't want the button's bounds affecting
+        // decisions by the model about when coins overlap with other coins or expressions.  The code assumes that the
+        // break apart button is positioned directly above the coin term.
+        var adjustedMinY = relativeVisibleBounds.minY;
+
+        if ( coinImageNode.visible ) {
+          adjustedMinY = Math.max( coinImageNode.bounds.minY - coinTerm.coinDiameter / 2, adjustedMinY );
+        }
+
+        if ( coefficientText.visible ) {
+          adjustedMinY = Math.max( coefficientText.bounds.minY - coinTerm.coinDiameter / 2, adjustedMinY );
+        }
+
+        if ( termText.visible ) {
+          adjustedMinY = Math.max( termText.bounds.minY - coinTerm.coinDiameter / 2, adjustedMinY );
+        }
+
+        if ( termWithVariableValuesText.visible ) {
+          adjustedMinY = Math.max( termWithVariableValuesText.bounds.minY - coinTerm.coinDiameter / 2, adjustedMinY );
+        }
+
+        relativeVisibleBounds.setMinY( adjustedMinY );
+      }
+
+      // TODO:  The following is some temporary code to try out making the overall bounds remain the same for the two
+      // TODO:  different view modes so that the expressions don't expand/collapse as the modes change.  This will need
+      // TODO:  to be moved out or kept based on the feedback we get.  See
+      // TODO:  https://github.com/phetsims/expression-exchange/issues/10
+      if ( !EEQueryParameters.ADJUST_EXPRESSION_WIDTH ) {
+
+        var width = Math.max( coinImageNode.width, termText.width, termWithVariableValuesText.width );
+
+        if ( coefficientText.visible || Math.abs( coinTerm.combinedCount ) > 1 ) {
+          width += coefficientText.width + COEFFICIENT_X_SPACING;
+        }
+
+        // set the view bounds such that the non-coefficient portion is always the same width
+        relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( width - relativeVisibleBounds.width ) / 2 );
+      }
+
+      // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
+      if ( !coinTerm.relativeViewBounds || !coinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
+        coinTerm.relativeViewBounds = relativeVisibleBounds;
+      }
+    }
+
+    // Update the model with the view's dimensions.  This breaks the whole model-view separation rule a bit, but in this
+    // sim both the model and the view can be affected by the size of the coin terms, so this was a way to get it done.
+    rootNode.on( 'bounds', function() {
+      updateBoundsInModel();
+    } );
+
+    // TODO: This is a workaround because I couldn't figure out how to monitor visible bounds.  This should be removed when possible.
+    coefficientVisibleProperty.link( updateBoundsInModel );
 
     // move this node as the model representation moves
     coinTerm.positionProperty.link( function( position ) {
@@ -315,7 +339,6 @@ define( function( require ) {
 
     // update the state of the break apart button when the userControlled state changes
     coinTerm.userControlledProperty.link( function( userControlled ) {
-      console.log( 'userControlled = ' + userControlled );
       if ( coinTerm.combinedCount > 1 && coinTerm.breakApartAllowed ) {
         if ( userControlled ) {
           clearHideButtonTimer(); // called in case the timer was running
@@ -331,7 +354,6 @@ define( function( require ) {
 
     // hide the break apart button if break apart becomes disallowed
     coinTerm.breakApartAllowedProperty.link( function( breakApartAllowed ) {
-      console.log( 'breakApartAllowed = ' + breakApartAllowed );
       if ( !breakApartAllowed && breakApartButton.visible ) {
         clearHideButtonTimer();
         hideBreakApartButton();

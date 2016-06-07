@@ -174,7 +174,6 @@ define( function( require ) {
                     }
                   } );
                   assert && assert( expressionHintToRemove, 'creating new expression, but no expression hint was found' );
-                  console.log( 'remove 1' );
                   self.removeExpressionHint( expressionHintToRemove );
 
                   // create the next expression with these coin terms
@@ -522,7 +521,6 @@ define( function( require ) {
               }
             } );
             if ( !matchFound ) {
-              console.log( 'remove 2' );
               self.removeExpressionHint( existingExpressionHint );
             }
           } );
@@ -542,7 +540,6 @@ define( function( require ) {
         }
         else {
           self.expressionHints.forEach( function( existingExpressionHint ) {
-            console.log( 'remove 3' );
             self.removeExpressionHint( existingExpressionHint );
           } );
         }

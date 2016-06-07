@@ -50,7 +50,6 @@ define( function( require ) {
     },
 
     clear: function() {
-      console.log( 'clear' );
       this.anchorCoinTerm.breakApartAllowed = true;
       this.movingCoinTerm.breakApartAllowed = true;
     }
