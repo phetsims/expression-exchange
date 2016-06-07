@@ -218,10 +218,10 @@ define( function( require ) {
       addCoinTermToCreatorSet( CoinTermTypeID.Z, 1 );
       addCoinTermToCreatorSet( CoinTermTypeID.X, 2 );
       addCoinTermToCreatorSet( CoinTermTypeID.Y, 3 );
-      addCoinTermToCreatorSet( CoinTermTypeID.X_TIMES_Y, 3 );
-      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED, 3 );
-      addCoinTermToCreatorSet( CoinTermTypeID.Y_SQUARED, 3 );
-      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, 3 );
+      addCoinTermToCreatorSet( CoinTermTypeID.X_TIMES_Y, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.Y_SQUARED, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, 1 );
     }
     else if ( model.coinTermCollection === CoinTermCreatorSet.ADVANCED ) {
       addCoinTermToCreatorSet( CoinTermTypeID.X, 1 );

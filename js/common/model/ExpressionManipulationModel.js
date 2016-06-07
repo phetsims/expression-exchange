@@ -184,7 +184,8 @@ define( function( require ) {
           }
           else {
 
-            // An expression is being edited, so the handling of a released coin term is different.
+            // An expression is being edited, so a released coin term could be either moved within an expression or
+            // combined with another coin term within the expression.
 
             // state checking
             assert && assert(
@@ -192,7 +193,7 @@ define( function( require ) {
               'coin term being released is not in expression being edited, this should not occur'
             );
 
-            // is this being dropped in a place where it could combine with a like coin term?
+            // determine if the coin term was dropped while overlapping a coin term of the same type
             var overlappingLikeCoinTerm = self.getOverlappingLikeCoinTermWithinExpression(
               addedCoinTerm,
               self.expressionBeingEdited
