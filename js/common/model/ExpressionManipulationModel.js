@@ -227,10 +227,21 @@ define( function( require ) {
         // set this coin back to being a single, keeping the sign the same
         addedCoinTerm.combinedCount = addedCoinTerm.combinedCount > 0 ? 1 : -1;
 
+        // If the total combined coin count was even, shift the 'parent coin' a bit so that the coins end up being
+        // distributed around the centerX position.
+        if ( numToCreate % 2 === 1 ) {
+          addedCoinTerm.travelToDestination(
+            new Vector2(
+              addedCoinTerm.position.x - addedCoinTerm.relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
+              addedCoinTerm.position.y
+            )
+          );
+        }
+
         // add new coin terms to represent those that were broken out from the initial one
         var interCoinTermDistance = addedCoinTerm.relativeViewBounds.width + BREAK_APART_SPACING;
-        var nextLeftX = addedCoinTerm.position.x - interCoinTermDistance;
-        var nextRightX = addedCoinTerm.position.x + interCoinTermDistance;
+        var nextLeftX = addedCoinTerm.destination.x - interCoinTermDistance;
+        var nextRightX = addedCoinTerm.destination.x + interCoinTermDistance;
         _.times( numToCreate, function( index ) {
           var clonedCoinTerm = addedCoinTerm.cloneMostly();
           self.addCoinTerm( clonedCoinTerm );
@@ -607,13 +618,14 @@ define( function( require ) {
      * stop editing the expression that is currently selected for edit, does nothing if no expression selected
      */
     stopEditingExpression: function() {
-      this.expressionBeingEdited.exitEditMode();
-      if ( this.expressionBeingEdited.coinTerms.length === 1 ) {
 
-        // The expression must have consisted of all like coin terms that are now combined, so remove the expression,
-        // leaving just the coin terms behind.
+      this.expressionBeingEdited.exitEditMode();
+
+      // handle the special case where all coin terms in the expression were the same and have been combined together
+      if ( this.expressionBeingEdited.coinTerms.length === 1 ) {
         this.expressionBeingEdited.breakApart();
       }
+
       this.expressionBeingEdited = null;
     },
 
