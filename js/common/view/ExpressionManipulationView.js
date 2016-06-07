@@ -64,6 +64,7 @@ define( function( require ) {
   var CHECK_BOX_FONT = new PhetFont( { size: 16 } );
   var INSET = 10; // inset from edges of layout bounds, in screen coords
   var MAX_COIN_TERMS_PER_TYPE = 10;
+  var FLOATING_PANEL_INSET = 10;
 
   /**
    * @param {ExpressionManipulationModel} model
@@ -372,10 +373,21 @@ define( function( require ) {
       barrierRectanglePath.setShape( barrierRectangleShape );
     }
 
-    // monitor the view bounds and update the barrier rectangle if they change
+    // monitor the view bounds and update the layout and the barrier rectangle size
     this.visibleBoundsProperty.link( function( visibleBounds ) {
+
+      // update the size of the barrier rectangle
       barrierRectangleBounds = visibleBounds;
       updateBarrierRectangle();
+
+      // update the positions of the floating controls
+      totalValueAccordionBox.left = visibleBounds.minX + FLOATING_PANEL_INSET;
+      variableValuesAccordionBox.left = visibleBounds.minX + FLOATING_PANEL_INSET;
+      myCollectionAccordionBox.right = visibleBounds.maxX - FLOATING_PANEL_INSET;
+      showCoinValuesCheckbox.left = myCollectionAccordionBox.left;
+      showVariableValuesCheckbox.left = myCollectionAccordionBox.left;
+      showAllCoefficientsCheckbox.left = myCollectionAccordionBox.left;
+      resetAllButton.right = visibleBounds.maxX - FLOATING_PANEL_INSET;
     } );
 
     // show the barrier rectangle when an expression is being edited
