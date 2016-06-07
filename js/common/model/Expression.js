@@ -61,6 +61,10 @@ define( function( require ) {
     // @public, listen only, emits an event when this expression has been selected by the user to be edited
     this.selectedForEditEmitter = new Emitter();
 
+    // @public, listen only, emits an event when the size of the expression or the relative positions of the coins
+    // change, generally used by the view so that it knows when to update, does NOT fire for position-only changes
+    this.layoutChangedEmitter = new Emitter();
+
     // @public, listen only, emits an event when this expression should be broken apart
     this.breakApartEmitter = new Emitter();
 
@@ -216,6 +220,11 @@ define( function( require ) {
      */
     updateSizeAndCoinTermPositions: function() {
 
+      // keep track of original size so we know when to fire event about layout changes
+      var originalWidth = this.width;
+      var originalHeight = this.height;
+      var coinTermsMoved = false;
+
       // get an array of the coin terms sorted from left to right
       var coinTermsLeftToRight = this.coinTerms.getArray().slice( 0 ).sort( function( ct1, ct2 ) {
         return ct1.destination.x - ct2.destination.x;
@@ -227,11 +236,15 @@ define( function( require ) {
 
       // adjust the positions of coin terms to the right of the middle
       for ( var i = middleCoinTermIndex + 1; i < coinTermsLeftToRight.length; i++ ) {
+
         // adjust the position of this coin term to be the correct distance from its neighbor to the left
         var leftNeighbor = coinTermsLeftToRight[ i - 1 ];
         xPos = leftNeighbor.destination.x + leftNeighbor.relativeViewBounds.maxX + INTER_COIN_TERM_SPACING -
                coinTermsLeftToRight[ i ].relativeViewBounds.minX;
-        coinTermsLeftToRight[ i ].travelToDestination( new Vector2( xPos, yPos ) );
+        if ( coinTermsLeftToRight[ i ].position.x !== xPos ) {
+          coinTermsLeftToRight[ i ].travelToDestination( new Vector2( xPos, yPos ) );
+          coinTermsMoved = true;
+        }
       }
 
       // adjust the positions of coin terms to the left of the middle
@@ -240,7 +253,10 @@ define( function( require ) {
         var rightNeighbor = coinTermsLeftToRight[ i + 1 ];
         xPos = rightNeighbor.destination.x + rightNeighbor.relativeViewBounds.minX - INTER_COIN_TERM_SPACING -
                coinTermsLeftToRight[ i ].relativeViewBounds.maxX;
-        coinTermsLeftToRight[ i ].travelToDestination( new Vector2( xPos, yPos ) );
+        if ( coinTermsLeftToRight[ i ].position.x !== xPos ) {
+          coinTermsLeftToRight[ i ].travelToDestination( new Vector2( xPos, yPos ) );
+          coinTermsMoved = true;
+        }
       }
 
       // adjust the size and position of the background
@@ -256,6 +272,11 @@ define( function( require ) {
       );
       this.height = maxHeight + 2 * INSET;
       this.width = totalWidth + 2 * INSET + INTER_COIN_TERM_SPACING * ( coinTermsLeftToRight.length - 1 );
+
+      // emit an event if the size or the coin term positions changed
+      if ( this.width !== originalWidth || this.height !== originalHeight || coinTermsMoved ) {
+        this.layoutChangedEmitter.emit();
+      }
     },
 
     /**
@@ -375,6 +396,7 @@ define( function( require ) {
         orderedCoinTerm.travelToDestination( new Vector2( leftEdge - orderedCoinTerm.relativeViewBounds.minX, centerY ) );
         leftEdge += orderedCoinTerm.relativeViewBounds.width + INTER_COIN_TERM_SPACING;
       } );
+      this.layoutChangedEmitter.emit();
     },
 
     /**
