@@ -24,12 +24,15 @@ define( function( require ) {
   var Util = require( 'DOT/Util' );
   var Vector2 = require( 'DOT/Vector2' );
 
+  // constants
+  var MIN_EXPRESSION_IN_BOUNDS_WIDTH = 70; // in screen coords, min horizontal amount of expression that must stay in bounds
+
   /**
    * @param {Expression} expression - model of an expression
-   * @param {Bounds2} dragBounds
+   * @param {Bounds2} layoutBounds - bounds of the main view layout
    * @constructor
    */
-  function ExpressionOverlayNode( expression, dragBounds ) {
+  function ExpressionOverlayNode( expression, layoutBounds ) {
 
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
@@ -141,7 +144,6 @@ define( function( require ) {
     // add the handler that will allow the expression to be dragged and will hide and show the buttons
     var dragHandler = new SimpleDragHandler( {
 
-      // when dragging across it in a mobile device, pick it up
       allowTouchSnag: true,
 
       start: function( event ) {
@@ -160,10 +162,14 @@ define( function( require ) {
           unboundedUpperLeftCornerPosition.y + translationParams.delta.y
         );
 
-        // set the expression position, but bound it so the user doesn't drag it outside of the usable area
+        // set the expression position, but bound it so the user doesn't drag it completely out of the usable area
         expression.setPositionAndDestination( new Vector2(
-          Util.clamp( unboundedUpperLeftCornerPosition.x, dragBounds.minX, dragBounds.maxX - expression.width ),
-          Util.clamp( unboundedUpperLeftCornerPosition.y, dragBounds.minY, dragBounds.maxY - expression.height )
+          Util.clamp(
+            unboundedUpperLeftCornerPosition.x,
+            layoutBounds.minX - expression.width + MIN_EXPRESSION_IN_BOUNDS_WIDTH,
+            layoutBounds.maxX - MIN_EXPRESSION_IN_BOUNDS_WIDTH
+          ),
+          Util.clamp( unboundedUpperLeftCornerPosition.y, layoutBounds.minY, layoutBounds.maxY - expression.height )
         ) );
       },
 
