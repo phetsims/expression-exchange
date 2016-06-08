@@ -31,7 +31,8 @@ define( function( require ) {
     CoinTermTypeID.X_TIMES_Y,
     CoinTermTypeID.X_SQUARED,
     CoinTermTypeID.Y_SQUARED,
-    CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED
+    CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED,
+    CoinTermTypeID.CONSTANT_ONE
   ];
 
   /**
