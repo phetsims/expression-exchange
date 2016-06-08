@@ -63,6 +63,7 @@ define( function( require ) {
 
     // @public, listen only, emits an event when the size of the expression or the relative positions of the coins
     // change, generally used by the view so that it knows when to update, does NOT fire for position-only changes
+    // or for activitation/deactivation of hints
     this.layoutChangedEmitter = new Emitter();
 
     // @public, listen only, emits an event when this expression should be broken apart
@@ -194,6 +195,7 @@ define( function( require ) {
       if ( this.height !== neededHeight ) {
         this.upperLeftCorner = this.upperLeftCorner.minusXY( 0, ( neededHeight - this.height ) / 2 );
         this.height = tallestCoinTermHeight + 2 * INSET;
+        this.layoutChangedEmitter.emit();
       }
     },
 
