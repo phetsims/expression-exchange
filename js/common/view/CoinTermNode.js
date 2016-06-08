@@ -11,7 +11,7 @@ define( function( require ) {
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
   var BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
-  var CoinTermImageMap = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermImageMap' );
+  var CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
@@ -64,9 +64,7 @@ define( function( require ) {
     this.addChild( rootNode );
 
     // add the image that represents the front of the coin
-    var image = CoinTermImageMap[ coinTerm.typeID ].frontFullSize;
-    var coinImageNode = new Image( image );
-    coinImageNode.scale( coinTerm.coinDiameter / coinImageNode.width );
+    var coinImageNode = CoinNodeFactory.createFrontImageNode( coinTerm.typeID, coinTerm.coinDiameter / 2 );
     rootNode.addChild( coinImageNode );
 
     // control front coin image visibility

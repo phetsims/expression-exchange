@@ -9,10 +9,9 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var CoinTermImageMap = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermImageMap' );
+  var CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -39,10 +38,8 @@ define( function( require ) {
 
     Node.call( this );
 
-    // add the image that represents the front of the coin
-    var iconImage = CoinTermImageMap[ coinTerm.typeID ].icon;
-    var coinIconNode = new Image( iconImage );
-    coinIconNode.scale( coinTerm.coinDiameter / coinIconNode.width * SCALING_FACTOR );
+    // add the node that represents the icon
+    var coinIconNode = CoinNodeFactory.createIconNode( coinTerm.typeID, coinTerm.coinDiameter / 2 * SCALING_FACTOR );
     this.addChild( coinIconNode );
 
     // control coin icon visibility
@@ -51,7 +48,7 @@ define( function( require ) {
     } );
 
     // convenience variable for positioning the textual labels created below
-    var coinCenter = new Vector2( coinIconNode.width / 2, coinIconNode.height / 2 );
+    var coinCenter = coinIconNode.center;
 
     // add the coin value text
     var coinValueText = new Text( coinTerm.valueProperty.value, { font: COIN_VALUE_FONT, center: coinCenter } );
