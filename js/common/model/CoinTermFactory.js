@@ -20,6 +20,10 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
 
+  // constants
+  var CONSTANT_ONE_VALUE_PROPERTY = new Property( 1 );
+  var CONSTANT_ONE_TEXT_VALUE_PROPERTY = new Property( '1' );
+
   /**
    * {number} xValueProperty
    * {number} yValueProperty
@@ -186,6 +190,13 @@ define( function( require ) {
           coinRadius = 28;
           termText = EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>' + EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>',
             termValueTextProperty = this.xSquaredTimesYSquaredValueStringProperty;
+          break;
+
+        case CoinTermTypeID.CONSTANT_ONE:
+          valueProperty = CONSTANT_ONE_VALUE_PROPERTY;
+          coinRadius = 20; // fairly arbitrary, since this should never end up being depicted as a coin
+          termText = '1';
+          termValueTextProperty = CONSTANT_ONE_TEXT_VALUE_PROPERTY;
           break;
 
         default:

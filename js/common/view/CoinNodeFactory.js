@@ -125,6 +125,18 @@ define( function( require ) {
           coinNode = new Image( coinXSquaredYSquaredFrontImage );
           break;
 
+        case CoinTermTypeID.CONSTANT_ONE:
+          // this should never be depicted as a coin, so add something garish so that we'll notice if it is
+          coinNode = new Circle( radius, {
+            fill: 'pink',
+            stroke: 'red',
+
+            // make the top left 0,0 so that it's the same as the images
+            left: 0,
+            top: 0
+          } );
+          break;
+
         default:
           assert && assert( false, 'unknown coin term type' )
       }
@@ -198,6 +210,11 @@ define( function( require ) {
             radius * 0.7,
             new Color( 225, 191, 46 )
           );
+          break;
+
+        case CoinTermTypeID.CONSTANT_ONE:
+          // this should never be depicted as a coin, so add something garish so that we'll notice if it is
+          iconNode = new Circle( radius, { fill: 'pink', stroke: 'red' } );
           break;
 
         default:

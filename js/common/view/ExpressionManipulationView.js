@@ -207,6 +207,7 @@ define( function( require ) {
     }
 
     // create the collection of coin term creator nodes that will be presented to the user, varies based on options
+    var itemsPerCarouselPage = 3;
     if ( model.coinTermCollection === CoinTermCreatorSet.BASIC ) {
       addCoinTermToCreatorSet( CoinTermTypeID.X, 1 );
       addCoinTermToCreatorSet( CoinTermTypeID.Y, 1 );
@@ -224,9 +225,15 @@ define( function( require ) {
       addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, 1 );
     }
     else if ( model.coinTermCollection === CoinTermCreatorSet.ADVANCED ) {
+      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED, 1 );
       addCoinTermToCreatorSet( CoinTermTypeID.X, 1 );
       addCoinTermToCreatorSet( CoinTermTypeID.Y, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.Z, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.CONSTANT_ONE, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED, -1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.X, -1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.Y, -1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.CONSTANT_ONE, -1 );
+      itemsPerCarouselPage = 4; // this set works better with four items per page
     }
     else {
       assert( false, 'unknown value for coinTermCollection' );
@@ -240,7 +247,7 @@ define( function( require ) {
       coinTermCreatorHolder = new Carousel( coinTermCreatorSet, {
         centerX: coinTermHolderCenterX,
         bottom: coinTermHolderBottom,
-        itemsPerPage: 3,
+        itemsPerPage: itemsPerCarouselPage,
         spacing: 60 // empirically determined to handle worst case term test
       } );
     }
