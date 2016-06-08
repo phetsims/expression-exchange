@@ -64,7 +64,7 @@ define( function( require ) {
     this.addChild( rootNode );
 
     // add the image that represents the front of the coin
-    var coinImageNode = CoinNodeFactory.createFrontImageNode( coinTerm.typeID, coinTerm.coinDiameter / 2 );
+    var coinImageNode = CoinNodeFactory.createFrontImageNode( coinTerm.typeID, coinTerm.coinRadius );
     rootNode.addChild( coinImageNode );
 
     // control front coin image visibility
@@ -270,7 +270,7 @@ define( function( require ) {
     function updateBoundsInModel() {
 
       // make the bounds relative to the coin term's position, which corresponds to the center of the coin
-      var relativeVisibleBounds = self.visibleLocalBounds.shifted( -coinTerm.coinDiameter / 2, -coinTerm.coinDiameter / 2 );
+      var relativeVisibleBounds = self.visibleLocalBounds.shifted( -coinTerm.coinRadius, -coinTerm.coinRadius );
 
       if ( breakApartButton.visible ) {
         // Subtract off the contribution from the break apart button, since we don't want the button's bounds affecting
@@ -279,19 +279,19 @@ define( function( require ) {
         var adjustedMinY = relativeVisibleBounds.minY;
 
         if ( coinImageNode.visible ) {
-          adjustedMinY = Math.max( coinImageNode.bounds.minY - coinTerm.coinDiameter / 2, adjustedMinY );
+          adjustedMinY = Math.max( coinImageNode.bounds.minY - coinTerm.coinRadius, adjustedMinY );
         }
 
         if ( coefficientText.visible ) {
-          adjustedMinY = Math.max( coefficientText.bounds.minY - coinTerm.coinDiameter / 2, adjustedMinY );
+          adjustedMinY = Math.max( coefficientText.bounds.minY - coinTerm.coinRadius, adjustedMinY );
         }
 
         if ( termText.visible ) {
-          adjustedMinY = Math.max( termText.bounds.minY - coinTerm.coinDiameter / 2, adjustedMinY );
+          adjustedMinY = Math.max( termText.bounds.minY - coinTerm.coinRadius, adjustedMinY );
         }
 
         if ( termWithVariableValuesText.visible ) {
-          adjustedMinY = Math.max( termWithVariableValuesText.bounds.minY - coinTerm.coinDiameter / 2, adjustedMinY );
+          adjustedMinY = Math.max( termWithVariableValuesText.bounds.minY - coinTerm.coinRadius, adjustedMinY );
         }
 
         relativeVisibleBounds.setMinY( adjustedMinY );

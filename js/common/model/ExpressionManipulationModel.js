@@ -821,10 +821,10 @@ define( function( require ) {
       return count;
     },
 
-    // @private, get the amount of overlap given two coin terms by comparing position and coin diameter
+    // @private, get the amount of overlap given two coin terms by comparing position and coin radius
     getCoinOverlapAmount: function( coinTerm1, coinTerm2 ) {
       var distanceBetweenCenters = coinTerm1.position.distance( coinTerm2.position );
-      return Math.max( ( coinTerm1.coinDiameter / 2 + coinTerm2.coinDiameter / 2 ) - distanceBetweenCenters, 0 );
+      return Math.max( ( coinTerm1.coinRadius + coinTerm2.coinRadius ) - distanceBetweenCenters, 0 );
     },
 
     // @private, get the amount of overlap between the view bounds for two coin terms

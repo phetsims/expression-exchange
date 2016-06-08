@@ -132,7 +132,7 @@ define( function( require ) {
     createCoinTerm: function( typeID, options ) {
 
       var valueProperty;
-      var coinDiameter;
+      var coinRadius;
       var termText;
       var termValueTextProperty;
 
@@ -141,49 +141,49 @@ define( function( require ) {
 
         case CoinTermTypeID.X:
           valueProperty = this.xValueProperty;
-          coinDiameter = 45;
+          coinRadius = 22;
           termText = EESharedConstants.X_VARIABLE_CHAR;
           termValueTextProperty = this.xValueStringProperty;
           break;
 
         case CoinTermTypeID.Y:
           valueProperty = this.yValueProperty;
-          coinDiameter = 45;
+          coinRadius = 22;
           termText = EESharedConstants.Y_VARIABLE_CHAR;
           termValueTextProperty = this.yValueStringProperty;
           break;
 
         case CoinTermTypeID.Z:
           valueProperty = this.zValueProperty;
-          coinDiameter = 50;
+          coinRadius = 25;
           termText = EESharedConstants.Z_VARIABLE_CHAR;
           termValueTextProperty = this.zValueStringProperty;
           break;
 
         case CoinTermTypeID.X_TIMES_Y:
           valueProperty = this.xTimesYValueProperty;
-          coinDiameter = 50;
+          coinRadius = 25;
           termText = EESharedConstants.X_VARIABLE_CHAR + EESharedConstants.Y_VARIABLE_CHAR;
           termValueTextProperty = this.xTimesYValueStringProperty;
           break;
 
         case CoinTermTypeID.X_SQUARED:
           valueProperty = this.xSquaredValueProperty;
-          coinDiameter = 55;
+          coinRadius = 27;
           termText = EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>',
             termValueTextProperty = this.xSquaredValueStringProperty;
           break;
 
         case CoinTermTypeID.Y_SQUARED:
           valueProperty = this.ySquaredValueProperty;
-          coinDiameter = 55;
+          coinRadius = 27;
           termText = EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>',
             termValueTextProperty = this.ySquaredValueStringProperty;
           break;
 
         case CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED:
           valueProperty = this.xSquaredTimesYSquaredValueProperty;
-          coinDiameter = 55;
+          coinRadius = 28;
           termText = EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>' + EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>',
             termValueTextProperty = this.xSquaredTimesYSquaredValueStringProperty;
           break;
@@ -194,7 +194,7 @@ define( function( require ) {
 
       return new CoinTerm(
         valueProperty,
-        coinDiameter,
+        coinRadius,
         termText,
         termValueTextProperty,
         typeID,

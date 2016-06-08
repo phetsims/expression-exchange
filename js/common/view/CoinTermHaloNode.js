@@ -34,8 +34,8 @@ define( function( require ) {
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
     // add the coin halo
-    var coinHalo = new Circle( coinTerm.coinDiameter / 2, {
-      stroke: new RadialGradient( 0, 0, coinTerm.coinDiameter / 2, 0, 0, coinTerm.coinDiameter * 0.75 ).
+    var coinHalo = new Circle( coinTerm.coinRadius, {
+      stroke: new RadialGradient( 0, 0, coinTerm.coinRadius, 0, 0, coinTerm.coinRadius * 1.5 ).
       addColorStop( 0, COIN_HALO_COLOR ).
       addColorStop( 1, COIN_HALO_EDGE_COLOR ),
       lineWidth: 16 // empirically determined

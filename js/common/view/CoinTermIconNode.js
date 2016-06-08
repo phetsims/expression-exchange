@@ -39,7 +39,7 @@ define( function( require ) {
     Node.call( this );
 
     // add the node that represents the icon
-    var coinIconNode = CoinNodeFactory.createIconNode( coinTerm.typeID, coinTerm.coinDiameter / 2 * SCALING_FACTOR );
+    var coinIconNode = CoinNodeFactory.createIconNode( coinTerm.typeID, coinTerm.coinRadius * SCALING_FACTOR );
     this.addChild( coinIconNode );
 
     // control coin icon visibility

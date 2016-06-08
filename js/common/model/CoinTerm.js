@@ -27,7 +27,7 @@ define( function( require ) {
    * TODO: document parameters thoroughly once finalized.  Make sure to note requirement for subSupText format of some of the string values.
    * @constructor
    */
-  function CoinTerm( valueProperty, coinDiameter, termText, termValueTextProperty, typeID, options ) {
+  function CoinTerm( valueProperty, coinRadius, termText, termValueTextProperty, typeID, options ) {
 
     var self = this;
     this.id = 'CT-' + (++creationCount);
@@ -58,7 +58,7 @@ define( function( require ) {
     this.typeID = typeID;
     this.valueProperty = valueProperty;
     this.termText = termText;
-    this.coinDiameter = coinDiameter;
+    this.coinRadius = coinRadius;
 
     // @public, listen only, a property with contains the text that should be shown when displaying term value
     this.termValueTextProperty = termValueTextProperty;
@@ -158,7 +158,7 @@ define( function( require ) {
     cloneMostly: function() {
       var clone = new CoinTerm(
         this.valueProperty,
-        this.coinDiameter,
+        this.coinRadius,
         this.termText,
         this.termValueTextProperty,
         this.typeID,
