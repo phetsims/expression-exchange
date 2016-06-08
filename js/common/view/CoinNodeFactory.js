@@ -86,8 +86,9 @@ define( function( require ) {
   var CoinNodeFactory = {
 
     /**
-     * function to create the node that represents the front of a coin
+     * function to create a node that can be used to represents the front of the provided coin type
      * @param {CoinTermTypeID) coinTermTypeID
+     * @param {number) radius
      * @returns {Node}
      */
     createFrontImageNode: function( coinTermTypeID, radius ) {
@@ -137,6 +138,7 @@ define( function( require ) {
     /**
      * function to create the node that represents the icon for a coin
      * @param {CoinTermTypeID) coinTermTypeID
+     * @param {number) radius
      * @returns {Node}
      */
     createIconNode: function( coinTermTypeID, radius ) {
