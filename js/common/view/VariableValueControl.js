@@ -15,7 +15,13 @@ define( function( require ) {
   var VariableValueTweaker = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueTweaker' );
   var VBox = require( 'SCENERY/nodes/VBox' );
 
-  function VariableValueControl( xTermValueProperty, yTermValueProperty, zTermValueProperty ) {
+  /**
+   * @param {Property.<number>} xTermValueProperty
+   * @param {Property.<number>} yTermValueProperty
+   * @param {Property.<number>} zTermValueProperty
+   * @constructor
+   */
+  function VariableValueControl( xTermValueProperty, yTermValueProperty, zTermValueProperty, minValue, maxValue ) {
 
     // create button that will be used to restore the default values
     var restoreDefaultsButton = new RefreshButton( {
@@ -38,11 +44,12 @@ define( function( require ) {
     );
 
     // construct the VBox with the tweakers and the 'restore default values' button
+    var tweakerOptions = { minValue: minValue, maxValue: maxValue };
     VBox.call( this, {
       children: [
-        new VariableValueTweaker( xTermValueProperty, EESharedConstants.X_VARIABLE_CHAR ),
-        new VariableValueTweaker( yTermValueProperty, EESharedConstants.Y_VARIABLE_CHAR ),
-        new VariableValueTweaker( zTermValueProperty, EESharedConstants.Z_VARIABLE_CHAR ),
+        new VariableValueTweaker( xTermValueProperty, EESharedConstants.X_VARIABLE_CHAR, tweakerOptions ),
+        new VariableValueTweaker( yTermValueProperty, EESharedConstants.Y_VARIABLE_CHAR, tweakerOptions ),
+        new VariableValueTweaker( zTermValueProperty, EESharedConstants.Z_VARIABLE_CHAR, tweakerOptions ),
         restoreDefaultsButton
       ],
       spacing: 20

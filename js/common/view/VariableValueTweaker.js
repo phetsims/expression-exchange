@@ -24,17 +24,22 @@ define( function( require ) {
   var READOUT_HEIGHT = 15;
   var ARROW_HEIGHT = READOUT_HEIGHT * 0.65;  // multiplier empirically determined
   var EQUATION_FONT = new PhetFont( 20 );
-  var MIN_VALUE = 2;
-  var MAX_VALUE = 10;
+  var DEFAULT_MIN_VALUE = -10;
+  var DEFAULT_MAX_VALUE = 10;
 
   /**
    * @constructor
    */
-  function VariableValueTweaker( variableValueProperty, variableString ) {
+  function VariableValueTweaker( variableValueProperty, variableString, options ) {
     Node.call( this );
 
+    options = _.extend( {
+      minValue: DEFAULT_MIN_VALUE,
+      maxValue: DEFAULT_MAX_VALUE
+    }, options );
+
     // create and add the readout
-    var readout = new NumberDisplay( variableValueProperty, new Range( MIN_VALUE, MAX_VALUE ), '', '{0}', {
+    var readout = new NumberDisplay( variableValueProperty, new Range( options.minValue, options.maxValue ), '', '{0}', {
       font: READOUT_FONT,
       backgroundStroke: 'black',
       cornerRadius: 4
@@ -47,8 +52,8 @@ define( function( require ) {
 
     // set the enabled states of the arrow buttons
     variableValueProperty.link( function( variableValue ) {
-      leftArrowButton.enabled = variableValue > MIN_VALUE;
-      rightArrowButton.enabled = variableValue < MAX_VALUE;
+      leftArrowButton.enabled = variableValue > options.minValue;
+      rightArrowButton.enabled = variableValue < options.maxValue;
     } );
 
     // put the arrow buttons and readout into an HBox

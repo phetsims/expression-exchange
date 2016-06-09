@@ -114,7 +114,7 @@ define( function( require ) {
 
     // add the control that allows the user to adjust the values of the variables
     var variableValuesAccordionBox = new AccordionBox(
-      new VariableValueControl( model.xTermValueProperty, model.yTermValueProperty, model.zTermValueProperty ),
+      new VariableValueControl( model.xTermValueProperty, model.yTermValueProperty, model.zTermValueProperty, 2, 10 ),
       {
         titleNode: new Text( valuesString, { font: ACCORDION_BOX_TITLE_FONT } ),
         fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
