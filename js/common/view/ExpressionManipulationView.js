@@ -112,20 +112,26 @@ define( function( require ) {
     } );
     this.addChild( totalValueAccordionBox );
 
-    // add the control that allows the user to adjust the values of the variables
-    var variableValuesAccordionBox = new AccordionBox(
-      new VariableValueControl( model.xTermValueProperty, model.yTermValueProperty, model.zTermValueProperty, 2, 10 ),
-      {
-        titleNode: new Text( valuesString, { font: ACCORDION_BOX_TITLE_FONT } ),
-        fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
-        contentYMargin: 20,
-        left: INSET,
-        top: totalValueAccordionBox.bottom + 10,
-        cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
-        buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
-        buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN
-      }
+    // create the control that will allow the user to manipulate variable values
+    var variableValueControl = new VariableValueControl(
+      model.xTermValueProperty,
+      model.yTermValueProperty,
+      model.zTermValueProperty,
+      model.coinTermCollection === CoinTermCreatorSet.ADVANCED ? -10 : 1, // negative var values allowed for advanced screen
+      10
     );
+
+    // add the variable value control to an accordion box, and add the accordion box to the view
+    var variableValuesAccordionBox = new AccordionBox( variableValueControl, {
+      titleNode: new Text( valuesString, { font: ACCORDION_BOX_TITLE_FONT } ),
+      fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
+      contentYMargin: 20,
+      left: INSET,
+      top: totalValueAccordionBox.bottom + 10,
+      cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
+      buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
+      buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN
+    } );
     variableValuesAccordionBox.expandedProperty.value = false; // initially closed
     this.addChild( variableValuesAccordionBox );
 

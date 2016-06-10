@@ -19,6 +19,8 @@ define( function( require ) {
    * @param {Property.<number>} xTermValueProperty
    * @param {Property.<number>} yTermValueProperty
    * @param {Property.<number>} zTermValueProperty
+   * @param {number} minValue
+   * @param {number} maxValue
    * @constructor
    */
   function VariableValueControl( xTermValueProperty, yTermValueProperty, zTermValueProperty, minValue, maxValue ) {
