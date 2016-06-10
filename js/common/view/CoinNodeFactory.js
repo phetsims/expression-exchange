@@ -138,7 +138,7 @@ define( function( require ) {
           break;
 
         default:
-          assert && assert( false, 'unknown coin term type' )
+          assert && assert( false, 'unknown coin term type' );
       }
 
       // scale so that the coin image has the specified radius

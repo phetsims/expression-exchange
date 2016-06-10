@@ -19,7 +19,6 @@ define( function( require ) {
   var SubSupText = require( 'SCENERY_PHET/SubSupText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
-  var Vector2 = require( 'DOT/Vector2' );
 
   // constants
   var COIN_VALUE_FONT = new PhetFont( { size: 12, weight: 'bold' } );

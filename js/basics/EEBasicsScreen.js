@@ -10,10 +10,10 @@ define( function( require ) {
 
   // modules
   var EEBasicsModel = require( 'EXPRESSION_EXCHANGE/basics/model/EEBasicsModel' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var RandomIcon = require( 'EXPRESSION_EXCHANGE/common/view/RandomIcon' );
   var Screen = require( 'JOIST/Screen' );
 
   // strings
@@ -25,7 +25,7 @@ define( function( require ) {
   function EEBasicsScreen() {
 
     // TODO: temporary icon, will need to be replaced
-    var icon = new RandomIcon();
+    var icon = EESharedConstants.RANDOM_ICON_GENERATOR.createIcon( '1' );
 
     Screen.call( this, basicsString, icon,
       function() { return new EEBasicsModel(); },

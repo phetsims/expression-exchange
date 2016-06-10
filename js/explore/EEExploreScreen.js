@@ -9,11 +9,11 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var EEExploreModel = require( 'EXPRESSION_EXCHANGE/explore/model/EEExploreModel' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
-  var EEExploreModel = require( 'EXPRESSION_EXCHANGE/explore/model/EEExploreModel' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var RandomIcon = require( 'EXPRESSION_EXCHANGE/common/view/RandomIcon' );
   var Screen = require( 'JOIST/Screen' );
 
   // strings
@@ -25,7 +25,7 @@ define( function( require ) {
   function EEExploreScreen() {
 
     // TODO: temporary icon, will need to be replaced
-    var icon = new RandomIcon();
+    var icon = EESharedConstants.RANDOM_ICON_GENERATOR.createIcon( '2' );
 
     Screen.call(
       this,

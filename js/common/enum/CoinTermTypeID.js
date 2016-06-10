@@ -11,7 +11,6 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
   var CoinTermTypeID = {
-    CONSTANT_ONE: 'CONSTANT_ONE',
     X: 'X',
     Y: 'Y',
     Z: 'Z',
@@ -19,6 +18,7 @@ define( function( require ) {
     X_SQUARED: 'X_SQUARED',
     Y_SQUARED: 'Y_SQUARED',
     X_SQUARED_TIMES_Y_SQUARED: 'X_SQUARED_TIMES_Y_SQUARED',
+    CONSTANT_ONE: 'CONSTANT_ONE'
   };
 
   // verify that enum is immutable, without the runtime penalty in production code

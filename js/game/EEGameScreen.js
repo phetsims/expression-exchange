@@ -11,9 +11,9 @@ define( function( require ) {
   // modules
   var EEGameScreenView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameScreenView' );
   var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var RandomIcon = require( 'EXPRESSION_EXCHANGE/common/view/RandomIcon' );
   var Screen = require( 'JOIST/Screen' );
 
   // strings
@@ -25,7 +25,7 @@ define( function( require ) {
   function EEGameScreen() {
 
     // TODO: temporary icon, will need to be replaced
-    var icon = new RandomIcon();
+    var icon = EESharedConstants.RANDOM_ICON_GENERATOR.createIcon( '4' );
 
     Screen.call( this, gameString, icon,
       function() { return new EEGameModel(); },
