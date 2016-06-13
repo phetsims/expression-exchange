@@ -21,7 +21,7 @@ define( function( require ) {
   function HANDLE( event ){
     console.log( 'event.type = ' + event.type );
     event.handle();
-  };
+  }
 
   /**
    * @constructor
