@@ -1,31 +1,31 @@
 {
-  "comment": "# expression-exchange 1.0.0-dev.9 Tue May 31 2016 17:28:03 GMT-0600 (Mountain Daylight Time)",
+  "comment": "# expression-exchange 1.0.0-dev.9 Mon Jun 13 2016 16:55:10 GMT-0600 (Mountain Daylight Time)",
   "assert": {
     "sha": "7d27130a4d27da15aa7f8a21bbfb9245288c1b44",
     "branch": "master"
   },
   "axon": {
-    "sha": "1f8073474acc627fb24ff7766cb837928cfb374c",
+    "sha": "b71cc337f6748ee080e97b50497f05972b498de0",
     "branch": "master"
   },
   "brand": {
-    "sha": "bb1cfcc63c3d007d800ede089994d8705db6d47b",
+    "sha": "f0b1f7da85f87b9626562bea7fe69197fa81f05f",
     "branch": "master"
   },
   "chipper": {
-    "sha": "a01a8e0f000fd53eaba1cb0d912ae16521b6c2af",
+    "sha": "4c679115b7041b1514679091d3a1fa1e410845df",
     "branch": "master"
   },
   "dot": {
-    "sha": "04efe0bcba227b3a0a75a734313fc0d92469aa8d",
+    "sha": "455447cedc0b42bc5c1bbb38b37b7c92cc7e9e8c",
     "branch": "master"
   },
   "expression-exchange": {
-    "sha": "ecf60bcabeb631feb0d18ed22d139137ad781d59",
+    "sha": "c34931ffa858d8577be75bc7df9475c28369b67c",
     "branch": "master"
   },
   "joist": {
-    "sha": "76d9aa21721aa8ee62ce7b8c5f7ad08981241901",
+    "sha": "ddf0d9125ad1f86670e05d45084e1f3cce396896",
     "branch": "master"
   },
   "kite": {
@@ -41,11 +41,11 @@
     "branch": "master"
   },
   "scenery": {
-    "sha": "30a080091cf58cae387a69f4a3522f9d4c0fbe04",
+    "sha": "d2791b0f130c4015a9eada724d38faa072b4bda3",
     "branch": "master"
   },
   "scenery-phet": {
-    "sha": "124a6a033406e8addd6a09cb1a0608e148581dda",
+    "sha": "822e3d6d3b6087052a8591632fd274401cb8a740",
     "branch": "master"
   },
   "sherpa": {
@@ -53,11 +53,11 @@
     "branch": "master"
   },
   "sun": {
-    "sha": "9ae0a8e110692ad798ef476a8f8e67b5de0faed0",
+    "sha": "f2631eeacc795a415cc2ebf5eb297c4691c51721",
     "branch": "master"
   },
   "tandem": {
-    "sha": "0e40c775bba846e5c9f5003d79c0a5d095671759",
+    "sha": "b3c68afaf8511b008b264a5829a40711c753b629",
     "branch": "master"
   }
 }
