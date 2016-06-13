@@ -18,7 +18,7 @@ define( function( require ) {
     X_SQUARED: 'X_SQUARED',
     Y_SQUARED: 'Y_SQUARED',
     X_SQUARED_TIMES_Y_SQUARED: 'X_SQUARED_TIMES_Y_SQUARED',
-    CONSTANT_ONE: 'CONSTANT_ONE'
+    CONSTANT: 'CONSTANT'
   };
 
   // verify that enum is immutable, without the runtime penalty in production code

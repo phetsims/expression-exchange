@@ -192,7 +192,7 @@ define( function( require ) {
             termValueTextProperty = this.xSquaredTimesYSquaredValueStringProperty;
           break;
 
-        case CoinTermTypeID.CONSTANT_ONE:
+        case CoinTermTypeID.CONSTANT:
           valueProperty = CONSTANT_ONE_VALUE_PROPERTY;
           coinRadius = 20; // fairly arbitrary, since this should never end up being depicted as a coin
           termText = '1';

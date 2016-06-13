@@ -235,11 +235,11 @@ define( function( require ) {
       addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED, 1 );
       addCoinTermToCreatorSet( CoinTermTypeID.X, 1 );
       addCoinTermToCreatorSet( CoinTermTypeID.Y, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.CONSTANT_ONE, 1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.CONSTANT, 1 );
       addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED, -1 );
       addCoinTermToCreatorSet( CoinTermTypeID.X, -1 );
       addCoinTermToCreatorSet( CoinTermTypeID.Y, -1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.CONSTANT_ONE, -1 );
+      addCoinTermToCreatorSet( CoinTermTypeID.CONSTANT, -1 );
       itemsPerCarouselPage = 4; // this set works better with four items per page
       carouselItemSpacing = 40; // can be a bit smaller in this case because the largest term (x^2*y^2) isn't being used
     }

@@ -125,7 +125,7 @@ define( function( require ) {
           coinNode = new Image( coinXSquaredYSquaredFrontImage );
           break;
 
-        case CoinTermTypeID.CONSTANT_ONE:
+        case CoinTermTypeID.CONSTANT:
           // this should never be depicted as a coin, so add something garish so that we'll notice if it is
           coinNode = new Circle( radius, {
             fill: 'pink',
@@ -212,7 +212,7 @@ define( function( require ) {
           );
           break;
 
-        case CoinTermTypeID.CONSTANT_ONE:
+        case CoinTermTypeID.CONSTANT:
           // this should never be depicted as a coin, so add something garish so that we'll notice if it is
           iconNode = new Circle( radius, { fill: 'pink', stroke: 'red' } );
           break;
