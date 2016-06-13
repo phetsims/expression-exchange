@@ -26,6 +26,7 @@ define( function( require ) {
 
   // constants
   var MIN_EXPRESSION_IN_BOUNDS_WIDTH = 70; // in screen coords, min horizontal amount of expression that must stay in bounds
+  var BUTTON_SPACING = 15; // in screen coordinates
 
   /**
    * @param {Expression} expression - model of an expression
@@ -75,9 +76,24 @@ define( function( require ) {
     var breakApartButton = new BreakApartButton();
     popUpButtonsNode.addChild( breakApartButton );
 
+    // adjust the touch area for the break apart button so that is is easy to touch but doesn't overlap other button
+    var breakApartButtonTouchArea = breakApartButton.localBounds.copy();
+    breakApartButtonTouchArea.minX = breakApartButtonTouchArea.minX - breakApartButton.width;
+    breakApartButtonTouchArea.maxX = breakApartButtonTouchArea.maxX + BUTTON_SPACING * 0.3;
+    breakApartButtonTouchArea.minY = breakApartButtonTouchArea.minY - breakApartButton.height;
+    breakApartButton.touchArea = breakApartButtonTouchArea;
+    breakApartButton.mouseArea = breakApartButtonTouchArea;
+
     // add the button used to put the expression into edit mode
-    var editExpressionButton = new EditExpressionButton( { left: breakApartButton.right + 5 } );
+    var editExpressionButton = new EditExpressionButton( { left: breakApartButton.right + BUTTON_SPACING } );
     popUpButtonsNode.addChild( editExpressionButton );
+
+    // adjust the touch area for the edit button so that is is easy to touch but doesn't overlap other button
+    var editExpressionButtonTouchArea = editExpressionButton.localBounds.copy();
+    editExpressionButtonTouchArea.minX = editExpressionButtonTouchArea.minX - BUTTON_SPACING * 0.3;
+    editExpressionButtonTouchArea.maxX = editExpressionButtonTouchArea.maxX + editExpressionButton.width;
+    editExpressionButtonTouchArea.minY = editExpressionButtonTouchArea.minY - editExpressionButton.height;
+    editExpressionButton.touchArea = editExpressionButtonTouchArea;
 
     function showPopUpButtons( xLocation ) {
       popUpButtonsNode.visible = true;

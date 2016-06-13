@@ -17,6 +17,11 @@ define( function( require ) {
 
   // constants
   var MARGIN = 3.5;
+  //function HANDLE( event ){ event.handle(); };
+  function HANDLE( event ){
+    console.log( 'event.type = ' + event.type );
+    event.handle();
+  };
 
   /**
    * @constructor
@@ -36,12 +41,20 @@ define( function( require ) {
 
     // add a listener that will prevent events from bubbling to the parent
     this.addInputListener( {
-      down: function( event ) {
-        event.handle();
-      },
-      up: function( event ) {
-        event.handle();
-      }
+      down: HANDLE,
+      up: HANDLE
+      //move: HANDLE,
+      //touchenter: HANDLE,
+      //touchover: HANDLE,
+      //touchdown: HANDLE,
+      //touchout: HANDLE,
+      //touchexit: HANDLE,
+      //touchup: HANDLE,
+      //touchStart: HANDLE,
+      //touchEnd: HANDLE,
+      //touchMove: HANDLE,
+      //pointerdown: HANDLE,
+      //pointerup: HANDLE
     } );
   }
 

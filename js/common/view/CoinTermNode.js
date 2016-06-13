@@ -214,6 +214,13 @@ define( function( require ) {
     var breakApartButton = new BreakApartButton( { visible: false } );
     this.addChild( breakApartButton );
 
+    // adjust the touch area of the break apart button to make it easier to use on touch devices
+    var breakApartButtonTouchArea = breakApartButton.localBounds.copy();
+    breakApartButtonTouchArea.minX = breakApartButtonTouchArea.minX - breakApartButton.width / 2;
+    breakApartButtonTouchArea.maxX = breakApartButtonTouchArea.maxX + breakApartButton.width / 2;
+    breakApartButtonTouchArea.minY = breakApartButtonTouchArea.minY - breakApartButton.height;
+    breakApartButton.touchArea = breakApartButtonTouchArea;
+
     // define helper functions for managing the button timers
     function clearHideButtonTimer() {
       if ( hideButtonTimer ) {
