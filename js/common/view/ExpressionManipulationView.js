@@ -140,112 +140,62 @@ define( function( require ) {
       variableValuesAccordionBox.visible = viewMode === ViewMode.VARIABLES;
     } );
 
-    // add accordion box that will contain the user's coin collection
-    var myCollectionAccordionBox = new AccordionBox( new CollectionDisplayNode( model ), {
-      titleNode: new Text( myCollectionString, { font: ACCORDION_BOX_TITLE_FONT } ),
-      fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
-      right: this.layoutBounds.width - INSET,
-      top: INSET,
-      cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
-      buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
-      buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN
-    } );
-    this.addChild( myCollectionAccordionBox );
-
-    // add the checkbox that controls visibility of coin values
-    var showCoinValuesCheckbox = new CheckBox(
-      new Text( coinValuesString, { font: CHECK_BOX_FONT } ),
-      model.showCoinValuesProperty,
-      {
-        top: myCollectionAccordionBox.bottom + 6,
-        left: myCollectionAccordionBox.left,
-        maxWidth: myCollectionAccordionBox.width
-      }
-    );
-    this.addChild( showCoinValuesCheckbox );
-
-    // add the checkbox that controls visibility of variable values
-    var showVariableValuesCheckbox = new CheckBox(
-      new Text( variableValuesString, { font: CHECK_BOX_FONT } ),
-      model.showVariableValuesProperty,
-      {
-        top: myCollectionAccordionBox.bottom + 6,
-        left: myCollectionAccordionBox.left,
-        maxWidth: myCollectionAccordionBox.width
-      }
-    );
-    this.addChild( showVariableValuesCheckbox );
-
-    // control whether the coin values or variable values checkbox is visible
-    model.viewModeProperty.link( function( viewMode ) {
-      showCoinValuesCheckbox.visible = viewMode === ViewMode.COINS;
-      showVariableValuesCheckbox.visible = viewMode === ViewMode.VARIABLES;
-    } );
-
-    // add the checkbox that controls whether all coefficients (including 1) are shown
-    var showAllCoefficientsCheckbox = new CheckBox(
-      new Text( allCoefficientsString, { font: CHECK_BOX_FONT } ),
-      model.showAllCoefficientsProperty,
-      {
-        top: showCoinValuesCheckbox.bottom + 6,
-        left: myCollectionAccordionBox.left,
-        maxWidth: myCollectionAccordionBox.width
-      }
-    );
-    this.addChild( showAllCoefficientsCheckbox );
-
     // variables used to create the coin term creator nodes
     var coinTermFactory = model.coinTermFactory; // convenience var
-    var coinTermCreatorSet = [];
 
-    // convenience function for adding coin terms to the collection that will appear on the carousel
-    function addCoinTermToCreatorSet( typeID, initialCount ) {
-      coinTermCreatorSet.push( new CoinTermCreatorNode(
-        model,
-        typeID,
-        coinTermFactory.createCoinTerm.bind( coinTermFactory ),
-        {
-          initialCount: initialCount,
-          creationLimit: MAX_COIN_TERMS_PER_TYPE,
-          createdCountProperty: model.getCountPropertyForType( typeID )
-        }
-      ) );
-    }
+    // descriptors that list the coin terms available to the user in the carousel and their initial count
+    var coinTermCreatorDescriptors = [];
 
     // create the collection of coin term creator nodes that will be presented to the user, varies based on options
     var itemsPerCarouselPage = 3;
     var carouselItemSpacing = 60; // empirically determined to handle the worst case term text
     if ( model.coinTermCollection === CoinTermCreatorSet.BASIC ) {
-      addCoinTermToCreatorSet( CoinTermTypeID.X, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.Y, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.Z, 1 );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Z, initialCount: 1 } );
     }
     else if ( model.coinTermCollection === CoinTermCreatorSet.EXPLORE ) {
-      addCoinTermToCreatorSet( CoinTermTypeID.X, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.Y, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.Z, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.X, 2 );
-      addCoinTermToCreatorSet( CoinTermTypeID.Y, 3 );
-      addCoinTermToCreatorSet( CoinTermTypeID.X_TIMES_Y, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.Y_SQUARED, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, 1 );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Z, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: 2 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y, initialCount: 3 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_TIMES_Y, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y_SQUARED, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, initialCount: 1 } );
     }
     else if ( model.coinTermCollection === CoinTermCreatorSet.ADVANCED ) {
-      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.X, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.Y, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.CONSTANT, 1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.X_SQUARED, -1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.X, -1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.Y, -1 );
-      addCoinTermToCreatorSet( CoinTermTypeID.CONSTANT, -1 );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.CONSTANT, initialCount: 1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_SQUARED, initialCount: -1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: -1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y, initialCount: -1 } );
+      coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.CONSTANT, initialCount: -1 } );
       itemsPerCarouselPage = 4; // this set works better with four items per page
       carouselItemSpacing = 40; // can be a bit smaller in this case because the largest term (x^2*y^2) isn't being used
     }
     else {
       assert( false, 'unknown value for coinTermCollection' );
     }
+
+    // create the set of coin term creator nodes that will appear in the carousel
+    var coinTermCreatorSet = [];
+
+    coinTermCreatorDescriptors.forEach( function( coinTermCreatorDescriptor ){
+      coinTermCreatorSet.push( new CoinTermCreatorNode(
+        model,
+        coinTermCreatorDescriptor.typeID,
+        coinTermFactory.createCoinTerm.bind( coinTermFactory ),
+        {
+          initialCount: coinTermCreatorDescriptor.initialCount,
+          creationLimit: MAX_COIN_TERMS_PER_TYPE,
+          createdCountProperty: model.getCountPropertyForType( coinTermCreatorDescriptor.typeID )
+        }
+      ) );
+    } );
 
     // add the panel or carousel that will contain the various coin terms that the user can create
     var coinTermCreatorHolder;
@@ -307,6 +257,67 @@ define( function( require ) {
         }
       ) );
     }
+
+    // create the "My Collection" display element
+    var myCollectionDisplay = new CollectionDisplayNode(
+      model,
+      _.uniq( _.map( coinTermCreatorDescriptors, function( descriptor ){ return descriptor.typeID; } ) ),
+      model.coinTermCollection === CoinTermCreatorSet.ADVANCED // show negative values for advanced screen
+    );
+
+    // add accordion box that will contain the collection display
+    var myCollectionAccordionBox = new AccordionBox( myCollectionDisplay, {
+      titleNode: new Text( myCollectionString, { font: ACCORDION_BOX_TITLE_FONT } ),
+      fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
+      right: this.layoutBounds.width - INSET,
+      top: INSET,
+      cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
+      buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
+      buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN
+    } );
+    this.addChild( myCollectionAccordionBox );
+
+    // add the checkbox that controls visibility of coin values
+    var showCoinValuesCheckbox = new CheckBox(
+      new Text( coinValuesString, { font: CHECK_BOX_FONT } ),
+      model.showCoinValuesProperty,
+      {
+        top: myCollectionAccordionBox.bottom + 6,
+        left: myCollectionAccordionBox.left,
+        maxWidth: myCollectionAccordionBox.width
+      }
+    );
+    this.addChild( showCoinValuesCheckbox );
+
+    // add the checkbox that controls visibility of variable values
+    var showVariableValuesCheckbox = new CheckBox(
+      new Text( variableValuesString, { font: CHECK_BOX_FONT } ),
+      model.showVariableValuesProperty,
+      {
+        top: myCollectionAccordionBox.bottom + 6,
+        left: myCollectionAccordionBox.left,
+        maxWidth: myCollectionAccordionBox.width
+      }
+    );
+    this.addChild( showVariableValuesCheckbox );
+
+    // control whether the coin values or variable values checkbox is visible
+    model.viewModeProperty.link( function( viewMode ) {
+      showCoinValuesCheckbox.visible = viewMode === ViewMode.COINS;
+      showVariableValuesCheckbox.visible = viewMode === ViewMode.VARIABLES;
+    } );
+
+    // add the checkbox that controls whether all coefficients (including 1) are shown
+    var showAllCoefficientsCheckbox = new CheckBox(
+      new Text( allCoefficientsString, { font: CHECK_BOX_FONT } ),
+      model.showAllCoefficientsProperty,
+      {
+        top: showCoinValuesCheckbox.bottom + 6,
+        left: myCollectionAccordionBox.left,
+        maxWidth: myCollectionAccordionBox.width
+      }
+    );
+    this.addChild( showAllCoefficientsCheckbox );
 
     // add the node that will act as the layer where the expression backgrounds and expression hints will come and go
     var expressionLayer = new Node();

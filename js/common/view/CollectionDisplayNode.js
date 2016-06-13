@@ -23,23 +23,13 @@ define( function( require ) {
   var SAME_TYPE_V_SPACING = 2;
   var DIFFERENT_TYPE_V_SPACING = 8;
 
-  // create a list of the coin term type IDs in the order in which we want the icons to appear in this node
-  var COIN_TERM_TYPE_IDS = [
-    CoinTermTypeID.X,
-    CoinTermTypeID.Y,
-    CoinTermTypeID.Z,
-    CoinTermTypeID.X_TIMES_Y,
-    CoinTermTypeID.X_SQUARED,
-    CoinTermTypeID.Y_SQUARED,
-    CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED,
-    CoinTermTypeID.CONSTANT
-  ];
-
   /**
    * {ExpressionManipulationModel} model
+   * {Array.<CoinTermTypeID>} displayList - a list of the coin terms to display in the desired order
+   * {boolean} showNegatives - depict negative values in the display
    * @constructor
    */
-  function CollectionDisplayNode( model ) {
+  function CollectionDisplayNode( model, displayList, showNegatives ) {
 
     Node.call( this );
     var self = this;
@@ -49,7 +39,7 @@ define( function( require ) {
 
     // add the arrays of icon nodes to the map
     var bottomOfPreviousRow;
-    COIN_TERM_TYPE_IDS.forEach( function( coinTermTypeID ) {
+    displayList.forEach( function( coinTermTypeID ) {
 
       // add the array that will maintain references to the icon nodes
       iconMap[ coinTermTypeID ] = [];
@@ -82,10 +72,14 @@ define( function( require ) {
     } );
 
 
-    // define a function that will update the visibility of the icons based on the number of corresponding coin types
+    // a function that will update the visibility of the icons based on the number of corresponding coin types
     function updateIconVisibility() {
-      COIN_TERM_TYPE_IDS.forEach( function( coinTermTypeID ) {
+      displayList.forEach( function( coinTermTypeID ) {
         var count = model.getCoinTermCount( coinTermTypeID );
+        if ( coinTermTypeID === CoinTermTypeID.X_SQUARED && count > 1 ){
+          console.log( 'count = ' + count );
+          debugger;
+        }
         for ( var i = 0; i < MAX_COINS_TERMS_PER_TYPE; i++ ) {
           iconMap[ coinTermTypeID ][ i ].visible = i < count;
         }
