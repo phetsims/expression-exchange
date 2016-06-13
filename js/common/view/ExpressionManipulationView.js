@@ -336,7 +336,8 @@ define( function( require ) {
         variableValuesAccordionBox.expandedProperty.value = false;
       },
       right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10
+      bottom: this.layoutBounds.maxY - 10,
+      touchAreaDilation: 10
     } );
     this.addChild( resetAllButton );
 
