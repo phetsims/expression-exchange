@@ -251,11 +251,15 @@ define( function( require ) {
     // keep the button showing if the user is over it
     breakApartButton.buttonModel.overProperty.lazyLink( function( overButton ) {
       if ( overButton ) {
-        assert && assert( !!hideButtonTimer, 'should not be over button without hide timer running' );
-        clearHideButtonTimer();
+        if ( !coinTerm.userControlled ) {
+          assert && assert( !!hideButtonTimer, 'should not be over button without hide timer running' );
+          clearHideButtonTimer();
+        }
       }
       else {
-        startHideButtonTimer();
+        if ( !coinTerm.userControlled ) {
+          startHideButtonTimer();
+        }
       }
     } );
 

@@ -131,11 +131,15 @@ define( function( require ) {
     // add a listener to the pop up button node to prevent it from disappearing if the user is hovering over it
     popUpButtonsNode.addInputListener( {
       enter: function() {
-        assert && assert( hideButtonsTimer !== null, 'hide button timer should be running if pop up buttons are visible' );
-        clearHideButtonsTimer();
+        if ( !expression.userControlled ){
+          assert && assert( hideButtonsTimer !== null, 'hide button timer should be running if pop up buttons are visible' );
+          clearHideButtonsTimer();
+        }
       },
       exit: function() {
-        startHideButtonsTimer();
+        if ( !expression.userControlled ) {
+          startHideButtonsTimer();
+        }
       }
     } );
 

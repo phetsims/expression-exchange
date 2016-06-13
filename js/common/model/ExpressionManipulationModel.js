@@ -173,8 +173,9 @@ define( function( require ) {
                       expressionHintToRemove = expressionHint;
                     }
                   } );
-                  assert && assert( expressionHintToRemove, 'creating new expression, but no expression hint was found' );
-                  self.removeExpressionHint( expressionHintToRemove );
+                  if ( expressionHintToRemove ) {
+                    self.removeExpressionHint( expressionHintToRemove );
+                  }
 
                   // create the next expression with these coin terms
                   self.expressions.push( new Expression( joinableFreeCoinTerm, addedCoinTerm ) );
@@ -501,8 +502,8 @@ define( function( require ) {
 
             if ( mostOverlappingLikeCoinTerm ) {
 
-                // these coin terms can be combined, so they should have their halos activated
-                coinTermsWithHalos.push( userControlledCoinTerm );
+              // these coin terms can be combined, so they should have their halos activated
+              coinTermsWithHalos.push( userControlledCoinTerm );
               coinTermsWithHalos.push( mostOverlappingLikeCoinTerm );
             }
 
