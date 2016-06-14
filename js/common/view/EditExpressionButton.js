@@ -30,16 +30,6 @@ define( function( require ) {
     options.cursor = 'pointer';
 
     RectangularPushButton.call( this, options );
-
-    // add a listener that will prevent events from bubbling to the parent
-    this.addInputListener( {
-      down: function( event ) {
-        event.handle();
-      },
-      up: function( event ) {
-        event.handle();
-      }
-    } );
   }
 
   expressionExchange.register( 'EditExpressionButton', EditExpressionButton );

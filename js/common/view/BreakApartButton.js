@@ -17,11 +17,6 @@ define( function( require ) {
 
   // constants
   var MARGIN = 3.5;
-  //function HANDLE( event ){ event.handle(); };
-  function HANDLE( event ){
-    console.log( 'event.type = ' + event.type );
-    event.handle();
-  }
 
   /**
    * @constructor
@@ -38,24 +33,6 @@ define( function( require ) {
     options.cursor = 'pointer';
 
     RectangularPushButton.call( this, options );
-
-    // add a listener that will prevent events from bubbling to the parent
-    this.addInputListener( {
-      down: HANDLE,
-      up: HANDLE
-      //move: HANDLE,
-      //touchenter: HANDLE,
-      //touchover: HANDLE,
-      //touchdown: HANDLE,
-      //touchout: HANDLE,
-      //touchexit: HANDLE,
-      //touchup: HANDLE,
-      //touchStart: HANDLE,
-      //touchEnd: HANDLE,
-      //touchMove: HANDLE,
-      //pointerdown: HANDLE,
-      //pointerup: HANDLE
-    } );
   }
 
   expressionExchange.register( 'BreakApartButton', BreakApartButton );

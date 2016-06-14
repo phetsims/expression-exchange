@@ -40,17 +40,17 @@ define( function( require ) {
 
     // shape and path
     var shape;
-    var path = null;
+    var expressionShapeNode = null;
 
     // define a function that will create or update the shape based on the width and height
     function updateShape() {
       shape = new Shape.rect( 0, 0, expression.width, expression.height );
-      if ( !path ) {
-        path = new Path( shape, { fill: 'rgba( 255, 255, 255, 0.01 )' } ); // TODO: this works great, but review with JO to see if there is a better way
-        self.addChild( path );
+      if ( !expressionShapeNode ) {
+        expressionShapeNode = new Path( shape, { fill: 'rgba( 255, 255, 255, 0.01 )' } ); // TODO: this works great, but review with JO to see if there is a better way
+        self.addChild( expressionShapeNode );
       }
       else {
-        path.shape = shape;
+        expressionShapeNode.shape = shape;
       }
     }
 
@@ -205,10 +205,10 @@ define( function( require ) {
     // the drag handler is removed if an animation is in progress to prevent problematic race conditions
     expression.inProgressAnimationProperty.link( function( inProgressAnimation ) {
       if ( inProgressAnimation ) {
-        self.removeInputListener( dragHandler );
+        expressionShapeNode.removeInputListener( dragHandler );
       }
       else {
-        self.addInputListener( dragHandler );
+        expressionShapeNode.addInputListener( dragHandler );
       }
     } );
   }
