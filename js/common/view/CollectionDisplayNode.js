@@ -76,10 +76,6 @@ define( function( require ) {
     function updateIconVisibility() {
       displayList.forEach( function( coinTermTypeID ) {
         var count = model.getCoinTermCount( coinTermTypeID );
-        if ( coinTermTypeID === CoinTermTypeID.X_SQUARED && count > 1 ){
-          console.log( 'count = ' + count );
-          debugger;
-        }
         for ( var i = 0; i < MAX_COINS_TERMS_PER_TYPE; i++ ) {
           iconMap[ coinTermTypeID ][ i ].visible = i < count;
         }
