@@ -20,7 +20,7 @@ define( function( require ) {
     options = options || {};
 
     // the following options can't be overridden
-    options.content = new FontAwesomeNode( 'pencil_square_o', { scale: 0.3 } ); // scale empirically determined
+    options.content = new FontAwesomeNode( 'pencil_square_o', { scale: 0.35 } ); // scale empirically determined
     options.xMargin = 3; // empirically determined
     options.yMargin = 4; // empirically determined
     options.baseColor = 'white';
