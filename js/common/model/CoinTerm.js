@@ -13,6 +13,7 @@ define( function( require ) {
 
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
+  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var Emitter = require( 'AXON/Emitter' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -59,6 +60,9 @@ define( function( require ) {
     this.valueProperty = valueProperty;
     this.termText = termText;
     this.coinRadius = coinRadius;
+
+    // @public, read only, indicates that the value will never change, will be displayed differently in the view
+    this.isConstant = typeID === CoinTermTypeID.CONSTANT;
 
     // @public, listen only, a property with contains the text that should be shown when displaying term value
     this.termValueTextProperty = termValueTextProperty;
