@@ -12,7 +12,6 @@ define( function( require ) {
   var Bounds2 = require( 'DOT/Bounds2' );
   var BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
   var CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
-  var DerivedProperty = require( 'AXON/DerivedProperty' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -59,17 +58,12 @@ define( function( require ) {
 
     // Add a root node so that the bounds can be easily monitored for changes in size without getting triggered by
     // changes in position.
-    var rootNode = new Node();
-    this.addChild( rootNode );
+    var coinAndTextRootNode = new Node();
+    this.addChild( coinAndTextRootNode );
 
     // add the image that represents the front of the coin
     var coinImageNode = CoinNodeFactory.createFrontImageNode( coinTerm.typeID, coinTerm.coinRadius );
-    rootNode.addChild( coinImageNode );
-
-    // control front coin image visibility
-    viewModeProperty.link( function( representationMode ) {
-      coinImageNode.visible = representationMode === ViewMode.COINS;
-    } );
+    coinAndTextRootNode.addChild( coinImageNode );
 
     // convenience variable for positioning the textual labels created below
     var coinCenter = new Vector2( coinImageNode.width / 2, coinImageNode.height / 2 );
@@ -81,30 +75,68 @@ define( function( require ) {
 
     // add the coin value text
     var coinValueText = new Text( '', { font: VALUE_FONT } );
-    rootNode.addChild( coinValueText );
-
-    // update the coin value text
-    coinTerm.valueProperty.link( function( coinValue ) {
-      coinValueText.text = coinValue;
-      coinValueText.center = coinCenter;
-    } );
-
-    // control the coin value text visibility
-    var coinValueVisibleProperty = new DerivedProperty(
-      [ viewModeProperty, showCoinValuesProperty ],
-      function( viewMode, showCoinValues ) {
-        return ( viewMode === ViewMode.COINS && showCoinValues );
-      }
-    );
-    coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
+    coinAndTextRootNode.addChild( coinValueText );
 
     // add the 'term' text, e.g. xy
     var termText = new SubSupText( 'temp', { font: VARIABLE_FONT } );
-    // TODO: Can I dilate the mouse and touch areas in the constructor?
-    rootNode.addChild( termText );
+    coinAndTextRootNode.addChild( termText );
 
-    // create a helper function to update the termText - this basically adds/removes the minus sign
-    function updateTermText( coefficientVisible ) {
+    // Add the text that includes the variable values.  This can change, so it starts off blank.
+    var termWithVariableValuesText = new SubSupText( ' ', { font: VARIABLE_FONT } );
+    coinAndTextRootNode.addChild( termWithVariableValuesText );
+
+    // add the coefficient value
+    var coefficientText = new Text( '', {
+      font: COEFFICIENT_FONT
+    } );
+    coinAndTextRootNode.addChild( coefficientText );
+
+    // helper function to take the view bounds information and communicate it to the model
+    function updateBoundsInModel() {
+
+      // make the bounds relative to the coin term's position, which corresponds to the center of the coin
+      var relativeVisibleBounds = coinAndTextRootNode.visibleLocalBounds.shifted( -coinTerm.coinRadius, -coinTerm.coinRadius );
+
+      // TODO:  The following is some temporary code to try out making the overall bounds remain the same for the two
+      // TODO:  different view modes so that the expressions don't expand/collapse as the modes change.  This will need
+      // TODO:  to be moved out or kept based on the feedback we get.  See
+      // TODO:  https://github.com/phetsims/expression-exchange/issues/10
+      if ( !EEQueryParameters.ADJUST_EXPRESSION_WIDTH ) {
+
+        var width = Math.max( coinImageNode.width, termText.width, termWithVariableValuesText.width );
+
+        if ( coefficientText.visible || Math.abs( coinTerm.combinedCount ) > 1 ) {
+          width += coefficientText.width + COEFFICIENT_X_SPACING;
+        }
+
+        // set the view bounds such that the non-coefficient portion is always the same width
+        relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( width - relativeVisibleBounds.width ) / 2 );
+      }
+
+      // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
+      if ( !coinTerm.relativeViewBounds || !coinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
+        coinTerm.relativeViewBounds = relativeVisibleBounds;
+      }
+    }
+
+    // function that updates all nodes that comprise this composite node
+    function updateAppearance() {
+
+      // TODO: This is originally being written with no thought given to performance, may need to optimize
+
+      // control front coin image visibility
+      coinImageNode.visible = viewModeProperty.value === ViewMode.COINS;
+
+      // update coin value text
+      coinValueText.text = coinTerm.valueProperty.value;
+      coinValueText.center = coinCenter;
+      coinValueText.visible = viewModeProperty.value === ViewMode.COINS && showCoinValuesProperty.value;
+
+      // determine if the coefficient is visible, since this will be used several times below
+      var coefficientVisible = Math.abs( coinTerm.combinedCountProperty.value ) !== 1 ||
+                               showAllCoefficientsProperty.value;
+
+      // update the term text, which only changes if it switches from positive to negative
       if ( coinTerm.combinedCount < 0 && !coefficientVisible ) {
         termText.text = '-' + coinTerm.termText;
       }
@@ -114,23 +146,9 @@ define( function( require ) {
       termText.center = coinCenter;
       termText.mouseArea = termText.localBounds.dilated( 10 );
       termText.touchArea = termText.localBounds.dilated( 10 );
-    }
+      termText.visible = viewModeProperty.value === ViewMode.VARIABLES && !showVariableValuesProperty.value;
 
-    // control the term text visibility
-    var termTextVisibleProperty = new DerivedProperty(
-      [ viewModeProperty, showVariableValuesProperty ],
-      function( viewMode, showVariableValues ) {
-        return ( viewMode === ViewMode.VARIABLES && !showVariableValues );
-      }
-    );
-    termTextVisibleProperty.linkAttribute( termText, 'visible' );
-
-    // Add the text that includes the variable values.  This can change, so it starts off blank.
-    var termWithVariableValuesText = new SubSupText( ' ', { font: VARIABLE_FONT } );
-    rootNode.addChild( termWithVariableValuesText );
-
-    // create a helper function to update the term value text
-    function updateTermValueText() {
+      // term value text, which shows the variable values and operators such as exponents
       var termValueText = coinTerm.termValueTextProperty.value;
       if ( coinTerm.combinedCount === -1 && !showAllCoefficientsProperty.value ) {
         // prepend a minus sign
@@ -143,33 +161,19 @@ define( function( require ) {
       termWithVariableValuesText.center = coinCenter;
       termWithVariableValuesText.mouseArea = termWithVariableValuesText.localBounds.dilated( 10 );
       termWithVariableValuesText.touchArea = termWithVariableValuesText.localBounds.dilated( 10 );
-    }
+      termWithVariableValuesText.visible = viewModeProperty.value === ViewMode.VARIABLES &&
+                                           showVariableValuesProperty.value;
 
-    // update the variable text when it changes, which is triggered by changes to the underlying variable values
-    coinTerm.termValueTextProperty.link( updateTermValueText );
+      // coefficient value and visibility
+      coefficientText.text = coinTerm.combinedCount;
+      coefficientText.visible = coefficientVisible;
 
-    // control the visibility of the value text
-    var variableTextVisibleProperty = new DerivedProperty(
-      [ viewModeProperty, showVariableValuesProperty ],
-      function( viewMode, showVariableValues ) {
-        return ( viewMode === ViewMode.VARIABLES && showVariableValues );
-      }
-    );
-    variableTextVisibleProperty.linkAttribute( termWithVariableValuesText, 'visible' );
-
-    // add the coefficient value
-    var coefficientText = new Text( '', {
-      font: COEFFICIENT_FONT
-    } );
-    rootNode.addChild( coefficientText );
-
-    // create a helper function for positioning the coefficient
-    function updateCoefficientPosition() {
+      // position the coefficient
       if ( viewModeProperty.value === ViewMode.COINS ) {
         coefficientText.right = coinImageNode.left - COEFFICIENT_X_SPACING;
         coefficientText.centerY = coinImageNode.centerY;
       }
-      else if ( termTextVisibleProperty.value ) {
+      else if ( termText.visible ) {
         coefficientText.right = termText.left - COEFFICIENT_X_SPACING;
         coefficientText.y = termText.y;
       }
@@ -177,31 +181,25 @@ define( function( require ) {
         coefficientText.right = termWithVariableValuesText.left - COEFFICIENT_X_SPACING;
         coefficientText.y = termWithVariableValuesText.y;
       }
+
+      // update the bounds that are registered with the model
+      updateBoundsInModel();
     }
 
-    // control the visibility of the coefficient text
-    var coefficientVisibleProperty = new DerivedProperty( [
+    // if anything about the coin term's values changes or any of the display mode, the appearance needs to be update
+    // TODO: Need to dispose of this, unlink it, or whatever, to avoid memory leaks
+    Property.multilink(
+      [
         coinTerm.combinedCountProperty,
-        showAllCoefficientsProperty ],
-      function( combinedCount, showAllCoefficients ) {
-        return ( Math.abs( combinedCount ) !== 1 || showAllCoefficients );
-      } );
-    coefficientVisibleProperty.link( function( coefficientVisible ) {
-      updateTermValueText();
-      updateTermText( coefficientVisible );
-      updateCoefficientPosition();
-      coefficientText.visible = coefficientVisible;
-    } );
-
-    // update the coefficient text when the value changes
-    coinTerm.combinedCountProperty.link( function( combinedCount ) {
-      coefficientText.text = combinedCount;
-      updateCoefficientPosition();
-      updateTermText( coefficientVisibleProperty.value );
-    } );
-
-    // position the coefficient to line up well with the text or the code
-    Property.multilink( [ viewModeProperty, coinTerm.termValueTextProperty, termTextVisibleProperty ], updateCoefficientPosition );
+        coinTerm.valueProperty,
+        coinTerm.termValueTextProperty,
+        viewModeProperty,
+        showCoinValuesProperty,
+        showVariableValuesProperty,
+        showAllCoefficientsProperty
+      ],
+      updateAppearance
+    );
 
     // timer that will be used to hide the break apart button if user doesn't use it
     var hideButtonTimer = null;
@@ -276,68 +274,6 @@ define( function( require ) {
       breakApartButton.visible = false;
     }
 
-    // helper function to take the view bounds information and communicate it to the model
-    function updateBoundsInModel() {
-
-      // make the bounds relative to the coin term's position, which corresponds to the center of the coin
-      var relativeVisibleBounds = self.visibleLocalBounds.shifted( -coinTerm.coinRadius, -coinTerm.coinRadius );
-
-      if ( breakApartButton.visible ) {
-        // Subtract off the contribution from the break apart button, since we don't want the button's bounds affecting
-        // decisions by the model about when coins overlap with other coins or expressions.  The code assumes that the
-        // break apart button is positioned directly above the coin term.
-        var adjustedMinY = relativeVisibleBounds.minY;
-
-        if ( coinImageNode.visible ) {
-          adjustedMinY = Math.max( coinImageNode.bounds.minY - coinTerm.coinRadius, adjustedMinY );
-        }
-
-        if ( coefficientText.visible ) {
-          adjustedMinY = Math.max( coefficientText.bounds.minY - coinTerm.coinRadius, adjustedMinY );
-        }
-
-        if ( termText.visible ) {
-          adjustedMinY = Math.max( termText.bounds.minY - coinTerm.coinRadius, adjustedMinY );
-        }
-
-        if ( termWithVariableValuesText.visible ) {
-          adjustedMinY = Math.max( termWithVariableValuesText.bounds.minY - coinTerm.coinRadius, adjustedMinY );
-        }
-
-        relativeVisibleBounds.setMinY( adjustedMinY );
-      }
-
-      // TODO:  The following is some temporary code to try out making the overall bounds remain the same for the two
-      // TODO:  different view modes so that the expressions don't expand/collapse as the modes change.  This will need
-      // TODO:  to be moved out or kept based on the feedback we get.  See
-      // TODO:  https://github.com/phetsims/expression-exchange/issues/10
-      if ( !EEQueryParameters.ADJUST_EXPRESSION_WIDTH ) {
-
-        var width = Math.max( coinImageNode.width, termText.width, termWithVariableValuesText.width );
-
-        if ( coefficientText.visible || Math.abs( coinTerm.combinedCount ) > 1 ) {
-          width += coefficientText.width + COEFFICIENT_X_SPACING;
-        }
-
-        // set the view bounds such that the non-coefficient portion is always the same width
-        relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( width - relativeVisibleBounds.width ) / 2 );
-      }
-
-      // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
-      if ( !coinTerm.relativeViewBounds || !coinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
-        coinTerm.relativeViewBounds = relativeVisibleBounds;
-      }
-    }
-
-    // Update the model with the view's dimensions.  This breaks the whole model-view separation rule a bit, but in this
-    // sim both the model and the view can be affected by the size of the coin terms, so this was a way to get it done.
-    rootNode.on( 'bounds', function() {
-      updateBoundsInModel();
-    } );
-
-    // TODO: This is a workaround because I couldn't figure out how to monitor visible bounds.  This should be removed when possible.
-    coefficientVisibleProperty.link( updateBoundsInModel );
-
     // move this node as the model representation moves
     coinTerm.positionProperty.link( function( position ) {
       // the intent here is to position the center of the coin at the position, NOT the center of the node
@@ -378,7 +314,7 @@ define( function( require ) {
 
       // Add the listener that will allow the user to drag the coin around.  This is added only to the node that
       // contains the term elements, not the button, so that the button won't affect userControlled or be draggable.
-      rootNode.addInputListener( new SimpleDragHandler( {
+      coinAndTextRootNode.addInputListener( new SimpleDragHandler( {
 
           // allow moving a finger (touch) across a node to pick it up
           allowTouchSnag: true,
