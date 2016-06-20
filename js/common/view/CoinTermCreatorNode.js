@@ -8,7 +8,7 @@ define( function( require ) {
 
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
-  var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
+  var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -55,7 +55,7 @@ define( function( require ) {
     var self = this;
 
     // add the coin node that will be clicked upon to create coins of the same denomination
-    var coinNode = new CoinTermNode(
+    var coinNode = new VariableCoinTermNode(
       creatorFunction( typeID, { initialPosition: Vector2.ZERO, initialCount: options.initialCount } ),
       exploreModel.viewModeProperty,
       exploreModel.showCoinValuesProperty,

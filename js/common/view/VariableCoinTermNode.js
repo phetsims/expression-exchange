@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * a Scenery node that represents a coin in the view
+ * a Scenery node that represents a coin term whose underlying value can vary in the view
  *
  * @author John Blanco
  */
@@ -45,7 +45,7 @@ define( function( require ) {
    * @param {Object} options
    * @constructor
    */
-  function CoinTermNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty,
+  function VariableCoinTermNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty,
                          showAllCoefficientsProperty, options ) {
 
     options = _.extend( {}, {
@@ -365,9 +365,9 @@ define( function( require ) {
     } );
   }
 
-  expressionExchange.register( 'CoinTermNode', CoinTermNode );
+  expressionExchange.register( 'VariableCoinTermNode', VariableCoinTermNode );
 
-  return inherit( Node, CoinTermNode, {
+  return inherit( Node, VariableCoinTermNode, {
 
     /**
      * cause this node to fade away (by reducing opacity) and then remove itself from the scene graph

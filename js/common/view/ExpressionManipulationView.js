@@ -17,7 +17,7 @@ define( function( require ) {
   var CoinTermCreatorSet = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSet' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
-  var CoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermNode' );
+  var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
   var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );
   var CollectionDisplayNode = require( 'EXPRESSION_EXCHANGE/common/view/CollectionDisplayNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
@@ -451,7 +451,7 @@ define( function( require ) {
     model.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
 
       // add a representation of the coin
-      var coinTermNode = new CoinTermNode(
+      var coinTermNode = new VariableCoinTermNode(
         addedCoinTerm,
         model.viewModeProperty,
         model.showCoinValuesProperty,
