@@ -68,11 +68,6 @@ define( function( require ) {
     // convenience variable for positioning the textual labels created below
     var coinCenter = new Vector2( coinImageNode.width / 2, coinImageNode.height / 2 );
 
-    // TODO: There are a number of individual update functions that update the various representations, all of which
-    // TODO: always exist and their visibility is switched on and off.  This has grown in complexity, and I'm starting
-    // TODO: to thing that a single update function would make more sense.  Having separate nodes for the different
-    // TODO: representations probably still makes sense so we're not having to add and remove nodes all the time.
-
     // add the coin value text
     var coinValueText = new Text( '', { font: VALUE_FONT } );
     coinAndTextRootNode.addChild( coinValueText );
@@ -306,9 +301,6 @@ define( function( require ) {
 
     if ( options.addDragHandler ) {
 
-      // variable to track where drag started
-      var dragStartPosition;
-
       // vector for calculations, allocated here to avoid an allocation on every drag event
       var unboundedPosition = new Vector2();
 
@@ -321,8 +313,7 @@ define( function( require ) {
 
           start: function( event, trail ) {
             coinTerm.userControlled = true;
-            dragStartPosition = coinTerm.position;
-            unboundedPosition.set( dragStartPosition );
+            unboundedPosition.set( coinTerm.position );
           },
 
           // handler that moves the shape in model space
@@ -348,10 +339,10 @@ define( function( require ) {
       ) );
     }
 
-    // add a listener that will pop this coin to the front when selected by the user
+    // add a listener that will pop this node to the front when selected by the user
     coinTerm.userControlledProperty.onValue( true, function() { self.moveToFront(); } );
 
-    // add a listener that will pop this coin to the front when another coin is combined with it
+    // add a listener that will pop this node to the front when another coin term is combined with it
     coinTerm.combinedCountProperty.link( function( newCount, oldCount ) {
       if ( newCount > oldCount ) {
         self.moveToFront();

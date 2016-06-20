@@ -23,6 +23,7 @@ define( function( require ) {
   // constants
   var COIN_VALUE_FONT = new PhetFont( { size: 12, weight: 'bold' } );
   var VARIABLE_FONT = new MathSymbolFont( 16 );
+  var CONSTANT_FONT = new PhetFont( 16 );
   var SCALING_FACTOR = 0.4; // empirically determined to yield coin icons of the desired size
 
   /**
@@ -63,7 +64,10 @@ define( function( require ) {
     coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
 
     // add the 'term' text, e.g. xy
-    var termText = new SubSupText( coinTerm.termText, { font: VARIABLE_FONT, center: coinCenter } );
+    var termText = new SubSupText( coinTerm.termText, {
+      font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
+      center: coinCenter
+    } );
     this.addChild( termText );
 
     // control the term text visibility
@@ -76,7 +80,9 @@ define( function( require ) {
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
 
     // Add the text that includes the variable values.  This can change, so it starts off blank.
-    var termWithVariableValuesText = new SubSupText( ' ', { font: VARIABLE_FONT } );
+    var termWithVariableValuesText = new SubSupText( ' ', {
+      font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT
+    } );
     this.addChild( termWithVariableValuesText );
 
     // create a helper function to update the term value text

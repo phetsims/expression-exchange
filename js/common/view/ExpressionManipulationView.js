@@ -17,9 +17,9 @@ define( function( require ) {
   var CoinTermCreatorSet = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSet' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
-  var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
   var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );
   var CollectionDisplayNode = require( 'EXPRESSION_EXCHANGE/common/view/CollectionDisplayNode' );
+  var ConstantCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/ConstantCoinTermNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -40,6 +40,7 @@ define( function( require ) {
   var Shape = require( 'KITE/Shape' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
+  var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
   var VariableValueControl = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueControl' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
   var VStrut = require( 'SCENERY/nodes/VStrut' );
@@ -450,15 +451,26 @@ define( function( require ) {
     // add and remove coin nodes as coins are added and removed from the model
     model.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
 
-      // add a representation of the coin
-      var coinTermNode = new VariableCoinTermNode(
-        addedCoinTerm,
-        model.viewModeProperty,
-        model.showCoinValuesProperty,
-        model.showVariableValuesProperty,
-        model.showAllCoefficientsProperty,
-        { addDragHandler: true, dragBounds: self.layoutBounds }
-      );
+      // add the appropriate representation for the coin term
+      var coinTermNode;
+      if ( addedCoinTerm.isConstant ){
+        coinTermNode = new ConstantCoinTermNode(
+          addedCoinTerm,
+          model.viewModeProperty,
+          { addDragHandler: true, dragBounds: self.layoutBounds }
+        );
+      }
+      else{
+        coinTermNode = new VariableCoinTermNode(
+          addedCoinTerm,
+          model.viewModeProperty,
+          model.showCoinValuesProperty,
+          model.showVariableValuesProperty,
+          model.showAllCoefficientsProperty,
+          { addDragHandler: true, dragBounds: self.layoutBounds }
+        );
+      }
+
       coinLayer.addChild( coinTermNode );
 
       // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed

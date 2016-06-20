@@ -8,13 +8,15 @@ define( function( require ) {
 
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
-  var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
+  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  var ConstantCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/ConstantCoinTermNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var Util = require( 'DOT/Util' );
+  var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
   var Vector2 = require( 'DOT/Vector2' );
 
   /**
@@ -55,14 +57,24 @@ define( function( require ) {
     var self = this;
 
     // add the coin node that will be clicked upon to create coins of the same denomination
-    var coinNode = new VariableCoinTermNode(
-      creatorFunction( typeID, { initialPosition: Vector2.ZERO, initialCount: options.initialCount } ),
-      exploreModel.viewModeProperty,
-      exploreModel.showCoinValuesProperty,
-      exploreModel.showVariableValuesProperty,
-      exploreModel.showAllCoefficientsProperty,
-      { addDragHandler: false }
-    );
+    var coinNode;
+    if ( typeID === CoinTermTypeID.CONSTANT ){
+      coinNode = new ConstantCoinTermNode(
+        creatorFunction( typeID, { initialPosition: Vector2.ZERO, initialCount: options.initialCount } ),
+        exploreModel.viewModeProperty,
+        { addDragHandler: false }
+      );
+    }
+    else{
+      coinNode = new VariableCoinTermNode(
+        creatorFunction( typeID, { initialPosition: Vector2.ZERO, initialCount: options.initialCount } ),
+        exploreModel.viewModeProperty,
+        exploreModel.showCoinValuesProperty,
+        exploreModel.showVariableValuesProperty,
+        exploreModel.showAllCoefficientsProperty,
+        { addDragHandler: false }
+      );
+    }
     this.addChild( coinNode );
 
     // variables used by the input listener
