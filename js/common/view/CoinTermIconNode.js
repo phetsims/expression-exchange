@@ -64,10 +64,11 @@ define( function( require ) {
     coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
 
     // add the 'term' text, e.g. xy
-    var termText = new SubSupText( coinTerm.termText, {
-      font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
-      center: coinCenter
-    } );
+    var termText = new SubSupText( coinTerm.termText, { font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT } );
+    if ( coinTerm.combinedCount < 0 ){
+      termText.text = '-' + termText.text;
+    }
+    termText.center = coinCenter;
     this.addChild( termText );
 
     // control the term text visibility

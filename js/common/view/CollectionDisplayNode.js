@@ -55,7 +55,10 @@ define( function( require ) {
 
       // create a single instance of the icon
       var coinTermIcon = new CoinTermIconNode(
-        model.coinTermFactory.createCoinTerm( coinTermTypeID ),
+        model.coinTermFactory.createCoinTerm( coinTermTypeID, {
+          // set initial count to +1 or -1 based on whether this icon is meant to display positive or negative values
+          initialCount: showNegatives && i % 2 === 1 ? -1 : 1
+        } ),
         model.viewModeProperty,
         model.showCoinValuesProperty,
         model.showVariableValuesProperty
@@ -80,7 +83,7 @@ define( function( require ) {
       }
     }
 
-    // a function that will update the visibility of the icons based on the number of corresponding coin types
+    // function that will update the visibility of the icons based on the number of corresponding coin types
     function updateIconVisibility() {
       displayList.forEach( function( coinTermTypeID, index ) {
 
