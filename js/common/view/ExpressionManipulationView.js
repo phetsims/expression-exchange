@@ -186,6 +186,17 @@ define( function( require ) {
     var coinTermCreatorSet = [];
 
     coinTermCreatorDescriptors.forEach( function( coinTermCreatorDescriptor ){
+
+      // select the appropraite property from the model so that positive and negative counts are property tracked
+      var createdCountProperty;
+      if ( coinTermCreatorDescriptor.initialCount > 0 ){
+        createdCountProperty = model.getPositiveCountPropertyForType( coinTermCreatorDescriptor.typeID );
+      }
+      else{
+        createdCountProperty = model.getNegativeCountPropertyForType( coinTermCreatorDescriptor.typeID );
+      }
+
+      // create the "creator node" and put it on the list of those that will be shown at the bottom of the view
       coinTermCreatorSet.push( new CoinTermCreatorNode(
         model,
         coinTermCreatorDescriptor.typeID,
@@ -193,7 +204,7 @@ define( function( require ) {
         {
           initialCount: coinTermCreatorDescriptor.initialCount,
           creationLimit: MAX_COIN_TERMS_PER_TYPE,
-          createdCountProperty: model.getCountPropertyForType( coinTermCreatorDescriptor.typeID )
+          createdCountProperty: createdCountProperty
         }
       ) );
     } );

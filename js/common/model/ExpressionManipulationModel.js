@@ -80,17 +80,27 @@ define( function( require ) {
     } );
 
     var self = this;
+    var key;
 
     // @public, read only, factory used to create coin terms
     this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
 
-    // @public, read and listen only, tracks the number of coin terms by type
-    this.coinTermCountsByType = new PropertySet( {} );
-    for ( var key in CoinTermTypeID ) {
+    // @public, read and listen only, tracks the total positive instances and combined instances for each coin term type
+    this.positiveCoinTermCountsByType = new PropertySet( {} );
+    for ( key in CoinTermTypeID ) {
       if ( !CoinTermTypeID.hasOwnProperty( key ) ) {
         continue;
       }
-      this.coinTermCountsByType.addProperty( constantToCamelCase( key ), 0 );
+      this.positiveCoinTermCountsByType.addProperty( constantToCamelCase( key ), 0 );
+    }
+
+    // @public, read and listen only, tracks the total negative instances and combined instances for each coin term type
+    this.negativeCoinTermCountsByType = new PropertySet( {} );
+    for ( key in CoinTermTypeID ) {
+      if ( !CoinTermTypeID.hasOwnProperty( key ) ) {
+        continue;
+      }
+      this.negativeCoinTermCountsByType.addProperty( constantToCamelCase( key ), 0 );
     }
 
     // @public, read only, options that control what is available to the user to manipulate
@@ -631,31 +641,54 @@ define( function( require ) {
       this.expressionBeingEdited = null;
     },
 
-    // @private - update the count of coin term type
+    // @private - update the positive and negative counts for the specified coin term type
     updateCoinTermCount: function( coinTermTypeID ) {
-      var coinTermsOfThisType = 0;
+
+      var positiveCountForThisType = 0;
+      var negativeCountForThisType = 0;
       var convertedTypeID = constantToCamelCase( coinTermTypeID );
-      assert && assert( typeof( this.coinTermCountsByType[ convertedTypeID ] ) === 'number', 'no matching type in count tracking properties ' );
+
+      // update the positive and negative count values
       this.coinTerms.forEach( function( coinTerm ) {
         if ( coinTerm.typeID === coinTermTypeID ) {
-          coinTermsOfThisType += coinTerm.combinedCount;
+          if ( coinTerm.combinedCount > 0 ){
+            positiveCountForThisType += coinTerm.combinedCount;
+          }
+          else{
+            negativeCountForThisType += Math.abs( coinTerm.combinedCount );
+          }
         }
       } );
-      this.coinTermCountsByType[ convertedTypeID ] = coinTermsOfThisType;
+      this.positiveCoinTermCountsByType[ convertedTypeID ] = positiveCountForThisType;
+      this.negativeCoinTermCountsByType[ convertedTypeID ] = negativeCountForThisType;
     },
 
     /**
-     * get the count property for the coin terms with the given type ID
+     * get the positive count property for the given coin term type
      * @param {CoinTermTypeID} typeID
      * @public
      */
-    getCountPropertyForType: function( typeID ) {
+    getPositiveCountPropertyForType: function( typeID ) {
       var convertedTypeID = constantToCamelCase( typeID );
       assert && assert(
-        typeof( this.coinTermCountsByType[ convertedTypeID ] === 'number' ),
-        'no count for coin term type ' + convertedTypeID
+        typeof( this.positiveCoinTermCountsByType[ convertedTypeID ] === 'number' ),
+        'no positive count for coin term type ' + convertedTypeID
       );
-      return this.coinTermCountsByType[ convertedTypeID + 'Property' ];
+      return this.positiveCoinTermCountsByType[ convertedTypeID + 'Property' ];
+    },
+
+    /**
+     * get the negative count property for the given coin term type
+     * @param {CoinTermTypeID} typeID
+     * @public
+     */
+    getNegativeCountPropertyForType: function( typeID ) {
+      var convertedTypeID = constantToCamelCase( typeID );
+      assert && assert(
+        typeof( this.negativeCoinTermCountsByType[ convertedTypeID ] === 'number' ),
+        'no negative count for coin term type ' + convertedTypeID
+      );
+      return this.negativeCoinTermCountsByType[ convertedTypeID + 'Property' ];
     },
 
     // @public - remove the specified expression
@@ -743,7 +776,8 @@ define( function( require ) {
       // TODO: Probably need to reset expressions here so that they can cancel any in-progress animations.
       this.expressions.clear();
       this.coinTerms.clear();
-      this.coinTermCountsByType.reset();
+      this.positiveCoinTermCountsByType.reset();
+      this.negativeCoinTermCountsByType.reset();
       PropertySet.prototype.reset.call( this );
     },
 
