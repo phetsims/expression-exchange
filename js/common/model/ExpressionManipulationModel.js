@@ -842,15 +842,30 @@ define( function( require ) {
     },
 
     /**
-     * get the number of the specified coin term type currently in the model
+     * get the positive total count value for the specified coin term type
      * @param {CoinTermTypeID} typeID
      * @public
      */
-    getCoinTermCount: function( typeID ) {
+    getPositiveCoinTermCount: function( typeID ) {
       var count = 0;
       this.coinTerms.forEach( function( coinTerm ) {
-        if ( typeID === coinTerm.typeID ) {
+        if ( typeID === coinTerm.typeID && coinTerm.combinedCount > 0 ) {
           count += coinTerm.combinedCount;
+        }
+      } );
+      return count;
+    },
+
+    /**
+     * get the negative total count value for the specified coin term type
+     * @param {CoinTermTypeID} typeID
+     * @public
+     */
+    getNegativeCoinTermCount: function( typeID ) {
+      var count = 0;
+      this.coinTerms.forEach( function( coinTerm ) {
+        if ( typeID === coinTerm.typeID && coinTerm.combinedCount < 0 ) {
+          count += Math.abs( coinTerm.combinedCount );
         }
       } );
       return count;

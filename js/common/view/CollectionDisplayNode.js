@@ -33,15 +33,25 @@ define( function( require ) {
     Node.call( this );
     var self = this;
 
-    // an object that uses coin term IDs as the keys and has arrays of icons as the values
-    var iconMap = {};
+    // a list of the icons
+    var iconList = [];
 
-    // add the arrays of icon nodes to the map
+    // number of sections in which the icons will appear
+    var numberOfDisplaySections = showNegatives ? displayList.length * 2 : displayList.length;
+    
+    // variables used in the loop that creates the icons shown in the display
     var bottomOfPreviousRow;
-    displayList.forEach( function( coinTermTypeID ) {
+    var coinTermTypeID = null;
+    
+    // add icon display sections in the order in which they are listed
+    for( var i = 0; i < numberOfDisplaySections; i++ ){
 
-      // add the array that will maintain references to the icon nodes
-      iconMap[ coinTermTypeID ] = [];
+      if ( showNegatives ){
+        coinTermTypeID = displayList[ Math.floor( i / 2 ) ];
+      }
+      else{
+        coinTermTypeID = displayList[ i ];
+      }
 
       // create a single instance of the icon
       var coinTermIcon = new CoinTermIconNode(
@@ -56,27 +66,42 @@ define( function( require ) {
       }
 
       // wrap the icon in separate nodes so that it can appear in multiple places
-      for ( var i = 0; i < MAX_COINS_TERMS_PER_TYPE / MAX_COIN_TERMS_PER_ROW; i++ ) {
-        for ( var j = 0; j < MAX_COIN_TERMS_PER_ROW; j++ ) {
+      for ( var j = 0; j < MAX_COINS_TERMS_PER_TYPE / MAX_COIN_TERMS_PER_ROW; j++ ) {
+        for ( var k = 0; k < MAX_COIN_TERMS_PER_ROW; k++ ) {
           var wrappedIconNode = new Node( {
             children: [ coinTermIcon ],
-            centerX: COIN_CENTER_INSET + j * INTER_COIN_H_SPACING,
-            top: i === 0 ? bottomOfPreviousRow + DIFFERENT_TYPE_V_SPACING : bottomOfPreviousRow + SAME_TYPE_V_SPACING
+            centerX: COIN_CENTER_INSET + k * INTER_COIN_H_SPACING,
+            top: j === 0 ? bottomOfPreviousRow + DIFFERENT_TYPE_V_SPACING : bottomOfPreviousRow + SAME_TYPE_V_SPACING
           } );
           self.addChild( wrappedIconNode );
-          iconMap[ coinTermTypeID ].push( wrappedIconNode );
+          iconList.push( wrappedIconNode );
         }
         bottomOfPreviousRow = wrappedIconNode.bottom;
       }
-    } );
-
+    }
 
     // a function that will update the visibility of the icons based on the number of corresponding coin types
     function updateIconVisibility() {
-      displayList.forEach( function( coinTermTypeID ) {
-        var count = model.getCoinTermCount( coinTermTypeID );
+      displayList.forEach( function( coinTermTypeID, index ) {
+
+        // find the first icon node for this coin term type
+        var nodeIndex = index * MAX_COINS_TERMS_PER_TYPE;
+        if ( showNegatives ){
+          nodeIndex *= 2;
+        }
+
+        // update the icon visibility to match the count of positive terms of this type
+        var count = model.getPositiveCoinTermCount( coinTermTypeID );
         for ( var i = 0; i < MAX_COINS_TERMS_PER_TYPE; i++ ) {
-          iconMap[ coinTermTypeID ][ i ].visible = i < count;
+          iconList[ nodeIndex++ ].visible = i < count;
+        }
+
+        // if negatives are being shown, update the icons that correspond to those
+        if ( showNegatives ){
+          count = model.getNegativeCoinTermCount( coinTermTypeID );
+          for ( i = 0; i < MAX_COINS_TERMS_PER_TYPE; i++ ) {
+            iconList[ nodeIndex++ ].visible = i < count;
+          }
         }
       } );
     }

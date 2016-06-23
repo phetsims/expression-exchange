@@ -182,6 +182,9 @@ define( function( require ) {
       assert( false, 'unknown value for coinTermCollection' );
     }
 
+    // flag that will control whether negatives are shown in the collection display
+    var showNegativesInCollection = false;
+
     // create the set of coin term creator nodes that will appear in the carousel
     var coinTermCreatorSet = [];
 
@@ -207,6 +210,11 @@ define( function( require ) {
           createdCountProperty: createdCountProperty
         }
       ) );
+
+      // if one or more has a negative initial count, negatives should be shown in the collection
+      if ( coinTermCreatorDescriptor.initialCount < 0 ){
+        showNegativesInCollection = true;
+      }
     } );
 
     // add the panel or carousel that will contain the various coin terms that the user can create
@@ -274,7 +282,7 @@ define( function( require ) {
     var myCollectionDisplay = new CollectionDisplayNode(
       model,
       _.uniq( _.map( coinTermCreatorDescriptors, function( descriptor ){ return descriptor.typeID; } ) ),
-      model.coinTermCollection === CoinTermCreatorSet.ADVANCED // show negative values for advanced screen
+      showNegativesInCollection // show negative values for advanced screen
     );
 
     // add accordion box that will contain the collection display

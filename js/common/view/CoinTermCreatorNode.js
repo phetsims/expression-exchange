@@ -143,7 +143,6 @@ define( function( require ) {
     // update the enabled state of this creator node - will be disabled if creation limits are reached
     if ( options.createdCountProperty ) {
       options.createdCountProperty.link( function( count ) {
-        console.log( 'count = ' + count );
         if ( count + Math.abs( options.initialCount ) > options.creationLimit ) {
           self.pickable = false;
           self.opacity = 0.4;
