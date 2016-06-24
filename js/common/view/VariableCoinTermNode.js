@@ -278,7 +278,7 @@ define( function( require ) {
 
     // update the state of the break apart button when the userControlled state changes
     coinTerm.userControlledProperty.link( function( userControlled ) {
-      if ( coinTerm.combinedCount > 1 && coinTerm.breakApartAllowed ) {
+      if ( Math.abs( coinTerm.combinedCount ) > 1 && coinTerm.breakApartAllowed ) {
         if ( userControlled ) {
           clearHideButtonTimer(); // called in case the timer was running
           showBreakApartButton();
