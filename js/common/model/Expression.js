@@ -316,6 +316,7 @@ define( function( require ) {
         }
       }
 
+      // don't allow coin terms to be broken apart while in expressions
       coinTerm.breakApartAllowed = false;
 
       // adjust the expression's width to accommodate the new coin term
