@@ -638,8 +638,9 @@ define( function( require ) {
 
       this.expressionBeingEdited.exitEditMode();
 
-      // handle the special case where all coin terms in the expression were the same and have been combined together
-      if ( this.expressionBeingEdited.coinTerms.length === 1 ) {
+      // Handle the special cases where one or zero coin terms remain after combining terms, which is no longer
+      // considered an expression.
+      if ( this.expressionBeingEdited.coinTerms.length <= 1 ) {
         this.expressionBeingEdited.breakApart();
       }
 
