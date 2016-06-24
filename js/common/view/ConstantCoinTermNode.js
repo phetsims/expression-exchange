@@ -14,6 +14,7 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var Property = require( 'AXON/Property' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var Text = require( 'SCENERY/nodes/Text' );
   var Timer = require( 'PHET_CORE/Timer' );
@@ -29,10 +30,11 @@ define( function( require ) {
   /**
    * @param {CoinTerm} constantCoinTerm - model of a coin
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
+   * @param {Property.<boolean>} simplifyNegativesProperty - affects whether minus sign is shown when in expression
    * @param {Object} options
    * @constructor
    */
-  function ConstantCoinTermNode( constantCoinTerm, viewModeProperty, options ) {
+  function ConstantCoinTermNode( constantCoinTerm, viewModeProperty, simplifyNegativesProperty, options ) {
 
     assert && assert( constantCoinTerm.isConstant, 'must use a constant coin term with this node' );
 
@@ -74,22 +76,27 @@ define( function( require ) {
       }
     }
 
-    // function that updates all nodes that comprise this composite node
+    // function that updates the text and repositions it
     function updateAppearance() {
 
-      // update value text
-      valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.combinedCountProperty.value;
+      // update value text, suppressing the minus sign if in an expression and depicting subration
+      if ( constantCoinTerm.inExpression && simplifyNegativesProperty.value ){
+        valueText.text = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.combinedCountProperty.value );
+      }
+      else{
+        valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.combinedCountProperty.value;
+      }
+
+      // update position
       valueText.center = Vector2.ZERO;
 
       // update the bounds that are registered with the model
       updateBoundsInModel();
     }
 
-    // if anything about the coin term's values changes or any of the display mode, the appearance needs to be update
+    // update the appearance when model properties that affect it change
     // TODO: Need to dispose of this, unlink it, or whatever, to avoid memory leaks
-    constantCoinTerm.combinedCountProperty.link( function(){
-      updateAppearance();
-    } );
+    Property.multilink( [ constantCoinTerm.combinedCountProperty, simplifyNegativesProperty ], updateAppearance );
 
     // move this node as the model representation moves
     constantCoinTerm.positionProperty.link( function( position ) {

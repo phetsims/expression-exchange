@@ -127,6 +127,9 @@ define( function( require ) {
 
       // TODO: This is originally being written with no thought given to performance, may need to optimize
 
+      // if the coin term is in an expression and subtraction is being depicted, suppress minus signs
+      var minusSignsSuppressed = coinTerm.inExpression && simplifyNegativesProperty.value;
+
       // control front coin image visibility
       coinImageNode.visible = viewModeProperty.value === ViewMode.COINS;
 
@@ -140,7 +143,7 @@ define( function( require ) {
                                showAllCoefficientsProperty.value;
 
       // update the term text, which only changes if it switches from positive to negative
-      if ( coinTerm.combinedCount < 0 && !coefficientVisible ) {
+      if ( coinTerm.combinedCount < 0 && !coefficientVisible && !minusSignsSuppressed ) {
         termText.text = '-' + coinTerm.termText;
       }
       else {
@@ -153,7 +156,7 @@ define( function( require ) {
 
       // term value text, which shows the variable values and operators such as exponents
       var termValueText = coinTerm.termValueTextProperty.value;
-      if ( coinTerm.combinedCount === -1 && !showAllCoefficientsProperty.value ) {
+      if ( coinTerm.combinedCount === -1 && !showAllCoefficientsProperty.value && !minusSignsSuppressed ) {
         // prepend a minus sign
         termValueText = '-' + termValueText;
       }
@@ -168,7 +171,7 @@ define( function( require ) {
                                            showVariableValuesProperty.value;
 
       // coefficient value and visibility
-      coefficientText.text = coinTerm.combinedCount;
+      coefficientText.text = minusSignsSuppressed ? Math.abs( coinTerm.combinedCount ) : coinTerm.combinedCount;
       coefficientText.visible = coefficientVisible;
 
       // position the coefficient
@@ -199,7 +202,8 @@ define( function( require ) {
         viewModeProperty,
         showCoinValuesProperty,
         showVariableValuesProperty,
-        showAllCoefficientsProperty
+        showAllCoefficientsProperty,
+        simplifyNegativesProperty
       ],
       updateAppearance
     );
