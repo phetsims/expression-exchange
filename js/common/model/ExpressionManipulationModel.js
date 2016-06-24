@@ -76,7 +76,8 @@ define( function( require ) {
       yTermValue: 5, // @public
       zTermValue: 10, // @public
       totalValue: 0, // @public, read-only
-      expressionBeingEdited: null // @public, read-only, null when no expression is in edit mode
+      expressionBeingEdited: null, // @public, read-only, null when no expression is in edit mode
+      simplifyNegatives: false // @public TODO: The terminology for this field is in flux, make sure its name and the view checkbox name match before publication
     } );
 
     var self = this;

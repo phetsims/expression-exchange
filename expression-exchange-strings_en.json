@@ -1,4 +1,7 @@
 {
+  "coinValues": {
+    "value": "coin values"
+  },
   "numberCents": {
     "value": "{0} cents"
   },
@@ -23,14 +26,14 @@
   "allCoefficients": {
     "value": "all coefficients"
   },
-  "coinValues": {
-    "value": "coin values"
-  },
-  "variableValues": {
-    "value": "variable values"
+  "simplifyNegatives": {
+    "value": "simplify negatives"
   },
   "total": {
     "value": "Total"
+  },
+  "variableValues": {
+    "value": "variable values"
   },
   "values": {
     "value": "Values"

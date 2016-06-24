@@ -46,10 +46,11 @@ define( function( require ) {
   var VStrut = require( 'SCENERY/nodes/VStrut' );
 
   // strings
-  var myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
-  var numberCentsString = require( 'string!EXPRESSION_EXCHANGE/numberCents' );
   var allCoefficientsString = require( 'string!EXPRESSION_EXCHANGE/allCoefficients' );
   var coinValuesString = require( 'string!EXPRESSION_EXCHANGE/coinValues' );
+  var myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
+  var numberCentsString = require( 'string!EXPRESSION_EXCHANGE/numberCents' );
+  var simplifyNegativesString = require( 'string!EXPRESSION_EXCHANGE/simplifyNegatives' );
   var totalString = require( 'string!EXPRESSION_EXCHANGE/total' );
   var valuesString = require( 'string!EXPRESSION_EXCHANGE/values' );
   var variableValuesString = require( 'string!EXPRESSION_EXCHANGE/variableValues' );
@@ -63,6 +64,7 @@ define( function( require ) {
   var ACCORDION_BOX_BUTTON_Y_MARGIN = 4;
   var ACCORDION_BOX_CORNER_RADIUS = 7;
   var CHECK_BOX_FONT = new PhetFont( { size: 16 } );
+  var CHECK_BOX_VERTICAL_SPACING = 6;
   var INSET = 10; // inset from edges of layout bounds, in screen coords
   var MAX_COIN_TERMS_PER_TYPE = 10;
   var FLOATING_PANEL_INSET = 10;
@@ -182,15 +184,15 @@ define( function( require ) {
       assert( false, 'unknown value for coinTermCollection' );
     }
 
-    // flag that will control whether negatives are shown in the collection display
-    var showNegativesInCollection = false;
+    // flag that is set when negative terms exist in the creator set and can thus be created by the user
+    var negativeTermsPresent = false;
 
     // create the set of coin term creator nodes that will appear in the carousel
     var coinTermCreatorSet = [];
 
     coinTermCreatorDescriptors.forEach( function( coinTermCreatorDescriptor ){
 
-      // select the appropraite property from the model so that positive and negative counts are property tracked
+      // select the appropriate property from the model so that positive and negative counts are property tracked
       var createdCountProperty;
       if ( coinTermCreatorDescriptor.initialCount > 0 ){
         createdCountProperty = model.getPositiveCountPropertyForType( coinTermCreatorDescriptor.typeID );
@@ -213,7 +215,7 @@ define( function( require ) {
 
       // if one or more has a negative initial count, negatives should be shown in the collection
       if ( coinTermCreatorDescriptor.initialCount < 0 ){
-        showNegativesInCollection = true;
+        negativeTermsPresent = true;
       }
     } );
 
@@ -282,7 +284,7 @@ define( function( require ) {
     var myCollectionDisplay = new CollectionDisplayNode(
       model,
       _.uniq( _.map( coinTermCreatorDescriptors, function( descriptor ){ return descriptor.typeID; } ) ),
-      showNegativesInCollection // show negative values for advanced screen
+      negativeTermsPresent // show negative values for advanced screen
     );
 
     // add accordion box that will contain the collection display
@@ -302,7 +304,7 @@ define( function( require ) {
       new Text( coinValuesString, { font: CHECK_BOX_FONT } ),
       model.showCoinValuesProperty,
       {
-        top: myCollectionAccordionBox.bottom + 6,
+        top: myCollectionAccordionBox.bottom + CHECK_BOX_VERTICAL_SPACING,
         left: myCollectionAccordionBox.left,
         maxWidth: myCollectionAccordionBox.width
       }
@@ -314,7 +316,7 @@ define( function( require ) {
       new Text( variableValuesString, { font: CHECK_BOX_FONT } ),
       model.showVariableValuesProperty,
       {
-        top: myCollectionAccordionBox.bottom + 6,
+        top: myCollectionAccordionBox.bottom + CHECK_BOX_VERTICAL_SPACING,
         left: myCollectionAccordionBox.left,
         maxWidth: myCollectionAccordionBox.width
       }
@@ -332,12 +334,27 @@ define( function( require ) {
       new Text( allCoefficientsString, { font: CHECK_BOX_FONT } ),
       model.showAllCoefficientsProperty,
       {
-        top: showCoinValuesCheckbox.bottom + 6,
+        top: showCoinValuesCheckbox.bottom + CHECK_BOX_VERTICAL_SPACING,
         left: myCollectionAccordionBox.left,
         maxWidth: myCollectionAccordionBox.width
       }
     );
     this.addChild( showAllCoefficientsCheckbox );
+
+    // if negative values are possible, show the check box that allows them to be simplified
+    if ( negativeTermsPresent ){
+      // TODO: The label for this check box is in flux, make sure its name and the string match before publication
+      var simplifyNegativesCheckbox = new CheckBox(
+        new Text( simplifyNegativesString, { font: CHECK_BOX_FONT } ),
+        model.simplifyNegativesProperty,
+        {
+          top: showAllCoefficientsCheckbox.bottom + CHECK_BOX_VERTICAL_SPACING,
+          left: myCollectionAccordionBox.left,
+          maxWidth: myCollectionAccordionBox.width
+        }
+      );
+      this.addChild( simplifyNegativesCheckbox );
+    }
 
     // add the node that will act as the layer where the expression backgrounds and expression hints will come and go
     var expressionLayer = new Node();
