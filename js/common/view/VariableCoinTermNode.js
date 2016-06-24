@@ -42,7 +42,6 @@ define( function( require ) {
    * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
    * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
    * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
-   * @param {Property.<boolean>} simplifyNegativesProperty - controls whether minus sign is shown when in an expression
    * @param {Object} options
    * @constructor
    */
@@ -52,7 +51,6 @@ define( function( require ) {
     showCoinValuesProperty,
     showVariableValuesProperty,
     showAllCoefficientsProperty,
-    simplifyNegativesProperty,
     options
   ) {
 
@@ -127,9 +125,6 @@ define( function( require ) {
 
       // TODO: This is originally being written with no thought given to performance, may need to optimize
 
-      // if the coin term is in an expression and subtraction is being depicted, suppress minus signs
-      var minusSignsSuppressed = coinTerm.inExpression && simplifyNegativesProperty.value;
-
       // control front coin image visibility
       coinImageNode.visible = viewModeProperty.value === ViewMode.COINS;
 
@@ -143,7 +138,7 @@ define( function( require ) {
                                showAllCoefficientsProperty.value;
 
       // update the term text, which only changes if it switches from positive to negative
-      if ( coinTerm.combinedCount < 0 && !coefficientVisible && !minusSignsSuppressed ) {
+      if ( coinTerm.combinedCount < 0 && !coefficientVisible && coinTerm.showMinusSignWhenNegative ) {
         termText.text = '-' + coinTerm.termText;
       }
       else {
@@ -156,7 +151,7 @@ define( function( require ) {
 
       // term value text, which shows the variable values and operators such as exponents
       var termValueText = coinTerm.termValueTextProperty.value;
-      if ( coinTerm.combinedCount === -1 && !showAllCoefficientsProperty.value && !minusSignsSuppressed ) {
+      if ( coinTerm.combinedCount === -1 && !showAllCoefficientsProperty.value && coinTerm.showMinusSignWhenNegative ) {
         // prepend a minus sign
         termValueText = '-' + termValueText;
       }
@@ -171,7 +166,7 @@ define( function( require ) {
                                            showVariableValuesProperty.value;
 
       // coefficient value and visibility
-      coefficientText.text = minusSignsSuppressed ? Math.abs( coinTerm.combinedCount ) : coinTerm.combinedCount;
+      coefficientText.text = coinTerm.showMinusSignWhenNegative ? Math.abs( coinTerm.combinedCount ) : coinTerm.combinedCount;
       coefficientText.visible = coefficientVisible;
 
       // position the coefficient
@@ -199,11 +194,11 @@ define( function( require ) {
         coinTerm.combinedCountProperty,
         coinTerm.valueProperty,
         coinTerm.termValueTextProperty,
+        coinTerm.showMinusSignWhenNegativeProperty,
         viewModeProperty,
         showCoinValuesProperty,
         showVariableValuesProperty,
-        showAllCoefficientsProperty,
-        simplifyNegativesProperty
+        showAllCoefficientsProperty
       ],
       updateAppearance
     );
@@ -303,9 +298,9 @@ define( function( require ) {
       }
     } );
 
-    // hide the break apart button if the coin term becomes part of an expression
-    coinTerm.inExpressionProperty.link( function( inExpression ) {
-      if ( inExpression && breakApartButton.visible ) {
+    // hide the break apart button if break apart becomes disabled, generally if the coin term joins an expression
+    coinTerm.breakApartAllowedProperty.link( function( breakApartAllowed ) {
+      if ( breakApartButton.visible && !breakApartAllowed ) {
         clearHideButtonTimer();
         hideBreakApartButton();
       }

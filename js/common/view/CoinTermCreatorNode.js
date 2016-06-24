@@ -62,7 +62,6 @@ define( function( require ) {
       coinNode = new ConstantCoinTermNode(
         creatorFunction( typeID, { initialPosition: Vector2.ZERO, initialCount: options.initialCount } ),
         exploreModel.viewModeProperty,
-        exploreModel.simplifyNegativesProperty,
         { addDragHandler: false }
       );
     }
@@ -73,7 +72,6 @@ define( function( require ) {
         exploreModel.showCoinValuesProperty,
         exploreModel.showVariableValuesProperty,
         exploreModel.showAllCoefficientsProperty,
-        exploreModel.simplifyNegativesProperty,
         { addDragHandler: false }
       );
     }

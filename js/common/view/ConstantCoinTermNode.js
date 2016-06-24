@@ -30,11 +30,10 @@ define( function( require ) {
   /**
    * @param {CoinTerm} constantCoinTerm - model of a coin
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
-   * @param {Property.<boolean>} simplifyNegativesProperty - affects whether minus sign is shown when in expression
    * @param {Object} options
    * @constructor
    */
-  function ConstantCoinTermNode( constantCoinTerm, viewModeProperty, simplifyNegativesProperty, options ) {
+  function ConstantCoinTermNode( constantCoinTerm, viewModeProperty, options ) {
 
     assert && assert( constantCoinTerm.isConstant, 'must use a constant coin term with this node' );
 
@@ -79,12 +78,12 @@ define( function( require ) {
     // function that updates the text and repositions it
     function updateAppearance() {
 
-      // update value text, suppressing the minus sign if in an expression and depicting subration
-      if ( constantCoinTerm.inExpression && simplifyNegativesProperty.value ){
-        valueText.text = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.combinedCountProperty.value );
+      // update value text
+      if ( constantCoinTerm.showMinusSignWhenNegative ){
+        valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.combinedCountProperty.value;
       }
       else{
-        valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.combinedCountProperty.value;
+        valueText.text = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.combinedCountProperty.value );
       }
 
       // update position
@@ -96,7 +95,10 @@ define( function( require ) {
 
     // update the appearance when model properties that affect it change
     // TODO: Need to dispose of this, unlink it, or whatever, to avoid memory leaks
-    Property.multilink( [ constantCoinTerm.combinedCountProperty, simplifyNegativesProperty ], updateAppearance );
+    Property.multilink(
+      [ constantCoinTerm.combinedCountProperty, constantCoinTerm.showMinusSignWhenNegativeProperty ],
+      updateAppearance
+    );
 
     // move this node as the model representation moves
     constantCoinTerm.positionProperty.link( function( position ) {

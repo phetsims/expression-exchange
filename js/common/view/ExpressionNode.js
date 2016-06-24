@@ -30,7 +30,7 @@ define( function( require ) {
   var HINT_OFFSET = 3; // in screen coordinates, empirically determined
   var LEFT_HINT_TRANSLATION = Matrix3.translation( -HINT_OFFSET, 0 );
   var RIGHT_HINT_TRANSLATION = Matrix3.translation( HINT_OFFSET, 0 );
-  var PLUS_SIGN_FONT = new PhetFont( 32 );
+  var OPERATOR_FONT = new PhetFont( 32 );
 
   // TODO: Need to consolidate this with duplicated function in ExpressionHintNode if that node is retained
   // utility function for drawing a vertical zig zag line on a shape between two endpoints
@@ -55,9 +55,10 @@ define( function( require ) {
 
   /**
    * @param {Expression} expression - model of an expression
+   * @param {Property.<boolean>} simplifyNegativesProperty - controls whether to depict minus signs
    * @constructor
    */
-  function ExpressionNode( expression ) {
+  function ExpressionNode( expression, simplifyNegativesProperty ) {
 
     Node.call( this, { pickable: false } );
     var self = this;
@@ -76,14 +77,14 @@ define( function( require ) {
     this.addChild( rightHintNode );
 
     // layer where the plus symbols go
-    var plusSymbolsLayer = new Node();
-    this.addChild( plusSymbolsLayer );
+    var symbolsLayer = new Node();
+    this.addChild( symbolsLayer );
 
-    // function to update the background and the plus symbols
-    function updateShapeAndPlusSymbols() {
+    // function to update the background and the plus/minus symbols
+    function update() {
 
       // plus symbols are recreated each time to keep things simple
-      plusSymbolsLayer.removeAllChildren();
+      symbolsLayer.removeAllChildren();
 
       if ( expression.coinTerms.length > 0 ) {
 
@@ -119,16 +120,27 @@ define( function( require ) {
         backgroundPath.shape = null;
         backgroundPath.shape = backgroundShape;
 
-        // add the plus symbols
+        // add the operators
         for ( var i = 0; i < coinTermsLeftToRight.length - 1; i++ ) {
-          var plusSign = new Text( '+', {
-            font: PLUS_SIGN_FONT,
+
+          // determine whether to show a plus sign or a minus sign
+          var symbolText;
+          if ( simplifyNegativesProperty.value && coinTermsLeftToRight[ i + 1 ].combinedCount < 0 ){
+            symbolText = '-';
+          }
+          else{
+            symbolText = '+';
+          }
+
+          // add the operator
+          var operator = new Text( symbolText, {
+            font: OPERATOR_FONT,
             centerX: ( coinTermsLeftToRight[ i ].destination.x + coinTermsLeftToRight[ i ].relativeViewBounds.maxX +
                        coinTermsLeftToRight[ i + 1 ].destination.x +
                        coinTermsLeftToRight[ i + 1 ].relativeViewBounds.minX ) / 2 - expression.upperLeftCorner.x,
             centerY: expression.height / 2
           } );
-          plusSymbolsLayer.addChild( plusSign );
+          symbolsLayer.addChild( operator );
         }
       }
       else {
@@ -138,12 +150,12 @@ define( function( require ) {
     }
 
     // update the appearance if the layout changes
-    expression.layoutChangedEmitter.addListener( updateShapeAndPlusSymbols );
+    expression.layoutChangedEmitter.addListener( update );
 
     // update the shape when hint states of the expression change
     Property.multilink(
-      [ expression.leftHintActiveProperty, expression.rightHintActiveProperty ],
-      updateShapeAndPlusSymbols
+      [ expression.leftHintActiveProperty, expression.rightHintActiveProperty, simplifyNegativesProperty ],
+      update
     );
 
     // update the position when the expression moves
@@ -153,8 +165,8 @@ define( function( require ) {
     } );
 
     // update whenever coin terms are added or removed
-    expression.coinTerms.addItemAddedListener( updateShapeAndPlusSymbols );
-    expression.coinTerms.addItemRemovedListener( updateShapeAndPlusSymbols );
+    expression.coinTerms.addItemAddedListener( update );
+    expression.coinTerms.addItemRemovedListener( update );
 
     // update the visibility of the left and right hints
     expression.leftHintActiveProperty.linkAttribute( leftHintNode, 'visible' );
@@ -192,7 +204,7 @@ define( function( require ) {
     );
 
     // do the initial update
-    updateShapeAndPlusSymbols();
+    update();
   }
 
   expressionExchange.register( 'ExpressionNode', ExpressionNode );

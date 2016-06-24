@@ -189,7 +189,11 @@ define( function( require ) {
                   }
 
                   // create the next expression with these coin terms
-                  self.expressions.push( new Expression( joinableFreeCoinTerm, addedCoinTerm ) );
+                  self.expressions.push( new Expression(
+                    joinableFreeCoinTerm,
+                    addedCoinTerm,
+                    self.simplifyNegativesProperty
+                  ) );
                 }
               }
             }

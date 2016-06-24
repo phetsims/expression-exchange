@@ -543,7 +543,7 @@ define( function( require ) {
     // add and remove expressions and expression overlays as they come and go
     model.expressions.addItemAddedListener( function( addedExpression ) {
 
-      var expressionNode = new ExpressionNode( addedExpression, model.viewModeProperty );
+      var expressionNode = new ExpressionNode( addedExpression, model.simplifyNegativesProperty );
       expressionLayer.addChild( expressionNode );
 
       var expressionOverlayNode = new ExpressionOverlayNode( addedExpression, self.layoutBounds );

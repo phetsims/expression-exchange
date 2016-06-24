@@ -30,9 +30,10 @@ define( function( require ) {
   /**
    * @param {CoinTerm} anchorCoinTerm
    * @param {CoinTerm} floatingCoinTerm
+   * @param {Property.<boolean>} simplifyNegativesProperty
    * @constructor
    */
-  function Expression( anchorCoinTerm, floatingCoinTerm ) {
+  function Expression( anchorCoinTerm, floatingCoinTerm, simplifyNegativesProperty ) {
 
     var self = this;
     this.id = 'Ex-' + (++creationCount);
@@ -69,6 +70,9 @@ define( function( require ) {
     // @public, listen only, emits an event when this expression should be broken apart
     this.breakApartEmitter = new Emitter();
 
+    // @private, used to update whether or not coin terms should show minus sign when negative
+    this.simplifyNegativesProperty = simplifyNegativesProperty;
+
     // @private, tracks coin terms that are hovering over this expression but are being controlled by the user so are
     // not yet part of the expression.  This is used to activate and size the hints.  Coin terms should be added and
     // removed via methods.
@@ -83,7 +87,8 @@ define( function( require ) {
 
     // add the initial coin term
     this.coinTerms.push( anchorCoinTerm );
-    anchorCoinTerm.inExpression = true;
+    anchorCoinTerm.breakApartAllowed = false;
+    anchorCoinTerm.positionInExpression = 0;
 
     // Define a listener that is bound to this object that will set the resize needed flag when fired.  This is done
     // in this way so that the listener can be found and removed when the coin term is removed from this expression.
@@ -129,6 +134,12 @@ define( function( require ) {
           coinTerm.goImmediatelyToDestination();
         }
       } );
+    } );
+
+    // monitor the setting for whether negatives are simplified and update the contained coin terms when it changes
+    // TODO: Unlink this in a dispose function
+    simplifyNegativesProperty.link( function() {
+      self.updateCoinTermShowMinusSignFlag();
     } );
   }
 
@@ -215,6 +226,16 @@ define( function( require ) {
     },
 
     /**
+     * get a list of the coin terms ordered from left to right based on their position in the expression
+     * @private
+     */
+    getCoinTermsLeftToRight: function() {
+      return this.coinTerms.getArray().slice( 0 ).sort( function( ct1, ct2 ) {
+        return ct1.destination.x - ct2.destination.x;
+      } );
+    },
+
+    /**
      * Size the expression and, if necessary, move the contained coin terms so that all coin terms are appropriately
      * positioned.  This is generally done when something affects the view bounds of the coin terms, such as turning
      * on coefficients or switching from coin view to variable view.
@@ -228,9 +249,7 @@ define( function( require ) {
       var coinTermsMoved = false;
 
       // get an array of the coin terms sorted from left to right
-      var coinTermsLeftToRight = this.coinTerms.getArray().slice( 0 ).sort( function( ct1, ct2 ) {
-        return ct1.destination.x - ct2.destination.x;
-      } );
+      var coinTermsLeftToRight = this.getCoinTermsLeftToRight();
 
       var middleCoinTermIndex = Math.floor( ( coinTermsLeftToRight.length - 1 ) / 2 );
       var xPos;
@@ -297,7 +316,7 @@ define( function( require ) {
         }
       }
 
-      coinTerm.inExpression = true;
+      coinTerm.breakApartAllowed = false;
 
       // adjust the expression's width to accommodate the new coin term
       var originalWidth = this.width;
@@ -330,12 +349,16 @@ define( function( require ) {
 
       // add a listener to resize the expression if the bounds of this coin term change
       coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
+
+      // update whether the coin terms should be showing minus signs
+      this.updateCoinTermShowMinusSignFlag();
     },
 
     // @public
     removeCoinTerm: function( coinTerm ) {
       coinTerm.relativeViewBoundsProperty.unlink( this.setResizeFlagFunction );
-      coinTerm.inExpression = false;
+      coinTerm.breakApartAllowed = true;
+      coinTerm.showMinusSignWhenNegative = true;
       this.coinTerms.remove( coinTerm );
       if ( this.coinTerms.length > 0 ) {
         this.updateSizeAndCoinTermPositions();
@@ -360,9 +383,7 @@ define( function( require ) {
       var self = this;
 
       // make a copy of the coin terms and sort them in left to right order
-      var coinTermsLeftToRight = this.coinTerms.getArray().slice( 0 ).sort( function( ct1, ct2 ) {
-        return ct1.destination.x - ct2.destination.x;
-      } );
+      var coinTermsLeftToRight = this.getCoinTermsLeftToRight();
 
       // remove them from this expression
       coinTermsLeftToRight.forEach( function( coinTerm ) {
@@ -387,9 +408,7 @@ define( function( require ) {
       assert && assert( this.containsCoinTerm( coinTerm ), 'coin term is not part of this expression, can\'t be reintegrated' );
 
       // get an array of the coin terms sorted from left to right
-      var coinTermsLeftToRight = this.coinTerms.getArray().slice( 0 ).sort( function( ct1, ct2 ) {
-        return ct1.destination.x - ct2.destination.x;
-      } );
+      var coinTermsLeftToRight = this.getCoinTermsLeftToRight();
 
       // set the position of each coin term based on its order
       var leftEdge = this.upperLeftCorner.x + INSET;
@@ -398,7 +417,25 @@ define( function( require ) {
         orderedCoinTerm.travelToDestination( new Vector2( leftEdge - orderedCoinTerm.relativeViewBounds.minX, centerY ) );
         leftEdge += orderedCoinTerm.relativeViewBounds.width + INTER_COIN_TERM_SPACING;
       } );
+
+      // update coin term minus sign flags
+      this.updateCoinTermShowMinusSignFlag();
+
+      // trigger an event so that the view is sure to be updated
       this.layoutChangedEmitter.emit();
+    },
+
+    /**
+     * update the contained coin terms for whether they should show minus sign when negative, supports subtraction mode
+     * @private
+     */
+    updateCoinTermShowMinusSignFlag: function() {
+      var self = this;
+      var coinTermsLeftToRight = self.getCoinTermsLeftToRight();
+      coinTermsLeftToRight.forEach( function( residentCoinTerm, index ) {
+        // minus signs suppressed when in subtraction mode and the coin term isn't the first one in the expression
+        residentCoinTerm.showMinusSignWhenNegative = !( self.simplifyNegativesProperty.value && index > 0 );
+      } );
     },
 
     /**
@@ -522,7 +559,7 @@ define( function( require ) {
     addHoveringCoinTerm: function( coinTerm ) {
       if ( this.hoveringCoinTerms.indexOf( coinTerm ) === -1 ) {
         this.hoveringCoinTerms.push( coinTerm );
-        coinTerm.inExpression = true;
+        coinTerm.breakApartAllowed = false;
       }
     },
 
@@ -536,7 +573,7 @@ define( function( require ) {
       var index = this.hoveringCoinTerms.indexOf( coinTerm );
       if ( index !== -1 ) {
         this.hoveringCoinTerms.splice( index, 1 );
-        coinTerm.inExpression = false;
+        coinTerm.breakApartAllowed = true;
       }
     },
 
@@ -551,7 +588,7 @@ define( function( require ) {
 
     clearHoveringCoinTerms: function() {
       this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
-        hoveringCoinTerm.inExpression = false;
+        hoveringCoinTerm.breakApartAllowed = true;
       } );
       this.hoveringCoinTerms.length = 0;
     },

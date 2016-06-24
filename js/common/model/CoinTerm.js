@@ -45,9 +45,13 @@ define( function( require ) {
       combinedCount: options.initialCount, // @public, number of coins/terms combined into this one, can be negative
       combineHaloActive: false, // @public
       inProgressAnimation: null, // @public (read only), tracks the current in-progress animation, if any
+      showMinusSignWhenNegative: true, // @public, supports showing subtraction in expressions
 
-      // @public, flag set when coin term is in or hovering over an expression
-      inExpression: false,
+      // @public, tracks if in an expression and if so where, -1 when not in one (similar to array.indexOf)
+      positionInExpression: -1,
+
+      // @public, flag set to disallow breaking apart, generally used when coin term is in or over an expression
+      breakApartAllowed: true,
 
       // @public - The bounds of this model element's view representation relative to the element's current position.
       // This admittedly breaks the usual model-view rules, but many things in the view need to know this, so having it
