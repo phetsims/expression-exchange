@@ -42,11 +42,19 @@ define( function( require ) {
    * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
    * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
    * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
+   * @param {Property.<boolean>} simplifyNegativesProperty - controls whether minus sign is shown when in an expression
    * @param {Object} options
    * @constructor
    */
-  function VariableCoinTermNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty,
-                         showAllCoefficientsProperty, options ) {
+  function VariableCoinTermNode(
+    coinTerm,
+    viewModeProperty,
+    showCoinValuesProperty,
+    showVariableValuesProperty,
+    showAllCoefficientsProperty,
+    simplifyNegativesProperty,
+    options
+  ) {
 
     options = _.extend( {}, {
       addDragHandler: true,
@@ -278,7 +286,7 @@ define( function( require ) {
 
     // update the state of the break apart button when the userControlled state changes
     coinTerm.userControlledProperty.link( function( userControlled ) {
-      if ( Math.abs( coinTerm.combinedCount ) > 1 && coinTerm.breakApartAllowed ) {
+      if ( Math.abs( coinTerm.combinedCount ) > 1 && !coinTerm.inExpression ) {
         if ( userControlled ) {
           clearHideButtonTimer(); // called in case the timer was running
           showBreakApartButton();
@@ -291,9 +299,9 @@ define( function( require ) {
       }
     } );
 
-    // hide the break apart button if break apart becomes disallowed
-    coinTerm.breakApartAllowedProperty.link( function( breakApartAllowed ) {
-      if ( !breakApartAllowed && breakApartButton.visible ) {
+    // hide the break apart button if the coin term becomes part of an expression
+    coinTerm.inExpressionProperty.link( function( inExpression ) {
+      if ( inExpression && breakApartButton.visible ) {
         clearHideButtonTimer();
         hideBreakApartButton();
       }

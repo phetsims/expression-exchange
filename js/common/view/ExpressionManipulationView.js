@@ -503,6 +503,7 @@ define( function( require ) {
           model.showCoinValuesProperty,
           model.showVariableValuesProperty,
           model.showAllCoefficientsProperty,
+          model.simplifyNegativesProperty,
           { addDragHandler: true, dragBounds: self.layoutBounds }
         );
       }

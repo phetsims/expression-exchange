@@ -23,9 +23,9 @@ define( function( require ) {
     this.movingCoinTerm = movingCoinTerm;
     this.anchorOnLeft = anchorCoinTerm.position.x < movingCoinTerm.position.x;
 
-    // disallow break apart of multi-unit coin terms when in an expression hint
-    anchorCoinTerm.breakApartAllowed = false;
-    movingCoinTerm.breakApartAllowed = false;
+    // set the flag indicating that the coin terms are part of an expression so that the break apart button is suppressed
+    anchorCoinTerm.inExpression = true;
+    movingCoinTerm.inExpression = true;
   }
 
   expressionExchange.register( 'ExpressionHint', ExpressionHint );
@@ -50,8 +50,8 @@ define( function( require ) {
     },
 
     clear: function() {
-      this.anchorCoinTerm.breakApartAllowed = true;
-      this.movingCoinTerm.breakApartAllowed = true;
+      this.anchorCoinTerm.inExpression = false;
+      this.movingCoinTerm.inExpression = false;
     }
   } );
 } );

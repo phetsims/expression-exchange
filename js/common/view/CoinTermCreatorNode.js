@@ -72,6 +72,7 @@ define( function( require ) {
         exploreModel.showCoinValuesProperty,
         exploreModel.showVariableValuesProperty,
         exploreModel.showAllCoefficientsProperty,
+        exploreModel.simplifyNegativesProperty,
         { addDragHandler: false }
       );
     }
