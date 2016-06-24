@@ -451,6 +451,9 @@ define( function( require ) {
       showCoinValuesCheckbox.left = myCollectionAccordionBox.left;
       showVariableValuesCheckbox.left = myCollectionAccordionBox.left;
       showAllCoefficientsCheckbox.left = myCollectionAccordionBox.left;
+      if ( simplifyNegativesCheckbox ){
+        simplifyNegativesCheckbox.left = myCollectionAccordionBox.left;
+      }
       resetAllButton.right = visibleBounds.maxX - FLOATING_PANEL_INSET;
     } );
 
