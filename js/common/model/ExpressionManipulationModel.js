@@ -220,6 +220,11 @@ define( function( require ) {
               // combine the dropped coin term with the one with which it overlaps
               overlappingLikeCoinTerm.combinedCount = overlappingLikeCoinTerm.combinedCount + addedCoinTerm.combinedCount;
               self.removeCoinTerm( addedCoinTerm );
+
+              // if combining these terms caused there to be no terms left (i.e. they cancelled), exit the edit mode
+              if ( self.expressionBeingEdited.coinTerms.length <= 1 ){
+                self.stopEditingExpression();
+              }
             }
             else {
 
