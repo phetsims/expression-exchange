@@ -517,9 +517,16 @@ define( function( require ) {
       // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
       // from the model.
       addedCoinTerm.userControlledProperty.onValue( false, function() {
-        if ( coinTermNode.bounds.intersectsBounds( coinTermCreatorHolder.bounds ) && !model.isCoinTermInExpression( addedCoinTerm ) ) {
+
+        // remove the coin term if it was released over the carousel, but check first to make sure that this event
+        // didn't already cause the coin term to join up with an expression or another coin term
+        if ( coinTermNode.bounds.intersectsBounds( coinTermCreatorHolder.bounds ) &&
+             model.coinTerms.contains( addedCoinTerm ) &&
+             addedCoinTerm.inProgressAnimation === null &&
+             !model.isCoinTermInExpression( addedCoinTerm ) ) {
           model.removeCoinTerm( addedCoinTerm, true );
         }
+
       } );
 
       // add the coin halo
