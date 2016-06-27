@@ -26,6 +26,7 @@ define( function( require ) {
   var VALUE_FONT = new PhetFont( { size: 34 } );
   var FADE_TIME = 0.75; // in seconds
   var NUM_FADE_STEPS = 10; // number of steps for fade out to occur
+  var MIN_RELATIVE_BOUNDS_WIDTH = 45; // empirically determined to be similar to variable coin term widths
 
   /**
    * @param {CoinTerm} constantCoinTerm - model of a coin
@@ -68,6 +69,14 @@ define( function( require ) {
 
       // make the bounds relative to (0,0), which is where the center of this node is maintained
       var relativeVisibleBounds = topNode.visibleLocalBounds;
+
+      // In order to be consistent with the behavior of the variable coin terms, the bounds need to be a minimum width,
+      // see https://github.com/phetsims/expression-exchange/issues/10.
+      if ( relativeVisibleBounds.width < MIN_RELATIVE_BOUNDS_WIDTH ){
+        relativeVisibleBounds = relativeVisibleBounds.dilatedX(
+          ( MIN_RELATIVE_BOUNDS_WIDTH - relativeVisibleBounds.width ) / 2
+        );
+      }
 
       // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
       if ( !constantCoinTerm.relativeViewBounds || !constantCoinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {

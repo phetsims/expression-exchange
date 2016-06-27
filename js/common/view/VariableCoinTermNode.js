@@ -155,9 +155,7 @@ define( function( require ) {
         // prepend a minus sign
         termValueText = '-' + termValueText;
       }
-      //if ( Math.abs( coinTerm.combinedCount ) > 1 || showAllCoefficientsProperty.value ) { // wrap the term value text in parentheses
-      //  termValueText = '(' + termValueText + ')';
-      //}
+
       termWithVariableValuesText.text = termValueText;
       termWithVariableValuesText.center = coinCenter;
       termWithVariableValuesText.mouseArea = termWithVariableValuesText.localBounds.dilated( 10 );
