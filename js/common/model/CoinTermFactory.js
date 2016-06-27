@@ -67,7 +67,7 @@ define( function( require ) {
     this.xTimesYValueStringProperty = new DerivedProperty(
       [ this.xValueProperty, this.yValueProperty ],
       function( xValue, yValue ) {
-        return '(' + xValue.toString() + '\u00B7' + yValue.toString() + ')';
+        return '(' + xValue.toString() + ')(' + yValue.toString() + ')';
       }
     );
 
