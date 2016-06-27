@@ -222,7 +222,7 @@ define( function( require ) {
               self.removeCoinTerm( addedCoinTerm );
 
               // if combining these terms caused there to be no terms left (i.e. they cancelled), exit the edit mode
-              if ( self.expressionBeingEdited.coinTerms.length <= 1 ){
+              if ( self.expressionBeingEdited.coinTerms.length === 0 ){
                 self.stopEditingExpression();
               }
             }
