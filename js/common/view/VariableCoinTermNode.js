@@ -45,14 +45,12 @@ define( function( require ) {
    * @param {Object} options
    * @constructor
    */
-  function VariableCoinTermNode(
-    coinTerm,
-    viewModeProperty,
-    showCoinValuesProperty,
-    showVariableValuesProperty,
-    showAllCoefficientsProperty,
-    options
-  ) {
+  function VariableCoinTermNode( coinTerm,
+                                 viewModeProperty,
+                                 showCoinValuesProperty,
+                                 showVariableValuesProperty,
+                                 showAllCoefficientsProperty,
+                                 options ) {
 
     options = _.extend( {}, {
       addDragHandler: true,
@@ -351,6 +349,13 @@ define( function( require ) {
     coinTerm.combinedCountProperty.link( function( newCount, oldCount ) {
       if ( newCount > oldCount ) {
         self.moveToFront();
+      }
+
+      if ( breakApartButton.visible && Math.abs( newCount ) < 2 ) {
+
+        // if combined count was reduced through cancellation while the break apart button was visible, hide it, see
+        // https://github.com/phetsims/expression-exchange/issues/29
+        hideBreakApartButton();
       }
     } );
 
