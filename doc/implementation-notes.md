@@ -28,3 +28,11 @@ can be complicated, so it will be important to have a good understanding of such
 behavioral rules need to be changed or fixed.
 
 Only one expression can be edited at a time.
+
+Late in the implementation process, several new requirements came into being.  One was to support constants.  For the
+most part, the CoinTerm class supported the desired behavior.  However, the primary view class - CoinTermNode - did not,
+since it depicted CoinTerms in a number of ways that assumed an underlying variable.  To handle this, the view was
+divided into two classes, VariableCoinTermNode and ConstantCoinTermNode.  This worked out quite well in the
+implementation, but may be a little confusing to anyone coming in to maintain this simulation because there is a single
+model element, i.e. CoinTerm, that can map to one of two view elements, i.e. VariableCoinTermNode and
+ConstantCoinTermNode.  Not a huge deal, but probably worth a "heads up" here in this document.
