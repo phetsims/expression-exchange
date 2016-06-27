@@ -46,13 +46,13 @@ define( function( require ) {
 
     // update the strings as the variable values change
     this.xValueProperty.link( function( xValue ) {
-      self.xValueStringProperty.value = xValue.toString();
+      self.xValueStringProperty.value =  '(' + xValue.toString() + ')';
     } );
     this.yValueProperty.link( function( yValue ) {
-      self.yValueStringProperty.value = yValue.toString();
+      self.yValueStringProperty.value = '(' + yValue.toString() + ')';
     } );
     this.zValueProperty.link( function( zValue ) {
-      self.zValueStringProperty.value = zValue.toString();
+      self.zValueStringProperty.value = '(' + zValue.toString() + ')';
     } );
 
     // @private, value property for x times y
@@ -67,7 +67,7 @@ define( function( require ) {
     this.xTimesYValueStringProperty = new DerivedProperty(
       [ this.xValueProperty, this.yValueProperty ],
       function( xValue, yValue ) {
-        return xValue.toString() + '\u00B7' + yValue.toString();
+        return '(' + xValue.toString() + '\u00B7' + yValue.toString() + ')';
       }
     );
 
@@ -83,7 +83,7 @@ define( function( require ) {
     this.xSquaredValueStringProperty = new DerivedProperty(
       [ this.xValueProperty ],
       function( xValue ) {
-        return xValue.toString() + '<sup>2</sup>';
+        return '(' + xValue.toString() + ')' + '<sup>2</sup>';
       }
     );
 
@@ -99,7 +99,7 @@ define( function( require ) {
     this.ySquaredValueStringProperty = new DerivedProperty(
       [ this.yValueProperty ],
       function( yValue ) {
-        return yValue.toString() + '<sup>2</sup>';
+        return '(' + yValue.toString() + ')' + '<sup>2</sup>';
       }
     );
 
@@ -115,11 +115,9 @@ define( function( require ) {
     this.xSquaredTimesYSquaredValueStringProperty = new DerivedProperty(
       [ this.xValueProperty, this.yValueProperty ],
       function( xValue, yValue ) {
-        return xValue.toString() + '<sup>2</sup>' + yValue.toString() + '<sup>2</sup>';
+        return '(' + xValue.toString() + ')' + '<sup>2</sup>' + '(' + yValue.toString() + ')' + '<sup>2</sup>';
       }
     );
-
-
   }
 
   expressionExchange.register( 'CoinTermFactory', CoinTermFactory );
