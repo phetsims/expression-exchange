@@ -89,7 +89,8 @@ define( function( require ) {
     // create a helper function to update the term value text
     function updateTermValueText() {
       var termValueText = coinTerm.termValueTextProperty.value;
-      termWithVariableValuesText.text = termValueText;
+      var sign = coinTerm.combinedCount > 0 ? '' : '-';
+      termWithVariableValuesText.text = sign + termValueText;
       termWithVariableValuesText.center = coinCenter;
     }
 
