@@ -220,11 +220,6 @@ define( function( require ) {
               // combine the dropped coin term with the one with which it overlaps
               overlappingLikeCoinTerm.combinedCount = overlappingLikeCoinTerm.combinedCount + addedCoinTerm.combinedCount;
               self.removeCoinTerm( addedCoinTerm );
-
-              // if combining these terms causes there to be no terms left (i.e. they cancelled), exit the edit mode
-              if ( self.expressionBeingEdited.coinTerms.length === 1 &&  overlappingLikeCoinTerm.combinedCount === 0 ){
-                self.stopEditingExpression();
-              }
             }
             else {
 
@@ -292,10 +287,21 @@ define( function( require ) {
 
       addedCoinTerm.returnedToOriginEmitter.addListener( coinTermReturnedToOriginListener );
 
-      // add a listener that will remove this coin if its existence strength goes to zero
+      // monitor the existence strength of this coin term
       function coinTermExistenceStrengthListener( existenceStrength ) {
+
         if ( existenceStrength <= 0 ) {
+
+          // the existence strength has gone to zero, remove this from the model
           self.removeCoinTerm( addedCoinTerm, false );
+
+          if ( self.expressionBeingEdited ){
+            if ( self.expressionBeingEdited.coinTerms.length === 0 ){
+
+              // the removal of the coin term caused the expression being edited to be empty, so drop out of edit mode
+              self.stopEditingExpression();
+            }
+          }
         }
       }
 
