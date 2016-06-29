@@ -200,8 +200,8 @@ define( function( require ) {
           }
           else {
 
-            // An expression is being edited, so a released coin term could be either moved within an expression or
-            // combined with another coin term within the expression.
+            // An expression is being edited, so a released coin term could be either moved to a new location within an
+            // expression or combined with another coin term in the expression.
 
             // state checking
             assert && assert(
@@ -221,8 +221,8 @@ define( function( require ) {
               overlappingLikeCoinTerm.combinedCount = overlappingLikeCoinTerm.combinedCount + addedCoinTerm.combinedCount;
               self.removeCoinTerm( addedCoinTerm );
 
-              // if combining these terms caused there to be no terms left (i.e. they cancelled), exit the edit mode
-              if ( self.expressionBeingEdited.coinTerms.length === 0 ){
+              // if combining these terms causes there to be no terms left (i.e. they cancelled), exit the edit mode
+              if ( self.expressionBeingEdited.coinTerms.length === 1 &&  overlappingLikeCoinTerm.combinedCount === 0 ){
                 self.stopEditingExpression();
               }
             }
@@ -292,14 +292,14 @@ define( function( require ) {
 
       addedCoinTerm.returnedToOriginEmitter.addListener( coinTermReturnedToOriginListener );
 
-      // add a listener that will remove this coin if its combined count goes to zero
-      function coinTermCombinedCountListener( combinedCount ) {
-        if ( combinedCount === 0 ) {
+      // add a listener that will remove this coin if its existence strength goes to zero
+      function coinTermExistenceStrengthListener( existenceStrength ) {
+        if ( existenceStrength <= 0 ) {
           self.removeCoinTerm( addedCoinTerm, false );
         }
       }
 
-      addedCoinTerm.combinedCountProperty.link( coinTermCombinedCountListener );
+      addedCoinTerm.existenceStrengthProperty.link( coinTermExistenceStrengthListener );
 
       // clean up the listeners added above if and when this coin term is removed from the model
       self.coinTerms.addItemRemovedListener( function coinTermRemovalListener( removedCoinTerm ) {
@@ -307,7 +307,7 @@ define( function( require ) {
           addedCoinTerm.userControlledProperty.unlink( coinTermUserControlledListener );
           addedCoinTerm.breakApartEmitter.removeListener( coinTermBreakApartListener );
           addedCoinTerm.returnedToOriginEmitter.removeListener( coinTermReturnedToOriginListener );
-          addedCoinTerm.combinedCountProperty.unlink( coinTermCombinedCountListener );
+          addedCoinTerm.existenceStrengthProperty.unlink( coinTermExistenceStrengthListener );
           addedCoinTerm.valueProperty.unlink( updateTotal );
           self.coinTerms.removeItemRemovedListener( coinTermRemovalListener );
 
@@ -622,6 +622,9 @@ define( function( require ) {
 
     // @public
     removeCoinTerm: function( coinTerm, animate ) {
+
+      // TODO:   It is kind of weird that the animation flag prevents removal from expressions.  Maybe this should be
+      // TODO:   broken into two methods, or maybe the expression removal should be checked every time.
       if ( animate ) {
         coinTerm.returnToOrigin();
       }
@@ -754,7 +757,9 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingFreeCoinTerm = null;
       this.coinTerms.forEach( function( coinTerm ) {
-        if ( !coinTerm.userControlled && !self.isCoinTermInExpression( coinTerm ) &&
+        if ( !coinTerm.userControlled &&
+             !self.isCoinTermInExpression( coinTerm ) &&
+             coinTerm.existenceStrength === 1 &&
              expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
           maxOverlap = expression.getCoinTermJoinZoneOverlap( coinTerm );
           mostOverlappingFreeCoinTerm = coinTerm;
@@ -795,7 +800,7 @@ define( function( require ) {
     // @private - test if coinTermB is in the "expression combine zone" of coinTermA
     isCoinTermInExpressionCombineZone: function( coinTermA, coinTermB ) {
 
-      // The determination is made based on adjusted bounds, and the adjustements are a little different based on the
+      // The determination is made based on adjusted bounds, and the adjustments are a little different based on the
       // view mode.  The adjustment values were empirically determined.
       var boundsHeightAdjustmentFactor;
       if ( this.viewMode === ViewMode.COINS ) {
@@ -913,7 +918,10 @@ define( function( require ) {
       var maxOverlapAmount = 0;
       this.coinTerms.forEach( function( testCoinTerm ) {
         if ( coinTerm !== testCoinTerm &&
-             coinTerm.canCombineWith( testCoinTerm ) && !testCoinTerm.userControlled && !self.isCoinTermInExpression( testCoinTerm ) ) {
+             coinTerm.canCombineWith( testCoinTerm ) &&
+             !testCoinTerm.userControlled &&
+             testCoinTerm.existenceStrength === 1 &&
+             !self.isCoinTermInExpression( testCoinTerm ) ) {
 
           // calculate and compare the relative overlap amounts, done a bit differently in the different view modes
           var overlapAmount;
@@ -940,7 +948,9 @@ define( function( require ) {
 
       for ( var i = 0; i < expression.coinTerms.length; i++ ) {
         var potentiallyOverlappingCoinTerm = expression.coinTerms.get( i );
-        if ( potentiallyOverlappingCoinTerm !== coinTerm && !potentiallyOverlappingCoinTerm.userControlled &&
+        if ( potentiallyOverlappingCoinTerm !== coinTerm &&
+             !potentiallyOverlappingCoinTerm.userControlled &&
+             potentiallyOverlappingCoinTerm.existenceStrength === 1 &&
              potentiallyOverlappingCoinTerm.canCombineWith( coinTerm ) ) {
           var overlapAmount = 0;
           if ( self.viewMode === ViewMode.COINS ) {

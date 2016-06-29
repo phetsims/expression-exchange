@@ -33,8 +33,6 @@ define( function( require ) {
   var VARIABLE_FONT = new MathSymbolFont( 36 );
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_X_SPACING = 3;
-  var FADE_TIME = 0.75; // in seconds
-  var NUM_FADE_STEPS = 10; // number of steps for fade out to occur
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin
@@ -119,7 +117,7 @@ define( function( require ) {
     }
 
     // function that updates all nodes that comprise this composite node
-    function updateAppearance() {
+    function updateRepresentation() {
 
       // TODO: This is originally being written with no thought given to performance, may need to optimize
 
@@ -183,7 +181,7 @@ define( function( require ) {
       updateBoundsInModel();
     }
 
-    // if anything about the coin term's values changes or any of the display mode, the appearance needs to be update
+    // if anything about the coin term's values changes or any of the display mode, the representation needs to be updated
     // TODO: Need to dispose of this, unlink it, or whatever, to avoid memory leaks
     Property.multilink(
       [
@@ -196,8 +194,15 @@ define( function( require ) {
         showVariableValuesProperty,
         showAllCoefficientsProperty
       ],
-      updateAppearance
+      updateRepresentation
     );
+
+    // add a separate listener that will update the opacity based on the coin term's existence strength
+    coinTerm.existenceStrengthProperty.link( function( existenceStrength ){
+      assert && assert( existenceStrength >= 0 && existenceStrength <= 1, 'existence strength must be between 0 and 1' );
+      self.opacity = existenceStrength;
+      self.pickable = existenceStrength === 1; // prevent interaction with fading coin term
+    } );
 
     // timer that will be used to hide the break apart button if user doesn't use it
     var hideButtonTimer = null;
@@ -368,36 +373,5 @@ define( function( require ) {
 
   expressionExchange.register( 'VariableCoinTermNode', VariableCoinTermNode );
 
-  return inherit( Node, VariableCoinTermNode, {
-
-    /**
-     * cause this node to fade away (by reducing opacity) and then remove itself from the scene graph
-     * @public
-     */
-    fadeAway: function() {
-      var self = this;
-      var fadeOutCount = 0;
-
-      // prevent any further interaction
-      this.pickable = false;
-
-      // start the periodic timer that will cause the fade
-      var timerInterval = Timer.setInterval( function() {
-        fadeOutCount++;
-        if ( fadeOutCount < NUM_FADE_STEPS ) {
-          // reduce opacity
-          self.opacity = 1 - fadeOutCount / NUM_FADE_STEPS;
-        }
-        else {
-          // remove this node from the scene graph
-          self.getParents().forEach( function( parent ) {
-            parent.removeChild( self );
-          } );
-
-          // stop the timer
-          Timer.clearInterval( timerInterval );
-        }
-      }, Math.max( FADE_TIME / NUM_FADE_STEPS * 1000, 1 / 60 * 1000 ) ); // interval should be at least one animation frame
-    }
-  } );
+  return inherit( Node, VariableCoinTermNode );
 } );

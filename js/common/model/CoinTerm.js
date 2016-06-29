@@ -19,7 +19,12 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var PropertySet = require( 'AXON/PropertySet' );
+  var Timer = require( 'PHET_CORE/Timer' );
   var Vector2 = require( 'DOT/Vector2' );
+
+  // constants
+  var FADE_TIME = 0.75; // in seconds
+  var NUM_FADE_STEPS = 10; // number of steps for fade out to occur
 
   // TODO: class var for creating unique IDs, remove this when sim is fully functional and debugged
   var creationCount = 0;
@@ -56,7 +61,10 @@ define( function( require ) {
       // @public - The bounds of this model element's view representation relative to the element's current position.
       // This admittedly breaks the usual model-view rules, but many things in the view need to know this, so having it
       // available on the model element after being set by the view worked out to be the best approach.
-      relativeViewBounds: null
+      relativeViewBounds: null,
+
+      // @public (read only), ranges from 1 to 0, used primarily for fading out of a coin term when cancellation occurs
+      existenceStrength: 1
     } );
 
     // @public, read only, values that describe the nature of this coin term
@@ -87,6 +95,20 @@ define( function( require ) {
     this.positionProperty.lazyLink( function( position ) {
       if ( position.equals( self.initialPosition ) && !this.userControlled ) {
         self.returnedToOriginEmitter.emit();
+      }
+    } );
+
+    // monitor combined count, start fading the existence strength if the count goes to zero
+    this.combinedCountProperty.lazyLink( function( combinedCount ){
+      if ( combinedCount === 0 ){
+        // start the periodic timer that will fade the existence strength to zero
+        var timerInterval = Timer.setInterval( function() {
+          self.existenceStrength = Math.max( self.existenceStrength - 1 / NUM_FADE_STEPS, 0 );
+          if ( self.existenceStrength === 0 ) {
+            // fading complete, stop the timer
+            Timer.clearInterval( timerInterval );
+          }
+        }, Math.max( FADE_TIME / NUM_FADE_STEPS * 1000, 1 / 60 * 1000 ) ); // interval should be at least one animation frame
       }
     } );
   }

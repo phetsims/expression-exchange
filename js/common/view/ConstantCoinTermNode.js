@@ -17,15 +17,12 @@ define( function( require ) {
   var Property = require( 'AXON/Property' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var Text = require( 'SCENERY/nodes/Text' );
-  var Timer = require( 'PHET_CORE/Timer' );
   var Util = require( 'DOT/Util' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
   var VALUE_FONT = new PhetFont( { size: 34 } );
-  var FADE_TIME = 0.75; // in seconds
-  var NUM_FADE_STEPS = 10; // number of steps for fade out to occur
   var MIN_RELATIVE_BOUNDS_WIDTH = 45; // empirically determined to be similar to variable coin term widths
 
   /**
@@ -85,7 +82,7 @@ define( function( require ) {
     }
 
     // function that updates the text and repositions it
-    function updateAppearance() {
+    function updateRepresentation() {
 
       // update value text
       if ( constantCoinTerm.showMinusSignWhenNegative ){
@@ -102,12 +99,19 @@ define( function( require ) {
       updateBoundsInModel();
     }
 
-    // update the appearance when model properties that affect it change
+    // update the representation when model properties that affect it change
     // TODO: Need to dispose of this, unlink it, or whatever, to avoid memory leaks
     Property.multilink(
       [ constantCoinTerm.combinedCountProperty, constantCoinTerm.showMinusSignWhenNegativeProperty ],
-      updateAppearance
+      updateRepresentation
     );
+
+    // add a separate listener that will update the opacity based on the coin term's existence strength
+    constantCoinTerm.existenceStrengthProperty.link( function( existenceStrength ){
+      assert && assert( existenceStrength >= 0 && existenceStrength <= 1, 'existence strength must be between 0 and 1' );
+      self.opacity = existenceStrength;
+      self.pickable = existenceStrength === 1; // prevent interaction with fading coin term
+    } );
 
     // move this node as the model representation moves
     constantCoinTerm.positionProperty.link( function( position ) {
@@ -173,36 +177,5 @@ define( function( require ) {
 
   expressionExchange.register( 'ConstantCoinTermNode', ConstantCoinTermNode );
 
-  return inherit( Node, ConstantCoinTermNode, {
-
-    /**
-     * cause this node to fade away (by reducing opacity) and then remove itself from the scene graph
-     * @public
-     */
-    fadeAway: function() {
-      var self = this;
-      var fadeOutCount = 0;
-
-      // prevent any further interaction
-      this.pickable = false;
-
-      // start the periodic timer that will cause the fade
-      var timerInterval = Timer.setInterval( function() {
-        fadeOutCount++;
-        if ( fadeOutCount < NUM_FADE_STEPS ) {
-          // reduce opacity
-          self.opacity = 1 - fadeOutCount / NUM_FADE_STEPS;
-        }
-        else {
-          // remove this node from the scene graph
-          self.getParents().forEach( function( parent ) {
-            parent.removeChild( self );
-          } );
-
-          // stop the timer
-          Timer.clearInterval( timerInterval );
-        }
-      }, Math.max( FADE_TIME / NUM_FADE_STEPS * 1000, 1 / 60 * 1000 ) ); // interval should be at least one animation frame
-    }
-  } );
+  return inherit( Node, ConstantCoinTermNode );
 } );

@@ -190,14 +190,14 @@ define( function( require ) {
     // create the set of coin term creator nodes that will appear in the carousel
     var coinTermCreatorSet = [];
 
-    coinTermCreatorDescriptors.forEach( function( coinTermCreatorDescriptor ){
+    coinTermCreatorDescriptors.forEach( function( coinTermCreatorDescriptor ) {
 
       // select the appropriate property from the model so that positive and negative counts are property tracked
       var createdCountProperty;
-      if ( coinTermCreatorDescriptor.initialCount > 0 ){
+      if ( coinTermCreatorDescriptor.initialCount > 0 ) {
         createdCountProperty = model.getPositiveCountPropertyForType( coinTermCreatorDescriptor.typeID );
       }
-      else{
+      else {
         createdCountProperty = model.getNegativeCountPropertyForType( coinTermCreatorDescriptor.typeID );
       }
 
@@ -214,7 +214,7 @@ define( function( require ) {
       ) );
 
       // if one or more has a negative initial count, negatives should be shown in the collection
-      if ( coinTermCreatorDescriptor.initialCount < 0 ){
+      if ( coinTermCreatorDescriptor.initialCount < 0 ) {
         negativeTermsPresent = true;
       }
     } );
@@ -283,7 +283,7 @@ define( function( require ) {
     // create the "My Collection" display element
     var myCollectionDisplay = new CollectionDisplayNode(
       model,
-      _.uniq( _.map( coinTermCreatorDescriptors, function( descriptor ){ return descriptor.typeID; } ) ),
+      _.uniq( _.map( coinTermCreatorDescriptors, function( descriptor ) { return descriptor.typeID; } ) ),
       negativeTermsPresent // show negative values for advanced screen
     );
 
@@ -342,7 +342,7 @@ define( function( require ) {
     this.addChild( showAllCoefficientsCheckbox );
 
     // if negative values are possible, show the check box that allows them to be simplified
-    if ( negativeTermsPresent ){
+    if ( negativeTermsPresent ) {
       // TODO: The label for this check box is in flux, make sure its name and the string match before publication
       var simplifyNegativesCheckbox = new CheckBox(
         new Text( simplifyNegativesString, { font: CHECK_BOX_FONT } ),
@@ -451,7 +451,7 @@ define( function( require ) {
       showCoinValuesCheckbox.left = myCollectionAccordionBox.left;
       showVariableValuesCheckbox.left = myCollectionAccordionBox.left;
       showAllCoefficientsCheckbox.left = myCollectionAccordionBox.left;
-      if ( simplifyNegativesCheckbox ){
+      if ( simplifyNegativesCheckbox ) {
         simplifyNegativesCheckbox.left = myCollectionAccordionBox.left;
       }
       resetAllButton.right = visibleBounds.maxX - FLOATING_PANEL_INSET;
@@ -492,7 +492,7 @@ define( function( require ) {
 
       // add the appropriate representation for the coin term
       var coinTermNode;
-      if ( addedCoinTerm.isConstant ){
+      if ( addedCoinTerm.isConstant ) {
         coinTermNode = new ConstantCoinTermNode(
           addedCoinTerm,
           model.viewModeProperty,
@@ -500,7 +500,7 @@ define( function( require ) {
           { addDragHandler: true, dragBounds: self.layoutBounds }
         );
       }
-      else{
+      else {
         coinTermNode = new VariableCoinTermNode(
           addedCoinTerm,
           model.viewModeProperty,
@@ -522,8 +522,7 @@ define( function( require ) {
         // didn't already cause the coin term to join up with an expression or another coin term
         if ( coinTermNode.bounds.intersectsBounds( coinTermCreatorHolder.bounds ) &&
              model.coinTerms.contains( addedCoinTerm ) &&
-             addedCoinTerm.inProgressAnimation === null &&
-             !model.isCoinTermInExpression( addedCoinTerm ) ) {
+             addedCoinTerm.inProgressAnimation === null && !model.isCoinTermInExpression( addedCoinTerm ) ) {
           model.removeCoinTerm( addedCoinTerm, true );
         }
 
@@ -536,13 +535,7 @@ define( function( require ) {
       // set up a listener to remove the nodes when the corresponding coin is removed from the model
       model.coinTerms.addItemRemovedListener( function removalListener( removedCoin ) {
         if ( removedCoin === addedCoinTerm ) {
-          if ( removedCoin.combinedCount === 0 ) {
-            // if the coin term being removed has a combined count of zero, it should fade out rather than disappearing
-            coinTermNode.fadeAway();
-          }
-          else {
-            coinLayer.removeChild( coinTermNode );
-          }
+          coinLayer.removeChild( coinTermNode );
           coinHaloLayer.removeChild( coinHaloNode );
           model.coinTerms.removeItemRemovedListener( removalListener );
         }
