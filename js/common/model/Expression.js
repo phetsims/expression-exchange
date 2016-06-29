@@ -37,7 +37,6 @@ define( function( require ) {
 
     var self = this;
     this.id = 'EX-' + (++creationCount);
-    console.log( 'creating ' + this.id + ' with anchor = ' + anchorCoinTerm.id + ' and floating = ' + floatingCoinTerm.id );
 
     PropertySet.call( this, {
       upperLeftCorner: Vector2.ZERO, // @public (read only)
@@ -141,6 +140,9 @@ define( function( require ) {
     simplifyNegativesProperty.link( function() {
       self.updateCoinTermShowMinusSignFlag();
     } );
+
+    // logging, for debug purposes
+    expressionExchange.log( 'created ' + this.id + ' with anchor = ' + anchorCoinTerm.id + ' and floating = ' + floatingCoinTerm.id );
   }
 
   expressionExchange.register( 'Expression', Expression );
@@ -372,6 +374,8 @@ define( function( require ) {
         this.updateSizeAndCoinTermPositions();
         this.updateCoinTermShowMinusSignFlag();
       }
+
+      expressionExchange.log( 'removed ' + coinTerm.id + ' from ' + this.id );
     },
 
     /**
