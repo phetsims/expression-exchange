@@ -52,9 +52,6 @@ define( function( require ) {
       inProgressAnimation: null, // @public (read only), tracks the current in-progress animation, if any
       showMinusSignWhenNegative: true, // @public, supports showing subtraction in expressions
 
-      // @public, tracks if in an expression and if so where, -1 when not in one (similar to array.indexOf)
-      positionInExpression: -1,
-
       // @public, flag set to disallow breaking apart, generally used when coin term is in or over an expression
       breakApartAllowed: true,
 

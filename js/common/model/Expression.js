@@ -87,7 +87,6 @@ define( function( require ) {
     // add the initial coin term
     this.coinTerms.push( anchorCoinTerm );
     anchorCoinTerm.breakApartAllowed = false;
-    anchorCoinTerm.positionInExpression = 0;
 
     // Define a listener that is bound to this object that will set the resize needed flag when fired.  This is done
     // in this way so that the listener can be found and removed when the coin term is removed from this expression.
