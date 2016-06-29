@@ -26,7 +26,7 @@ define( function( require ) {
   var FADE_TIME = 0.75; // in seconds
   var NUM_FADE_STEPS = 10; // number of steps for fade out to occur
 
-  // TODO: class var for creating unique IDs, remove this when sim is fully functional and debugged
+  // class var for creating unique IDs
   var creationCount = 0;
 
   /**

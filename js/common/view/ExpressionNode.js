@@ -125,7 +125,9 @@ define( function( require ) {
 
           // determine whether to show a plus sign or a minus sign
           var symbolText;
-          if ( simplifyNegativesProperty.value && coinTermsLeftToRight[ i + 1 ].combinedCount < 0 ){
+          if (  simplifyNegativesProperty.value &&
+                coinTermsLeftToRight[ i + 1 ].combinedCount < 0 &&
+                !coinTermsLeftToRight[ i + 1 ].userControlled ){
             symbolText = '-';
           }
           else{

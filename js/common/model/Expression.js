@@ -24,7 +24,7 @@ define( function( require ) {
   var INSET = 10; // space around coin terms, empirically determined
   var ANIMATION_SPEED = 400; // in model units (which are basically screen coordinates) per second
 
-  // TODO: class var for creating unique IDs, remove this when sim is fully functional and debugged
+  // class var for creating unique IDs
   var creationCount = 0;
 
   /**
@@ -36,7 +36,7 @@ define( function( require ) {
   function Expression( anchorCoinTerm, floatingCoinTerm, simplifyNegativesProperty ) {
 
     var self = this;
-    this.id = 'Ex-' + (++creationCount);
+    this.id = 'EX-' + (++creationCount);
     console.log( 'creating ' + this.id + ' with anchor = ' + anchorCoinTerm.id + ' and floating = ' + floatingCoinTerm.id );
 
     PropertySet.call( this, {
@@ -334,8 +334,9 @@ define( function( require ) {
         this.upperLeftCorner = this.upperLeftCorner.minusXY( INTER_COIN_TERM_SPACING + coinTerm.relativeViewBounds.width, 0 );
         xDestination = this.upperLeftCorner.x + INSET - coinTerm.relativeViewBounds.minX;
       }
-
       var destination = new Vector2( xDestination, this.upperLeftCorner.y + this.height / 2 );
+
+      // decide whether or not to animate to the destination
       if ( !this.userControlled ) {
         // animate to the new location
         coinTerm.travelToDestination( destination );
@@ -345,11 +346,14 @@ define( function( require ) {
         coinTerm.setPositionAndDestination( destination );
       }
 
-      // add the coin term
+      // officially add the coin term
       this.coinTerms.push( coinTerm );
 
       // add a listener to resize the expression if the bounds of this coin term change
       coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
+
+      // add a listener to update whether minus sign is shown when negative when the user moves this coin term
+      coinTerm.userControlledProperty.link( this.updateCoinTermShowMinusSignFlag.bind( this ) );
 
       // update whether the coin terms should be showing minus signs
       this.updateCoinTermShowMinusSignFlag();
@@ -361,6 +365,9 @@ define( function( require ) {
       coinTerm.breakApartAllowed = true;
       coinTerm.showMinusSignWhenNegative = true;
       this.coinTerms.remove( coinTerm );
+      coinTerm.relativeViewBoundsProperty.unlink( this.setResizeFlagFunction );
+      coinTerm.userControlledProperty.unlink( this.updateCoinTermShowMinusSignFlag );
+
       if ( this.coinTerms.length > 0 ) {
         this.updateSizeAndCoinTermPositions();
         this.updateCoinTermShowMinusSignFlag();
@@ -434,10 +441,23 @@ define( function( require ) {
     updateCoinTermShowMinusSignFlag: function() {
       var self = this;
       var coinTermsLeftToRight = self.getCoinTermsLeftToRight();
+      var oneOrMoreChanged = false;
       coinTermsLeftToRight.forEach( function( residentCoinTerm, index ) {
-        // minus signs suppressed when in subtraction mode and the coin term isn't the first one in the expression
-        residentCoinTerm.showMinusSignWhenNegative = !( self.simplifyNegativesProperty.value && index > 0 );
+
+        // The minus sign is suppressed if subtraction is being shown, the coin term is not user controlled, and the
+        // coin term is not the first one in the expression so that subtraction expressions will look correct.
+        var showMinusSignWhenNegative = !( self.simplifyNegativesProperty.value && index > 0 ) ||
+                                        residentCoinTerm.userControlled;
+
+        if ( showMinusSignWhenNegative !== residentCoinTerm.showMinusSignWhenNegative ){
+          residentCoinTerm.showMinusSignWhenNegative = showMinusSignWhenNegative;
+          oneOrMoreChanged = true;
+        }
       } );
+
+      if ( oneOrMoreChanged ){
+        this.layoutChangedEmitter.emit();
+      }
     },
 
     /**
