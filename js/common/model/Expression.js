@@ -363,6 +363,7 @@ define( function( require ) {
       this.coinTerms.remove( coinTerm );
       if ( this.coinTerms.length > 0 ) {
         this.updateSizeAndCoinTermPositions();
+        this.updateCoinTermShowMinusSignFlag();
       }
     },
 
