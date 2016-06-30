@@ -166,10 +166,6 @@ define( function( require ) {
       self.y = upperLeftCorner.y;
     } );
 
-    // update whenever coin terms are added or removed
-    expression.coinTerms.addItemAddedListener( update );
-    expression.coinTerms.addItemRemovedListener( update );
-
     // update the visibility of the left and right hints
     expression.leftHintActiveProperty.linkAttribute( leftHintNode, 'visible' );
     expression.rightHintActiveProperty.linkAttribute( rightHintNode, 'visible' );
@@ -179,7 +175,7 @@ define( function( require ) {
       backgroundPath.stroke = combineHintActive ? 'yellow' : null;
     } );
 
-    // update the shape of the left and right hints
+    // update the shape of the left hint
     Property.multilink( [ expression.heightProperty, expression.widthProperty, expression.leftHintWidthProperty ],
       function( expressionHeight, expressionWidth, hintWidth ) {
         leftHintShape = new Shape();
@@ -192,6 +188,8 @@ define( function( require ) {
         leftHintNode.shape = leftHintShape;
       }
     );
+
+    // update the shape of the right hint
     Property.multilink( [ expression.heightProperty, expression.widthProperty, expression.rightHintWidthProperty ],
       function( expressionHeight, expressionWidth, hintWidth ) {
         rightHintShape = new Shape();

@@ -515,8 +515,8 @@ define( function( require ) {
             else {
 
               // The remove function is called for any coin term that doesn't overlap.  This will remove the coin term
-              // from the expression's 'hovering coin terms' list if the coin term was previously hovering, and is a no-op
-              // if not.
+              // from the expression's 'hovering coin terms' list if the coin term was previously hovering, and is a
+              // no-op if not.
               expression.removeHoveringCoinTerm( userControlledCoinTerm );
             }
           } );

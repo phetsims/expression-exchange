@@ -84,26 +84,15 @@ define( function( require ) {
     // @private, tracks whether the expression should be resized on the next step
     this.resizeNeeded = false;
 
-    // add the initial coin term
-    this.coinTerms.push( anchorCoinTerm );
-    anchorCoinTerm.breakApartAllowed = false;
-
     // Define a listener that is bound to this object that will set the resize needed flag when fired.  This is done
     // in this way so that the listener can be found and removed when the coin term is removed from this expression.
     this.setResizeFlagFunction = function() { self.resizeNeeded = true; }; // @private
 
-    // hook up the resize listener to the anchor coin
-    anchorCoinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
+    // add the initial coin term
+    this.addCoinTerm( anchorCoinTerm );
 
-    // set the initial size of the expression, which will enclose only the first coin term
-    this.width = anchorCoinTerm.relativeViewBounds.width + 2 * INSET;
-    this.height = anchorCoinTerm.relativeViewBounds.height + 2 * INSET;
-    this.upperLeftCorner = new Vector2(
-      anchorCoinTerm.position.x + anchorCoinTerm.relativeViewBounds.minX - INSET,
-      anchorCoinTerm.position.y - this.height / 2
-    );
-
-    // @private, bounds that will be used to decide if coin terms or other expressions are in a position to join this one
+    // create the bounds that will be used to decide if coin terms or other expressions are in a position to join this one
+    // @private
     this.joinZone = new Bounds2(
       this.upperLeftCorner.x - this.height,
       this.upperLeftCorner.y,
@@ -302,11 +291,52 @@ define( function( require ) {
     },
 
     /**
-     * add the specified coin term to this expression, moving it to the correct location
-     * @param {CoinTerm} coinTerm
+     * add the specified coin term to this expression, moving it to the correct location @param {CoinTerm} coinTerm
      * @public
      */
     addCoinTerm: function( coinTerm ) {
+
+      this.coinTerms.push( coinTerm );
+
+      if ( this.coinTerms.length === 1 ){
+
+        // this is the first coin term, so set the initial width and height
+        this.width = coinTerm.relativeViewBounds.width + 2 * INSET;
+        this.height = coinTerm.relativeViewBounds.height + 2 * INSET;
+        this.upperLeftCorner = new Vector2(
+          coinTerm.position.x + coinTerm.relativeViewBounds.minX - INSET,
+          coinTerm.position.y - this.height / 2
+        );
+      }
+      else{
+
+        // adjust the expression's width to accommodate the new coin term
+        var originalWidth = this.width;
+        this.width = this.width + INTER_COIN_TERM_SPACING + coinTerm.relativeViewBounds.width;
+
+        // figure out where the coin term should go
+        var xDestination;
+        if ( coinTerm.position.x > this.upperLeftCorner.x + originalWidth / 2 ) {
+          // add to the right side
+          xDestination = this.upperLeftCorner.x + this.width - INSET - coinTerm.relativeViewBounds.maxX;
+        }
+        else {
+          // add to the left side, and shift the expression accordingly
+          this.upperLeftCorner = this.upperLeftCorner.minusXY( INTER_COIN_TERM_SPACING + coinTerm.relativeViewBounds.width, 0 );
+          xDestination = this.upperLeftCorner.x + INSET - coinTerm.relativeViewBounds.minX;
+        }
+        var destination = new Vector2( xDestination, this.upperLeftCorner.y + this.height / 2 );
+
+        // decide whether or not to animate to the destination
+        if ( !this.userControlled ) {
+          // animate to the new location
+          coinTerm.travelToDestination( destination );
+        }
+        else {
+          // if this expression is being moved by the user, don't animate - it won't end well
+          coinTerm.setPositionAndDestination( destination );
+        }
+      }
 
       // if the coin term being added is currently on the list of hovering coin terms, remove it
       if ( this.isCoinTermHovering( coinTerm ) ) {
@@ -317,38 +347,9 @@ define( function( require ) {
         }
       }
 
-      // don't allow coin terms to be broken apart while in expressions
+      // make sure that the coin term can't be broken apart while in an expression
       coinTerm.breakApartAllowed = false;
-
-      // adjust the expression's width to accommodate the new coin term
-      var originalWidth = this.width;
-      this.width = this.width + INTER_COIN_TERM_SPACING + coinTerm.relativeViewBounds.width;
-
-      // figure out where the coin term should go
-      var xDestination;
-      if ( coinTerm.position.x > this.upperLeftCorner.x + originalWidth / 2 ) {
-        // add to the right side
-        xDestination = this.upperLeftCorner.x + this.width - INSET - coinTerm.relativeViewBounds.maxX;
-      }
-      else {
-        // add to the left side, and shift the expression accordingly
-        this.upperLeftCorner = this.upperLeftCorner.minusXY( INTER_COIN_TERM_SPACING + coinTerm.relativeViewBounds.width, 0 );
-        xDestination = this.upperLeftCorner.x + INSET - coinTerm.relativeViewBounds.minX;
-      }
-      var destination = new Vector2( xDestination, this.upperLeftCorner.y + this.height / 2 );
-
-      // decide whether or not to animate to the destination
-      if ( !this.userControlled ) {
-        // animate to the new location
-        coinTerm.travelToDestination( destination );
-      }
-      else {
-        // if this expression is being moved by the user, don't animate - it won't end well
-        coinTerm.setPositionAndDestination( destination );
-      }
-
-      // officially add the coin term
-      this.coinTerms.push( coinTerm );
+      console.log( 'Geez, I set it to false.' );
 
       // add a listener to resize the expression if the bounds of this coin term change
       coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
@@ -358,11 +359,14 @@ define( function( require ) {
 
       // update whether the coin terms should be showing minus signs
       this.updateCoinTermShowMinusSignFlag();
+
+      // trigger an event so that the view is sure to be updated
+      this.layoutChangedEmitter.emit();
     },
 
     // @public
     removeCoinTerm: function( coinTerm ) {
-      coinTerm.relativeViewBoundsProperty.unlink( this.setResizeFlagFunction );
+      console.log( '1' );
       coinTerm.breakApartAllowed = true;
       coinTerm.showMinusSignWhenNegative = true;
       this.coinTerms.remove( coinTerm );
@@ -598,6 +602,7 @@ define( function( require ) {
       var index = this.hoveringCoinTerms.indexOf( coinTerm );
       if ( index !== -1 ) {
         this.hoveringCoinTerms.splice( index, 1 );
+        console.log( '2' );
         coinTerm.breakApartAllowed = true;
       }
     },
@@ -613,6 +618,7 @@ define( function( require ) {
 
     clearHoveringCoinTerms: function() {
       this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
+        console.log( '3' );
         hoveringCoinTerm.breakApartAllowed = true;
       } );
       this.hoveringCoinTerms.length = 0;
