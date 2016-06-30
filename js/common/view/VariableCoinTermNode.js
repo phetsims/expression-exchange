@@ -266,7 +266,6 @@ define( function( require ) {
 
     // define a function that will position and show the break apart button
     function showBreakApartButton() {
-      console.log( 'showBreakApartButton called' );
       breakApartButton.centerX = coinCenter.x;
       breakApartButton.bottom = -3; // just above the coin, empirically determined
       breakApartButton.visible = true;
@@ -288,7 +287,6 @@ define( function( require ) {
     // update the state of the break apart button when the userControlled state changes
     coinTerm.userControlledProperty.link( function( userControlled ) {
       if ( Math.abs( coinTerm.combinedCount ) > 1 && coinTerm.breakApartAllowed ) {
-        console.log( 'coinTerm.breakApartAllowed = ' + coinTerm.breakApartAllowed );
 
         if ( userControlled ) {
           clearHideButtonTimer(); // called in case the timer was running

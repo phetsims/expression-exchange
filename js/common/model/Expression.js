@@ -349,7 +349,6 @@ define( function( require ) {
 
       // make sure that the coin term can't be broken apart while in an expression
       coinTerm.breakApartAllowed = false;
-      console.log( 'Geez, I set it to false.' );
 
       // add a listener to resize the expression if the bounds of this coin term change
       coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
@@ -366,7 +365,6 @@ define( function( require ) {
 
     // @public
     removeCoinTerm: function( coinTerm ) {
-      console.log( '1' );
       coinTerm.breakApartAllowed = true;
       coinTerm.showMinusSignWhenNegative = true;
       this.coinTerms.remove( coinTerm );
@@ -602,7 +600,6 @@ define( function( require ) {
       var index = this.hoveringCoinTerms.indexOf( coinTerm );
       if ( index !== -1 ) {
         this.hoveringCoinTerms.splice( index, 1 );
-        console.log( '2' );
         coinTerm.breakApartAllowed = true;
       }
     },
@@ -618,7 +615,6 @@ define( function( require ) {
 
     clearHoveringCoinTerms: function() {
       this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
-        console.log( '3' );
         hoveringCoinTerm.breakApartAllowed = true;
       } );
       this.hoveringCoinTerms.length = 0;
