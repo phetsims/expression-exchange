@@ -128,7 +128,7 @@ define( function( require ) {
           if (  simplifyNegativesProperty.value &&
                 coinTermsLeftToRight[ i + 1 ].combinedCount < 0 &&
                 !coinTermsLeftToRight[ i + 1 ].userControlled ){
-            symbolText = '-';
+            symbolText = '\u2212'; // unicode minus sign
           }
           else{
             symbolText = '+';
