@@ -51,6 +51,9 @@ define( function( require ) {
     var coinImageNode = CoinNodeFactory.createFrontImageNode( coinTerm.typeID, coinTerm.coinRadius );
     this.coinAndTextRootNode.addChild( coinImageNode );
 
+    // convenience var
+    var textBaseline = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET;
+
     // add the coin value text
     var coinValueText = new Text( '', { font: VALUE_FONT } );
     this.coinAndTextRootNode.addChild( coinValueText );
@@ -121,7 +124,8 @@ define( function( require ) {
       else {
         termText.text = coinTerm.termText;
       }
-      termText.center = Vector2.ZERO;
+      termText.centerX = 0;
+      termText.y = textBaseline;
       termText.mouseArea = termText.localBounds.dilated( 10 );
       termText.touchArea = termText.localBounds.dilated( 10 );
       termText.visible = viewModeProperty.value === ViewMode.VARIABLES && !showVariableValuesProperty.value;
@@ -134,7 +138,8 @@ define( function( require ) {
       }
 
       termWithVariableValuesText.text = termValueText;
-      termWithVariableValuesText.center = Vector2.ZERO;
+      termWithVariableValuesText.centerX = 0;
+      termWithVariableValuesText.y = textBaseline;
       termWithVariableValuesText.mouseArea = termWithVariableValuesText.localBounds.dilated( 10 );
       termWithVariableValuesText.touchArea = termWithVariableValuesText.localBounds.dilated( 10 );
       termWithVariableValuesText.visible = viewModeProperty.value === ViewMode.VARIABLES &&
@@ -151,11 +156,11 @@ define( function( require ) {
       }
       else if ( termText.visible ) {
         coefficientText.right = termText.left - COEFFICIENT_X_SPACING;
-        coefficientText.y = termText.y;
+        coefficientText.y = textBaseline;
       }
       else {
         coefficientText.right = termWithVariableValuesText.left - COEFFICIENT_X_SPACING;
-        coefficientText.y = termWithVariableValuesText.y;
+        coefficientText.y = textBaseline;
       }
 
       // update the bounds that are registered with the model

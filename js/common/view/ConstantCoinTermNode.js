@@ -17,7 +17,6 @@ define( function( require ) {
   var Property = require( 'AXON/Property' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
-  var Vector2 = require( 'DOT/Vector2' );
 
   // constants
   var VALUE_FONT = new PhetFont( { size: 34 } );
@@ -81,7 +80,8 @@ define( function( require ) {
       }
 
       // update position
-      valueText.center = Vector2.ZERO;
+      valueText.centerX = 0;
+      valueText.y = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET;
 
       // update the bounds that are registered with the model
       updateBoundsInModel();

@@ -128,7 +128,7 @@ define( function( require ) {
     } );
 
     // update the state of the break apart button when the userControlled state changes
-    coinTerm.userControlledProperty.link( function( userControlled ) {
+    coinTerm.userControlledProperty.lazyLink( function( userControlled ) {
       if ( Math.abs( coinTerm.combinedCount ) > 1 && coinTerm.breakApartAllowed ) {
 
         if ( userControlled ) {
@@ -217,5 +217,10 @@ define( function( require ) {
 
   expressionExchange.register( 'AbstractCoinTermNode', AbstractCoinTermNode );
 
-  return inherit( Node, AbstractCoinTermNode );
+  return inherit( Node, AbstractCoinTermNode, {}, {
+
+    // To look correct in equations, the text all needs to be on the same baseline.  The value was empirically
+    // determined and may need to change if font sizes change.
+    TEXT_BASELINE_Y_OFFSET: 10
+  } );
 } );
