@@ -12,6 +12,7 @@ define( function( require ) {
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
+  var EEVariablesIconNode = require( 'EXPRESSION_EXCHANGE/variables/view/EEVariablesIconNode' );
   var EEVariablesModel = require( 'EXPRESSION_EXCHANGE/variables/model/EEVariablesModel' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Screen = require( 'JOIST/Screen' );
@@ -24,10 +25,10 @@ define( function( require ) {
    */
   function EEVariablesScreen() {
 
-    // TODO: temporary icon, will need to be replaced
-    var icon = EESharedConstants.RANDOM_ICON_GENERATOR.createIcon( '3' );
-
-    Screen.call( this, variablesString, icon,
+    Screen.call(
+      this,
+      variablesString,
+      new EEVariablesIconNode(),
       function() { return new EEVariablesModel(); },
       function( model ) { return new ExpressionManipulationView( model ); },
       { backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR }
