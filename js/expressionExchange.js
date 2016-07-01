@@ -20,9 +20,6 @@ define( function( require ) {
       console.log( '%clog: ' + message, 'color: #009900' ); // green
     };
   }
-  else{
-    expressionExchange.log = function(){};
-  }
 
   return expressionExchange;
 } );

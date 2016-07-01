@@ -130,7 +130,8 @@ define( function( require ) {
     } );
 
     // logging, for debug purposes
-    expressionExchange.log( 'created ' + this.id + ' with anchor = ' + anchorCoinTerm.id + ' and floating = ' + floatingCoinTerm.id );
+    expressionExchange.log && expressionExchange.log( 'created ' + this.id + ' with anchor = ' + anchorCoinTerm.id +
+                                                      ' and floating = ' + floatingCoinTerm.id );
   }
 
   expressionExchange.register( 'Expression', Expression );
@@ -376,7 +377,7 @@ define( function( require ) {
         this.updateCoinTermShowMinusSignFlag();
       }
 
-      expressionExchange.log( 'removed ' + coinTerm.id + ' from ' + this.id );
+      expressionExchange.log && expressionExchange.log( 'removed ' + coinTerm.id + ' from ' + this.id );
     },
 
     /**

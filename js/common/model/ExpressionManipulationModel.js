@@ -153,7 +153,8 @@ define( function( require ) {
             var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
             if ( mostOverlappingExpression ) {
               mostOverlappingExpression.addCoinTerm( addedCoinTerm );
-              expressionExchange.log( 'added ' + addedCoinTerm.id + ' to ' + mostOverlappingExpression.id );
+              expressionExchange.log && expressionExchange.log( 'added ' + addedCoinTerm.id + ' to ' +
+                                                                mostOverlappingExpression.id );
             }
             else {
 
@@ -346,7 +347,9 @@ define( function( require ) {
               var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
               self.expressions.remove( addedExpression );
               coinTermsToBeMoved.forEach( function( coinTerm ) {
-                expressionExchange.log( 'moving ' + coinTerm.id + ' from ' + addedExpression.id + ' to ' + mostOverlappingExpression.id );
+                expressionExchange.log && expressionExchange.log( 'moving ' + coinTerm.id + ' from ' +
+                                                                  addedExpression.id + ' to ' +
+                                                                  mostOverlappingExpression.id );
                 mostOverlappingExpression.addCoinTerm( coinTerm );
               } );
               addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
@@ -624,7 +627,7 @@ define( function( require ) {
     addCoinTerm: function( coinTerm ) {
       this.coinTerms.add( coinTerm );
       this.updateCoinTermCount( coinTerm.typeID );
-      expressionExchange.log( 'added ' + coinTerm.id );
+      expressionExchange.log && expressionExchange.log( 'added ' + coinTerm.id );
     },
 
     // @public
@@ -636,7 +639,7 @@ define( function( require ) {
         coinTerm.returnToOrigin();
       }
       else {
-        expressionExchange.log( 'removed ' + coinTerm.id );
+        expressionExchange.log && expressionExchange.log( 'removed ' + coinTerm.id );
         this.coinTerms.remove( coinTerm );
         this.expressions.forEach( function( expression ) {
           if ( expression.containsCoinTerm( coinTerm ) ) {
@@ -720,7 +723,7 @@ define( function( require ) {
       coinTermsToRemove.forEach( function( coinTerm ) {
         self.removeCoinTerm( coinTerm, true );
       } );
-      expressionExchange.log( 'removing ' + expression.id );
+      expressionExchange.log && expressionExchange.log( 'removing ' + expression.id );
       this.expressions.remove( expression );
     },
 
