@@ -33,7 +33,7 @@ define( function( require ) {
     this.addChild( new SubSupText( '3x<sup>2</sup> - x<sup>2</sup>', {
       font: new MathSymbolFont( 94 ),
       centerX: ICON_SIZE.width / 2,
-      y: ICON_SIZE.height / 2
+      centerY: ICON_SIZE.height / 2
     } ) );
   }
 

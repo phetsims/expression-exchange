@@ -44,7 +44,7 @@ define( function( require ) {
 
     // position the equation
     equationNode.centerX = ICON_SIZE.width / 2;
-    equationNode.y = ICON_SIZE.height / 2;
+    equationNode.centerY = ICON_SIZE.height / 2;
 
     this.addChild( equationNode );
 
