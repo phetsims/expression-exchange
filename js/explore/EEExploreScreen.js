@@ -33,7 +33,7 @@ define( function( require ) {
       icon,
       function() { return new EEExploreModel(); },
       function( model ) { return new ExpressionManipulationView( model ); },
-      { backgroundColor: '#AFF6CC' }
+      { backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR }
     );
   }
 

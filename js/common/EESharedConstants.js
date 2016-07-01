@@ -20,6 +20,8 @@ define( function( require ) {
     // speed at which coins and terms move
     COIN_TERM_MOVEMENT_SPEED: 400, // in model units (which are basically screen coordinates) per second
 
+    // colors
+    NON_GAME_SCREENS_BACKGROUND_COLOR: '#AFF6CC',
     EXPRESSION_BACKGROUND_COLOR: 'rgba( 255, 255, 255, 0.5 )',
 
     // characters used for the variables depicted in the sim

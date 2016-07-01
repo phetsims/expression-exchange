@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var EEBasicsIconNode = require( 'EXPRESSION_EXCHANGE/basics/view/EEBasicsIconNode' );
   var EEBasicsModel = require( 'EXPRESSION_EXCHANGE/basics/model/EEBasicsModel' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -24,13 +25,13 @@ define( function( require ) {
    */
   function EEBasicsScreen() {
 
-    // TODO: temporary icon, will need to be replaced
-    var icon = EESharedConstants.RANDOM_ICON_GENERATOR.createIcon( '1' );
-
-    Screen.call( this, basicsString, icon,
+    Screen.call(
+      this,
+      basicsString,
+      new EEBasicsIconNode(),
       function() { return new EEBasicsModel(); },
       function( model ) { return new ExpressionManipulationView( model ); },
-      { backgroundColor: '#AFF6CC' }
+      { backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR }
     );
   }
 

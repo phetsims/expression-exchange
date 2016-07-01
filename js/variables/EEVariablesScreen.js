@@ -30,7 +30,7 @@ define( function( require ) {
     Screen.call( this, variablesString, icon,
       function() { return new EEVariablesModel(); },
       function( model ) { return new ExpressionManipulationView( model ); },
-      { backgroundColor: '#AFF6CC' }
+      { backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR }
     );
   }
 
