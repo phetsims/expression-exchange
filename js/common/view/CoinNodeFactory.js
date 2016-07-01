@@ -143,6 +143,8 @@ define( function( require ) {
 
       // scale so that the coin image has the specified radius
       coinNode.scale( radius * 2 / coinNode.width );
+      coinNode.x = -radius;
+      coinNode.y = -radius;
 
       return coinNode;
     },

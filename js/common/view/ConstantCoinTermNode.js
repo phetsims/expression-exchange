@@ -2,22 +2,20 @@
 
 /**
  * a Scenery node that represents a coin term whose underlying value can vary in the view
- * TODO: put this and VariableCoinTermNode in a hierarchy where common code is shared.
+ *
  * @author John Blanco
  */
 define( function( require ) {
   'use strict';
 
   // modules
-  var Bounds2 = require( 'DOT/Bounds2' );
+  var AbstractCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/AbstractCoinTermNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
-  var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var Text = require( 'SCENERY/nodes/Text' );
-  var Util = require( 'DOT/Util' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
   var Vector2 = require( 'DOT/Vector2' );
 
@@ -35,37 +33,27 @@ define( function( require ) {
 
     assert && assert( constantCoinTerm.isConstant, 'must use a constant coin term with this node' );
 
-    options = _.extend( {}, {
-      addDragHandler: true,
-      dragBounds: Bounds2.EVERYTHING
-    }, options );
-
     var self = this;
-    Node.call( this, { pickable: true, cursor: 'pointer' } );
+    AbstractCoinTermNode.call( this, constantCoinTerm, options );
 
     // As of this writing, constant coin terms are never used on a screen where a coin is shown.  There is no
     // fundamental reason why not, that's just how the design worked out.  This node therefore does not support
     // depicting constant coin terms as coins, so it throws an error if the view mode gets set to "COINS".
     viewModeProperty.link( function( viewMode ){
-      if ( viewMode !== ViewMode.VARIABLES ){
-        throw new Error( 'view mode not supported' );
+      if ( viewMode === ViewMode.COINS ){
+        throw new Error( 'coin view mode not supported' );
       }
     } );
 
-    // Add a 'top' node so that the bounds can be easily monitored for changes in size without getting triggered by
-    // changes in position.
-    var topNode = new Node();
-    this.addChild( topNode );
-
     // add the value text
     var valueText = new Text( '', { font: VALUE_FONT } );
-    topNode.addChild( valueText );
+    this.coinAndTextRootNode.addChild( valueText );
 
     // helper function to take the view bounds information and communicate it to the model
     function updateBoundsInModel() {
 
       // make the bounds relative to (0,0), which is where the center of this node is maintained
-      var relativeVisibleBounds = topNode.visibleLocalBounds;
+      var relativeVisibleBounds = self.coinAndTextRootNode.visibleLocalBounds;
 
       // In order to be consistent with the behavior of the variable coin terms, the bounds need to be a minimum width,
       // see https://github.com/phetsims/expression-exchange/issues/10.
@@ -105,77 +93,9 @@ define( function( require ) {
       [ constantCoinTerm.combinedCountProperty, constantCoinTerm.showMinusSignWhenNegativeProperty ],
       updateRepresentation
     );
-
-    // add a separate listener that will update the opacity based on the coin term's existence strength
-    constantCoinTerm.existenceStrengthProperty.link( function( existenceStrength ){
-      assert && assert( existenceStrength >= 0 && existenceStrength <= 1, 'existence strength must be between 0 and 1' );
-      self.opacity = existenceStrength;
-      self.pickable = existenceStrength === 1; // prevent interaction with fading coin term
-    } );
-
-    // move this node as the model representation moves
-    constantCoinTerm.positionProperty.link( function( position ) {
-      self.center = position;
-    } );
-
-    if ( options.addDragHandler ) {
-
-      // vector for calculations, allocated here to avoid an allocation on every drag event
-      var unboundedPosition = new Vector2();
-
-      // Add the listener that will allow the user to drag the coin around.  This is added only to the node that
-      // contains the term elements, not the button, so that the button won't affect userControlled or be draggable.
-      topNode.addInputListener( new SimpleDragHandler( {
-
-          // allow moving a finger (touch) across a node to pick it up
-          allowTouchSnag: true,
-
-          start: function( event, trail ) {
-            constantCoinTerm.userControlled = true;
-            unboundedPosition.set( constantCoinTerm.position );
-          },
-
-          // handler that moves the shape in model space
-          translate: function( translationParams ) {
-
-            unboundedPosition.setXY(
-              unboundedPosition.x + translationParams.delta.x,
-              unboundedPosition.y + translationParams.delta.y
-            );
-
-            constantCoinTerm.setPositionAndDestination( new Vector2(
-              Util.clamp( unboundedPosition.x, options.dragBounds.minX, options.dragBounds.maxX ),
-              Util.clamp( unboundedPosition.y, options.dragBounds.minY, options.dragBounds.maxY )
-            ) );
-
-            return translationParams.position;
-          },
-
-          end: function( event, trail ) {
-            constantCoinTerm.userControlled = false;
-          }
-        }
-      ) );
-    }
-
-    // add a listener that will pop this node to the front when selected by the user
-    constantCoinTerm.userControlledProperty.onValue( true, function() { self.moveToFront(); } );
-
-    // add a listener that will pop this node to the front when another constant coin term is combined with it
-    constantCoinTerm.combinedCountProperty.link( function( newCount, oldCount ) {
-      if ( newCount > oldCount ) {
-        self.moveToFront();
-      }
-    } );
-
-    // Add a listener that will make this node non-pickable when animating, which solves a lot of multi-touch and fuzz
-    // testing issues.
-    constantCoinTerm.inProgressAnimationProperty.link( function( inProgressAnimation ) {
-      self.pickable = inProgressAnimation === null;
-    } );
   }
 
   expressionExchange.register( 'ConstantCoinTermNode', ConstantCoinTermNode );
 
-  return inherit( Node, ConstantCoinTermNode );
+  return inherit( AbstractCoinTermNode, ConstantCoinTermNode );
 } );
