@@ -23,10 +23,11 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var VALUE_FONT = new PhetFont( { size: 34 } );
-  var VARIABLE_FONT = new MathSymbolFont( 36 );
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_X_SPACING = 3;
+  var SUPERSCRIPT_SCALE = 0.65;
+  var VALUE_FONT = new PhetFont( { size: 34 } );
+  var VARIABLE_FONT = new MathSymbolFont( 36 );
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin
@@ -59,11 +60,11 @@ define( function( require ) {
     this.coinAndTextRootNode.addChild( coinValueText );
 
     // add the 'term' text, e.g. xy
-    var termText = new SubSupText( 'temp', { font: VARIABLE_FONT } );
+    var termText = new SubSupText( 'temp', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
     this.coinAndTextRootNode.addChild( termText );
 
     // Add the text that includes the variable values.  This can change, so it starts off blank.
-    var termWithVariableValuesText = new SubSupText( ' ', { font: VARIABLE_FONT } );
+    var termWithVariableValuesText = new SubSupText( ' ', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
     this.coinAndTextRootNode.addChild( termWithVariableValuesText );
 
     // add the coefficient value
