@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var EEExploreIconNode = require( 'EXPRESSION_EXCHANGE/explore/view/EEExploreIconNode' );
   var EEExploreModel = require( 'EXPRESSION_EXCHANGE/explore/model/EEExploreModel' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -24,13 +25,10 @@ define( function( require ) {
    */
   function EEExploreScreen() {
 
-    // TODO: temporary icon, will need to be replaced
-    var icon = EESharedConstants.RANDOM_ICON_GENERATOR.createIcon( '2' );
-
     Screen.call(
       this,
       exploreString,
-      icon,
+      new EEExploreIconNode(),
       function() { return new EEExploreModel(); },
       function( model ) { return new ExpressionManipulationView( model ); },
       { backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR }
