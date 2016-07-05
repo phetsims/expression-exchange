@@ -10,7 +10,6 @@ define( function( require ) {
   // modules
   var Color = require( 'SCENERY/util/Color' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var RandomIconFactory = require( 'EXPRESSION_EXCHANGE/common/view/RandomIconFactory' );
 
   var EESharedConstants = {
 
@@ -33,10 +32,7 @@ define( function( require ) {
     CONTROL_PANEL_BACKGROUND_COLOR: new Color( 'rgb( 235, 235, 235 )' ),
 
     // amount of time that the popup buttons are shown
-    POPUP_BUTTON_SHOW_TIME: 1.5, // in seconds
-
-    // TODO: This is temporary, and will be removed once we have artwork for the icons
-    RANDOM_ICON_GENERATOR: new RandomIconFactory( 1814 )
+    POPUP_BUTTON_SHOW_TIME: 1.5 // in seconds
   };
 
   expressionExchange.register( 'EESharedConstants', EESharedConstants );
