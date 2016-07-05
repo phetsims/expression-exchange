@@ -1,9 +1,9 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * icon node for 'Explore' screen
+ * icon node for 'Variables' screen
  *
- * @author John Blanco (MLearner)
+ * @author John Blanco
  */
 define( function( require ) {
   'use strict';
@@ -31,9 +31,9 @@ define( function( require ) {
 
     // add the equation node
     this.addChild( new SubSupText( '3x<sup>2</sup> - x<sup>2</sup>', {
-      font: new MathSymbolFont( 94 ),
+      font: new MathSymbolFont( 100 ),
       centerX: ICON_SIZE.width / 2,
-      centerY: ICON_SIZE.height / 2
+      centerY: ICON_SIZE.height * 0.45
     } ) );
   }
 

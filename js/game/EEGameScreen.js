@@ -9,9 +9,9 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var EEGameIconNode = require( 'EXPRESSION_EXCHANGE/game/view/EEGameIconNode' );
   var EEGameScreenView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameScreenView' );
   var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Screen = require( 'JOIST/Screen' );
@@ -24,10 +24,10 @@ define( function( require ) {
    */
   function EEGameScreen() {
 
-    // TODO: temporary icon, will need to be replaced
-    var icon = EESharedConstants.RANDOM_ICON_GENERATOR.createIcon( '4' );
-
-    Screen.call( this, gameString, icon,
+    Screen.call(
+      this,
+      gameString,
+      new EEGameIconNode,
       function() { return new EEGameModel(); },
       function( model ) { return new EEGameScreenView( model ); },
       { backgroundColor: '#CCE7FF' }

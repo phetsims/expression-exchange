@@ -3,7 +3,7 @@
 /**
  * icon node for 'Basics' screen
  *
- * @author John Blanco (MLearner)
+ * @author John Blanco
  */
 define( function( require ) {
   'use strict';

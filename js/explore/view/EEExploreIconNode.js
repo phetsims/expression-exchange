@@ -3,7 +3,7 @@
 /**
  * icon node for 'Explore' screen
  *
- * @author John Blanco (MLearner)
+ * @author John Blanco
  */
 define( function( require ) {
   'use strict';
@@ -44,7 +44,7 @@ define( function( require ) {
 
     // position the equation
     equationNode.centerX = ICON_SIZE.width / 2;
-    equationNode.centerY = ICON_SIZE.height / 2;
+    equationNode.centerY = ICON_SIZE.height * 0.45;
 
     this.addChild( equationNode );
 

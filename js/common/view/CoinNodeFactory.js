@@ -155,7 +155,7 @@ define( function( require ) {
      * @param {number) radius
      * @returns {Node}
      */
-    createIconNode: function( coinTermTypeID, radius ) {
+    createIconNode: function( coinTermTypeID, radius, options ) {
 
       var iconNode = null;
 
@@ -222,6 +222,8 @@ define( function( require ) {
         default:
           assert && assert( false, 'unknown coin term type' );
       }
+
+      options && iconNode.mutate( options );
       return iconNode;
     }
   };
