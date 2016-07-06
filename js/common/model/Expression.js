@@ -338,10 +338,12 @@ define( function( require ) {
 
         // decide whether or not to animate to the destination
         if ( !this.userControlled ) {
+
           // animate to the new location
           coinTerm.travelToDestination( destination );
         }
         else {
+
           // if this expression is being moved by the user, don't animate - it won't end well
           coinTerm.setPositionAndDestination( destination );
         }
@@ -433,6 +435,9 @@ define( function( require ) {
       // get an array of the coin terms sorted from left to right
       var coinTermsLeftToRight = this.getCoinTermsLeftToRight();
 
+      // update coin term minus sign flags
+      this.updateCoinTermShowMinusSignFlag();
+
       // set the position of each coin term based on its order
       var leftEdge = this.upperLeftCorner.x + INSET;
       var centerY = this.upperLeftCorner.y + this.height / 2;
@@ -440,9 +445,6 @@ define( function( require ) {
         orderedCoinTerm.travelToDestination( new Vector2( leftEdge - orderedCoinTerm.relativeViewBounds.minX, centerY ) );
         leftEdge += orderedCoinTerm.relativeViewBounds.width + INTER_COIN_TERM_SPACING;
       } );
-
-      // update coin term minus sign flags
-      this.updateCoinTermShowMinusSignFlag();
 
       // trigger an event so that the view is sure to be updated
       this.layoutChangedEmitter.emit();
