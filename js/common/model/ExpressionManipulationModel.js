@@ -723,8 +723,8 @@ define( function( require ) {
       coinTermsToRemove.forEach( function( coinTerm ) {
         self.removeCoinTerm( coinTerm, true );
       } );
-      expressionExchange.log && expressionExchange.log( 'removing ' + expression.id );
       this.expressions.remove( expression );
+      expressionExchange.log && expressionExchange.log( 'removed ' + expression.id );
     },
 
     // @private, add an expression hint, done in a method for symmetry with the remove funtion

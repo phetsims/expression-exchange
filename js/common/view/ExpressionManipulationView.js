@@ -209,7 +209,8 @@ define( function( require ) {
         {
           initialCount: coinTermCreatorDescriptor.initialCount,
           creationLimit: MAX_COIN_TERMS_PER_TYPE,
-          createdCountProperty: createdCountProperty
+          createdCountProperty: createdCountProperty,
+          dragBounds: self.layoutBounds
         }
       ) );
 
@@ -507,7 +508,6 @@ define( function( require ) {
           model.showCoinValuesProperty,
           model.showVariableValuesProperty,
           model.showAllCoefficientsProperty,
-          model.simplifyNegativesProperty,
           { addDragHandler: true, dragBounds: self.layoutBounds }
         );
       }
@@ -552,20 +552,20 @@ define( function( require ) {
       var expressionOverlayNode = new ExpressionOverlayNode( addedExpression, self.layoutBounds );
       expressionOverlayLayer.addChild( expressionOverlayNode );
 
-      // Add a listener to the expression to detect when it overlaps with the panel or carousel, at which point it will
-      // be removed from the model.
-      addedExpression.userControlledProperty.onValue( false, function() {
-        if ( addedExpression.getBounds().intersectsBounds( coinTermCreatorHolder.bounds ) ) {
-          model.removeExpression( addedExpression );
-        }
-      } );
-
       // set up a listener to remove these nodes when the corresponding expression is removed from the model
       model.expressions.addItemRemovedListener( function removalListener( removedExpression ) {
         if ( removedExpression === addedExpression ) {
           expressionLayer.removeChild( expressionNode );
           expressionOverlayLayer.removeChild( expressionOverlayNode );
           model.expressions.removeItemRemovedListener( removalListener );
+        }
+      } );
+
+      // Add a listener to the expression to detect when it overlaps with the panel or carousel, at which point it will
+      // be removed from the model.
+      addedExpression.userControlledProperty.onValue( false, function() {
+        if ( addedExpression.getBounds().intersectsBounds( coinTermCreatorHolder.bounds ) ) {
+          model.removeExpression( addedExpression );
         }
       } );
     } );
