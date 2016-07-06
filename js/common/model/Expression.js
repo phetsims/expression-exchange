@@ -301,7 +301,7 @@ define( function( require ) {
         // TODO:   There is a race condition that only occurs during fuzz testing where somehow a coin term that is
         // TODO:   inside an expression becomes user controlled and then is added back to the expression.  This is a
         // TODO:   workaround.  This should be fully investigated before publication.
-        expressionExchange.log( 'warning: an attempt was made to re-add a coin term that is already in the expression' );
+        expressionExchange.log && expressionExchange.log( 'warning: an attempt was made to re-add a coin term that is already in the expression' );
         return;
       }
 
