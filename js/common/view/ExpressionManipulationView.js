@@ -38,6 +38,7 @@ define( function( require ) {
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var Shape = require( 'KITE/Shape' );
+  var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
   var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
@@ -50,7 +51,6 @@ define( function( require ) {
   var coinValuesString = require( 'string!EXPRESSION_EXCHANGE/coinValues' );
   var myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
   var numberCentsString = require( 'string!EXPRESSION_EXCHANGE/numberCents' );
-  var simplifyNegativesString = require( 'string!EXPRESSION_EXCHANGE/simplifyNegatives' );
   var totalString = require( 'string!EXPRESSION_EXCHANGE/total' );
   var valuesString = require( 'string!EXPRESSION_EXCHANGE/values' );
   var variableValuesString = require( 'string!EXPRESSION_EXCHANGE/variableValues' );
@@ -345,8 +345,8 @@ define( function( require ) {
     // if negative values are possible, show the check box that allows them to be simplified
     if ( negativeTermsPresent ) {
       // TODO: The label for this check box is in flux, make sure its name and the string match before publication
-      var simplifyNegativesCheckbox = new CheckBox(
-        new Text( simplifyNegativesString, { font: CHECK_BOX_FONT } ),
+      var showSubtractionCheckbox = new CheckBox(
+        new ShowSubtractionIcon(),
         model.simplifyNegativesProperty,
         {
           top: showAllCoefficientsCheckbox.bottom + CHECK_BOX_VERTICAL_SPACING,
@@ -354,7 +354,7 @@ define( function( require ) {
           maxWidth: myCollectionAccordionBox.width
         }
       );
-      this.addChild( simplifyNegativesCheckbox );
+      this.addChild( showSubtractionCheckbox );
     }
 
     // add the node that will act as the layer where the expression backgrounds and expression hints will come and go
@@ -452,8 +452,8 @@ define( function( require ) {
       showCoinValuesCheckbox.left = myCollectionAccordionBox.left;
       showVariableValuesCheckbox.left = myCollectionAccordionBox.left;
       showAllCoefficientsCheckbox.left = myCollectionAccordionBox.left;
-      if ( simplifyNegativesCheckbox ) {
-        simplifyNegativesCheckbox.left = myCollectionAccordionBox.left;
+      if ( showSubtractionCheckbox ) {
+        showSubtractionCheckbox.left = myCollectionAccordionBox.left;
       }
       resetAllButton.right = visibleBounds.maxX - FLOATING_PANEL_INSET;
     } );
@@ -556,7 +556,9 @@ define( function( require ) {
       model.expressions.addItemRemovedListener( function removalListener( removedExpression ) {
         if ( removedExpression === addedExpression ) {
           expressionLayer.removeChild( expressionNode );
+          expressionNode.dispose();
           expressionOverlayLayer.removeChild( expressionOverlayNode );
+          expressionOverlayNode.dispose();
           model.expressions.removeItemRemovedListener( removalListener );
         }
       } );
@@ -580,6 +582,7 @@ define( function( require ) {
       model.expressionHints.addItemRemovedListener( function removalListener( removedExpressionHint ) {
         if ( removedExpressionHint === addedExpressionHint ) {
           expressionLayer.removeChild( expressionHintNode );
+          expressionHintNode.dispose();
           model.expressionHints.removeItemRemovedListener( removalListener );
         }
       } );
