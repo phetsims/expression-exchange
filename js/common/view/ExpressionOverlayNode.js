@@ -55,18 +55,20 @@ define( function( require ) {
     }
 
     // update the shape if the height or width change
-    Property.multilink( [ expression.widthProperty, expression.heightProperty ], updateShape );
+    var updateShapeMultilink = Property.multilink( [ expression.widthProperty, expression.heightProperty ], updateShape );
 
     // update the position as the expression moves
-    expression.upperLeftCornerProperty.link( function( upperLeftCorner ) {
+    function updatePosition( upperLeftCorner ) {
       self.x = upperLeftCorner.x;
       self.y = upperLeftCorner.y;
-    } );
+    }
+    expression.upperLeftCornerProperty.link( updatePosition );
 
     // become invisible if the expression goes into edit mode so that the user can interact with the coin terms within
-    expression.inEditModeProperty.link( function( inEditMode ) {
+    function updateVisibility( inEditMode ) {
       self.visible = !inEditMode;
-    } );
+    }
+    expression.inEditModeProperty.link( updateVisibility );
 
     // add the parent node that will contain the pop-up buttons
     var popUpButtonsNode = new Node( { visible: false } );
@@ -203,17 +205,33 @@ define( function( require ) {
     } );
 
     // the drag handler is removed if an animation is in progress to prevent problematic race conditions
-    expression.inProgressAnimationProperty.link( function( inProgressAnimation ) {
+    // TODO: Can I just set unpickable when animating instead?  If tried, remember to fuzz test, since that probably revealed the original issue.
+    function addAndRemoveDragHandler( inProgressAnimation ) {
       if ( inProgressAnimation ) {
         expressionShapeNode.removeInputListener( dragHandler );
       }
       else {
         expressionShapeNode.addInputListener( dragHandler );
       }
-    } );
+    }
+    expression.inProgressAnimationProperty.link( addAndRemoveDragHandler );
+
+    // create a dispose function
+    this.expressionOverlayNodeDispose = function(){
+      expression.upperLeftCornerProperty.unlink( updatePosition );
+      expression.inProgressAnimationProperty.unlink( addAndRemoveDragHandler );
+      expression.inEditModeProperty.unlink( updateVisibility );
+      updateShapeMultilink.dispose();
+    };
   }
 
   expressionExchange.register( 'ExpressionOverlayNode', ExpressionOverlayNode );
 
-  return inherit( Node, ExpressionOverlayNode );
+  return inherit( Node, ExpressionOverlayNode, {
+
+    // @public
+    dispose: function(){
+      this.expressionOverlayNodeDispose();
+    }
+  } );
 } );

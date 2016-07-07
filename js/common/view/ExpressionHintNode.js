@@ -49,7 +49,7 @@ define( function( require ) {
     Node.call( this, { pickable: false } );
     var self = this;
 
-    Property.multilink(
+    var boundsUpdateMultilink = Property.multilink(
       [
         expressionHint.anchorCoinTerm.relativeViewBoundsProperty,
         expressionHint.movingCoinTerm.relativeViewBoundsProperty
@@ -116,9 +116,20 @@ define( function( require ) {
         } ) );
 
       } );
+
+    // define dispose function
+    this.expressionHintNodeDispose = function(){
+      boundsUpdateMultilink.dispose();
+    }
   }
 
   expressionExchange.register( 'ExpressionHintNode', ExpressionHintNode );
 
-  return inherit( Node, ExpressionHintNode );
+  return inherit( Node, ExpressionHintNode, {
+
+    // @public
+    dispose: function(){
+      this.expressionHintNodeDispose();
+    }
+  } );
 } );

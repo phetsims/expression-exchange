@@ -438,11 +438,12 @@ define( function( require ) {
       addedExpression.selectedForEditEmitter.addListener( editExpressionListener );
 
       // remove the listeners when this expression is removed
-      self.expressions.addItemRemovedListener( function( removedExpression ) {
+      self.expressions.addItemRemovedListener( function expressionRemovedListener( removedExpression ) {
         if ( removedExpression === addedExpression ) {
           addedExpression.userControlledProperty.unlink( expressionUserControlledListener );
           addedExpression.breakApartEmitter.removeListener( expressionBreakApartListener );
           addedExpression.selectedForEditEmitter.removeListener( editExpressionListener );
+          self.expressions.removeItemRemovedListener( expressionRemovedListener );
         }
       } );
     } );
@@ -724,6 +725,7 @@ define( function( require ) {
         self.removeCoinTerm( coinTerm, true );
       } );
       this.expressions.remove( expression );
+      expression.dispose();
       expressionExchange.log && expressionExchange.log( 'removed ' + expression.id );
     },
 

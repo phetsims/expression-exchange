@@ -84,6 +84,9 @@ define( function( require ) {
     // @private, tracks whether the expression should be resized on the next step
     this.resizeNeeded = false;
 
+    // @private, map used to track user controlled listeners that are added to coin terms that join this expression
+    this.mapCoinTermsToUCListeners = {};
+
     // Define a listener that is bound to this object that will set the resize needed flag when fired.  This is done
     // in this way so that the listener can be found and removed when the coin term is removed from this expression.
     this.setResizeFlagFunction = function() { self.resizeNeeded = true; }; // @private
@@ -101,7 +104,7 @@ define( function( require ) {
     );
 
     // update the join zone as the size and/or location of the expression changes
-    Property.multilink( [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
+    var joinZoneMultilink = Property.multilink( [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
       function( upperLeftCorner, width, height ) {
         self.joinZone.setMinMax(
           self.upperLeftCorner.x - self.height,
@@ -115,7 +118,7 @@ define( function( require ) {
     this.addCoinTerm( floatingCoinTerm );
 
     // add a listener that will immediately finish animations for incoming coin terms if the expression is grabbed
-    this.userControlledProperty.onValue( true, function() {
+    var userControlledObserver = this.userControlledProperty.onValue( true, function() {
       self.coinTerms.forEach( function( coinTerm ) {
         if ( coinTerm.inProgressAnimation ) {
           coinTerm.goImmediatelyToDestination();
@@ -124,10 +127,17 @@ define( function( require ) {
     } );
 
     // monitor the setting for whether negatives are simplified and update the contained coin terms when it changes
-    // TODO: Unlink this in a dispose function
-    simplifyNegativesProperty.link( function() {
+    // TODO: Try just linking the function, but make sure I can dispose of it properly
+    function updateCoinTermMinusSignFlags(){
       self.updateCoinTermShowMinusSignFlag();
-    } );
+    }
+    simplifyNegativesProperty.link( updateCoinTermMinusSignFlags );
+
+    // create a dispose function
+    this.expressionDispose = function(){
+      simplifyNegativesProperty.unlink( updateCoinTermMinusSignFlags );
+      self.unlinkAll();
+    };
 
     // logging, for debug purposes
     expressionExchange.log && expressionExchange.log( 'created ' + this.id + ' with anchor = ' + anchorCoinTerm.id +
@@ -199,6 +209,11 @@ define( function( require ) {
         this.height = tallestCoinTermHeight + 2 * INSET;
         this.layoutChangedEmitter.emit();
       }
+    },
+
+    dispose: function(){
+      this.expressionDispose();
+      //PropertySet.prototype.dispose.call( this );
     },
 
     /**
@@ -365,7 +380,10 @@ define( function( require ) {
       coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
 
       // add a listener to update whether minus sign is shown when negative when the user moves this coin term
-      coinTerm.userControlledProperty.link( this.updateCoinTermShowMinusSignFlag.bind( this ) );
+      var userControlledListener = this.updateCoinTermShowMinusSignFlag.bind( this );
+      assert && assert( !this.mapCoinTermsToUCListeners[ coinTerm.id ], 'key should not yet exist in map' );
+      this.mapCoinTermsToUCListeners[ coinTerm.id ] = userControlledListener;
+      coinTerm.userControlledProperty.link( userControlledListener );
 
       // update whether the coin terms should be showing minus signs
       this.updateCoinTermShowMinusSignFlag();
@@ -380,7 +398,8 @@ define( function( require ) {
       coinTerm.showMinusSignWhenNegative = true;
       this.coinTerms.remove( coinTerm );
       coinTerm.relativeViewBoundsProperty.unlink( this.setResizeFlagFunction );
-      coinTerm.userControlledProperty.unlink( this.updateCoinTermShowMinusSignFlag );
+      coinTerm.userControlledProperty.unlink( this.mapCoinTermsToUCListeners[ coinTerm.id ] );
+      delete this.mapCoinTermsToUCListeners[ coinTerm.id ];
 
       if ( this.coinTerms.length > 0 ) {
         this.updateSizeAndCoinTermPositions();

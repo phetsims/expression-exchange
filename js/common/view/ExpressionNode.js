@@ -81,7 +81,7 @@ define( function( require ) {
     this.addChild( symbolsLayer );
 
     // function to update the background and the plus/minus symbols
-    function update() {
+    function updateBackgroundAndSymbols() {
 
       // plus symbols are recreated each time to keep things simple
       symbolsLayer.removeAllChildren();
@@ -152,31 +152,34 @@ define( function( require ) {
     }
 
     // update the appearance if the layout changes
-    expression.layoutChangedEmitter.addListener( update );
+    expression.layoutChangedEmitter.addListener( updateBackgroundAndSymbols );
 
     // update the shape when hint states of the expression change
-    Property.multilink(
+    var updateBackgroundAndSymbolsMultilink = Property.multilink(
       [ expression.leftHintActiveProperty, expression.rightHintActiveProperty, simplifyNegativesProperty ],
-      update
+      updateBackgroundAndSymbols
     );
 
     // update the position when the expression moves
-    expression.upperLeftCornerProperty.link( function( upperLeftCorner ) {
+    function updatePosition( upperLeftCorner ) {
       self.x = upperLeftCorner.x;
       self.y = upperLeftCorner.y;
-    } );
+    }
+    expression.upperLeftCornerProperty.link( updatePosition );
 
     // update the visibility of the left and right hints
-    expression.leftHintActiveProperty.linkAttribute( leftHintNode, 'visible' );
-    expression.rightHintActiveProperty.linkAttribute( rightHintNode, 'visible' );
+    var leftHintHandle = expression.leftHintActiveProperty.linkAttribute( leftHintNode, 'visible' );
+    var rightHintHandle = expression.rightHintActiveProperty.linkAttribute( rightHintNode, 'visible' );
 
     // turn the halo on and off based on the associated property
-    expression.combineHaloActiveProperty.link( function( combineHintActive ) {
+    function activateCombineHint( combineHintActive ) {
       backgroundPath.stroke = combineHintActive ? 'yellow' : null;
-    } );
+    }
+    expression.combineHaloActiveProperty.link( activateCombineHint );
 
     // update the shape of the left hint
-    Property.multilink( [ expression.heightProperty, expression.widthProperty, expression.leftHintWidthProperty ],
+    var leftHintMultilink = Property.multilink(
+      [ expression.heightProperty, expression.widthProperty, expression.leftHintWidthProperty ],
       function( expressionHeight, expressionWidth, hintWidth ) {
         leftHintShape = new Shape();
         leftHintShape.moveTo( -hintWidth, 0 );
@@ -190,7 +193,8 @@ define( function( require ) {
     );
 
     // update the shape of the right hint
-    Property.multilink( [ expression.heightProperty, expression.widthProperty, expression.rightHintWidthProperty ],
+    var rightHintMultilink = Property.multilink(
+      [ expression.heightProperty, expression.widthProperty, expression.rightHintWidthProperty ],
       function( expressionHeight, expressionWidth, hintWidth ) {
         rightHintShape = new Shape();
         rightHintShape.moveTo( expressionWidth, 0 );
@@ -203,11 +207,29 @@ define( function( require ) {
       }
     );
 
+    // create a dispose function
+    this.expressionNodeDispose = function(){
+      expression.layoutChangedEmitter.removeListener( updateBackgroundAndSymbols );
+      updateBackgroundAndSymbolsMultilink.dispose();
+      expression.upperLeftCornerProperty.unlink( updatePosition );
+      expression.leftHintActiveProperty.unlinkAttribute( leftHintHandle );
+      expression.rightHintActiveProperty.unlinkAttribute( rightHintHandle );
+      expression.combineHaloActiveProperty.unlink( activateCombineHint );
+      leftHintMultilink.dispose();
+      rightHintMultilink.dispose();
+    };
+
     // do the initial update
-    update();
+    updateBackgroundAndSymbols();
   }
 
   expressionExchange.register( 'ExpressionNode', ExpressionNode );
 
-  return inherit( Node, ExpressionNode );
+  return inherit( Node, ExpressionNode, {
+
+    // @public
+    dispose: function(){
+      this.expressionNodeDispose();
+    }
+  } );
 } );
