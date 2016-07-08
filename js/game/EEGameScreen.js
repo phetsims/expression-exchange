@@ -12,6 +12,7 @@ define( function( require ) {
   var EEGameIconNode = require( 'EXPRESSION_EXCHANGE/game/view/EEGameIconNode' );
   var EEGameScreenView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameScreenView' );
   var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Screen = require( 'JOIST/Screen' );
@@ -30,7 +31,7 @@ define( function( require ) {
       new EEGameIconNode,
       function() { return new EEGameModel(); },
       function( model ) { return new EEGameScreenView( model ); },
-      { backgroundColor: '#CCE7FF' }
+      { backgroundColor: EESharedConstants.GAME_SCREEN_BACKGROUND_COLOR }
     );
   }
 

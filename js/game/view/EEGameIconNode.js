@@ -23,7 +23,7 @@ define( function( require ) {
   var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var BACKGROUND_COLOR = EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR;
+  var BACKGROUND_COLOR = EESharedConstants.GAME_SCREEN_BACKGROUND_COLOR;
   var ICON_SIZE = Screen.HOME_SCREEN_ICON_SIZE;
   var COIN_SPACING = ICON_SIZE.width * 0.02; // empirically determined
   var TEXT_FONT = new PhetFont( 50 );
