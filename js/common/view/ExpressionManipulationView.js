@@ -151,7 +151,7 @@ define( function( require ) {
 
     // create the collection of coin term creator nodes that will be presented to the user, varies based on options
     var itemsPerCarouselPage = 3;
-    var carouselItemSpacing = 60; // empirically determined to handle the worst case term text
+    var carouselItemSpacing = 45; // empirically determined to handle the worst case term text
     var collectionDisplayWidth;
     if ( model.coinTermCollection === CoinTermCreatorSet.BASIC ) {
       coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: 1 } );
