@@ -12,6 +12,7 @@ define( function( require ) {
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
@@ -22,7 +23,7 @@ define( function( require ) {
   var ICON_SIZE = Screen.HOME_SCREEN_ICON_SIZE;
   var FONT_SIZE = 84;
   var NORMAL_FONT = new PhetFont( { size: FONT_SIZE } );
-  var ITALIC_FONT = new PhetFont( { size: FONT_SIZE, style: 'italic' } );
+  var ITALIC_FONT = new MathSymbolFont( FONT_SIZE );
   var BACKGROUND_COLOR = EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR;
 
   /**
@@ -35,7 +36,6 @@ define( function( require ) {
 
     // add the nodes
     var equationNode = new Node();
-
     equationNode.addChild( new Text( '2', { font: NORMAL_FONT } ) );
     equationNode.addChild( new Text( '(4)', { font: ITALIC_FONT, left: equationNode.width } ) );
     equationNode.addChild( new Text( '+', { font: NORMAL_FONT, left: equationNode.width + 25 } ) );
@@ -47,7 +47,6 @@ define( function( require ) {
     equationNode.centerY = ICON_SIZE.height * 0.45;
 
     this.addChild( equationNode );
-
   }
 
   expressionExchange.register( 'EEExploreIconNode', EEExploreIconNode );
