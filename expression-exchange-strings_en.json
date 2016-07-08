@@ -26,9 +26,6 @@
   "allCoefficients": {
     "value": "all coefficients"
   },
-  "simplifyNegatives": {
-    "value": "+ -x -> - x"
-  },
   "total": {
     "value": "Total"
   },
