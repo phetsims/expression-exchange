@@ -120,7 +120,7 @@ define( function( require ) {
     // define dispose function
     this.expressionHintNodeDispose = function(){
       boundsUpdateMultilink.dispose();
-    }
+    };
   }
 
   expressionExchange.register( 'ExpressionHintNode', ExpressionHintNode );

@@ -104,7 +104,7 @@ define( function( require ) {
     );
 
     // update the join zone as the size and/or location of the expression changes
-    var joinZoneMultilink = Property.multilink( [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
+    Property.multilink( [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
       function( upperLeftCorner, width, height ) {
         self.joinZone.setMinMax(
           self.upperLeftCorner.x - self.height,
@@ -118,7 +118,7 @@ define( function( require ) {
     this.addCoinTerm( floatingCoinTerm );
 
     // add a listener that will immediately finish animations for incoming coin terms if the expression is grabbed
-    var userControlledObserver = this.userControlledProperty.onValue( true, function() {
+    this.userControlledProperty.onValue( true, function() {
       self.coinTerms.forEach( function( coinTerm ) {
         if ( coinTerm.inProgressAnimation ) {
           coinTerm.goImmediatelyToDestination();
