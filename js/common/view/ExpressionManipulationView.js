@@ -66,7 +66,7 @@ define( function( require ) {
   var CHECK_BOX_FONT = new PhetFont( { size: 16 } );
   var CHECK_BOX_VERTICAL_SPACING = 6;
   var INSET = 10; // inset from edges of layout bounds, in screen coords
-  var MAX_COIN_TERMS_PER_TYPE = 10;
+  var MAX_COIN_TERMS_PER_TYPE = 8;
   var FLOATING_PANEL_INSET = 10;
 
   /**
@@ -152,10 +152,12 @@ define( function( require ) {
     // create the collection of coin term creator nodes that will be presented to the user, varies based on options
     var itemsPerCarouselPage = 3;
     var carouselItemSpacing = 60; // empirically determined to handle the worst case term text
+    var collectionDisplayWidth;
     if ( model.coinTermCollection === CoinTermCreatorSet.BASIC ) {
       coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: 1 } );
       coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y, initialCount: 1 } );
       coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Z, initialCount: 1 } );
+      collectionDisplayWidth = 150;
     }
     else if ( model.coinTermCollection === CoinTermCreatorSet.EXPLORE ) {
       coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: 1 } );
@@ -167,6 +169,7 @@ define( function( require ) {
       coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1 } );
       coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y_SQUARED, initialCount: 1 } );
       coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, initialCount: 1 } );
+      collectionDisplayWidth = 180;
     }
     else if ( model.coinTermCollection === CoinTermCreatorSet.ADVANCED ) {
       coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1 } );
@@ -179,6 +182,7 @@ define( function( require ) {
       coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.CONSTANT, initialCount: -1 } );
       itemsPerCarouselPage = 4; // this set works better with four items per page
       carouselItemSpacing = 40; // can be a bit smaller in this case because the largest term (x^2*y^2) isn't being used
+      collectionDisplayWidth = 150;
     }
     else {
       assert( false, 'unknown value for coinTermCollection' );
@@ -285,7 +289,7 @@ define( function( require ) {
     var myCollectionDisplay = new CollectionDisplayNode(
       model,
       _.uniq( _.map( coinTermCreatorDescriptors, function( descriptor ) { return descriptor.typeID; } ) ),
-      negativeTermsPresent // show negative values for advanced screen
+      { width: collectionDisplayWidth, showNegatives: negativeTermsPresent }
     );
 
     // add accordion box that will contain the collection display

@@ -22,16 +22,16 @@ define( function( require ) {
 
   // constants
   var COIN_VALUE_FONT = new PhetFont( { size: 12, weight: 'bold' } );
-  var VARIABLE_FONT = new MathSymbolFont( 16 );
-  var CONSTANT_FONT = new PhetFont( 16 );
-  var SCALING_FACTOR = 0.4; // empirically determined to yield coin icons of the desired size
+  var VARIABLE_FONT = new MathSymbolFont( 18 );
+  var CONSTANT_FONT = new PhetFont( 18 );
+  var COIN_SCALING_FACTOR = 0.4; // empirically determined to yield coin icons of the desired size
+  var MAX_TERM_WIDTH_PROPORTION = 1.75; // limits how wide text can be relative to coin, empirically determined
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
    * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
    * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
-   * @param {boolean} addDragHandler - controls whether drag handler hooked up, useful for creator nodes
    * @constructor
    */
   function CoinTermIconNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty ) {
@@ -39,7 +39,7 @@ define( function( require ) {
     Node.call( this );
 
     // add the node that represents the icon
-    var coinIconNode = CoinNodeFactory.createIconNode( coinTerm.typeID, coinTerm.coinRadius * SCALING_FACTOR );
+    var coinIconNode = CoinNodeFactory.createIconNode( coinTerm.typeID, coinTerm.coinRadius * COIN_SCALING_FACTOR );
     this.addChild( coinIconNode );
 
     // control coin icon visibility
@@ -63,8 +63,14 @@ define( function( require ) {
     );
     coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
 
+    // determine the max width of the textual components
+    var maxTextWidth = coinIconNode.width * MAX_TERM_WIDTH_PROPORTION;
+
     // add the 'term' text, e.g. xy
-    var termText = new SubSupText( coinTerm.termText, { font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT } );
+    var termText = new SubSupText( coinTerm.termText, {
+      font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
+      maxWidth: maxTextWidth
+    } );
     if ( coinTerm.combinedCount < 0 ){
       termText.text = '-' + termText.text;
     }
@@ -82,7 +88,8 @@ define( function( require ) {
 
     // Add the text that includes the variable values.  This can change, so it starts off blank.
     var termWithVariableValuesText = new SubSupText( ' ', {
-      font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT
+      font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
+      maxWidth: maxTextWidth
     } );
     this.addChild( termWithVariableValuesText );
 

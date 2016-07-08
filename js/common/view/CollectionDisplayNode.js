@@ -14,21 +14,29 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
 
   // constants
-  var WIDTH = 170; // empirically determined
-  var MAX_COIN_TERMS_PER_ROW = 5;
-  var MAX_COINS_TERMS_PER_TYPE = 10;
-  var COIN_CENTER_INSET = 20;
-  var INTER_COIN_H_SPACING = ( WIDTH - ( 2 * COIN_CENTER_INSET ) ) / ( MAX_COIN_TERMS_PER_ROW - 1 );
-  var SAME_TYPE_V_SPACING = 2;
-  var DIFFERENT_TYPE_V_SPACING = 8;
+  var DEFAULT_WIDTH = 200; // empirically determined
+  var MAX_COIN_TERMS_PER_ROW = 4;
+  var MAX_COINS_TERMS_PER_TYPE = 8;
+  var COIN_CENTER_INSET = 12; // empirically determined
+  var SAME_TYPE_VERTICAL_SPACING = 2;
+  var DIFFERENT_TYPE_VERTICAL_SPACING = 8;
 
   /**
    * {ExpressionManipulationModel} model
    * {Array.<CoinTermTypeID>} displayList - a list of the coin terms to display in the desired order
-   * {boolean} showNegatives - depict negative values in the display
+   * {Object} options
    * @constructor
    */
-  function CollectionDisplayNode( model, displayList, showNegatives ) {
+  function CollectionDisplayNode( model, displayList, options ) {
+
+    options = _.extend( {
+
+      // width of the panel, adjustable to accommodate different sites of coin terms whose individual widths can vary
+      width: DEFAULT_WIDTH,
+
+      // flag that controls whether negative coin terms should be shown on the panel
+      showNegatives: false
+    }, options );
 
     Node.call( this );
     var self = this;
@@ -37,7 +45,7 @@ define( function( require ) {
     var iconList = [];
 
     // number of sections in which the icons will appear
-    var numberOfDisplaySections = showNegatives ? displayList.length * 2 : displayList.length;
+    var numberOfDisplaySections = options.showNegatives ? displayList.length * 2 : displayList.length;
     
     // variables used in the loop that creates the icons shown in the display
     var bottomOfPreviousRow;
@@ -46,7 +54,7 @@ define( function( require ) {
     // add icon display sections in the order in which they are listed
     for( var i = 0; i < numberOfDisplaySections; i++ ){
 
-      if ( showNegatives ){
+      if ( options.showNegatives ){
         coinTermTypeID = displayList[ Math.floor( i / 2 ) ];
       }
       else{
@@ -57,7 +65,7 @@ define( function( require ) {
       var coinTermIcon = new CoinTermIconNode(
         model.coinTermFactory.createCoinTerm( coinTermTypeID, {
           // set initial count to +1 or -1 based on whether this icon is meant to display positive or negative values
-          initialCount: showNegatives && i % 2 === 1 ? -1 : 1
+          initialCount: options.showNegatives && i % 2 === 1 ? -1 : 1
         } ),
         model.viewModeProperty,
         model.showCoinValuesProperty,
@@ -68,13 +76,16 @@ define( function( require ) {
         bottomOfPreviousRow = COIN_CENTER_INSET - coinTermIcon.height / 2;
       }
 
-      // wrap the icon in separate nodes so that it can appear in multiple places
+      // calculate the values used to position the coin term nodes
+      var interCoinTermHorizontalSpacing = ( options.width - ( 2 * COIN_CENTER_INSET ) ) / ( MAX_COIN_TERMS_PER_ROW - 1 );
+
+      // wrap the icon in separate nodes (so that it can appear in multiple places) and position it
       for ( var j = 0; j < MAX_COINS_TERMS_PER_TYPE / MAX_COIN_TERMS_PER_ROW; j++ ) {
         for ( var k = 0; k < MAX_COIN_TERMS_PER_ROW; k++ ) {
           var wrappedIconNode = new Node( {
             children: [ coinTermIcon ],
-            centerX: COIN_CENTER_INSET + k * INTER_COIN_H_SPACING,
-            top: j === 0 ? bottomOfPreviousRow + DIFFERENT_TYPE_V_SPACING : bottomOfPreviousRow + SAME_TYPE_V_SPACING
+            centerX: COIN_CENTER_INSET + k * interCoinTermHorizontalSpacing,
+            top: j === 0 ? bottomOfPreviousRow + DIFFERENT_TYPE_VERTICAL_SPACING : bottomOfPreviousRow + SAME_TYPE_VERTICAL_SPACING
           } );
           self.addChild( wrappedIconNode );
           iconList.push( wrappedIconNode );
@@ -89,7 +100,7 @@ define( function( require ) {
 
         // find the first icon node for this coin term type
         var nodeIndex = index * MAX_COINS_TERMS_PER_TYPE;
-        if ( showNegatives ){
+        if ( options.showNegatives ){
           nodeIndex *= 2;
         }
 
@@ -100,7 +111,7 @@ define( function( require ) {
         }
 
         // if negatives are being shown, update the icons that correspond to those
-        if ( showNegatives ){
+        if ( options.showNegatives ){
           count = model.getNegativeCoinTermCount( coinTermTypeID );
           for ( i = 0; i < MAX_COINS_TERMS_PER_TYPE; i++ ) {
             iconList[ nodeIndex++ ].visible = i < count;
