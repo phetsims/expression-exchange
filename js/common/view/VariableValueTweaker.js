@@ -13,6 +13,7 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var HBox = require( 'SCENERY/nodes/HBox' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var Node = require( 'SCENERY/nodes/Node' );
   var NumberDisplay = require( 'SCENERY_PHET/NumberDisplay' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
@@ -23,7 +24,8 @@ define( function( require ) {
   var READOUT_FONT = new PhetFont( 16 );
   var READOUT_HEIGHT = 15;
   var ARROW_HEIGHT = READOUT_HEIGHT * 0.65;  // multiplier empirically determined
-  var EQUATION_FONT = new PhetFont( 20 );
+  var VARIABLE_FONT = new MathSymbolFont( 24 );
+  var EQUALS_SIGN_FONT = new PhetFont( 22 ); // because the equals sign in MathSymbolFont looked bad
   var DEFAULT_MIN_VALUE = -10;
   var DEFAULT_MAX_VALUE = 10;
 
@@ -63,8 +65,8 @@ define( function( require ) {
     this.addChild( new HBox( {
       spacing: 5,
       children: [
-        new Text( variableString, { font: EQUATION_FONT } ),
-        new Text( '=', { font: EQUATION_FONT } ),
+        new Text( variableString, { font: VARIABLE_FONT } ),
+        new Text( '=', { font: EQUALS_SIGN_FONT } ),
         arrowsAndReadout ]
     } ) );
   }
