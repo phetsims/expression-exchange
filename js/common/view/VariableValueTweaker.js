@@ -17,7 +17,7 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var NumberDisplay = require( 'SCENERY_PHET/NumberDisplay' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Range = require( 'DOT/Range' );
+  var RangeWithValue = require( 'DOT/RangeWithValue' );
   var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
@@ -41,7 +41,7 @@ define( function( require ) {
     }, options );
 
     // create and add the readout
-    var readout = new NumberDisplay( variableValueProperty, new Range( options.minValue, options.maxValue ), '', '{0}', {
+    var readout = new NumberDisplay( variableValueProperty, new RangeWithValue( options.minValue, options.maxValue ), '', '{0}', {
       font: READOUT_FONT,
       backgroundStroke: 'black',
       cornerRadius: 4
