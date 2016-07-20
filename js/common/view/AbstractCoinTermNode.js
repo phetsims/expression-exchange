@@ -221,6 +221,6 @@ define( function( require ) {
 
     // To look correct in equations, the text all needs to be on the same baseline.  The value was empirically
     // determined and may need to change if font sizes change.
-    TEXT_BASELINE_Y_OFFSET: 10
+    TEXT_BASELINE_Y_OFFSET: 12
   } );
 } );

@@ -21,7 +21,7 @@ define( function( require ) {
 
   // constants
   var INTER_COIN_TERM_SPACING = 30; // in model units, empirically determined
-  var INSET = 10; // space around coin terms, empirically determined
+  var INSET = 12; // space around coin terms, empirically determined
   var ANIMATION_SPEED = 400; // in model units (which are basically screen coordinates) per second
 
   // class var for creating unique IDs

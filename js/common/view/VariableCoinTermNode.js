@@ -25,6 +25,7 @@ define( function( require ) {
   // constants
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_X_SPACING = 3;
+  var POINTER_AREA_DILATION_AMOUNT = 7;
   var SUPERSCRIPT_SCALE = 0.65;
   var VALUE_FONT = new PhetFont( { size: 34 } );
   var VARIABLE_FONT = new MathSymbolFont( 36 );
@@ -127,8 +128,8 @@ define( function( require ) {
       }
       termText.centerX = 0;
       termText.y = textBaseline;
-      termText.mouseArea = termText.localBounds.dilated( 10 );
-      termText.touchArea = termText.localBounds.dilated( 10 );
+      termText.mouseArea = termText.localBounds.dilated( POINTER_AREA_DILATION_AMOUNT );
+      termText.touchArea = termText.localBounds.dilated( POINTER_AREA_DILATION_AMOUNT );
       termText.visible = viewModeProperty.value === ViewMode.VARIABLES && !showVariableValuesProperty.value;
 
       // term value text, which shows the variable values and operators such as exponents
@@ -141,8 +142,8 @@ define( function( require ) {
       termWithVariableValuesText.text = termValueText;
       termWithVariableValuesText.centerX = 0;
       termWithVariableValuesText.y = textBaseline;
-      termWithVariableValuesText.mouseArea = termWithVariableValuesText.localBounds.dilated( 10 );
-      termWithVariableValuesText.touchArea = termWithVariableValuesText.localBounds.dilated( 10 );
+      termWithVariableValuesText.mouseArea = termWithVariableValuesText.localBounds.dilated( POINTER_AREA_DILATION_AMOUNT );
+      termWithVariableValuesText.touchArea = termWithVariableValuesText.localBounds.dilated( POINTER_AREA_DILATION_AMOUNT );
       termWithVariableValuesText.visible = viewModeProperty.value === ViewMode.VARIABLES &&
                                            showVariableValuesProperty.value;
 
