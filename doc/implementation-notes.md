@@ -36,3 +36,7 @@ divided into two classes, VariableCoinTermNode and ConstantCoinTermNode.  This w
 implementation, but may be a little confusing to anyone coming in to maintain this simulation because there is a single
 model element, i.e. CoinTerm, that can map to one of two view elements, i.e. VariableCoinTermNode and
 ConstantCoinTermNode.  Not a huge deal, but probably worth a "heads up" here in this document.
+
+Note to self (jbphet): I sent myself a snapshot of my whiteboard on 7/22/2016.  When finalizing this document, look it
+over see if it inspires thoughts on other things to add to this doc.  Something about the expression overlay node
+would probably be good, for instance.
