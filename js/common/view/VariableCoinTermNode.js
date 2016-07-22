@@ -25,7 +25,7 @@ define( function( require ) {
   // constants
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_X_SPACING = 3;
-  var POINTER_AREA_DILATION_AMOUNT = 7;
+  var POINTER_AREA_DILATION_AMOUNT = 15;
   var SUPERSCRIPT_SCALE = 0.65;
   var VALUE_FONT = new PhetFont( { size: 34 } );
   var VARIABLE_FONT = new MathSymbolFont( 36 );

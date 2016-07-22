@@ -12,7 +12,7 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
   var RefreshButton = require( 'SCENERY_PHET/buttons/RefreshButton' );
-  var VariableValueTweaker = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueTweaker' );
+  var LeftRightNumberSpinner = require( 'EXPRESSION_EXCHANGE/common/view/LeftRightNumberSpinner' );
   var VBox = require( 'SCENERY/nodes/VBox' );
 
   /**
@@ -49,9 +49,9 @@ define( function( require ) {
     var tweakerOptions = { minValue: minValue, maxValue: maxValue };
     VBox.call( this, {
       children: [
-        new VariableValueTweaker( xTermValueProperty, EESharedConstants.X_VARIABLE_CHAR, tweakerOptions ),
-        new VariableValueTweaker( yTermValueProperty, EESharedConstants.Y_VARIABLE_CHAR, tweakerOptions ),
-        new VariableValueTweaker( zTermValueProperty, EESharedConstants.Z_VARIABLE_CHAR, tweakerOptions ),
+        new LeftRightNumberSpinner( xTermValueProperty, EESharedConstants.X_VARIABLE_CHAR, tweakerOptions ),
+        new LeftRightNumberSpinner( yTermValueProperty, EESharedConstants.Y_VARIABLE_CHAR, tweakerOptions ),
+        new LeftRightNumberSpinner( zTermValueProperty, EESharedConstants.Z_VARIABLE_CHAR, tweakerOptions ),
         restoreDefaultsButton
       ],
       spacing: 20

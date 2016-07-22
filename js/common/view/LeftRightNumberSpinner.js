@@ -32,7 +32,7 @@ define( function( require ) {
   /**
    * @constructor
    */
-  function VariableValueTweaker( variableValueProperty, variableString, options ) {
+  function LeftRightNumberSpinner( variableValueProperty, variableString, options ) {
     Node.call( this );
 
     options = _.extend( {
@@ -71,7 +71,7 @@ define( function( require ) {
     } ) );
   }
 
-  expressionExchange.register( 'VariableValueTweaker', VariableValueTweaker );
+  expressionExchange.register( 'LeftRightNumberSpinner', LeftRightNumberSpinner );
 
-  return inherit( Node, VariableValueTweaker );
+  return inherit( Node, LeftRightNumberSpinner );
 } );
