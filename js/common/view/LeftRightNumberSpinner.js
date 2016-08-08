@@ -41,7 +41,7 @@ define( function( require ) {
     }, options );
 
     // create and add the readout
-    var readout = new NumberDisplay( variableValueProperty, new RangeWithValue( options.minValue, options.maxValue ), '', '{0}', {
+    var readout = new NumberDisplay( variableValueProperty, new RangeWithValue( options.minValue, options.maxValue ), {
       font: READOUT_FONT,
       backgroundStroke: 'black',
       cornerRadius: 4
