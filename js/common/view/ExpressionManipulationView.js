@@ -279,6 +279,8 @@ define( function( require ) {
         variableIconNode,
         {
           switchSize: new Dimension2( 40, 20 ),
+          thumbTouchAreaXDilation: 5,
+          thumbTouchAreaYDilation: 5,
           top: coinTermCreatorHolder.bottom + 10,
           centerX: coinTermCreatorHolder.centerX
         }
