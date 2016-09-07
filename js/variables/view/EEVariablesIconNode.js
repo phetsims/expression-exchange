@@ -36,7 +36,18 @@ define( function( require ) {
     // create and add the equation node
     var equationNode = new Node();
     equationNode.addChild( new Text( '3', { font: new PhetFont( FONT_SIZE ) } ) );
-    equationNode.addChild( new SubSupText( 'x<sup>2</sup> - x<sup>2</sup>', {
+    var subSupOptions = {
+      font: new MathSymbolFont( FONT_SIZE ),
+      supScale: 0.5,
+      left: equationNode.width
+    };
+    equationNode.addChild( new SubSupText( 'x<sup>2</sup>', {
+      font: new MathSymbolFont( FONT_SIZE ),
+      supScale: 0.5,
+      left: equationNode.width
+    } ) );
+    equationNode.addChild( new Text( ' - ', { font: new PhetFont( FONT_SIZE * 1.1 ), left: equationNode.width } ) );
+    equationNode.addChild( new SubSupText( 'x<sup>2</sup>', {
       font: new MathSymbolFont( FONT_SIZE ),
       supScale: 0.5,
       left: equationNode.width
