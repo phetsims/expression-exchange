@@ -24,6 +24,8 @@ define( function( require ) {
   var ICON_SIZE = Screen.HOME_SCREEN_ICON_SIZE;
   var BACKGROUND_COLOR = EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR;
   var FONT_SIZE = 100;
+  var MATH_FONT = new MathSymbolFont( FONT_SIZE );
+  var TEXT_FONT = new PhetFont( FONT_SIZE );
 
   /**
    * @constructor
@@ -35,20 +37,15 @@ define( function( require ) {
 
     // create and add the equation node
     var equationNode = new Node();
-    equationNode.addChild( new Text( '3', { font: new PhetFont( FONT_SIZE ) } ) );
-    var subSupOptions = {
-      font: new MathSymbolFont( FONT_SIZE ),
-      supScale: 0.5,
-      left: equationNode.width
-    };
+    equationNode.addChild( new Text( '3', { font: TEXT_FONT } ) );
     equationNode.addChild( new SubSupText( 'x<sup>2</sup>', {
-      font: new MathSymbolFont( FONT_SIZE ),
+      font: MATH_FONT,
       supScale: 0.5,
       left: equationNode.width
     } ) );
-    equationNode.addChild( new Text( ' - ', { font: new PhetFont( FONT_SIZE * 1.1 ), left: equationNode.width } ) );
+    equationNode.addChild( new Text( ' \u2212 ', { font: TEXT_FONT, left: equationNode.width } ) );
     equationNode.addChild( new SubSupText( 'x<sup>2</sup>', {
-      font: new MathSymbolFont( FONT_SIZE ),
+      font: MATH_FONT,
       supScale: 0.5,
       left: equationNode.width
     } ) );
