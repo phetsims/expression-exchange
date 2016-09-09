@@ -25,13 +25,16 @@ define( function( require ) {
    */
   function EEVariablesScreen() {
 
-    Screen.call(
-      this,
-      variablesString,
-      new EEVariablesIconNode(),
+    var options = {
+      name: variablesString,
+      backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR,
+      homeScreenIcon: new EEVariablesIconNode()
+    };
+
+    Screen.call( this,
       function() { return new EEVariablesModel(); },
       function( model ) { return new ExpressionManipulationView( model ); },
-      { backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR }
+      options
     );
   }
 

@@ -25,13 +25,16 @@ define( function( require ) {
    */
   function EEBasicsScreen() {
 
-    Screen.call(
-      this,
-      basicsString,
-      new EEBasicsIconNode(),
+    var options = {
+      name: basicsString,
+      backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR,
+      homeScreenIcon: new EEBasicsIconNode()
+    };
+
+    Screen.call( this,
       function() { return new EEBasicsModel(); },
       function( model ) { return new ExpressionManipulationView( model ); },
-      { backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR }
+      options
     );
   }
 

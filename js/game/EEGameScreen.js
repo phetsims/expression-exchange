@@ -25,13 +25,16 @@ define( function( require ) {
    */
   function EEGameScreen() {
 
-    Screen.call(
-      this,
-      gameString,
-      new EEGameIconNode,
+    var options = {
+      name: gameString,
+      backgroundColor: EESharedConstants.GAME_SCREEN_BACKGROUND_COLOR,
+      homeScreenIcon: new EEGameIconNode()
+    };
+
+    Screen.call( this,
       function() { return new EEGameModel(); },
       function( model ) { return new EEGameScreenView( model ); },
-      { backgroundColor: EESharedConstants.GAME_SCREEN_BACKGROUND_COLOR }
+      options
     );
   }
 

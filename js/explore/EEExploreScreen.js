@@ -25,13 +25,16 @@ define( function( require ) {
    */
   function EEExploreScreen() {
 
-    Screen.call(
-      this,
-      exploreString,
-      new EEExploreIconNode(),
+    var options = {
+      name: exploreString,
+      backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR,
+      homeScreenIcon: new EEExploreIconNode()
+    };
+
+    Screen.call( this,
       function() { return new EEExploreModel(); },
       function( model ) { return new ExpressionManipulationView( model ); },
-      { backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR }
+      options
     );
   }
 
