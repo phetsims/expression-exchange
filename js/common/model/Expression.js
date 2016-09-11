@@ -128,13 +128,14 @@ define( function( require ) {
 
     // monitor the setting for whether negatives are simplified and update the contained coin terms when it changes
     // TODO: Try just linking the function, but make sure I can dispose of it properly
-    function updateCoinTermMinusSignFlags(){
+    function updateCoinTermMinusSignFlags() {
       self.updateCoinTermShowMinusSignFlag();
     }
+
     simplifyNegativesProperty.link( updateCoinTermMinusSignFlags );
 
     // create a dispose function
-    this.expressionDispose = function(){
+    this.expressionDispose = function() {
       simplifyNegativesProperty.unlink( updateCoinTermMinusSignFlags );
       self.unlinkAll();
     };
@@ -211,7 +212,7 @@ define( function( require ) {
       }
     },
 
-    dispose: function(){
+    dispose: function() {
       this.expressionDispose();
       //PropertySet.prototype.dispose.call( this );
     },
@@ -312,7 +313,7 @@ define( function( require ) {
      */
     addCoinTerm: function( coinTerm ) {
 
-      if ( this.coinTerms.contains( coinTerm ) ){
+      if ( this.coinTerms.contains( coinTerm ) ) {
         // TODO:   There is a race condition that only occurs during fuzz testing where somehow a coin term that is
         // TODO:   inside an expression becomes user controlled and then is added back to the expression.  This is a
         // TODO:   workaround.  This should be fully investigated before publication.
@@ -322,7 +323,7 @@ define( function( require ) {
 
       this.coinTerms.push( coinTerm );
 
-      if ( this.coinTerms.length === 1 ){
+      if ( this.coinTerms.length === 1 ) {
 
         // this is the first coin term, so set the initial width and height
         this.width = coinTerm.relativeViewBounds.width + 2 * INSET;
@@ -332,7 +333,7 @@ define( function( require ) {
           coinTerm.position.y - this.height / 2
         );
       }
-      else{
+      else {
 
         // adjust the expression's width to accommodate the new coin term
         var originalWidth = this.width;
@@ -484,13 +485,13 @@ define( function( require ) {
         var showMinusSignWhenNegative = !( self.simplifyNegativesProperty.value && index > 0 ) ||
                                         residentCoinTerm.userControlled;
 
-        if ( showMinusSignWhenNegative !== residentCoinTerm.showMinusSignWhenNegative ){
+        if ( showMinusSignWhenNegative !== residentCoinTerm.showMinusSignWhenNegative ) {
           residentCoinTerm.showMinusSignWhenNegative = showMinusSignWhenNegative;
           oneOrMoreChanged = true;
         }
       } );
 
-      if ( oneOrMoreChanged ){
+      if ( oneOrMoreChanged ) {
         this.layoutChangedEmitter.emit();
       }
     },
@@ -531,7 +532,7 @@ define( function( require ) {
           self.inProgressAnimation = null;
           self.destinationReachedEmitter.emit();
         } )
-        .start();
+        .start( phet.joist.elapsedTime );
     },
 
     /**

@@ -96,8 +96,8 @@ define( function( require ) {
     } );
 
     // monitor combined count, start fading the existence strength if the count goes to zero
-    this.combinedCountProperty.lazyLink( function( combinedCount ){
-      if ( combinedCount === 0 ){
+    this.combinedCountProperty.lazyLink( function( combinedCount ) {
+      if ( combinedCount === 0 ) {
         // start the periodic timer that will fade the existence strength to zero
         var timerInterval = Timer.setInterval( function() {
           self.existenceStrength = Math.max( self.existenceStrength - 1 / NUM_FADE_STEPS, 0 );
@@ -137,7 +137,7 @@ define( function( require ) {
           self.destinationReachedEmitter.emit();
           self.inProgressAnimation = null;
         } )
-        .start();
+        .start( phet.joist.elapsedTime );
     },
 
     returnToOrigin: function() {
