@@ -41,11 +41,12 @@ define( function( require ) {
     this.addChild( this.coinAndTextRootNode );
 
     // add a listener that will update the opacity based on the coin term's existence strength
-    coinTerm.existenceStrengthProperty.link( function( existenceStrength ){
+    function handleExistenceStrengthChanged( existenceStrength ){
       assert && assert( existenceStrength >= 0 && existenceStrength <= 1, 'existence strength must be between 0 and 1' );
       self.opacity = existenceStrength;
       self.pickable = existenceStrength === 1; // prevent interaction with fading coin term
-    } );
+    }
+    coinTerm.existenceStrengthProperty.link( handleExistenceStrengthChanged );
 
     // timer that will be used to hide the break apart button if user doesn't use it
     var hideButtonTimer = null;
@@ -93,7 +94,7 @@ define( function( require ) {
     } );
 
     // keep the button showing if the user is over it
-    breakApartButton.buttonModel.overProperty.lazyLink( function( overButton ) {
+    function handleOverBreakApartButtonChanged( overButton ){
       if ( overButton ) {
         if ( !coinTerm.userControlled ) {
           assert && assert( !!hideButtonTimer, 'should not be over button without hide timer running' );
@@ -105,7 +106,8 @@ define( function( require ) {
           startHideButtonTimer();
         }
       }
-    } );
+    }
+    breakApartButton.buttonModel.overProperty.lazyLink( handleOverBreakApartButtonChanged );
 
     // define a function that will position and show the break apart button
     function showBreakApartButton() {
@@ -121,14 +123,15 @@ define( function( require ) {
     }
 
     // move this node as the model representation moves
-    coinTerm.positionProperty.link( function( position ) {
+    function handlePositionChanged( position ){
       // the intent here is to position the center of the coin at the position, NOT the center of the node
       self.x = position.x;
       self.y = position.y;
-    } );
+    }
+    coinTerm.positionProperty.link( handlePositionChanged );
 
     // update the state of the break apart button when the userControlled state changes
-    coinTerm.userControlledProperty.lazyLink( function( userControlled ) {
+    function handleUserControlledChanged( userControlled ){
       if ( Math.abs( coinTerm.combinedCount ) > 1 && coinTerm.breakApartAllowed ) {
 
         if ( userControlled ) {
@@ -141,15 +144,17 @@ define( function( require ) {
           startHideButtonTimer();
         }
       }
-    } );
+    }
+    coinTerm.userControlledProperty.lazyLink( handleUserControlledChanged );
 
     // hide the break apart button if break apart becomes disabled, generally if the coin term joins an expression
-    coinTerm.breakApartAllowedProperty.link( function( breakApartAllowed ) {
+    function handleBreakApartAllowedChanged( breakApartAllowed ){
       if ( breakApartButton.visible && !breakApartAllowed ) {
         clearHideButtonTimer();
         hideBreakApartButton();
       }
-    } );
+    }
+    coinTerm.breakApartAllowedProperty.link( handleBreakApartAllowedChanged );
 
     if ( options.addDragHandler ) {
 
@@ -195,7 +200,7 @@ define( function( require ) {
     coinTerm.userControlledProperty.onValue( true, function() { self.moveToFront(); } );
 
     // add a listener that will pop this node to the front when another coin term is combined with it
-    coinTerm.combinedCountProperty.link( function( newCount, oldCount ) {
+    function handleCombinedCountChanged( newCount, oldCount ){
       if ( newCount > oldCount ) {
         self.moveToFront();
       }
@@ -206,18 +211,37 @@ define( function( require ) {
         // https://github.com/phetsims/expression-exchange/issues/29
         hideBreakApartButton();
       }
-    } );
+    }
+    coinTerm.combinedCountProperty.link( handleCombinedCountChanged );
 
     // Add a listener that will make this node non-pickable when animating, which solves a lot of multi-touch and fuzz
     // testing issues.
-    coinTerm.inProgressAnimationProperty.link( function( inProgressAnimation ) {
+    function handleInProgressAnimationChanged( inProgressAnimation ){
       self.pickable = inProgressAnimation === null;
-    } );
+    }
+    coinTerm.inProgressAnimationProperty.link( handleInProgressAnimationChanged );
+
+    // internal dispose function, reference in inherit block
+    this.disposeAbstractCoinTermNode = function(){
+      coinTerm.positionProperty.unlink( handlePositionChanged );
+      coinTerm.existenceStrengthProperty.unlink( handleExistenceStrengthChanged );
+      breakApartButton.buttonModel.overProperty.unlink( handleOverBreakApartButtonChanged );
+      coinTerm.userControlledProperty.unlink( handleUserControlledChanged );
+      coinTerm.breakApartAllowedProperty.unlink( handleBreakApartAllowedChanged );
+      coinTerm.combinedCountProperty.unlink( handleCombinedCountChanged );
+      coinTerm.inProgressAnimationProperty.unlink( handleInProgressAnimationChanged );
+    };
   }
 
   expressionExchange.register( 'AbstractCoinTermNode', AbstractCoinTermNode );
 
-  return inherit( Node, AbstractCoinTermNode, {}, {
+  return inherit( Node, AbstractCoinTermNode, {
+
+    // @public
+    dispose: function() {
+      this.disposeAbstractCoinTermNode();
+    }
+  }, {
 
     // To look correct in equations, the text all needs to be on the same baseline.  The value was empirically
     // determined and may need to change if font sizes change.

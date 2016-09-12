@@ -277,9 +277,7 @@ define( function( require ) {
       addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListener );
 
       // add a listener that will update the total value of the coin terms when this one's value changes
-      addedCoinTerm.valueProperty.link( function() {
-        updateTotal();
-      } );
+      addedCoinTerm.valueProperty.link( updateTotal );
 
       // add a listener that will remove this coin if and when it returns to its original position
       function coinTermReturnedToOriginListener() {

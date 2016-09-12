@@ -542,6 +542,7 @@ define( function( require ) {
       model.coinTerms.addItemRemovedListener( function removalListener( removedCoin ) {
         if ( removedCoin === addedCoinTerm ) {
           coinLayer.removeChild( coinTermNode );
+          coinTermNode.dispose();
           coinHaloLayer.removeChild( coinHaloNode );
           model.coinTerms.removeItemRemovedListener( removalListener );
         }

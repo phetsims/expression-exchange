@@ -105,7 +105,7 @@ define( function( require ) {
     // function that updates all nodes that comprise this composite node
     function updateRepresentation() {
 
-      // TODO: This is originally being written with no thought given to performance, may need to optimize
+      // TODO: this was written with no thought given to performance, may need to optimize
 
       // control front coin image visibility
       coinImageNode.visible = viewModeProperty.value === ViewMode.COINS;
@@ -170,8 +170,7 @@ define( function( require ) {
     }
 
     // if anything about the coin term's values changes or any of the display mode, the representation needs to be updated
-    // TODO: Need to dispose of this, unlink it, or whatever, to avoid memory leaks
-    Property.multilink(
+    var updateRepresentationMultilink = Property.multilink(
       [
         coinTerm.combinedCountProperty,
         coinTerm.valueProperty,
@@ -184,9 +183,20 @@ define( function( require ) {
       ],
       updateRepresentation
     );
+
+    this.disposeVariableCoinTermNode = function() {
+      updateRepresentationMultilink.dispose();
+    };
   }
 
   expressionExchange.register( 'VariableCoinTermNode', VariableCoinTermNode );
 
-  return inherit( AbstractCoinTermNode, VariableCoinTermNode );
+  return inherit( AbstractCoinTermNode, VariableCoinTermNode, {
+
+    // @public
+    dispose: function(){
+      this.disposeVariableCoinTermNode();
+      AbstractCoinTermNode.prototype.dispose.call( this );
+    }
+  } );
 } );
