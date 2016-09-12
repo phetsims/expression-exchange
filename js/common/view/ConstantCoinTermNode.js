@@ -37,11 +37,12 @@ define( function( require ) {
     // As of this writing, constant coin terms are never used on a screen where a coin is shown.  There is no
     // fundamental reason why not, that's just how the design worked out.  This node therefore does not support
     // depicting constant coin terms as coins, so it throws an error if the view mode gets set to "COINS".
-    viewModeProperty.link( function( viewMode ){
+    function handleViewModeChanged( viewMode ){
       if ( viewMode === ViewMode.COINS ){
         throw new Error( 'coin view mode not supported' );
       }
-    } );
+    }
+    viewModeProperty.link( handleViewModeChanged );
 
     // add the value text
     var valueText = new Text( '', { font: VALUE_FONT } );
@@ -87,14 +88,25 @@ define( function( require ) {
     }
 
     // update the representation when model properties that affect it change
-    // TODO: Need to dispose of this, unlink it, or whatever, to avoid memory leaks
-    Property.multilink(
+    var updateRepresentationMultilink = Property.multilink(
       [ constantCoinTerm.combinedCountProperty, constantCoinTerm.showMinusSignWhenNegativeProperty ],
       updateRepresentation
     );
+
+    this.disposeConstantCoinTermNode = function(){
+      viewModeProperty.unlink( handleViewModeChanged );
+      updateRepresentationMultilink.dispose();
+    };
   }
 
   expressionExchange.register( 'ConstantCoinTermNode', ConstantCoinTermNode );
 
-  return inherit( AbstractCoinTermNode, ConstantCoinTermNode );
+  return inherit( AbstractCoinTermNode, ConstantCoinTermNode, {
+
+    // @public
+    dispose: function(){
+      this.disposeConstantCoinTermNode();
+      AbstractCoinTermNode.prototype.dispose.call( this );
+    }
+  } );
 } );
