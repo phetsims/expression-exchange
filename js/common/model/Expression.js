@@ -127,11 +127,9 @@ define( function( require ) {
     } );
 
     // monitor the setting for whether negatives are simplified and update the contained coin terms when it changes
-    // TODO: Try just linking the function, but make sure I can dispose of it properly
     function updateCoinTermMinusSignFlags() {
       self.updateCoinTermShowMinusSignFlag();
     }
-
     simplifyNegativesProperty.link( updateCoinTermMinusSignFlags );
 
     // create a dispose function
@@ -434,9 +432,6 @@ define( function( require ) {
       coinTermsLeftToRight.forEach( function( coinTerm ) {
         self.removeCoinTerm( coinTerm );
       } );
-
-      // TODO: Temp assert for tracking down and issue
-      assert && assert( this.coinTerms.length === 0 );
 
       // return the sorted array
       return coinTermsLeftToRight;
