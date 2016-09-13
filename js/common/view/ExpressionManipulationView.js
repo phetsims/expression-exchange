@@ -535,15 +535,16 @@ define( function( require ) {
       } );
 
       // add the coin halo
-      var coinHaloNode = new CoinTermHaloNode( addedCoinTerm, model.viewModeProperty );
-      coinHaloLayer.addChild( coinHaloNode );
+      var coinTermHaloNode = new CoinTermHaloNode( addedCoinTerm, model.viewModeProperty );
+      coinHaloLayer.addChild( coinTermHaloNode );
 
       // set up a listener to remove the nodes when the corresponding coin is removed from the model
       model.coinTerms.addItemRemovedListener( function removalListener( removedCoin ) {
         if ( removedCoin === addedCoinTerm ) {
           coinLayer.removeChild( coinTermNode );
           coinTermNode.dispose();
-          coinHaloLayer.removeChild( coinHaloNode );
+          coinHaloLayer.removeChild( coinTermHaloNode );
+          coinTermHaloNode.dispose();
           model.coinTerms.removeItemRemovedListener( removalListener );
         }
       } );

@@ -47,7 +47,7 @@ define( function( require ) {
       function( viewMode, combineHaloActive ) {
         return ( viewMode === ViewMode.COINS ) && combineHaloActive;
       } );
-    coinHaloVisibleProperty.linkAttribute( coinHalo, 'visible' );
+    var coinHaloVisibilityObserver = coinHaloVisibleProperty.linkAttribute( coinHalo, 'visible' );
 
     // add the term halo
     var termHalo = new Circle( EESharedConstants.TERM_COMBINE_DISTANCE, {
@@ -63,15 +63,30 @@ define( function( require ) {
       function( viewMode, combineHaloActive ) {
         return ( viewMode === ViewMode.VARIABLES ) && combineHaloActive;
       } );
-    termHaloVisibleProperty.linkAttribute( termHalo, 'visible' );
+    var termHaloVisibilityObserver = termHaloVisibleProperty.linkAttribute( termHalo, 'visible' );
 
     // move this node as the model representation moves
-    coinTerm.positionProperty.link( function( position ) {
+    function handlePositionChanged( position ){
       self.center = position;
-    } );
+    }
+    coinTerm.positionProperty.link( handlePositionChanged );
+
+    this.disposeCoinTermHaloNode = function(){
+      coinHaloVisibleProperty.unlinkAttribute( coinHaloVisibilityObserver );
+      coinHaloVisibleProperty.dispose();
+      termHaloVisibleProperty.unlinkAttribute( termHaloVisibilityObserver );
+      termHaloVisibleProperty.dispose();
+      coinTerm.positionProperty.unlink( handlePositionChanged );
+    };
   }
 
   expressionExchange.register( 'CoinTermHaloNode', CoinTermHaloNode );
 
-  return inherit( Node, CoinTermHaloNode );
+  return inherit( Node, CoinTermHaloNode, {
+
+    // @public
+    dispose: function(){
+      this.disposeCoinTermHaloNode();
+    }
+  } );
 } );
