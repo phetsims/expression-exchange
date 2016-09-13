@@ -438,6 +438,7 @@ define( function( require ) {
       // remove the listeners when this expression is removed
       self.expressions.addItemRemovedListener( function expressionRemovedListener( removedExpression ) {
         if ( removedExpression === addedExpression ) {
+          addedExpression.dispose();
           addedExpression.userControlledProperty.unlink( expressionUserControlledListener );
           addedExpression.breakApartEmitter.removeListener( expressionBreakApartListener );
           addedExpression.selectedForEditEmitter.removeListener( editExpressionListener );
@@ -723,7 +724,6 @@ define( function( require ) {
         self.removeCoinTerm( coinTerm, true );
       } );
       this.expressions.remove( expression );
-      expression.dispose();
       expressionExchange.log && expressionExchange.log( 'removed ' + expression.id );
     },
 
