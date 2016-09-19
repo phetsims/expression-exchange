@@ -20,7 +20,7 @@ define( function( require ) {
   var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var ICON_SIZE = Screen.HOME_SCREEN_ICON_SIZE;
+  var ICON_SIZE = Screen.MINIMUM_HOME_SCREEN_ICON_SIZE;
   var FONT_SIZE = 84;
   var NORMAL_FONT = new PhetFont( { size: FONT_SIZE } );
   var ITALIC_FONT = new MathSymbolFont( FONT_SIZE );

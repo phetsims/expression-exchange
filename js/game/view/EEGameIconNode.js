@@ -23,7 +23,7 @@ define( function( require ) {
 
   // constants
   var BACKGROUND_COLOR = EESharedConstants.GAME_SCREEN_BACKGROUND_COLOR;
-  var ICON_SIZE = Screen.HOME_SCREEN_ICON_SIZE;
+  var ICON_SIZE = Screen.MINIMUM_HOME_SCREEN_ICON_SIZE;
   var COIN_SPACING = ICON_SIZE.width * 0.02; // empirically determined
   var TEXT_FONT = new PhetFont( 50 );
 

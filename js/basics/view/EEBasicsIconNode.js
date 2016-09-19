@@ -20,7 +20,7 @@ define( function( require ) {
   var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var ICON_SIZE = Screen.HOME_SCREEN_ICON_SIZE;
+  var ICON_SIZE = Screen.MINIMUM_HOME_SCREEN_ICON_SIZE;
   var BACKGROUND_COLOR = EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR;
   var TEXT_FONT = new PhetFont( 84 );
 
