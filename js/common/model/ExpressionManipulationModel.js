@@ -28,10 +28,11 @@ define( function( require ) {
 
   // constants
   var BREAK_APART_SPACING = 10;
-  var RETRIEVED_COIN_TERMS_X_SPACING = 70;
-  var RETRIEVED_COIN_TERMS_Y_SPACING = 70;
-  var RETRIEVED_COIN_TERM_FIRST_POSITION = new Vector2( 220, RETRIEVED_COIN_TERMS_X_SPACING );
-  var NUM_RETRIEVED_COIN_TERM_COLUMNS = 8;
+  var RETRIEVED_COIN_TERMS_X_SPACING = 100;
+  var RETRIEVED_COIN_TERMS_Y_SPACING = 60;
+  var RETRIEVED_COIN_TERM_FIRST_POSITION = new Vector2( 250, 50 ); // upper left, doesn't overlap with control panels
+  var NUM_RETRIEVED_COIN_TERM_COLUMNS = 6;
+  var MIN_RETRIEVAL_PLACEMENT_DISTANCE = 30; // empirically determined
 
   // convenience function used to convert a constant name to a camel-cased variable name
   function constantToCamelCase( str ) {
@@ -425,7 +426,7 @@ define( function( require ) {
         self.expressions.remove( addedExpression );
 
         // spread the released coin terms out horizontally
-        var numRetrievedCoinTerms = 0;
+        //var numRetrievedCoinTerms = 0;
         newlyFreedCoinTerms.forEach( function( newlyFreedCoinTerm ) {
 
           // calculate a destination that will cause the coin terms to spread out from the expression center
@@ -438,11 +439,12 @@ define( function( require ) {
           // If the destination is outside of the allowed bounds, change it to be in bounds, starting in the upper left
           // of the screen and going from there.
           if ( !self.coinTermRetrievalBounds.containsPoint( coinTermDestination ) ){
-            var row = Math.floor( numRetrievedCoinTerms / NUM_RETRIEVED_COIN_TERM_COLUMNS );
-            var column = numRetrievedCoinTerms % NUM_RETRIEVED_COIN_TERM_COLUMNS;
-            coinTermDestination.x = RETRIEVED_COIN_TERM_FIRST_POSITION.x + column * RETRIEVED_COIN_TERMS_X_SPACING;
-            coinTermDestination.y = RETRIEVED_COIN_TERM_FIRST_POSITION.y + row * RETRIEVED_COIN_TERMS_Y_SPACING;
-            numRetrievedCoinTerms++;
+            coinTermDestination = self.getNextOpenRetrievalSpot();
+            //var row = Math.floor( numRetrievedCoinTerms / NUM_RETRIEVED_COIN_TERM_COLUMNS );
+            //var column = numRetrievedCoinTerms % NUM_RETRIEVED_COIN_TERM_COLUMNS;
+            //coinTermDestination.x = RETRIEVED_COIN_TERM_FIRST_POSITION.x + column * RETRIEVED_COIN_TERMS_X_SPACING;
+            //coinTermDestination.y = RETRIEVED_COIN_TERM_FIRST_POSITION.y + row * RETRIEVED_COIN_TERMS_Y_SPACING;
+            //numRetrievedCoinTerms++;
           }
 
           // initiate the animation
@@ -821,6 +823,41 @@ define( function( require ) {
         }
       } );
       return mostOverlappingExpression;
+    },
+
+    /**
+     * Get the next location where a retrived coin term (i.e. one that ended up out of bounds) can be placed.
+     * @returns {Vector2}
+     * @private
+     */
+    getNextOpenRetrievalSpot: function(){
+      var location = new Vector2();
+      var row = 0;
+      var column = 0;
+      var openLocationFound = false;
+      while( !openLocationFound ){
+        location.x = RETRIEVED_COIN_TERM_FIRST_POSITION.x + column * RETRIEVED_COIN_TERMS_X_SPACING;
+        location.y = RETRIEVED_COIN_TERM_FIRST_POSITION.y + row * RETRIEVED_COIN_TERMS_Y_SPACING;
+        var closeCoinTerm = false;
+        for ( var i = 0; i < this.coinTerms.length; i++ ){
+          if ( this.coinTerms.get( i ).destination.distance( location ) < MIN_RETRIEVAL_PLACEMENT_DISTANCE ){
+            closeCoinTerm = true;
+            break;
+          }
+        }
+        if ( closeCoinTerm ){
+          // move to next location
+          column++;
+          if ( column >= NUM_RETRIEVED_COIN_TERM_COLUMNS ){
+            row++;
+            column = 0;
+          }
+        }
+        else{
+          openLocationFound = true;
+        }
+      }
+      return location;
     },
 
     // @public
