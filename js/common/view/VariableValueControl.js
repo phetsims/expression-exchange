@@ -16,44 +16,56 @@ define( function( require ) {
   var VBox = require( 'SCENERY/nodes/VBox' );
 
   /**
-   * @param {Property.<number>} xTermValueProperty
-   * @param {Property.<number>} yTermValueProperty
-   * @param {Property.<number>} zTermValueProperty
-   * @param {number} minValue
-   * @param {number} maxValue
+   * @param {Object} options
    * @constructor
    */
-  function VariableValueControl( xTermValueProperty, yTermValueProperty, zTermValueProperty, minValue, maxValue ) {
+  function VariableValueControl( options ) {
+
+    options = _.extend( {
+      xTermValueProperty: null,
+      yTermValueProperty: null,
+      zTermValueProperty: null,
+      minValue: 0,
+      maxValue: 10
+    }, options );
+
+    // convenience vars to make the code more readable
+    var xValueProperty = options.xTermValueProperty;
+    var yValueProperty = options.yTermValueProperty;
+    var zValueProperty = options.zTermValueProperty;
 
     // create button that will be used to restore the default values
     var restoreDefaultsButton = new RefreshButton( {
       iconWidth: 20,
       listener: function() {
-        xTermValueProperty.reset();
-        yTermValueProperty.reset();
-        zTermValueProperty.reset();
+        xValueProperty && xValueProperty.reset();
+        yValueProperty && yValueProperty.reset();
+        zValueProperty && zValueProperty.reset();
       }
     } );
 
-    // update the enabled state of the 'restore default values' button
-    Property.multilink(
-      [ xTermValueProperty, yTermValueProperty, zTermValueProperty ],
-      function( xValue, yValue, zValue ) {
-        restoreDefaultsButton.enabled = xValue !== xTermValueProperty.initialValue ||
-                                        yValue !== yTermValueProperty.initialValue ||
-                                        zValue !== zTermValueProperty.initialValue;
-      }
-    );
+    function updateRestoreButtonEnabledState() {
+      restoreDefaultsButton.enabled =
+        ( xValueProperty !== null && xValueProperty.value !== xValueProperty.initialValue ) ||
+        ( yValueProperty !== null && yValueProperty.value !== yValueProperty.initialValue ) ||
+        ( zValueProperty !== null && zValueProperty.value !== zValueProperty.initialValue );
+    }
+
+    // hook up function for updating the enabled state of the "restore defaults" button
+    xValueProperty && xValueProperty.link( updateRestoreButtonEnabledState );
+    yValueProperty && yValueProperty.link( updateRestoreButtonEnabledState );
+    zValueProperty && zValueProperty.link( updateRestoreButtonEnabledState );
+
+    // create the spinner controls
+    var spinners = [];
+    var tweakerOptions = { minValue: options.minValue, maxValue: options.maxValue };
+    xValueProperty && spinners.push( new LeftRightNumberSpinner( xValueProperty, EESharedConstants.X_VARIABLE_CHAR, tweakerOptions ) );
+    yValueProperty && spinners.push( new LeftRightNumberSpinner( yValueProperty, EESharedConstants.Y_VARIABLE_CHAR, tweakerOptions ) );
+    zValueProperty && spinners.push( new LeftRightNumberSpinner( zValueProperty, EESharedConstants.Z_VARIABLE_CHAR, tweakerOptions ) );
 
     // construct the VBox with the tweakers and the 'restore default values' button
-    var tweakerOptions = { minValue: minValue, maxValue: maxValue };
     VBox.call( this, {
-      children: [
-        new LeftRightNumberSpinner( xTermValueProperty, EESharedConstants.X_VARIABLE_CHAR, tweakerOptions ),
-        new LeftRightNumberSpinner( yTermValueProperty, EESharedConstants.Y_VARIABLE_CHAR, tweakerOptions ),
-        new LeftRightNumberSpinner( zTermValueProperty, EESharedConstants.Z_VARIABLE_CHAR, tweakerOptions ),
-        restoreDefaultsButton
-      ],
+      children: spinners,
       spacing: 20
     } );
   }

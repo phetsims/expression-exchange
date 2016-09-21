@@ -116,13 +116,26 @@ define( function( require ) {
     this.addChild( totalValueAccordionBox );
 
     // create the control that will allow the user to manipulate variable values
-    var variableValueControl = new VariableValueControl(
-      model.xTermValueProperty,
-      model.yTermValueProperty,
-      model.zTermValueProperty,
-      model.coinTermCollection === CoinTermCreatorSet.ADVANCED ? -10 : 1, // negative var values allowed for advanced screen
-      10
-    );
+    var variableValueControl;
+    if ( model.coinTermCollection === CoinTermCreatorSet.ADVANCED ){
+
+      // the variable value control is slightly different for the advanced screen
+      variableValueControl = new VariableValueControl( {
+        xTermValueProperty: model.xTermValueProperty,
+        yTermValueProperty: model.yTermValueProperty,
+        minValue: -10,
+        maxValue: 10
+      } );
+    }
+    else{
+      variableValueControl = new VariableValueControl( {
+        xTermValueProperty: model.xTermValueProperty,
+        yTermValueProperty: model.yTermValueProperty,
+        zTermValueProperty: model.zTermValueProperty,
+        minValue: 1,
+        maxValue: 10
+      } );
+    }
 
     // add the variable value control to an accordion box, and add the accordion box to the view
     var variableValuesAccordionBox = new AccordionBox( variableValueControl, {
