@@ -78,6 +78,9 @@ define( function( require ) {
     ScreenView.call( this );
     var self = this;
 
+    // set the bounds used to decide when coin terms need to be "pulled back"
+    model.coinTermRetrievalBounds = this.layoutBounds;
+
     // create the readout that will display the total accumulated value, use max length string initially
     var totalValueText = new Text( StringUtils.format( numberCentsString, 9999 ), { font: new PhetFont( { size: 14 } ) } );
     var totalValueReadoutWidth = totalValueText.width + 20;

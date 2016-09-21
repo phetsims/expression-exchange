@@ -13,6 +13,7 @@ define( function( require ) {
 
   // modules
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
+  var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTermCreatorSet = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSet' );
   var CoinTermFactory = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermFactory' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
@@ -27,6 +28,10 @@ define( function( require ) {
 
   // constants
   var BREAK_APART_SPACING = 10;
+  var RETRIEVED_COIN_TERMS_X_SPACING = 70;
+  var RETRIEVED_COIN_TERMS_Y_SPACING = 70;
+  var RETRIEVED_COIN_TERM_FIRST_POSITION = new Vector2( 220, RETRIEVED_COIN_TERMS_X_SPACING );
+  var NUM_RETRIEVED_COIN_TERM_COLUMNS = 8;
 
   // convenience function used to convert a constant name to a camel-cased variable name
   function constantToCamelCase( str ) {
@@ -116,6 +121,9 @@ define( function( require ) {
 
     // @public, read and listen only, list of expression hints in the model
     this.expressionHints = new ObservableArray();
+
+    // @public, should be set only once, coin terms that end up outside these bounds are moved back inside the bounds
+    this.coinTermRetrievalBounds = Bounds2.EVERYTHING;
 
     // function to update the total value of the coin terms
     function updateTotal() {
@@ -417,12 +425,28 @@ define( function( require ) {
         self.expressions.remove( addedExpression );
 
         // spread the released coin terms out horizontally
+        var numRetrievedCoinTerms = 0;
         newlyFreedCoinTerms.forEach( function( newlyFreedCoinTerm ) {
+
+          // calculate a destination that will cause the coin terms to spread out from the expression center
           var horizontalDistanceFromExpressionCenter = newlyFreedCoinTerm.position.x - expressionCenterX;
-          newlyFreedCoinTerm.travelToDestination( new Vector2(
+          var coinTermDestination = new Vector2(
             newlyFreedCoinTerm.position.x + horizontalDistanceFromExpressionCenter * 0.15, // spread factor empirically determined
             newlyFreedCoinTerm.position.y
-          ) );
+          );
+
+          // If the destination is outside of the allowed bounds, change it to be in bounds, starting in the upper left
+          // of the screen and going from there.
+          if ( !self.coinTermRetrievalBounds.containsPoint( coinTermDestination ) ){
+            var row = Math.floor( numRetrievedCoinTerms / NUM_RETRIEVED_COIN_TERM_COLUMNS );
+            var column = numRetrievedCoinTerms % NUM_RETRIEVED_COIN_TERM_COLUMNS;
+            coinTermDestination.x = RETRIEVED_COIN_TERM_FIRST_POSITION.x + column * RETRIEVED_COIN_TERMS_X_SPACING;
+            coinTermDestination.y = RETRIEVED_COIN_TERM_FIRST_POSITION.y + row * RETRIEVED_COIN_TERMS_Y_SPACING;
+            numRetrievedCoinTerms++;
+          }
+
+          // initiate the animation
+          newlyFreedCoinTerm.travelToDestination( coinTermDestination );
         } );
       }
 
