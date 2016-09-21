@@ -24,11 +24,17 @@ define( function( require ) {
 
   // constants
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
-  var COEFFICIENT_X_SPACING = 3;
-  var POINTER_AREA_DILATION_AMOUNT = 15;
+  var COEFFICIENT_X_SPACING = 3; // in screen coords
   var SUPERSCRIPT_SCALE = 0.65;
   var VALUE_FONT = new PhetFont( { size: 34 } );
   var VARIABLE_FONT = new MathSymbolFont( 36 );
+
+  // The following constants control how the pointer areas (mouse and touch) are set up for the textual representation
+  // of the coin term.  These are empirically determined such that they are easy for users to grab but the don't
+  // protrude from expressions.
+  var POINTER_AREA_X_DILATION_AMOUNT = 15; // in screen coords
+  var POINTER_AREA_Y_DILATION_AMOUNT = 10; // in screen coords, less than X amt to avoid protruding out of expression
+  var POINTER_AREA_DOWN_SHIFT = 3; // in screen coords
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin
@@ -128,8 +134,11 @@ define( function( require ) {
       }
       termText.centerX = 0;
       termText.y = textBaseline;
-      termText.mouseArea = termText.localBounds.dilated( POINTER_AREA_DILATION_AMOUNT );
-      termText.touchArea = termText.localBounds.dilated( POINTER_AREA_DILATION_AMOUNT );
+      termText.mouseArea = termText.localBounds
+        .dilatedX( POINTER_AREA_X_DILATION_AMOUNT )
+        .dilatedY( POINTER_AREA_Y_DILATION_AMOUNT )
+        .shiftedY( POINTER_AREA_DOWN_SHIFT );
+      termText.touchArea = termText.mouseArea;
       termText.visible = viewModeProperty.value === ViewMode.VARIABLES && !showVariableValuesProperty.value;
 
       // term value text, which shows the variable values and operators such as exponents
@@ -142,8 +151,11 @@ define( function( require ) {
       termWithVariableValuesText.text = termValueText;
       termWithVariableValuesText.centerX = 0;
       termWithVariableValuesText.y = textBaseline;
-      termWithVariableValuesText.mouseArea = termWithVariableValuesText.localBounds.dilated( POINTER_AREA_DILATION_AMOUNT );
-      termWithVariableValuesText.touchArea = termWithVariableValuesText.localBounds.dilated( POINTER_AREA_DILATION_AMOUNT );
+      termWithVariableValuesText.mouseArea = termWithVariableValuesText.localBounds
+        .dilatedX( POINTER_AREA_X_DILATION_AMOUNT )
+        .dilatedY( POINTER_AREA_Y_DILATION_AMOUNT )
+        .shiftedY( POINTER_AREA_DOWN_SHIFT );
+      termWithVariableValuesText.touchArea = termWithVariableValuesText.mouseArea;
       termWithVariableValuesText.visible = viewModeProperty.value === ViewMode.VARIABLES &&
                                            showVariableValuesProperty.value;
 
