@@ -28,12 +28,12 @@ define( function( require ) {
       maxValue: 10
     }, options );
 
-    // convenience vars to make the code more readable
+    // convenience vars to make the code below more readable
     var xValueProperty = options.xTermValueProperty;
     var yValueProperty = options.yTermValueProperty;
     var zValueProperty = options.zTermValueProperty;
 
-    // create button that will be used to restore the default values
+    //  button that will be used to restore the default values
     var restoreDefaultsButton = new RefreshButton( {
       iconWidth: 20,
       listener: function() {
@@ -55,16 +55,19 @@ define( function( require ) {
     yValueProperty && yValueProperty.link( updateRestoreButtonEnabledState );
     zValueProperty && zValueProperty.link( updateRestoreButtonEnabledState );
 
-    // create the spinner controls
-    var spinners = [];
+    // create the tweaker controls
+    var controls = [];
     var tweakerOptions = { minValue: options.minValue, maxValue: options.maxValue };
-    xValueProperty && spinners.push( new LeftRightNumberSpinner( xValueProperty, EESharedConstants.X_VARIABLE_CHAR, tweakerOptions ) );
-    yValueProperty && spinners.push( new LeftRightNumberSpinner( yValueProperty, EESharedConstants.Y_VARIABLE_CHAR, tweakerOptions ) );
-    zValueProperty && spinners.push( new LeftRightNumberSpinner( zValueProperty, EESharedConstants.Z_VARIABLE_CHAR, tweakerOptions ) );
+    xValueProperty && controls.push( new LeftRightNumberSpinner( xValueProperty, EESharedConstants.X_VARIABLE_CHAR, tweakerOptions ) );
+    yValueProperty && controls.push( new LeftRightNumberSpinner( yValueProperty, EESharedConstants.Y_VARIABLE_CHAR, tweakerOptions ) );
+    zValueProperty && controls.push( new LeftRightNumberSpinner( zValueProperty, EESharedConstants.Z_VARIABLE_CHAR, tweakerOptions ) );
+
+    // add in the 'restore defaults' button
+    controls.push( restoreDefaultsButton );
 
     // construct the VBox with the tweakers and the 'restore default values' button
     VBox.call( this, {
-      children: spinners,
+      children: controls,
       spacing: 20
     } );
   }
