@@ -271,15 +271,24 @@ define( function( require ) {
         var nextRightX = addedCoinTerm.destination.x + interCoinTermDistance;
         _.times( numToCreate, function( index ) {
           var clonedCoinTerm = addedCoinTerm.cloneMostly();
+          var destination;
           self.addCoinTerm( clonedCoinTerm );
           if ( index % 2 === 0 ) {
-            clonedCoinTerm.travelToDestination( new Vector2( nextRightX, addedCoinTerm.position.y ) );
+            destination = new Vector2( nextRightX, addedCoinTerm.position.y );
             nextRightX += interCoinTermDistance;
           }
           else {
-            clonedCoinTerm.travelToDestination( new Vector2( nextLeftX, addedCoinTerm.position.y ) );
+            destination = new Vector2( nextLeftX, addedCoinTerm.position.y );
             nextLeftX -= interCoinTermDistance;
           }
+
+          // if the destination is outside of the allowed bounds, change it to be in bounds
+          if ( !self.coinTermRetrievalBounds.containsPoint( destination ) ){
+            destination = self.getNextOpenRetrievalSpot();
+          }
+
+          // initiate the animation
+          clonedCoinTerm.travelToDestination( destination );
         } );
       }
 
@@ -436,15 +445,9 @@ define( function( require ) {
             newlyFreedCoinTerm.position.y
           );
 
-          // If the destination is outside of the allowed bounds, change it to be in bounds, starting in the upper left
-          // of the screen and going from there.
+          // if the destination is outside of the allowed bounds, change it to be in bounds
           if ( !self.coinTermRetrievalBounds.containsPoint( coinTermDestination ) ){
             coinTermDestination = self.getNextOpenRetrievalSpot();
-            //var row = Math.floor( numRetrievedCoinTerms / NUM_RETRIEVED_COIN_TERM_COLUMNS );
-            //var column = numRetrievedCoinTerms % NUM_RETRIEVED_COIN_TERM_COLUMNS;
-            //coinTermDestination.x = RETRIEVED_COIN_TERM_FIRST_POSITION.x + column * RETRIEVED_COIN_TERMS_X_SPACING;
-            //coinTermDestination.y = RETRIEVED_COIN_TERM_FIRST_POSITION.y + row * RETRIEVED_COIN_TERMS_Y_SPACING;
-            //numRetrievedCoinTerms++;
           }
 
           // initiate the animation
