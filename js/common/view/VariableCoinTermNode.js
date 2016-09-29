@@ -33,7 +33,7 @@ define( function( require ) {
   // of the coin term.  These are empirically determined such that they are easy for users to grab but the don't
   // protrude from expressions.
   var POINTER_AREA_X_DILATION_AMOUNT = 15; // in screen coords
-  var POINTER_AREA_Y_DILATION_AMOUNT = 10; // in screen coords, less than X amt to avoid protruding out of expression
+  var POINTER_AREA_Y_DILATION_AMOUNT = 8; // in screen coords, less than X amt to avoid protruding out of expression
   var POINTER_AREA_DOWN_SHIFT = 3; // in screen coords
 
   /**
