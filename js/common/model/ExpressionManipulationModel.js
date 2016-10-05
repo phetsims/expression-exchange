@@ -530,10 +530,10 @@ define( function( require ) {
           }
         } );
 
-        // get a list of all user controlled coins, max of one coin on mouse-based systems, any number on touch devices
+        // get a list of all user controlled coin terms, max of one coin on mouse-based systems, any number on touch devices
         userControlledCoinTerms = _.filter( this.coinTerms.getArray(), function( coin ) { return coin.userControlled; } );
 
-        // check each user-controlled coin to see if it's in a position to combine with an expression or another coin term
+        // check each user-controlled coin term to see if it's in a position to combine with an expression or another coin term
         var neededExpressionHints = [];
         userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
 
@@ -876,21 +876,12 @@ define( function( require ) {
     // @private - test if coinTermB is in the "expression combine zone" of coinTermA
     isCoinTermInExpressionCombineZone: function( coinTermA, coinTermB ) {
 
-      // The determination is made based on adjusted bounds, and the adjustments are a little different based on the
-      // view mode.  The adjustment values were empirically determined.
-      var boundsHeightAdjustmentFactor;
-      if ( this.viewMode === ViewMode.COINS ) {
-        boundsHeightAdjustmentFactor = 0.25;
-      }
-      else {
-        boundsHeightAdjustmentFactor = 0.5;
-      }
-
       // TODO: This could end up being a fair amount of allocations and may need some pre-allocated bounds for good performance
-      // Make the combine zone wider, but vertically shorter, than the actual bounds, as this gives the most desirable behavior
+      // Make the combine zone wider, but vertically shorter, than the actual bounds, as this gives the most desirable
+      // behavior.  The multiplier for the height was empirically determined.
       var extendedTargetCoinTermBounds = coinTermA.getViewBounds().dilatedXY(
         coinTermA.relativeViewBounds.width,
-        -coinTermA.relativeViewBounds.height * boundsHeightAdjustmentFactor
+        -coinTermA.relativeViewBounds.height * 0.25
       );
 
       return extendedTargetCoinTermBounds.intersectsBounds( coinTermB.getViewBounds() );
@@ -923,7 +914,7 @@ define( function( require ) {
       this.coinTerms.forEach( function( ct ) {
         if ( ct !== testCoinTerm && !self.isCoinTermInExpression( ct ) && !ct.inProgressAnimation ) {
           // test if the provided coin term is in one of the compare coin term's "expression combine zones"
-          if ( self.isCoinTermInExpressionCombineZone( testCoinTerm, ct ) ) {
+          if ( self.isCoinTermInExpressionCombineZone( ct, testCoinTerm ) ) {
             if ( !joinableFreeCoinTerm || ( joinableFreeCoinTerm.position.distance( ct ) < joinableFreeCoinTerm.position.distance( testCoinTerm ) ) ) {
               joinableFreeCoinTerm = ct;
             }
