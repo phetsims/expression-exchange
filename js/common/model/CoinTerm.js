@@ -25,6 +25,7 @@ define( function( require ) {
   // constants
   var FADE_TIME = 0.75; // in seconds
   var NUM_FADE_STEPS = 10; // number of steps for fade out to occur
+  var CLOSE_ENOUGH_TO_HOME = 1E-6; // distance at which a coin term is considered to have returned to origin
 
   // class var for creating unique IDs
   var creationCount = 0;
@@ -90,7 +91,7 @@ define( function( require ) {
 
     // monitor position, emit returned to origin event when appropriate
     this.positionProperty.lazyLink( function( position ) {
-      if ( position.equals( self.initialPosition ) && !this.userControlled ) {
+      if ( position.distance( self.initialPosition ) < CLOSE_ENOUGH_TO_HOME ){
         self.returnedToOriginEmitter.emit();
       }
     } );
