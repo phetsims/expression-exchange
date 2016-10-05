@@ -91,7 +91,7 @@ define( function( require ) {
 
     // monitor position, emit returned to origin event when appropriate
     this.positionProperty.lazyLink( function( position ) {
-      if ( position.distance( self.initialPosition ) < CLOSE_ENOUGH_TO_HOME ){
+      if ( position.distance( self.initialPosition ) < CLOSE_ENOUGH_TO_HOME && !self.userControlled ){
         self.returnedToOriginEmitter.emit();
       }
     } );
