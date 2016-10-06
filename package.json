@@ -21,6 +21,5 @@
     "preload": [
       "../sherpa/lib/Tween-r12.js"
     ]
-
   }
 }
