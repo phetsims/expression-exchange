@@ -18,6 +18,9 @@ define( function( require ) {
   var ScreenView = require( 'JOIST/ScreenView' );
   var StartGameLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/StartGameLevelNode' );
   var Text = require( 'SCENERY/nodes/Text' );
+
+  // constants
+  var GAME_VISIBLE = false;
   
   // TODO: Temporary, remove when real icons are available
   function createIcon( color, label ){
@@ -37,6 +40,18 @@ define( function( require ) {
   function EEGameScreenView( gameModel ) {
 
     ScreenView.call( this );
+
+    if ( !GAME_VISIBLE ){
+      // add a message about the game coming soon and bail out
+      // TODO: This is temporary while the game is in development and should be removed when the game is live
+      this.addChild( new Text( 'Game coming soon.', {
+        font: new PhetFont( 60 ),
+        fill: 'rgba( 50, 50, 50, 0.5 )',
+        centerX: this.layoutBounds.width / 2,
+        centerY: this.layoutBounds.height * 0.33
+      } ) );
+      return;
+    }
 
     // Hook up the audio player to the sound settings.
     this.gameAudioPlayer = new GameAudioPlayer( gameModel.soundEnabledProperty );
