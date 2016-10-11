@@ -63,8 +63,9 @@ define( function( require ) {
       }
 
       // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
-      if ( !constantCoinTerm.relativeViewBounds || !constantCoinTerm.relativeViewBounds.equals( relativeVisibleBounds ) ) {
-        constantCoinTerm.relativeViewBounds = relativeVisibleBounds;
+      if ( !constantCoinTerm.relativeViewBoundsProperty.get() ||
+           !constantCoinTerm.relativeViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
+        constantCoinTerm.relativeViewBoundsProperty.set( relativeVisibleBounds );
       }
     }
 
@@ -72,7 +73,7 @@ define( function( require ) {
     function updateRepresentation() {
 
       // update value text
-      if ( constantCoinTerm.showMinusSignWhenNegative ){
+      if ( constantCoinTerm.showMinusSignWhenNegativeProperty.get() ){
         valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.combinedCountProperty.value;
       }
       else{

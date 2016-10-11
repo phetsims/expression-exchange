@@ -132,7 +132,7 @@ define( function( require ) {
 
     // update the state of the break apart button when the userControlled state changes
     function handleUserControlledChanged( userControlled ){
-      if ( Math.abs( coinTerm.combinedCount ) > 1 && coinTerm.breakApartAllowed ) {
+      if ( Math.abs( coinTerm.combinedCountProperty.get() ) > 1 && coinTerm.breakApartAllowedProperty.get() ) {
 
         if ( userControlled ) {
           clearHideButtonTimer(); // called in case the timer was running
@@ -169,8 +169,8 @@ define( function( require ) {
           allowTouchSnag: true,
 
           start: function( event, trail ) {
-            coinTerm.userControlled = true;
-            unboundedPosition.set( coinTerm.position );
+            coinTerm.userControlledProperty.set( true );
+            unboundedPosition.set( coinTerm.positionProperty.get() );
           },
 
           // handler that moves the shape in model space
@@ -190,7 +190,7 @@ define( function( require ) {
           },
 
           end: function( event, trail ) {
-            coinTerm.userControlled = false;
+            coinTerm.userControlledProperty.set( false );
           }
         }
       ) );

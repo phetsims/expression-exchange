@@ -18,7 +18,7 @@ define( function( require ) {
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var PropertySet = require( 'AXON/PropertySet' );
+  var Property = require( 'AXON/Property' );
   var Timer = require( 'PHET_CORE/Timer' );
   var Vector2 = require( 'DOT/Vector2' );
 
@@ -44,26 +44,32 @@ define( function( require ) {
       initialPosition: Vector2.ZERO
     }, options );
 
-    PropertySet.call( this, {
-      position: options.initialPosition, // @public (read only), set using methods below
-      destination: options.initialPosition, // @public (read only), set using methods below
-      userControlled: false, // @public, indicate whether user is currently dragging this coin
-      combinedCount: options.initialCount, // @public, number of coins/terms combined into this one, can be negative
-      combineHaloActive: false, // @public
-      inProgressAnimation: null, // @public (read only), tracks the current in-progress animation, if any
-      showMinusSignWhenNegative: true, // @public, supports showing subtraction in expressions
+    //------------------------------------------------------------------------
+    // properties
+    //------------------------------------------------------------------------
 
-      // @public, flag set to disallow breaking apart, generally used when coin term is in or over an expression
-      breakApartAllowed: true,
+    this.positionProperty = new Property( options.initialPosition );// @public (read only), set using methods below
+    this.destinationProperty = new Property( options.initialPosition );// @public (read only), set using methods below
+    this.userControlledProperty = new Property( false );// @public, indicate whether user is currently dragging this coin
+    this.combinedCountProperty = new Property( options.initialCount );// @public, number of coins/terms combined into this one, can be negative
+    this.combineHaloActiveProperty = new Property( false );// @public
+    this.inProgressAnimationProperty = new Property( null ); // @public (read only), tracks the current in-progress animation, if any
+    this.showMinusSignWhenNegativeProperty = new Property( true ); // @public, supports showing subtraction in expressions
 
-      // @public - The bounds of this model element's view representation relative to the element's current position.
-      // This admittedly breaks the usual model-view rules, but many things in the view need to know this, so having it
-      // available on the model element after being set by the view worked out to be the best approach.
-      relativeViewBounds: null,
+    // @public, flag set to disallow breaking apart, generally used when coin term is in or over an expression
+    this.breakApartAllowedProperty = new Property( true );
 
-      // @public (read only), ranges from 1 to 0, used primarily for fading out of a coin term when cancellation occurs
-      existenceStrength: 1
-    } );
+    // @public - The bounds of this model element's view representation relative to the element's current position.
+    // This admittedly breaks the usual model-view rules, but many things in the view need to know this, so having it
+    // available on the model element after being set by the view worked out to be the best approach.
+    this.relativeViewBoundsProperty = new Property( null );
+
+    // @public (read only), ranges from 1 to 0, used primarily for fading out of a coin term when cancellation occurs
+    this.existenceStrengthProperty = new Property( 1 );
+
+    //------------------------------------------------------------------------
+    // non-property attributes
+    //------------------------------------------------------------------------
 
     // @public, read only, values that describe the nature of this coin term
     this.typeID = typeID;
@@ -77,6 +83,10 @@ define( function( require ) {
     // @public, listen only, a property with contains the text that should be shown when displaying term value
     this.termValueTextProperty = termValueTextProperty;
 
+    //------------------------------------------------------------------------
+    // emitters
+    //------------------------------------------------------------------------
+
     // @public, listen only, emits an event when an animation finishes and the destination is reached
     this.destinationReachedEmitter = new Emitter();
 
@@ -89,9 +99,13 @@ define( function( require ) {
     // @private, used when animating back to original position
     this.initialPosition = options.initialPosition;
 
+    //------------------------------------------------------------------------
+    // listeners to own properties
+    //------------------------------------------------------------------------
+
     // monitor position, emit returned to origin event when appropriate
     this.positionProperty.lazyLink( function( position ) {
-      if ( position.distance( self.initialPosition ) < CLOSE_ENOUGH_TO_HOME && !self.userControlled ){
+      if ( position.distance( self.initialPosition ) < CLOSE_ENOUGH_TO_HOME && !self.userControlled ) {
         self.returnedToOriginEmitter.emit();
       }
     } );
@@ -99,10 +113,11 @@ define( function( require ) {
     // monitor combined count, start fading the existence strength if the count goes to zero
     this.combinedCountProperty.lazyLink( function( combinedCount ) {
       if ( combinedCount === 0 ) {
+
         // start the periodic timer that will fade the existence strength to zero
         var timerInterval = Timer.setInterval( function() {
-          self.existenceStrength = Math.max( self.existenceStrength - 1 / NUM_FADE_STEPS, 0 );
-          if ( self.existenceStrength === 0 ) {
+          self.existenceStrengthProperty.set( Math.max( self.existenceStrengthProperty.get() - 1 / NUM_FADE_STEPS, 0 ) );
+          if ( self.existenceStrengthProperty.get() === 0 ) {
             // fading complete, stop the timer
             Timer.clearInterval( timerInterval );
           }
@@ -113,7 +128,7 @@ define( function( require ) {
 
   expressionExchange.register( 'CoinTerm', CoinTerm );
 
-  return inherit( PropertySet, CoinTerm, {
+  return inherit( Object, CoinTerm, {
 
     /**
      * move to the specified destination, but do so a step at a time rather than all at once
@@ -121,24 +136,25 @@ define( function( require ) {
      */
     travelToDestination: function( destination ) {
       var self = this;
-      this.destination = destination;
-      var movementTime = self.position.distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
-      if ( this.inProgressAnimation ) {
+      this.destinationProperty.set( destination );
+      var movementTime = self.positionProperty.get().distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
+      if ( this.inProgressAnimationProperty.get() ) {
         // an animation was in progress - cancel it and start a new one
-        this.inProgressAnimation.stop();
-        this.inProgressAnimation = null;
+        this.inProgressAnimationProperty.get().stop();
+        this.inProgressAnimationProperty.set( null );
       }
-      this.inProgressAnimation = new TWEEN.Tween( { x: this.position.x, y: this.position.y } )
+      var currentPosition = this.positionProperty.get();
+      this.inProgressAnimationProperty.set( new TWEEN.Tween( { x: currentPosition.x, y: currentPosition.y } )
         .to( { x: destination.x, y: destination.y }, movementTime )
         .easing( TWEEN.Easing.Cubic.InOut )
         .onUpdate( function() {
-          self.position = new Vector2( this.x, this.y );
+          self.positionProperty.set( new Vector2( this.x, this.y ) );
         } )
         .onComplete( function() {
           self.destinationReachedEmitter.emit();
-          self.inProgressAnimation = null;
+          self.inProgressAnimationProperty.set( null );
         } )
-        .start( phet.joist.elapsedTime );
+        .start( phet.joist.elapsedTime ) );
     },
 
     returnToOrigin: function() {
@@ -151,8 +167,8 @@ define( function( require ) {
      * @public
      */
     setPositionAndDestination: function( position ) {
-      this.position = position;
-      this.destination = position;
+      this.positionProperty.set( position );
+      this.destinationProperty.set( position );
     },
 
     /**
@@ -160,11 +176,11 @@ define( function( require ) {
      * @public
      */
     goImmediatelyToDestination: function() {
-      if ( this.inProgressAnimation ) {
+      if ( this.inProgressAnimationProperty.get() ) {
         // TODO: replace .stop with .cancel once TWEEN is upgraded
-        this.inProgressAnimation.stop();
-        this.inProgressAnimation = null;
-        this.position = this.destination;
+        this.inProgressAnimationProperty.get().stop();
+        this.inProgressAnimationProperty.set( null );
+        this.positionProperty.set( this.destination );
       }
     },
 
@@ -173,7 +189,7 @@ define( function( require ) {
      * @public
      */
     breakApart: function() {
-      assert && assert( Math.abs( this.combinedCount ) > 1, 'coin term can\'t be broken apart' );
+      assert && assert( Math.abs( this.combinedCountProperty.get() ) > 1, 'coin term can\'t be broken apart' );
       this.breakApartEmitter.emit();
     },
 
@@ -190,8 +206,8 @@ define( function( require ) {
         this.termText,
         this.termValueTextProperty,
         this.typeID,
-        { initialCount: this.combinedCount, initialPosition: this.initialPosition } );
-      clone.setPositionAndDestination( this.position );
+        { initialCount: this.combinedCountProperty.get(), initialPosition: this.initialPosition } );
+      clone.setPositionAndDestination( this.positionProperty.get() );
       return clone;
     },
 
@@ -209,11 +225,13 @@ define( function( require ) {
      * @public
      */
     getViewBounds: function() {
+      var position = this.positionProperty.get();
+      var relativeViewBounds = this.relativeViewBoundsProperty.get();
       return new Bounds2(
-        this.position.x + this.relativeViewBounds.minX,
-        this.position.y + this.relativeViewBounds.minY,
-        this.position.x + this.relativeViewBounds.maxX,
-        this.position.y + this.relativeViewBounds.maxY
+        position.x + relativeViewBounds.minX,
+        position.y + relativeViewBounds.minY,
+        position.x + relativeViewBounds.maxX,
+        position.y + relativeViewBounds.maxY
       );
     }
   } );

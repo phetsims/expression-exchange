@@ -89,7 +89,7 @@ define( function( require ) {
       if ( expression.coinTerms.length > 0 ) {
 
         var coinTermsLeftToRight = expression.coinTerms.getArray().slice().sort( function( ct1, ct2 ) {
-          return ct1.destination.x - ct2.destination.x;
+          return ct1.destinationProperty.get().x - ct2.destinationProperty.get().x;
         } );
 
         backgroundShape = new Shape();
@@ -126,7 +126,7 @@ define( function( require ) {
           // determine whether to show a plus sign or a minus sign
           var symbolText;
           if (  simplifyNegativesProperty.value &&
-                coinTermsLeftToRight[ i + 1 ].combinedCount < 0 &&
+                coinTermsLeftToRight[ i + 1 ].combinedCountProperty.get() < 0 &&
                 !coinTermsLeftToRight[ i + 1 ].userControlled ){
             symbolText = '\u2212'; // unicode minus sign
           }
@@ -137,9 +137,11 @@ define( function( require ) {
           // add the operator
           var operator = new Text( symbolText, {
             font: OPERATOR_FONT,
-            centerX: ( coinTermsLeftToRight[ i ].destination.x + coinTermsLeftToRight[ i ].relativeViewBounds.maxX +
-                       coinTermsLeftToRight[ i + 1 ].destination.x +
-                       coinTermsLeftToRight[ i + 1 ].relativeViewBounds.minX ) / 2 - expression.upperLeftCorner.x,
+            centerX: ( coinTermsLeftToRight[ i ].destinationProperty.get().x +
+                       coinTermsLeftToRight[ i ].relativeViewBoundsProperty.get().maxX +
+                       coinTermsLeftToRight[ i + 1 ].destinationProperty.get().x +
+                       coinTermsLeftToRight[ i + 1 ].relativeViewBoundsProperty.get().minX ) / 2 -
+                     expression.upperLeftCorner.x,
             centerY: expression.height / 2
           } );
           symbolsLayer.addChild( operator );

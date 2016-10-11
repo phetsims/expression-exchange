@@ -21,11 +21,11 @@ define( function( require ) {
     // @public, read only
     this.anchorCoinTerm = anchorCoinTerm;
     this.movingCoinTerm = movingCoinTerm;
-    this.anchorOnLeft = anchorCoinTerm.position.x < movingCoinTerm.position.x;
+    this.anchorOnLeft = anchorCoinTerm.positionProperty.get().x < movingCoinTerm.positionProperty.get().x;
 
     // set the flag indicating that breaking apart is suppressed
-    anchorCoinTerm.breakApartAllowed = false;
-    movingCoinTerm.breakApartAllowed = false;
+    anchorCoinTerm.breakApartAllowedProperty.set( false );
+    movingCoinTerm.breakApartAllowedProperty.set( false );
   }
 
   expressionExchange.register( 'ExpressionHint', ExpressionHint );
@@ -50,8 +50,8 @@ define( function( require ) {
     },
 
     clear: function() {
-      this.anchorCoinTerm.breakApartAllowed = true;
-      this.movingCoinTerm.breakApartAllowed = true;
+      this.anchorCoinTerm.breakApartAllowedProperty.set( true );
+      this.movingCoinTerm.breakApartAllowedProperty.set( true );
     }
   } );
 } );

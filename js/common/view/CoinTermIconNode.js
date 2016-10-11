@@ -71,7 +71,7 @@ define( function( require ) {
       font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
       maxWidth: maxTextWidth
     } );
-    if ( coinTerm.combinedCount < 0 ){
+    if ( coinTerm.combinedCountProperty.get() < 0 ){
       termText.text = '-' + termText.text;
     }
     termText.center = coinCenter;
@@ -96,7 +96,7 @@ define( function( require ) {
     // create a helper function to update the term value text
     function updateTermValueText() {
       var termValueText = coinTerm.termValueTextProperty.value;
-      var sign = coinTerm.combinedCount > 0 ? '' : '-';
+      var sign = coinTerm.combinedCountProperty.get() > 0 ? '' : '-';
       termWithVariableValuesText.text = sign + termValueText;
       termWithVariableValuesText.center = coinCenter;
     }

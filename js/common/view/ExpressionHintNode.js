@@ -56,30 +56,30 @@ define( function( require ) {
       ],
       function() {
         // convenience vars
-        var anchorCTBounds = expressionHint.anchorCoinTerm.relativeViewBounds;
-        var movingCTBounds = expressionHint.movingCoinTerm.relativeViewBounds;
+        var anchorCTBounds = expressionHint.anchorCoinTerm.relativeViewBoundsProperty.get();
+        var movingCTBounds = expressionHint.movingCoinTerm.relativeViewBoundsProperty.get();
 
         // clear out any previous hint
         self.removeAllChildren();
 
         // the hint can be on the left or right side of the 'anchor coin', depending upon where the moving coin term is
-        var anchorCoinTermOnLeft = expressionHint.movingCoinTerm.position.x > expressionHint.anchorCoinTerm.position.x;
+        var anchorCoinTermOnLeft = expressionHint.movingCoinTerm.positionProperty.get().x > expressionHint.anchorCoinTerm.positionProperty.get().x;
 
         // calculate size and position for each half of the hint
         var height = Math.max( anchorCTBounds.height, movingCTBounds.height ) + 2 * INSET;
-        var top = expressionHint.anchorCoinTerm.position.y - height / 2;
+        var top = expressionHint.anchorCoinTerm.positionProperty.get().y - height / 2;
         var leftHalfWidth;
         var rightHalfWidth;
         var leftHalfCenterX;
         if ( anchorCoinTermOnLeft ) {
           leftHalfWidth = anchorCTBounds.width + 2 * INSET;
           rightHalfWidth = movingCTBounds.width + 2 * INSET;
-          leftHalfCenterX = expressionHint.anchorCoinTerm.position.x + ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2;
+          leftHalfCenterX = expressionHint.anchorCoinTerm.positionProperty.get().x + ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2;
         }
         else { // anchor coin term is on the right
           leftHalfWidth = movingCTBounds.width + 2 * INSET;
           rightHalfWidth = anchorCTBounds.width + 2 * INSET;
-          leftHalfCenterX = expressionHint.anchorCoinTerm.position.x +
+          leftHalfCenterX = expressionHint.anchorCoinTerm.positionProperty.get().x +
                             ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2 -
                             anchorCTBounds.width / 2                          - INSET -
                             movingCTBounds.width / 2                          -                        INSET;

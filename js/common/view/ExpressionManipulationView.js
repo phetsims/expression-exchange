@@ -544,7 +544,8 @@ define( function( require ) {
         // didn't already cause the coin term to join up with an expression or another coin term
         if ( coinTermNode.bounds.intersectsBounds( coinTermCreatorHolder.bounds ) &&
              model.coinTerms.contains( addedCoinTerm ) &&
-             addedCoinTerm.inProgressAnimation === null && !model.isCoinTermInExpression( addedCoinTerm ) ) {
+             addedCoinTerm.inProgressAnimationProperty.get() === ( null ) &&
+             !model.isCoinTermInExpression( addedCoinTerm ) ) {
           model.removeCoinTerm( addedCoinTerm, true );
         }
 

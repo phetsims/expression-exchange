@@ -118,7 +118,7 @@ define( function( require ) {
           initialCount: options.initialCount
         } );
         createdCoinTerm.setPositionAndDestination( initialPosition );
-        createdCoinTerm.userControlled = true;
+        createdCoinTerm.userControlledProperty.set( true );
         exploreModel.addCoinTerm( createdCoinTerm );
         unboundedPosition.set( initialPosition );
       },
@@ -135,7 +135,7 @@ define( function( require ) {
       },
 
       end: function( event, trail ) {
-        createdCoinTerm.userControlled = false;
+        createdCoinTerm.userControlledProperty.set( false );
         createdCoinTerm = null;
       }
     } ) );

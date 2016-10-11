@@ -130,7 +130,7 @@ define( function( require ) {
     function updateTotal() {
       var total = 0;
       self.coinTerms.forEach( function( coinTerm ) {
-        total += coinTerm.valueProperty.value * coinTerm.combinedCount;
+        total += coinTerm.valueProperty.value * coinTerm.combinedCountProperty.get();
       } );
       self.totalValue = total;
     }
@@ -173,9 +173,12 @@ define( function( require ) {
               if ( mostOverlappingLikeCoinTerm ) {
 
                 // combine the coin terms into a single coin term with a higher "combine count"
-                addedCoinTerm.travelToDestination( mostOverlappingLikeCoinTerm.position );
+                addedCoinTerm.travelToDestination( mostOverlappingLikeCoinTerm.positionProperty.get() );
                 addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
-                  mostOverlappingLikeCoinTerm.combinedCount += addedCoinTerm.combinedCount;
+                  mostOverlappingLikeCoinTerm.combinedCountProperty.set(
+                    mostOverlappingLikeCoinTerm.combinedCountProperty.get() +
+                    addedCoinTerm.combinedCountProperty.get()
+                  );
                   self.removeCoinTerm( addedCoinTerm, false );
                   addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
                 } );
@@ -228,7 +231,8 @@ define( function( require ) {
             if ( overlappingLikeCoinTerm ) {
 
               // combine the dropped coin term with the one with which it overlaps
-              overlappingLikeCoinTerm.combinedCount = overlappingLikeCoinTerm.combinedCount + addedCoinTerm.combinedCount;
+              overlappingLikeCoinTerm.combinedCountProperty.set( overlappingLikeCoinTerm.combinedCountProperty.get() +
+                                                                 addedCoinTerm.combinedCountProperty.get() );
               self.removeCoinTerm( addedCoinTerm );
             }
             else {
@@ -245,40 +249,41 @@ define( function( require ) {
       // add a listener that will handle requests to break apart the coin term
       function coinTermBreakApartListener() {
 
-        if ( Math.abs( addedCoinTerm.combinedCount ) < 2 ) {
+        if ( Math.abs( addedCoinTerm.combinedCountProperty.get() ) < 2 ) {
           // bail if the coin is a single
           return;
         }
-        var numToCreate = Math.abs( addedCoinTerm.combinedCount ) - 1;
+        var numToCreate = Math.abs( addedCoinTerm.combinedCountProperty.get() ) - 1;
+        var relativeViewBounds =addedCoinTerm.relativeViewBoundsProperty.get();
 
         // set this coin back to being a single, keeping the sign the same
-        addedCoinTerm.combinedCount = addedCoinTerm.combinedCount > 0 ? 1 : -1;
+        addedCoinTerm.combinedCountProperty.set( addedCoinTerm.combinedCountProperty.get() > 0 ? 1 : -1 );
 
         // If the total combined coin count was even, shift the 'parent coin' a bit so that the coins end up being
         // distributed around the centerX position.
         if ( numToCreate % 2 === 1 ) {
           addedCoinTerm.travelToDestination(
             new Vector2(
-              addedCoinTerm.position.x - addedCoinTerm.relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
-              addedCoinTerm.position.y
+              addedCoinTerm.positionProperty.get().x - relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
+              addedCoinTerm.positionProperty.get().y
             )
           );
         }
 
         // add new coin terms to represent those that were broken out from the initial one
-        var interCoinTermDistance = addedCoinTerm.relativeViewBounds.width + BREAK_APART_SPACING;
-        var nextLeftX = addedCoinTerm.destination.x - interCoinTermDistance;
-        var nextRightX = addedCoinTerm.destination.x + interCoinTermDistance;
+        var interCoinTermDistance = relativeViewBounds.width + BREAK_APART_SPACING;
+        var nextLeftX = addedCoinTerm.destinationProperty.get().x - interCoinTermDistance;
+        var nextRightX = addedCoinTerm.destinationProperty.get().x + interCoinTermDistance;
         _.times( numToCreate, function( index ) {
           var clonedCoinTerm = addedCoinTerm.cloneMostly();
           var destination;
           self.addCoinTerm( clonedCoinTerm );
           if ( index % 2 === 0 ) {
-            destination = new Vector2( nextRightX, addedCoinTerm.position.y );
+            destination = new Vector2( nextRightX, addedCoinTerm.positionProperty.get().y );
             nextRightX += interCoinTermDistance;
           }
           else {
-            destination = new Vector2( nextLeftX, addedCoinTerm.position.y );
+            destination = new Vector2( nextLeftX, addedCoinTerm.positionProperty.get().y );
             nextLeftX -= interCoinTermDistance;
           }
 
@@ -390,7 +395,7 @@ define( function( require ) {
 
                 // move to the left side of the coin term
                 addedExpression.travelToDestination(
-                  coinTermToAddToExpression.position.plusXY(
+                  coinTermToAddToExpression.positionProperty.get().plusXY(
                     -addedExpression.width - addedExpression.rightHintWidth / 2,
                     -addedExpression.height / 2
                   )
@@ -405,7 +410,7 @@ define( function( require ) {
 
                 // move to the right side of the coin term
                 addedExpression.travelToDestination(
-                  coinTermToAddToExpression.position.plusXY(
+                  coinTermToAddToExpression.positionProperty.get().plusXY(
                     addedExpression.leftHintWidth / 2,
                     -addedExpression.height / 2
                   )
@@ -439,10 +444,10 @@ define( function( require ) {
         newlyFreedCoinTerms.forEach( function( newlyFreedCoinTerm ) {
 
           // calculate a destination that will cause the coin terms to spread out from the expression center
-          var horizontalDistanceFromExpressionCenter = newlyFreedCoinTerm.position.x - expressionCenterX;
+          var horizontalDistanceFromExpressionCenter = newlyFreedCoinTerm.positionProperty.get().x - expressionCenterX;
           var coinTermDestination = new Vector2(
-            newlyFreedCoinTerm.position.x + horizontalDistanceFromExpressionCenter * 0.15, // spread factor empirically determined
-            newlyFreedCoinTerm.position.y
+            newlyFreedCoinTerm.positionProperty.get().x + horizontalDistanceFromExpressionCenter * 0.15, // spread factor empirically determined
+            newlyFreedCoinTerm.positionProperty.get().y
           );
 
           // if the destination is outside of the allowed bounds, change it to be in bounds
@@ -531,7 +536,9 @@ define( function( require ) {
         } );
 
         // get a list of all user controlled coin terms, max of one coin on mouse-based systems, any number on touch devices
-        userControlledCoinTerms = _.filter( this.coinTerms.getArray(), function( coin ) { return coin.userControlled; } );
+        userControlledCoinTerms = _.filter( this.coinTerms.getArray(), function( coin ) {
+          return coin.userControlledProperty.get();
+        } );
 
         // check each user-controlled coin term to see if it's in a position to combine with an expression or another coin term
         var neededExpressionHints = [];
@@ -627,7 +634,9 @@ define( function( require ) {
         // coins is tested so that their halos can be activated.
 
         // get a list of all user controlled coins, max of one coin on mouse-based systems, any number on touch devices
-        userControlledCoinTerms = _.filter( this.coinTerms.getArray(), function( coin ) { return coin.userControlled; } );
+        userControlledCoinTerms = _.filter( this.coinTerms.getArray(), function( coinTerm ) {
+          return coinTerm.userControlledProperty.get();
+        } );
 
         // check for overlap between coins that can combine
         userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
@@ -648,7 +657,7 @@ define( function( require ) {
 
       // go through all coin terms and update the state of their combine halos
       this.coinTerms.forEach( function( coinTerm ) {
-        coinTerm.combineHaloActive = coinTermsWithHalos.indexOf( coinTerm ) !== -1;
+        coinTerm.combineHaloActiveProperty.set( coinTermsWithHalos.indexOf( coinTerm ) !== -1 );
       } );
     },
 
@@ -705,11 +714,11 @@ define( function( require ) {
       // update the positive and negative count values
       this.coinTerms.forEach( function( coinTerm ) {
         if ( coinTerm.typeID === coinTermTypeID ) {
-          if ( coinTerm.combinedCount > 0 ){
-            positiveCountForThisType += coinTerm.combinedCount;
+          if ( coinTerm.combinedCountProperty.get() > 0 ){
+            positiveCountForThisType += coinTerm.combinedCountProperty.get();
           }
           else{
-            negativeCountForThisType += Math.abs( coinTerm.combinedCount );
+            negativeCountForThisType += Math.abs( coinTerm.combinedCountProperty.get() );
           }
         }
       } );
@@ -800,7 +809,7 @@ define( function( require ) {
       this.coinTerms.forEach( function( coinTerm ) {
         if ( !coinTerm.userControlled &&
              !self.isCoinTermInExpression( coinTerm ) &&
-             coinTerm.existenceStrength === 1 &&
+             coinTerm.existenceStrengthProperty.get() === 1 &&
              expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
           maxOverlap = expression.getCoinTermJoinZoneOverlap( coinTerm );
           mostOverlappingFreeCoinTerm = coinTerm;
@@ -843,7 +852,7 @@ define( function( require ) {
         location.y = RETRIEVED_COIN_TERM_FIRST_POSITION.y + row * RETRIEVED_COIN_TERMS_Y_SPACING;
         var closeCoinTerm = false;
         for ( var i = 0; i < this.coinTerms.length; i++ ){
-          if ( this.coinTerms.get( i ).destination.distance( location ) < MIN_RETRIEVAL_PLACEMENT_DISTANCE ){
+          if ( this.coinTerms.get( i ).destinationProperty.get().distance( location ) < MIN_RETRIEVAL_PLACEMENT_DISTANCE ){
             closeCoinTerm = true;
             break;
           }
@@ -880,8 +889,8 @@ define( function( require ) {
       // Make the combine zone wider, but vertically shorter, than the actual bounds, as this gives the most desirable
       // behavior.  The multiplier for the height was empirically determined.
       var extendedTargetCoinTermBounds = coinTermA.getViewBounds().dilatedXY(
-        coinTermA.relativeViewBounds.width,
-        -coinTermA.relativeViewBounds.height * 0.25
+        coinTermA.relativeViewBoundsProperty.get().width,
+        -coinTermA.relativeViewBoundsProperty.get().height * 0.25
       );
 
       return extendedTargetCoinTermBounds.intersectsBounds( coinTermB.getViewBounds() );
@@ -915,7 +924,7 @@ define( function( require ) {
         if ( ct !== testCoinTerm && !self.isCoinTermInExpression( ct ) && !ct.inProgressAnimation ) {
           // test if the provided coin term is in one of the compare coin term's "expression combine zones"
           if ( self.isCoinTermInExpressionCombineZone( ct, testCoinTerm ) ) {
-            if ( !joinableFreeCoinTerm || ( joinableFreeCoinTerm.position.distance( ct ) < joinableFreeCoinTerm.position.distance( testCoinTerm ) ) ) {
+            if ( !joinableFreeCoinTerm || ( joinableFreeCoinTerm.positionProperty.get().distance( ct ) < joinableFreeCoinTerm.positionProperty.get().distance( testCoinTerm ) ) ) {
               joinableFreeCoinTerm = ct;
             }
           }
@@ -932,8 +941,8 @@ define( function( require ) {
     getPositiveCoinTermCount: function( typeID ) {
       var count = 0;
       this.coinTerms.forEach( function( coinTerm ) {
-        if ( typeID === coinTerm.typeID && coinTerm.combinedCount > 0 ) {
-          count += coinTerm.combinedCount;
+        if ( typeID === coinTerm.typeID && coinTerm.combinedCountProperty.get() > 0 ) {
+          count += coinTerm.combinedCountProperty.get();
         }
       } );
       return count;
@@ -947,8 +956,8 @@ define( function( require ) {
     getNegativeCoinTermCount: function( typeID ) {
       var count = 0;
       this.coinTerms.forEach( function( coinTerm ) {
-        if ( typeID === coinTerm.typeID && coinTerm.combinedCount < 0 ) {
-          count += Math.abs( coinTerm.combinedCount );
+        if ( typeID === coinTerm.typeID && coinTerm.combinedCountProperty.get() < 0 ) {
+          count += Math.abs( coinTerm.combinedCountProperty.get() );
         }
       } );
       return count;
@@ -956,7 +965,7 @@ define( function( require ) {
 
     // @private, get the amount of overlap given two coin terms by comparing position and coin radius
     getCoinOverlapAmount: function( coinTerm1, coinTerm2 ) {
-      var distanceBetweenCenters = coinTerm1.position.distance( coinTerm2.position );
+      var distanceBetweenCenters = coinTerm1.positionProperty.get().distance( coinTerm2.positionProperty.get() );
       return Math.max( ( coinTerm1.coinRadius + coinTerm2.coinRadius ) - distanceBetweenCenters, 0 );
     },
 
@@ -986,8 +995,8 @@ define( function( require ) {
       this.coinTerms.forEach( function( testCoinTerm ) {
         if ( coinTerm !== testCoinTerm &&
              coinTerm.canCombineWith( testCoinTerm ) &&
-             !testCoinTerm.userControlled &&
-             testCoinTerm.existenceStrength === 1 &&
+             !testCoinTerm.userControlledProperty.get() &&
+             testCoinTerm.existenceStrengthProperty.get() === 1 &&
              !self.isCoinTermInExpression( testCoinTerm ) ) {
 
           // calculate and compare the relative overlap amounts, done a bit differently in the different view modes
@@ -1017,7 +1026,7 @@ define( function( require ) {
         var potentiallyOverlappingCoinTerm = expression.coinTerms.get( i );
         if ( potentiallyOverlappingCoinTerm !== coinTerm &&
              !potentiallyOverlappingCoinTerm.userControlled &&
-             potentiallyOverlappingCoinTerm.existenceStrength === 1 &&
+             potentiallyOverlappingCoinTerm.existenceStrengthProperty.get() === 1 &&
              potentiallyOverlappingCoinTerm.canCombineWith( coinTerm ) ) {
           var overlapAmount = 0;
           if ( self.viewMode === ViewMode.COINS ) {
