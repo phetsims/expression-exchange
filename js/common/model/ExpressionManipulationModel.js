@@ -22,7 +22,7 @@ define( function( require ) {
   var ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
-  var PropertySet = require( 'AXON/PropertySet' );
+  var Property = require( 'AXON/Property' );
   var Vector2 = require( 'DOT/Vector2' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
@@ -73,42 +73,33 @@ define( function( require ) {
     var initialViewMode = options.allowedRepresentations === AllowedRepresentationsEnum.VARIABLES_ONLY ?
                           ViewMode.VARIABLES : ViewMode.COINS;
 
-    PropertySet.call( this, {
-      viewMode: initialViewMode, // @public
-      showCoinValues: false, // @public
-      showVariableValues: false, // @public
-      showAllCoefficients: false, // @public
-      xTermValue: 2, // @public
-      yTermValue: 5, // @public
-      zTermValue: 10, // @public
-      totalValue: 0, // @public, read-only
-      expressionBeingEdited: null, // @public, read-only, null when no expression is in edit mode
-      simplifyNegatives: false // @public TODO: The terminology for this field is in flux, make sure its name and the view checkbox name match before publication
-    } );
+    this.viewModeProperty = new Property( initialViewMode ); // @public
+    this.showCoinValuesProperty = new Property( false ); // @public
+    this.showVariableValuesProperty = new Property( false ); // @public
+    this.showAllCoefficientsProperty = new Property( false ); // @public
+    this.xTermValueProperty = new Property( 2 ); // @public
+    this.yTermValueProperty = new Property( 5 ); // @public
+    this.zTermValueProperty = new Property( 10 ); // @public
+    this.totalValueProperty = new Property( 0 ); // @public, read-only
+    this.expressionBeingEditedProperty = new Property( null ); // @public, read-only, null when no expression is in edit mode
+    this.simplifyNegativesProperty = new Property( false ); // @public TODO: The terminology for this field is in flux, make sure its name and the view checkbox name match before publication
 
     var self = this;
-    var key;
 
     // @public, read only, factory used to create coin terms
     this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
 
     // @public, read and listen only, tracks the total positive instances and combined instances for each coin term type
-    this.positiveCoinTermCountsByType = new PropertySet( {} );
-    for ( key in CoinTermTypeID ) {
-      if ( !CoinTermTypeID.hasOwnProperty( key ) ) {
-        continue;
-      }
-      this.positiveCoinTermCountsByType.addProperty( constantToCamelCase( key ), 0 );
-    }
+    this.positiveCoinTermCountsByType = {};
+    _.keys( CoinTermTypeID ).forEach( function( key ) {
+      self.positiveCoinTermCountsByType[ constantToCamelCase( key ) ] = new Property( 0 );
+    } );
 
     // @public, read and listen only, tracks the total negative instances and combined instances for each coin term type
-    this.negativeCoinTermCountsByType = new PropertySet( {} );
-    for ( key in CoinTermTypeID ) {
-      if ( !CoinTermTypeID.hasOwnProperty( key ) ) {
-        continue;
-      }
-      this.negativeCoinTermCountsByType.addProperty( constantToCamelCase( key ), 0 );
-    }
+    this.negativeCoinTermCountsByType = {};
+    _.keys( CoinTermTypeID ).forEach( function( key ) {
+      self.negativeCoinTermCountsByType[ constantToCamelCase( key ) ] = new Property( 0 );
+    } );
 
     // @public, read only, options that control what is available to the user to manipulate
     this.coinTermCollection = options.coinTermCollection;
@@ -132,7 +123,7 @@ define( function( require ) {
       self.coinTerms.forEach( function( coinTerm ) {
         total += coinTerm.valueProperty.value * coinTerm.combinedCountProperty.get();
       } );
-      self.totalValue = total;
+      self.totalValueProperty.set( total );
     }
 
     // add a listener that resets the coin term values when the view mode switches from variables to coins
@@ -156,7 +147,9 @@ define( function( require ) {
 
         if ( userControlled === false ) {
 
-          if ( !self.expressionBeingEdited ) {
+          var expressionBeingEdited = self.expressionBeingEditedProperty.get();
+
+          if ( !expressionBeingEdited ) {
 
             // check first for overlap with expressions
             var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
@@ -218,14 +211,14 @@ define( function( require ) {
 
             // state checking
             assert && assert(
-              self.expressionBeingEdited.coinTerms.contains( addedCoinTerm ),
+              expressionBeingEdited.coinTerms.contains( addedCoinTerm ),
               'coin term being released is not in expression being edited, this should not occur'
             );
 
             // determine if the coin term was dropped while overlapping a coin term of the same type
             var overlappingLikeCoinTerm = self.getOverlappingLikeCoinTermWithinExpression(
               addedCoinTerm,
-              self.expressionBeingEdited
+              expressionBeingEdited
             );
 
             if ( overlappingLikeCoinTerm ) {
@@ -238,7 +231,7 @@ define( function( require ) {
             else {
 
               // the coin term has been dropped at some potentially new location withing the expression
-              self.expressionBeingEdited.reintegrateCoinTerm( addedCoinTerm );
+              expressionBeingEdited.reintegrateCoinTerm( addedCoinTerm );
             }
           }
         }
@@ -254,7 +247,7 @@ define( function( require ) {
           return;
         }
         var numToCreate = Math.abs( addedCoinTerm.combinedCountProperty.get() ) - 1;
-        var relativeViewBounds =addedCoinTerm.relativeViewBoundsProperty.get();
+        var relativeViewBounds = addedCoinTerm.relativeViewBoundsProperty.get();
 
         // set this coin back to being a single, keeping the sign the same
         addedCoinTerm.combinedCountProperty.set( addedCoinTerm.combinedCountProperty.get() > 0 ? 1 : -1 );
@@ -288,7 +281,7 @@ define( function( require ) {
           }
 
           // if the destination is outside of the allowed bounds, change it to be in bounds
-          if ( !self.coinTermRetrievalBounds.containsPoint( destination ) ){
+          if ( !self.coinTermRetrievalBounds.containsPoint( destination ) ) {
             destination = self.getNextOpenRetrievalSpot();
           }
 
@@ -317,8 +310,8 @@ define( function( require ) {
           // the existence strength has gone to zero, remove this from the model
           self.removeCoinTerm( addedCoinTerm, false );
 
-          if ( self.expressionBeingEdited ){
-            if ( self.expressionBeingEdited.coinTerms.length === 0 ){
+          if ( self.expressionBeingEditedProperty.get() ) {
+            if ( self.expressionBeingEditedProperty.get().coinTerms.length === 0 ) {
 
               // the removal of the coin term caused the expression being edited to be empty, so drop out of edit mode
               self.stopEditingExpression();
@@ -455,7 +448,7 @@ define( function( require ) {
           );
 
           // if the destination is outside of the allowed bounds, change it to be in bounds
-          if ( !self.coinTermRetrievalBounds.containsPoint( coinTermDestination ) ){
+          if ( !self.coinTermRetrievalBounds.containsPoint( coinTermDestination ) ) {
             coinTermDestination = self.getNextOpenRetrievalSpot();
           }
 
@@ -468,7 +461,7 @@ define( function( require ) {
 
       // add a listener that will handle requests to edit this expression
       function editExpressionListener() {
-        self.expressionBeingEdited = addedExpression;
+        self.expressionBeingEditedProperty.set( addedExpression );
       }
 
       addedExpression.selectedForEditEmitter.addListener( editExpressionListener );
@@ -488,7 +481,7 @@ define( function( require ) {
 
   expressionExchange.register( 'ExpressionManipulationModel', ExpressionManipulationModel );
 
-  return inherit( PropertySet, ExpressionManipulationModel, {
+  return inherit( Object, ExpressionManipulationModel, {
 
     /**
      * main step function for this model, should only be called by the framework
@@ -506,7 +499,7 @@ define( function( require ) {
       // TODO: when the functionality is fairly mature, I (jbphet) should look at consolidating these in order to make
       // TODO: the code more understandable and maintainable.
 
-      if ( !this.expressionBeingEdited ) {
+      if ( !this.expressionBeingEditedProperty.get() ) {
 
         // get a list of user controlled expressions, max of one on mouse based systems, any number on touch devices
         var userControlledExpressions = _.filter( this.expressions.getArray(), function( expression ) {
@@ -647,7 +640,7 @@ define( function( require ) {
 
           var overlappingCoinTerm = self.getOverlappingLikeCoinTermWithinExpression(
             userControlledCoinTerm,
-            self.expressionBeingEdited
+            self.expressionBeingEditedProperty.get()
           );
 
           if ( overlappingCoinTerm ) {
@@ -697,15 +690,16 @@ define( function( require ) {
      */
     stopEditingExpression: function() {
 
-      this.expressionBeingEdited.exitEditMode();
+      var expressionBeingEdited = this.expressionBeingEditedProperty.get();
+      expressionBeingEdited.exitEditMode();
 
       // Handle the special cases where one or zero coin terms remain after combining terms, which is no longer
       // considered an expression.
-      if ( this.expressionBeingEdited.coinTerms.length <= 1 ) {
-        this.expressionBeingEdited.breakApart();
+      if ( expressionBeingEdited.coinTerms.length <= 1 ) {
+        expressionBeingEdited.breakApart();
       }
 
-      this.expressionBeingEdited = null;
+      this.expressionBeingEditedProperty.set( null );
     },
 
     // @private - update the positive and negative counts for the specified coin term type
@@ -718,10 +712,10 @@ define( function( require ) {
       // update the positive and negative count values
       this.coinTerms.forEach( function( coinTerm ) {
         if ( coinTerm.typeID === coinTermTypeID ) {
-          if ( coinTerm.combinedCountProperty.get() > 0 ){
+          if ( coinTerm.combinedCountProperty.get() > 0 ) {
             positiveCountForThisType += coinTerm.combinedCountProperty.get();
           }
-          else{
+          else {
             negativeCountForThisType += Math.abs( coinTerm.combinedCountProperty.get() );
           }
         }
@@ -741,7 +735,7 @@ define( function( require ) {
         typeof( this.positiveCoinTermCountsByType[ convertedTypeID ] === 'number' ),
         'no positive count for coin term type ' + convertedTypeID
       );
-      return this.positiveCoinTermCountsByType[ convertedTypeID + 'Property' ];
+      return this.positiveCoinTermCountsByType[ convertedTypeID ];
     },
 
     /**
@@ -755,7 +749,7 @@ define( function( require ) {
         typeof( this.negativeCoinTermCountsByType[ convertedTypeID ] === 'number' ),
         'no negative count for coin term type ' + convertedTypeID
       );
-      return this.negativeCoinTermCountsByType[ convertedTypeID + 'Property' ];
+      return this.negativeCoinTermCountsByType[ convertedTypeID ];
     },
 
     // @public - remove the specified expression
@@ -811,8 +805,7 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingFreeCoinTerm = null;
       this.coinTerms.forEach( function( coinTerm ) {
-        if ( !coinTerm.userControlledProperty.get() &&
-             !self.isCoinTermInExpression( coinTerm ) &&
+        if ( !coinTerm.userControlledProperty.get() && !self.isCoinTermInExpression( coinTerm ) &&
              coinTerm.existenceStrengthProperty.get() === 1 &&
              expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
           maxOverlap = expression.getCoinTermJoinZoneOverlap( coinTerm );
@@ -832,8 +825,7 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingExpression = null;
       this.expressions.forEach( function( testExpression ) {
-        if ( testExpression !== expression &&
-             !testExpression.userControlledProperty.get() && // exclude expressions that are being moved by a user
+        if ( testExpression !== expression && !testExpression.userControlledProperty.get() && // exclude expressions that are being moved by a user
              !testExpression.inProgressAnimationProperty.get() && // exclude expressions that are moving somewhere
              expression.getExpressionOverlap( testExpression ) > maxOverlap ) {
           mostOverlappingExpression = testExpression;
@@ -847,30 +839,30 @@ define( function( require ) {
      * @returns {Vector2}
      * @private
      */
-    getNextOpenRetrievalSpot: function(){
+    getNextOpenRetrievalSpot: function() {
       var location = new Vector2();
       var row = 0;
       var column = 0;
       var openLocationFound = false;
-      while( !openLocationFound ){
+      while ( !openLocationFound ) {
         location.x = RETRIEVED_COIN_TERM_FIRST_POSITION.x + column * RETRIEVED_COIN_TERMS_X_SPACING;
         location.y = RETRIEVED_COIN_TERM_FIRST_POSITION.y + row * RETRIEVED_COIN_TERMS_Y_SPACING;
         var closeCoinTerm = false;
-        for ( var i = 0; i < this.coinTerms.length; i++ ){
-          if ( this.coinTerms.get( i ).destinationProperty.get().distance( location ) < MIN_RETRIEVAL_PLACEMENT_DISTANCE ){
+        for ( var i = 0; i < this.coinTerms.length; i++ ) {
+          if ( this.coinTerms.get( i ).destinationProperty.get().distance( location ) < MIN_RETRIEVAL_PLACEMENT_DISTANCE ) {
             closeCoinTerm = true;
             break;
           }
         }
-        if ( closeCoinTerm ){
+        if ( closeCoinTerm ) {
           // move to next location
           column++;
-          if ( column >= NUM_RETRIEVED_COIN_TERM_COLUMNS ){
+          if ( column >= NUM_RETRIEVED_COIN_TERM_COLUMNS ) {
             row++;
             column = 0;
           }
         }
-        else{
+        else {
           openLocationFound = true;
         }
       }
@@ -882,9 +874,21 @@ define( function( require ) {
       // TODO: Probably need to reset expressions here so that they can cancel any in-progress animations.
       this.expressions.clear();
       this.coinTerms.clear();
-      this.positiveCoinTermCountsByType.reset();
-      this.negativeCoinTermCountsByType.reset();
-      PropertySet.prototype.reset.call( this );
+      this.viewModeProperty.reset();
+      this.showCoinValuesProperty.reset();
+      this.showVariableValuesProperty.reset();
+      this.showAllCoefficientsProperty.reset();
+      this.xTermValueProperty.reset();
+      this.yTermValueProperty.reset();
+      this.zTermValueProperty.reset();
+      this.totalValueProperty.reset();
+      this.expressionBeingEditedProperty.reset();
+      this.simplifyNegativesProperty.reset();
+
+      _.keys( CoinTermTypeID ).forEach( function( key ) {
+        this.positiveCoinTermCountsByType[ key ].reset();
+        this.negativeCoinTermCountsByType[ key ].reset();
+      } );
     },
 
     // @private - test if coinTermB is in the "expression combine zone" of coinTermA
@@ -999,14 +1003,12 @@ define( function( require ) {
       var maxOverlapAmount = 0;
       this.coinTerms.forEach( function( testCoinTerm ) {
         if ( coinTerm !== testCoinTerm &&
-             coinTerm.canCombineWith( testCoinTerm ) &&
-             !testCoinTerm.userControlledProperty.get() &&
-             testCoinTerm.existenceStrengthProperty.get() === 1 &&
-             !self.isCoinTermInExpression( testCoinTerm ) ) {
+             coinTerm.canCombineWith( testCoinTerm ) && !testCoinTerm.userControlledProperty.get() &&
+             testCoinTerm.existenceStrengthProperty.get() === 1 && !self.isCoinTermInExpression( testCoinTerm ) ) {
 
           // calculate and compare the relative overlap amounts, done a bit differently in the different view modes
           var overlapAmount;
-          if ( self.viewMode === ViewMode.COINS ) {
+          if ( self.viewModeProperty.get() === ViewMode.COINS ) {
             overlapAmount = self.getCoinOverlapAmount( coinTerm, testCoinTerm );
           }
           else {
@@ -1029,12 +1031,11 @@ define( function( require ) {
 
       for ( var i = 0; i < expression.coinTerms.length; i++ ) {
         var potentiallyOverlappingCoinTerm = expression.coinTerms.get( i );
-        if ( potentiallyOverlappingCoinTerm !== coinTerm &&
-             !potentiallyOverlappingCoinTerm.userControlledProperty.get() &&
+        if ( potentiallyOverlappingCoinTerm !== coinTerm && !potentiallyOverlappingCoinTerm.userControlledProperty.get() &&
              potentiallyOverlappingCoinTerm.existenceStrengthProperty.get() === 1 &&
              potentiallyOverlappingCoinTerm.canCombineWith( coinTerm ) ) {
           var overlapAmount = 0;
-          if ( self.viewMode === ViewMode.COINS ) {
+          if ( self.viewModeProperty.get() === ViewMode.COINS ) {
             overlapAmount = self.getCoinOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
           }
           else {

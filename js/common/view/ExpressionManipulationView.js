@@ -96,7 +96,7 @@ define( function( require ) {
     Property.multilink(
       [ model.totalValueProperty, model.viewModeProperty ],
       function( totalValue ) {
-        if ( model.viewMode === ViewMode.COINS ) {
+        if ( model.viewModeProperty.get() === ViewMode.COINS ) {
           totalValueText.text = StringUtils.format( numberCentsString, totalValue );
         }
         else {
@@ -447,8 +447,8 @@ define( function( require ) {
         barrierRectangleBounds.maxX - barrierRectangleBounds.minX,
         barrierRectangleBounds.maxY - barrierRectangleBounds.minY
       );
-      if ( model.expressionBeingEdited ) {
-        var barrierRectangleHoleBounds = model.expressionBeingEdited.getBounds();
+      if ( model.expressionBeingEditedProperty.get() ) {
+        var barrierRectangleHoleBounds = model.expressionBeingEditedProperty.get().getBounds();
         // note - must travel counterclockwise to create a hole
         barrierRectangleShape.moveTo( barrierRectangleHoleBounds.minX, barrierRectangleHoleBounds.minY );
         barrierRectangleShape.lineTo( barrierRectangleHoleBounds.minX, barrierRectangleHoleBounds.maxY );
