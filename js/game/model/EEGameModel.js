@@ -12,7 +12,6 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
-  var PropertySet = require( 'AXON/PropertySet' );
 
   /**
    * @constructor
@@ -21,17 +20,27 @@ define( function( require ) {
 
     var self = this;
 
-    PropertySet.call( this, {
-      soundEnabled: true,
-      timerEnabled: false
+    //------------------------------------------------------------------------
+    // properties
+    //------------------------------------------------------------------------
+
+    this.soundEnabledProperty = new Property( true );
+    this.soundEnabledProperty = new Property( true );
+
+    // @public - an array of properties, each one of which is the best score for a level
+    this.bestScoreProperties = [];
+    _.times( this.numberOfLevels, function() {
+      self.bestScoreProperties.push( new Property( 0 ) );
     } );
+
+    //------------------------------------------------------------------------
+    // other attributes
+    //------------------------------------------------------------------------
 
     this.numberOfLevels = 8; // @public
     self.bestTimes = []; // @public
-    this.bestScoreProperties = []; // @public
     _.times( this.numberOfLevels, function() {
       self.bestTimes.push( null );
-      self.bestScoreProperties.push( new Property( 0 ) );
     } );
     this.challengesPerSet = 6; // @public
     this.maxPointsPerChallenge = 2; // @public
@@ -40,14 +49,14 @@ define( function( require ) {
 
   expressionExchange.register( 'EEGameModel', EEGameModel );
 
-  return inherit( PropertySet, EEGameModel, {
+  return inherit( Object, EEGameModel, {
 
     //TODO Called by the animation loop. Optional, so if your model has no animation, please delete this.
     step: function( dt ) {
       //TODO Handle model animation here.
     },
 
-    startLevel: function(){
+    startLevel: function() {
       // TODO: This is stubbed.
     }
   } );
