@@ -96,13 +96,13 @@ define( function( require ) {
     // keep the button showing if the user is over it
     function handleOverBreakApartButtonChanged( overButton ){
       if ( overButton ) {
-        if ( !coinTerm.userControlled ) {
+        if ( !coinTerm.userControlledProperty.get() ) {
           assert && assert( !!hideButtonTimer, 'should not be over button without hide timer running' );
           clearHideButtonTimer();
         }
       }
       else {
-        if ( !coinTerm.userControlled ) {
+        if ( !coinTerm.userControlledProperty.get() ) {
           startHideButtonTimer();
         }
       }

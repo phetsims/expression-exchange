@@ -361,7 +361,11 @@ define( function( require ) {
             mostOverlappingExpression.removeHoveringExpression( addedExpression );
 
             // send the combining expression to the right side of receiving expression
-            addedExpression.travelToDestination( mostOverlappingExpression.upperLeftCorner.plusXY( mostOverlappingExpression.width, 0 ) );
+            addedExpression.travelToDestination(
+              mostOverlappingExpression.upperLeftCornerProperty.get().plusXY(
+                mostOverlappingExpression.widthProperty.get(), 0
+              )
+            );
 
             // Listen for when the expression is in place and, when it is, transfer its coin terms to the receiving expression.
             addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener() {
@@ -391,28 +395,28 @@ define( function( require ) {
 
             if ( numOverlappingCoinTerms === 1 ) {
               var coinTermToAddToExpression = addedExpression.hoveringCoinTerms[ 0 ];
-              if ( addedExpression.rightHintActive ) {
+              if ( addedExpression.rightHintActiveProperty.get() ) {
 
                 // move to the left side of the coin term
                 addedExpression.travelToDestination(
                   coinTermToAddToExpression.positionProperty.get().plusXY(
-                    -addedExpression.width - addedExpression.rightHintWidth / 2,
-                    -addedExpression.height / 2
+                    -addedExpression.widthProperty.get() - addedExpression.rightHintWidthProperty.get() / 2,
+                    -addedExpression.heightProperty.get() / 2
                   )
                 );
               }
               else {
 
                 assert && assert(
-                  addedExpression.leftHintActive,
+                  addedExpression.leftHintActiveProperty.get(),
                   'at least one hint should be active if there is a hovering coin term'
                 );
 
                 // move to the right side of the coin term
                 addedExpression.travelToDestination(
                   coinTermToAddToExpression.positionProperty.get().plusXY(
-                    addedExpression.leftHintWidth / 2,
-                    -addedExpression.height / 2
+                    addedExpression.leftHintWidthProperty.get() / 2,
+                    -addedExpression.heightProperty.get() / 2
                   )
                 );
               }
@@ -506,7 +510,7 @@ define( function( require ) {
 
         // get a list of user controlled expressions, max of one on mouse based systems, any number on touch devices
         var userControlledExpressions = _.filter( this.expressions.getArray(), function( expression ) {
-          return expression.userControlled;
+          return expression.userControlledProperty.get();
         } );
 
         // Check each user controlled expression to see if it is in a position to combine with another expression and,
@@ -786,8 +790,8 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingExpression = null;
       this.expressions.forEach( function( expression ) {
-        if ( !expression.userControlled && // exclude expressions that are being moved by a user
-             !expression.inProgressAnimation && // exclude expressions that are animating to a destination
+        if ( !expression.userControlledProperty.get() && // exclude expressions that are being moved by a user
+             !expression.inProgressAnimationProperty.get() && // exclude expressions that are animating to a destination
              expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
           mostOverlappingExpression = expression;
         }
@@ -807,7 +811,7 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingFreeCoinTerm = null;
       this.coinTerms.forEach( function( coinTerm ) {
-        if ( !coinTerm.userControlled &&
+        if ( !coinTerm.userControlledProperty.get() &&
              !self.isCoinTermInExpression( coinTerm ) &&
              coinTerm.existenceStrengthProperty.get() === 1 &&
              expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
@@ -828,8 +832,9 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingExpression = null;
       this.expressions.forEach( function( testExpression ) {
-        if ( testExpression !== expression && !testExpression.userControlled && // exclude expressions that are being moved by a user
-             !testExpression.inProgressAnimation && // exclude expressions that are moving somewhere
+        if ( testExpression !== expression &&
+             !testExpression.userControlledProperty.get() && // exclude expressions that are being moved by a user
+             !testExpression.inProgressAnimationProperty.get() && // exclude expressions that are moving somewhere
              expression.getExpressionOverlap( testExpression ) > maxOverlap ) {
           mostOverlappingExpression = testExpression;
         }
@@ -921,7 +926,7 @@ define( function( require ) {
       var joinableFreeCoinTerm = null;
       var self = this;
       this.coinTerms.forEach( function( ct ) {
-        if ( ct !== testCoinTerm && !self.isCoinTermInExpression( ct ) && !ct.inProgressAnimation ) {
+        if ( ct !== testCoinTerm && !self.isCoinTermInExpression( ct ) && !ct.inProgressAnimationProperty.get() ) {
           // test if the provided coin term is in one of the compare coin term's "expression combine zones"
           if ( self.isCoinTermInExpressionCombineZone( ct, testCoinTerm ) ) {
             if ( !joinableFreeCoinTerm || ( joinableFreeCoinTerm.positionProperty.get().distance( ct ) < joinableFreeCoinTerm.positionProperty.get().distance( testCoinTerm ) ) ) {
@@ -1025,7 +1030,7 @@ define( function( require ) {
       for ( var i = 0; i < expression.coinTerms.length; i++ ) {
         var potentiallyOverlappingCoinTerm = expression.coinTerms.get( i );
         if ( potentiallyOverlappingCoinTerm !== coinTerm &&
-             !potentiallyOverlappingCoinTerm.userControlled &&
+             !potentiallyOverlappingCoinTerm.userControlledProperty.get() &&
              potentiallyOverlappingCoinTerm.existenceStrengthProperty.get() === 1 &&
              potentiallyOverlappingCoinTerm.canCombineWith( coinTerm ) ) {
           var overlapAmount = 0;

@@ -16,7 +16,6 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var ObservableArray = require( 'AXON/ObservableArray' );
   var Property = require( 'AXON/Property' );
-  var PropertySet = require( 'AXON/PropertySet' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
@@ -38,22 +37,41 @@ define( function( require ) {
     var self = this;
     this.id = 'EX-' + (++creationCount);
 
-    PropertySet.call( this, {
-      upperLeftCorner: Vector2.ZERO, // @public (read only)
-      width: 0, // @public (read only)
-      height: 0, // @public (read only)
-      userControlled: false, // @public
-      leftHintActive: false, // @public (read only) - indicates whether the hint on the left side should be visible
-      leftHintWidth: 0, // @public (read only) - width of the left hint
-      rightHintActive: false, // @public (read only) - indicates whether the hint on the right side should be visible
-      rightHintWidth: 0, // @public (read only) - width of the right hint
-      combineHaloActive: false, // @public (read only) indicates whether the 'combine halo' should be visible
-      inProgressAnimation: null, // @public (read only), tracks the current in-progress animation, if any
-      inEditMode: false // @public, indicates whether this expression is being edited
-    } );
+    //------------------------------------------------------------------------
+    // properties
+    //------------------------------------------------------------------------
+
+    this.upperLeftCornerProperty = new Property( Vector2.ZERO ); // @public (read only)
+    this.widthProperty = new Property( 0 ); // @public (read only)
+    this.heightProperty = new Property( 0 ); // @public (read only)
+    this.userControlledProperty = new Property( false ); // @public (read-write)
+    this.inEditModeProperty = new Property( false ); // @public, indicates whether this expression is being edited
+
+    // @public (read only), tracks the current in-progress animation, if any
+    this.inProgressAnimationProperty = new Property( null );
+
+    // @public (read only) indicates whether the 'combine halo' should be visible
+    this.combineHaloActiveProperty = new Property( false );
+
+    // @public (read only) - size and state of the hints that can appear at left and right of the expression
+    this.leftHintActiveProperty = new Property( false );
+    this.leftHintWidthProperty = new Property( 0 );
+    this.rightHintActiveProperty = new Property( false );
+    this.rightHintWidthProperty = new Property( 0 );
+
+    // @private, used to update whether or not coin terms should show minus sign when negative
+    this.simplifyNegativesProperty = simplifyNegativesProperty;
+
+    //------------------------------------------------------------------------
+    // observable arrays
+    //------------------------------------------------------------------------
 
     // @public, read and listen only, items should be added and removed via methods
     this.coinTerms = new ObservableArray();
+
+    //------------------------------------------------------------------------
+    // emitters
+    //------------------------------------------------------------------------
 
     // @public, listen only, emits an event when an animation finishes and the destination is reached
     this.destinationReachedEmitter = new Emitter();
@@ -63,14 +81,15 @@ define( function( require ) {
 
     // @public, listen only, emits an event when the size of the expression or the relative positions of the coins
     // change, generally used by the view so that it knows when to update, does NOT fire for position-only changes
-    // or for activitation/deactivation of hints
+    // or for activation/deactivation of hints
     this.layoutChangedEmitter = new Emitter();
 
     // @public, listen only, emits an event when this expression should be broken apart
     this.breakApartEmitter = new Emitter();
 
-    // @private, used to update whether or not coin terms should show minus sign when negative
-    this.simplifyNegativesProperty = simplifyNegativesProperty;
+    //------------------------------------------------------------------------
+    // non-observable attributes
+    //------------------------------------------------------------------------
 
     // @private, tracks coin terms that are hovering over this expression but are being controlled by the user so are
     // not yet part of the expression.  This is used to activate and size the hints.  Coin terms should be added and
@@ -87,6 +106,20 @@ define( function( require ) {
     // @private, map used to track user controlled listeners that are added to coin terms that join this expression
     this.mapCoinTermsToUCListeners = {};
 
+    // create the bounds that will be used to decide if coin terms or other expressions are in a position to join this one
+    // @private
+    var upperLeftCorner = this.upperLeftCornerProperty.get();
+    this.joinZone = new Bounds2(
+      upperLeftCorner.x - this.heightProperty.get(),
+      upperLeftCorner.y,
+      upperLeftCorner.x + this.widthProperty.get() + this.heightProperty.get(),
+      upperLeftCorner.y + this.heightProperty.get()
+    );
+
+    //------------------------------------------------------------------------
+    // other initialization
+    //------------------------------------------------------------------------
+
     // Define a listener that is bound to this object that will set the resize needed flag when fired.  This is done
     // in this way so that the listener can be found and removed when the coin term is removed from this expression.
     this.setResizeFlagFunction = function() { self.resizeNeeded = true; }; // @private
@@ -94,23 +127,14 @@ define( function( require ) {
     // add the initial coin term
     this.addCoinTerm( anchorCoinTerm );
 
-    // create the bounds that will be used to decide if coin terms or other expressions are in a position to join this one
-    // @private
-    this.joinZone = new Bounds2(
-      this.upperLeftCorner.x - this.height,
-      this.upperLeftCorner.y,
-      this.upperLeftCorner.x + this.width + this.height,
-      this.upperLeftCorner.y + this.height
-    );
-
     // update the join zone as the size and/or location of the expression changes
     Property.multilink( [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
       function( upperLeftCorner, width, height ) {
         self.joinZone.setMinMax(
-          self.upperLeftCorner.x - self.height,
-          self.upperLeftCorner.y,
-          self.upperLeftCorner.x + self.width + self.height,
-          self.upperLeftCorner.y + self.height );
+          upperLeftCorner.x - height,
+          upperLeftCorner.y,
+          upperLeftCorner.x + width + height,
+          upperLeftCorner.y + height );
       }
     );
 
@@ -130,12 +154,12 @@ define( function( require ) {
     function updateCoinTermMinusSignFlags() {
       self.updateCoinTermShowMinusSignFlag();
     }
+
     simplifyNegativesProperty.link( updateCoinTermMinusSignFlags );
 
     // create a dispose function
     this.expressionDispose = function() {
       simplifyNegativesProperty.unlink( updateCoinTermMinusSignFlags );
-      self.unlinkAll();
     };
 
     // logging, for debug purposes
@@ -145,7 +169,7 @@ define( function( require ) {
 
   expressionExchange.register( 'Expression', Expression );
 
-  return inherit( PropertySet, Expression, {
+  return inherit( Object, Expression, {
 
     /**
      * step this expression in time, which will cause it to make any updates in its state that are needed
@@ -175,12 +199,14 @@ define( function( require ) {
       this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
         var hctRelativeViewBounds = hoveringCoinTerm.relativeViewBoundsProperty.get();
         tallestCoinTermHeight = Math.max( tallestCoinTermHeight, hctRelativeViewBounds.height );
-        if ( hoveringCoinTerm.positionProperty.get().x > self.upperLeftCorner.x + self.width / 2 ) {
+        if ( hoveringCoinTerm.positionProperty.get().x > self.upperLeftCornerProperty.get().x + self.widthProperty.get() / 2 ) {
+
           // coin is over right half of the expression
           rightHintActive = true;
           rightHintMaxCoinWidth = Math.max( rightHintMaxCoinWidth, hctRelativeViewBounds.width );
         }
         else {
+
           // coin is over left half of the expression
           leftHintActive = true;
           leftHintMaxCoinWidth = Math.max( leftHintMaxCoinWidth, hctRelativeViewBounds.width );
@@ -188,15 +214,15 @@ define( function( require ) {
       } );
 
       // update the hint states
-      this.rightHintActive = rightHintActive;
-      this.leftHintActive = leftHintActive;
+      this.rightHintActiveProperty.set( rightHintActive );
+      this.leftHintActiveProperty.set( leftHintActive );
 
       // to minimize redraws in the view, only update width when the hints are active
-      if ( this.rightHintActive ) {
-        this.rightHintWidth = rightHintMaxCoinWidth + 2 * INSET;
+      if ( this.rightHintActiveProperty.get() ) {
+        this.rightHintWidthProperty.set( rightHintMaxCoinWidth + 2 * INSET );
       }
-      if ( this.leftHintActive ) {
-        this.leftHintWidth = leftHintMaxCoinWidth + 2 * INSET;
+      if ( this.leftHintActiveProperty.get() ) {
+        this.leftHintWidthProperty.set( leftHintMaxCoinWidth + 2 * INSET );
       }
 
       // update the property that indicates whether the combine halo is active
@@ -204,9 +230,12 @@ define( function( require ) {
 
       // update the overall height of the expression if needed
       var neededHeight = tallestCoinTermHeight + 2 * INSET;
-      if ( this.height !== neededHeight ) {
-        this.upperLeftCorner = this.upperLeftCorner.minusXY( 0, ( neededHeight - this.height ) / 2 );
-        this.height = tallestCoinTermHeight + 2 * INSET;
+      if ( this.heightProperty.get() !== neededHeight ) {
+        this.upperLeftCornerProperty.set( this.upperLeftCornerProperty.get().minusXY(
+          0,
+          ( neededHeight - this.heightProperty.get() ) / 2
+        ) );
+        this.heightProperty.set( tallestCoinTermHeight + 2 * INSET );
         this.layoutChangedEmitter.emit();
       }
     },
@@ -221,11 +250,12 @@ define( function( require ) {
      */
     getBounds: function( boundsToSet ) {
       var bounds = boundsToSet || new Bounds2( 0, 0, 1, 1 );
+      var upperLeftCorner = this.upperLeftCornerProperty.get();
       bounds.setMinMax(
-        this.upperLeftCorner.x,
-        this.upperLeftCorner.y,
-        this.upperLeftCorner.x + this.width,
-        this.upperLeftCorner.y + this.height
+        upperLeftCorner.x,
+        upperLeftCorner.y,
+        upperLeftCorner.x + this.widthProperty.get(),
+        upperLeftCorner.y + this.heightProperty.get()
       );
       return bounds;
     },
@@ -249,8 +279,8 @@ define( function( require ) {
     updateSizeAndCoinTermPositions: function() {
 
       // keep track of original size so we know when to fire event about layout changes
-      var originalWidth = this.width;
-      var originalHeight = this.height;
+      var originalWidth = this.widthProperty.get();
+      var originalHeight = this.heightProperty.get();
       var coinTermsMoved = false;
 
       // get an array of the coin terms sorted from left to right
@@ -293,16 +323,16 @@ define( function( require ) {
         maxHeight = relativeViewBounds.height > maxHeight ? relativeViewBounds.height : maxHeight;
         totalWidth += relativeViewBounds.width;
       } );
-      this.upperLeftCorner = new Vector2(
+      this.upperLeftCornerProperty.set( new Vector2(
         coinTermsLeftToRight[ 0 ].destinationProperty.get().x +
         coinTermsLeftToRight[ 0 ].relativeViewBoundsProperty.get().minX - INSET,
         yPos - maxHeight / 2 - INSET
-      );
-      this.height = maxHeight + 2 * INSET;
-      this.width = totalWidth + 2 * INSET + INTER_COIN_TERM_SPACING * ( coinTermsLeftToRight.length - 1 );
+      ) );
+      this.heightProperty.set( maxHeight + 2 * INSET );
+      this.widthProperty.set( totalWidth + 2 * INSET + INTER_COIN_TERM_SPACING * ( coinTermsLeftToRight.length - 1 ) );
 
       // emit an event if the size or the coin term positions changed
-      if ( this.width !== originalWidth || this.height !== originalHeight || coinTermsMoved ) {
+      if ( this.widthProperty.get() !== originalWidth || this.heightProperty.get() !== originalHeight || coinTermsMoved ) {
         this.layoutChangedEmitter.emit();
       }
     },
@@ -323,37 +353,47 @@ define( function( require ) {
 
       this.coinTerms.push( coinTerm );
 
-      var relativeViewBounds = coinTerm.relativeViewBoundsProperty.get();
-      var position = coinTerm.positionProperty.get();
+      var coinTermRelativeViewBounds = coinTerm.relativeViewBoundsProperty.get();
+      var coinTermPosition = coinTerm.positionProperty.get();
 
       if ( this.coinTerms.length === 1 ) {
 
         // this is the first coin term, so set the initial width and height
-        this.width = relativeViewBounds.width + 2 * INSET;
-        this.height = relativeViewBounds.height + 2 * INSET;
-        this.upperLeftCorner = new Vector2( position.x + relativeViewBounds.minX - INSET, position.y - this.height / 2 );
+        this.widthProperty.set( coinTermRelativeViewBounds.width + 2 * INSET );
+        this.heightProperty.set( coinTermRelativeViewBounds.height + 2 * INSET );
+        this.upperLeftCornerProperty.set( new Vector2(
+          coinTermPosition.x + coinTermRelativeViewBounds.minX - INSET,
+          coinTermPosition.y - this.heightProperty.get() / 2
+        ) );
       }
       else {
 
         // adjust the expression's width to accommodate the new coin term
-        var originalWidth = this.width;
-        this.width = this.width + INTER_COIN_TERM_SPACING + relativeViewBounds.width;
+        var originalWidth = this.widthProperty.get();
+        this.widthProperty.set( this.widthProperty.get() + INTER_COIN_TERM_SPACING + coinTermRelativeViewBounds.width );
+        var upperLeftCorner = this.upperLeftCornerProperty.get();
 
         // figure out where the coin term should go
         var xDestination;
-        if ( position.x > this.upperLeftCorner.x + originalWidth / 2 ) {
+        if ( coinTermPosition.x > upperLeftCorner.x + originalWidth / 2 ) {
           // add to the right side
-          xDestination = this.upperLeftCorner.x + this.width - INSET - relativeViewBounds.maxX;
+          xDestination = upperLeftCorner.x + this.widthProperty.get() - INSET - coinTermRelativeViewBounds.maxX;
         }
         else {
           // add to the left side, and shift the expression accordingly
-          this.upperLeftCorner = this.upperLeftCorner.minusXY( INTER_COIN_TERM_SPACING + relativeViewBounds.width, 0 );
-          xDestination = this.upperLeftCorner.x + INSET - relativeViewBounds.minX;
+          this.upperLeftCornerProperty.set(
+            upperLeftCorner.minusXY( INTER_COIN_TERM_SPACING + coinTermRelativeViewBounds.width, 0 )
+          );
+          xDestination = this.upperLeftCornerProperty.get().x + INSET - coinTermRelativeViewBounds.minX;
         }
-        var destination = new Vector2( xDestination, this.upperLeftCorner.y + this.height / 2 );
+
+        var destination = new Vector2(
+          xDestination,
+          this.upperLeftCornerProperty.get().y + this.heightProperty.get() / 2
+        );
 
         // decide whether or not to animate to the destination
-        if ( !this.userControlled ) {
+        if ( !this.userControlledProperty.get() ) {
 
           // animate to the new location
           coinTerm.travelToDestination( destination );
@@ -369,8 +409,8 @@ define( function( require ) {
       if ( this.isCoinTermHovering( coinTerm ) ) {
         this.removeHoveringCoinTerm( coinTerm );
         if ( this.hoveringCoinTerms.length === 0 ) {
-          this.rightHintActive = false;
-          this.leftHintActive = false;
+          this.rightHintActiveProperty.set( false );
+          this.leftHintActiveProperty.set( false );
         }
       }
 
@@ -456,8 +496,8 @@ define( function( require ) {
       this.updateCoinTermShowMinusSignFlag();
 
       // set the position of each coin term based on its order
-      var leftEdge = this.upperLeftCorner.x + INSET;
-      var centerY = this.upperLeftCorner.y + this.height / 2;
+      var leftEdge = this.upperLeftCornerProperty.get().x + INSET;
+      var centerY = this.upperLeftCornerProperty.get().y + this.heightProperty.get() / 2;
       coinTermsLeftToRight.forEach( function( orderedCoinTerm ) {
         orderedCoinTerm.travelToDestination( new Vector2(
           leftEdge - orderedCoinTerm.relativeViewBoundsProperty.get().minX,
@@ -508,7 +548,7 @@ define( function( require ) {
       } );
 
       // move the outline shape
-      this.upperLeftCorner = this.upperLeftCorner.plusXY( deltaX, deltaY );
+      this.upperLeftCornerProperty.set( this.upperLeftCornerProperty.get().plusXY( deltaX, deltaY ) );
     },
 
     /**
@@ -517,10 +557,10 @@ define( function( require ) {
      */
     travelToDestination: function( upperLeftCornerDestination ) {
       var self = this;
-      var prevX = this.upperLeftCorner.x;
-      var prevY = this.upperLeftCorner.y;
-      var movementTime = self.upperLeftCorner.distance( upperLeftCornerDestination ) / ANIMATION_SPEED * 1000;
-      this.inProgressAnimationProperty.set( new TWEEN.Tween( { x: this.upperLeftCorner.x, y: this.upperLeftCorner.y } )
+      var prevX = this.upperLeftCornerProperty.get().x;
+      var prevY = this.upperLeftCornerProperty.get().y;
+      var movementTime = self.upperLeftCornerProperty.get().distance( upperLeftCornerDestination ) / ANIMATION_SPEED * 1000;
+      this.inProgressAnimationProperty.set( new TWEEN.Tween( { x: prevX, y: prevY} )
         .to( { x: upperLeftCornerDestination.x, y: upperLeftCornerDestination.y }, movementTime )
         .easing( TWEEN.Easing.Cubic.InOut )
         .onUpdate( function() {
@@ -542,8 +582,8 @@ define( function( require ) {
      */
     setPositionAndDestination: function( upperLeftCornerDestination ) {
       this.translate(
-        upperLeftCornerDestination.x - this.upperLeftCorner.x,
-        upperLeftCornerDestination.y - this.upperLeftCorner.y
+        upperLeftCornerDestination.x - this.upperLeftCornerProperty.get().x,
+        upperLeftCornerDestination.y - this.upperLeftCornerProperty.get().y
       );
     },
 
@@ -560,7 +600,7 @@ define( function( require ) {
      * @public
      */
     enterEditMode: function() {
-      this.inEditMode = true;
+      this.inEditModeProperty.set( true );
       this.selectedForEditEmitter.emit();
     },
 
@@ -569,7 +609,7 @@ define( function( require ) {
      * @public
      */
     exitEditMode: function() {
-      this.inEditMode = false;
+      this.inEditModeProperty.set( false );
     },
 
     /**

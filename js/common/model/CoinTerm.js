@@ -105,7 +105,7 @@ define( function( require ) {
 
     // monitor position, emit returned to origin event when appropriate
     this.positionProperty.lazyLink( function( position ) {
-      if ( position.distance( self.initialPosition ) < CLOSE_ENOUGH_TO_HOME && !self.userControlled ) {
+      if ( position.distance( self.initialPosition ) < CLOSE_ENOUGH_TO_HOME && !self.userControlledProperty.get() ) {
         self.returnedToOriginEmitter.emit();
       }
     } );
@@ -180,7 +180,7 @@ define( function( require ) {
         // TODO: replace .stop with .cancel once TWEEN is upgraded
         this.inProgressAnimationProperty.get().stop();
         this.inProgressAnimationProperty.set( null );
-        this.positionProperty.set( this.destination );
+        this.positionProperty.set( this.destinationProperty.get() );
       }
     },
 

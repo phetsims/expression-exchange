@@ -94,20 +94,22 @@ define( function( require ) {
 
         backgroundShape = new Shape();
         backgroundShape.moveTo( 0, 0 );
-        backgroundShape.lineTo( expression.width, 0 );
+        backgroundShape.lineTo( expression.widthProperty.get(), 0 );
+        var expressionWidth = expression.widthProperty.get();
+        var expressionHeight = expression.heightProperty.get();
 
         // if the hint is active, the edge is zig zagged
-        if ( expression.rightHintActive ) {
-          addVerticalZigZagLine( backgroundShape, expression.width, 0, expression.width, expression.height, true );
+        if ( expression.rightHintActiveProperty.get() ) {
+          addVerticalZigZagLine( backgroundShape, expressionWidth, 0, expressionWidth, expressionHeight, true );
         }
         else {
-          backgroundShape.lineTo( expression.width, expression.height );
+          backgroundShape.lineTo( expressionWidth, expressionHeight );
         }
-        backgroundShape.lineTo( 0, expression.height );
+        backgroundShape.lineTo( 0, expressionHeight );
 
         // zig zag on left side if hint is active
-        if ( expression.leftHintActive ) {
-          addVerticalZigZagLine( backgroundShape, 0, expression.height, 0, 0, true );
+        if ( expression.leftHintActiveProperty.get() ) {
+          addVerticalZigZagLine( backgroundShape, 0, expressionHeight, 0, 0, true );
         }
         else {
           backgroundShape.lineTo( 0, 0 );
@@ -127,7 +129,7 @@ define( function( require ) {
           var symbolText;
           if (  simplifyNegativesProperty.value &&
                 coinTermsLeftToRight[ i + 1 ].combinedCountProperty.get() < 0 &&
-                !coinTermsLeftToRight[ i + 1 ].userControlled ){
+                !coinTermsLeftToRight[ i + 1 ].userControlledProperty.get() ){
             symbolText = '\u2212'; // unicode minus sign
           }
           else{
@@ -141,8 +143,8 @@ define( function( require ) {
                        coinTermsLeftToRight[ i ].relativeViewBoundsProperty.get().maxX +
                        coinTermsLeftToRight[ i + 1 ].destinationProperty.get().x +
                        coinTermsLeftToRight[ i + 1 ].relativeViewBoundsProperty.get().minX ) / 2 -
-                     expression.upperLeftCorner.x,
-            centerY: expression.height / 2
+                     expression.upperLeftCornerProperty.get().x,
+            centerY: expression.heightProperty.get() / 2
           } );
           symbolsLayer.addChild( operator );
         }

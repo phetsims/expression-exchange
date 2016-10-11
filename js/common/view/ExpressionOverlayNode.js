@@ -44,7 +44,7 @@ define( function( require ) {
 
     // define a function that will create or update the shape based on the width and height
     function updateShape() {
-      shape = new Shape.rect( 0, 0, expression.width, expression.height );
+      shape = new Shape.rect( 0, 0, expression.widthProperty.get(), expression.heightProperty.get() );
       if ( !expressionShapeNode ) {
         expressionShapeNode = new Path( shape, { fill: 'rgba( 255, 255, 255, 0.01 )' } ); // TODO: this works great, but review with JO to see if there is a better way
         self.addChild( expressionShapeNode );
@@ -133,13 +133,13 @@ define( function( require ) {
     // add a listener to the pop up button node to prevent it from disappearing if the user is hovering over it
     popUpButtonsNode.addInputListener( {
       enter: function() {
-        if ( !expression.userControlled ){
+        if ( !expression.userControlledProperty.get() ){
           assert && assert( hideButtonsTimer !== null, 'hide button timer should be running if pop up buttons are visible' );
           clearHideButtonsTimer();
         }
       },
       exit: function() {
-        if ( !expression.userControlled ) {
+        if ( !expression.userControlledProperty.get() ) {
           startHideButtonsTimer();
         }
       }
@@ -169,8 +169,8 @@ define( function( require ) {
       allowTouchSnag: true,
 
       start: function( event ) {
-        expression.userControlled = true;
-        unboundedUpperLeftCornerPosition.set( expression.upperLeftCorner );
+        expression.userControlledProperty.set( true );
+        unboundedUpperLeftCornerPosition.set( expression.upperLeftCornerProperty.get() );
         boundedUpperLeftCornerPosition.set( unboundedUpperLeftCornerPosition );
         clearHideButtonsTimer(); // in case it's running
         showPopUpButtons( self.globalToLocalPoint( event.pointer.point ).x );
@@ -188,15 +188,19 @@ define( function( require ) {
         expression.setPositionAndDestination( new Vector2(
           Util.clamp(
             unboundedUpperLeftCornerPosition.x,
-            layoutBounds.minX - expression.width + MIN_EXPRESSION_IN_BOUNDS_WIDTH,
+            layoutBounds.minX - expression.widthProperty.get() + MIN_EXPRESSION_IN_BOUNDS_WIDTH,
             layoutBounds.maxX - MIN_EXPRESSION_IN_BOUNDS_WIDTH
           ),
-          Util.clamp( unboundedUpperLeftCornerPosition.y, layoutBounds.minY, layoutBounds.maxY - expression.height )
+          Util.clamp(
+            unboundedUpperLeftCornerPosition.y,
+            layoutBounds.minY,
+            layoutBounds.maxY - expression.heightProperty.get()
+          )
         ) );
       },
 
       end: function() {
-        expression.userControlled = false;
+        expression.userControlledProperty.set( false );
         assert && assert( hideButtonsTimer === null, 'a timer for hiding the buttons was running at end of drag' );
         if ( breakApartButton.visible ) {
           startHideButtonsTimer();
