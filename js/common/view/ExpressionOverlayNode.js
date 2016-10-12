@@ -84,7 +84,6 @@ define( function( require ) {
     breakApartButtonTouchArea.maxX = breakApartButtonTouchArea.maxX + BUTTON_SPACING * 0.3;
     breakApartButtonTouchArea.minY = breakApartButtonTouchArea.minY - breakApartButton.height;
     breakApartButton.touchArea = breakApartButtonTouchArea;
-    breakApartButton.mouseArea = breakApartButtonTouchArea;
 
     // add the button used to put the expression into edit mode
     var editExpressionButton = new EditExpressionButton( { left: breakApartButton.right + BUTTON_SPACING } );
