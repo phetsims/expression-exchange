@@ -9,8 +9,9 @@ define( function( require ) {
   // modules
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var RefreshButton = require( 'SCENERY_PHET/buttons/RefreshButton' );
+  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
   var LeftRightNumberSpinner = require( 'EXPRESSION_EXCHANGE/common/view/LeftRightNumberSpinner' );
   var VBox = require( 'SCENERY/nodes/VBox' );
 
@@ -34,8 +35,11 @@ define( function( require ) {
     var zValueProperty = options.zTermValueProperty;
 
     //  button that will be used to restore the default values
-    var restoreDefaultsButton = new RefreshButton( {
-      iconWidth: 20,
+    var restoreDefaultsButton = new RectangularPushButton( {
+      content: new FontAwesomeNode( 'refresh', { scale: 0.6 } ),
+      baseColor: 'rgb( 242, 233, 22 )',
+      xMargin: 8,
+      yMargin: 6,
       listener: function() {
         xValueProperty && xValueProperty.reset();
         yValueProperty && yValueProperty.reset();
