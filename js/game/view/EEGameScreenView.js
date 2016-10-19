@@ -25,9 +25,9 @@ define( function( require ) {
   // constants
   var GAME_VISIBLE = true; // TODO: Remove this and its usages once game is working
   var SCREEN_CHANGE_TIME = 1000; // milliseconds
-  
+
   // TODO: Temporary, remove when real icons are available
-  function createIcon( color, label ){
+  function createIcon( color, label ) {
     var background = new Rectangle( 0, 0, 40, 40, 0, 0, { fill: color, lineWidth: 1, stroke: '#555555' } );
     var labelNode = new Text( label, {
       font: new PhetFont( 22 ),
@@ -46,7 +46,7 @@ define( function( require ) {
     var self = this;
     ScreenView.call( this );
 
-    if ( !GAME_VISIBLE ){
+    if ( !GAME_VISIBLE ) {
       // add a message about the game coming soon and bail out
       // TODO: This is temporary while the game is in development and should be removed when the game is live
       this.addChild( new Text( 'Game coming soon.', {
@@ -133,22 +133,42 @@ define( function( require ) {
       top: 20
     } );
     this.gamePlayNode.addChild( levelLabel );
-    gameModel.currentLevelProperty.link( function( currentLevel ){
+    gameModel.currentLevelProperty.link( function( currentLevel ) {
       // TODO: i18n
       levelLabel.text = 'Level ' + ( currentLevel + 1 );
       levelLabel.centerX = self.gamePlayNode.width / 2;
     } );
+    // TODO: These rectangles are temporary, for demo purposes
+    this.gamePlayNode.addChild( new Rectangle( 0, 0, 250, 120, {
+      stroke: 'gray',
+      fill: 'white ',
+      right: this.gamePlayNode.width - 60,
+      top: 50
+    } ) );
+    this.gamePlayNode.addChild( new Rectangle( 0, 0, 250, 120, {
+      stroke: 'gray',
+      fill: 'white ',
+      right: this.gamePlayNode.width - 60,
+      top: 200
+    } ) );
+    this.gamePlayNode.addChild( new Rectangle( 0, 0, 250, 120, {
+      stroke: 'gray',
+      fill: 'white ',
+      right: this.gamePlayNode.width - 60,
+      top: 350
+    } ) );
+
     this.addChild( this.gamePlayNode );
 
     // hook up the animations for moving between level selection and game play
-    gameModel.selectingLevelProperty.link( function( selectingLevel ){
-      if ( selectingLevel && self.startGameLevelNode.centerX !== self.layoutBounds.centerX ){
+    gameModel.selectingLevelProperty.link( function( selectingLevel ) {
+      if ( selectingLevel && self.startGameLevelNode.centerX !== self.layoutBounds.centerX ) {
 
         // animate the level selection node into the viewport
         new TWEEN.Tween( self.startGameLevelNode )
           .to( { centerX: self.layoutBounds.centerX }, SCREEN_CHANGE_TIME )
           .easing( TWEEN.Easing.Cubic.InOut )
-          .onStart( function(){ self.startGameLevelNode.visible = true; } )
+          .onStart( function() { self.startGameLevelNode.visible = true; } )
           .start( phet.joist.elapsedTime );
 
         // animate the game play node out of the viewport
@@ -156,15 +176,15 @@ define( function( require ) {
           .to( { centerX: self.layoutBounds.centerX + slideDistance }, SCREEN_CHANGE_TIME )
           .easing( TWEEN.Easing.Cubic.InOut )
           .start( phet.joist.elapsedTime )
-          .onComplete( function(){ self.gamePlayNode.visible = false; } );
+          .onComplete( function() { self.gamePlayNode.visible = false; } );
       }
-      else if ( !selectingLevel && self.startGameLevelNode.centerX === self.layoutBounds.centerX ){
+      else if ( !selectingLevel && self.startGameLevelNode.centerX === self.layoutBounds.centerX ) {
 
         // animate the game play node into the viewport
         new TWEEN.Tween( self.gamePlayNode )
           .to( { centerX: self.layoutBounds.centerX }, SCREEN_CHANGE_TIME )
           .easing( TWEEN.Easing.Cubic.InOut )
-          .onStart( function(){ self.gamePlayNode.visible = true; } )
+          .onStart( function() { self.gamePlayNode.visible = true; } )
           .start( phet.joist.elapsedTime );
 
         // animate the level selection node out of the viewport
@@ -172,7 +192,7 @@ define( function( require ) {
           .to( { centerX: self.layoutBounds.centerX - self.layoutBounds.width * 1.25 }, SCREEN_CHANGE_TIME )
           .easing( TWEEN.Easing.Cubic.InOut )
           .start( phet.joist.elapsedTime )
-          .onComplete( function(){ self.startGameLevelNode.visible = false; } );
+          .onComplete( function() { self.startGameLevelNode.visible = false; } );
       }
     } );
   }
