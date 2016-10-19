@@ -24,9 +24,11 @@ define( function( require ) {
     // properties
     //------------------------------------------------------------------------
 
+    // @public
     this.soundEnabledProperty = new Property( true );
     this.timerEnabledProperty = new Property( true );
     this.selectingLevelProperty = new Property( true );
+    this.currentLevelProperty = new Property( -1 ); // currently selected level, 0 indexed, -1 indicates none
 
     //------------------------------------------------------------------------
     // other attributes
@@ -55,12 +57,17 @@ define( function( require ) {
       //TODO Handle model animation here.
     },
 
-    startLevel: function() {
+    startLevel: function( levelNumber ) {
       this.selectingLevelProperty.set( false );
+      this.currentLevelProperty.set( levelNumber );
     },
 
     returnToLevelSelectState: function(){
       this.selectingLevelProperty.set( true );
+    },
+
+    refreshCurrentLevel: function(){
+      // TODO: This is stubbed, needs to be implemented.
     },
 
     reset: function(){

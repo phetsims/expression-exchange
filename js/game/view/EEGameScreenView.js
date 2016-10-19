@@ -115,7 +115,7 @@ define( function( require ) {
       xMargin: 9,
       yMargin: 7,
       listener: function() {
-        gameModel.refreshCurrentLevel()
+        gameModel.refreshCurrentLevel();
       },
       left: backButton.left,
       top: backButton.bottom + 8
@@ -128,6 +128,16 @@ define( function( require ) {
         gameModel.reset();
       }
     } ) );
+    var levelLabel = new Text( '', {
+      font: new PhetFont( 20 ),
+      top: 20
+    } );
+    this.gamePlayNode.addChild( levelLabel );
+    gameModel.currentLevelProperty.link( function( currentLevel ){
+      // TODO: i18n
+      levelLabel.text = 'Level ' + ( currentLevel + 1 );
+      levelLabel.centerX = self.gamePlayNode.width / 2;
+    } );
     this.addChild( this.gamePlayNode );
 
     // hook up the animations for moving between level selection and game play
