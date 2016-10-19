@@ -720,8 +720,8 @@ define( function( require ) {
           }
         }
       } );
-      this.positiveCoinTermCountsByType[ convertedTypeID ] = positiveCountForThisType;
-      this.negativeCoinTermCountsByType[ convertedTypeID ] = negativeCountForThisType;
+      this.positiveCoinTermCountsByType[ convertedTypeID ].set( positiveCountForThisType );
+      this.negativeCoinTermCountsByType[ convertedTypeID ].set( negativeCountForThisType );
     },
 
     /**
@@ -871,6 +871,9 @@ define( function( require ) {
 
     // @public
     reset: function() {
+
+      var self = this;
+
       // TODO: Probably need to reset expressions here so that they can cancel any in-progress animations.
       this.expressions.clear();
       this.coinTerms.clear();
@@ -885,9 +888,10 @@ define( function( require ) {
       this.expressionBeingEditedProperty.reset();
       this.simplifyNegativesProperty.reset();
 
-      _.keys( CoinTermTypeID ).forEach( function( key ) {
-        this.positiveCoinTermCountsByType[ key ].reset();
-        this.negativeCoinTermCountsByType[ key ].reset();
+      _.keys( CoinTermTypeID ).forEach( function( coinTermTypeID ) {
+        var key = constantToCamelCase( coinTermTypeID );
+        self.positiveCoinTermCountsByType[ key ].reset();
+        self.negativeCoinTermCountsByType[ key ].reset();
       } );
     },
 
