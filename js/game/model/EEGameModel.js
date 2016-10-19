@@ -25,26 +25,25 @@ define( function( require ) {
     //------------------------------------------------------------------------
 
     this.soundEnabledProperty = new Property( true );
-    this.soundEnabledProperty = new Property( true );
-
-    // @public - an array of properties, each one of which is the best score for a level
-    this.bestScoreProperties = [];
-    _.times( this.numberOfLevels, function() {
-      self.bestScoreProperties.push( new Property( 0 ) );
-    } );
+    this.timerEnabledProperty = new Property( true );
+    this.selectingLevelProperty = new Property( true );
 
     //------------------------------------------------------------------------
     // other attributes
     //------------------------------------------------------------------------
 
-    this.numberOfLevels = 8; // @public
+    this.numberOfLevels = 8; // @public TODO: shouldn't this be a constant?
+    this.bestScoreProperties = [];
+    _.times( this.numberOfLevels, function() {
+      self.bestScoreProperties.push( new Property( 0 ) );
+    } );
     self.bestTimes = []; // @public
     _.times( this.numberOfLevels, function() {
       self.bestTimes.push( null );
     } );
-    this.challengesPerSet = 6; // @public
-    this.maxPointsPerChallenge = 2; // @public
-    this.maxPossibleScore = this.challengesPerSet * this.maxPointsPerChallenge; // @public
+    this.challengesPerSet = 6; // @public TODO: shouldn't this be a constant?
+    this.maxPointsPerChallenge = 2; // @public TODO: shouldn't this be a constant?
+    this.maxPossibleScore = this.challengesPerSet * this.maxPointsPerChallenge; // @public  TODO: shouldn't this be a constant?
   }
 
   expressionExchange.register( 'EEGameModel', EEGameModel );
@@ -57,7 +56,15 @@ define( function( require ) {
     },
 
     startLevel: function() {
-      // TODO: This is stubbed.
+      this.selectingLevelProperty.set( false );
+    },
+
+    returnToLevelSelectState: function(){
+      this.selectingLevelProperty.set( true );
+    },
+
+    reset: function(){
+      this.selectingLevelProperty.reset();
     }
   } );
 } );

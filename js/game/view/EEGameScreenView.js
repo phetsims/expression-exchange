@@ -9,18 +9,22 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
+  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
+  var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var StartGameLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/StartGameLevelNode' );
   var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var GAME_VISIBLE = false;
+  var GAME_VISIBLE = true; // TODO: Remove this and its usages once game is working
+  var SCREEN_CHANGE_TIME = 1000; // milliseconds
   
   // TODO: Temporary, remove when real icons are available
   function createIcon( color, label ){
@@ -39,6 +43,7 @@ define( function( require ) {
    */
   function EEGameScreenView( gameModel ) {
 
+    var self = this;
     ScreenView.call( this );
 
     if ( !GAME_VISIBLE ){
@@ -53,21 +58,10 @@ define( function( require ) {
       return;
     }
 
-    // Hook up the audio player to the sound settings.
+    // hook up the audio player to the sound settings
     this.gameAudioPlayer = new GameAudioPlayer( gameModel.soundEnabledProperty );
 
-    // Create a root node and send to back so that the layout bounds box can be made visible if needed.
-    this.rootNode = new Node();
-    this.addChild( this.rootNode );
-    this.rootNode.moveToBack();
-
-    // Add layers used to control game appearance.
-    this.controlLayer = new Node();
-    this.rootNode.addChild( this.controlLayer );
-    this.challengeLayer = new Node();
-    this.rootNode.addChild( this.challengeLayer );
-
-    // Add the node that allows the user to choose a game level to play.
+    // add the node that allows the user to choose a game level to play
     this.startGameLevelNode = new StartGameLevelNode(
       function( level ) { gameModel.startLevel( level ); },
       function() { gameModel.reset(); },
@@ -90,10 +84,87 @@ define( function( require ) {
         numLevels: gameModel.numberOfLevels,
         numButtonRows: 2,
         controlsInset: 20,
-        size: this.layoutBounds
+        size: this.layoutBounds,
+        centerX: this.layoutBounds.centerX
       }
     );
-    this.rootNode.addChild( this.startGameLevelNode );
+
+    this.addChild( this.startGameLevelNode );
+
+    // define the value used to define how far the screens slide when moving in and out of view
+    var slideDistance = this.layoutBounds.width * 1.25;
+
+    // TODO: If the gamePlayNode lives on, I should consider moving it to its own class.
+    // add the parent node where the game play will occur
+    this.gamePlayNode = new Rectangle( 0, 0, this.layoutBounds.width, this.layoutBounds.height, {
+      fill: 'rgba( 0, 0, 0, 0.01 )',
+      centerX: this.layoutBounds.centerX + slideDistance, // initially out of view
+      visible: false
+    } );
+    var backButton = new BackButton( {
+      left: 20,
+      top: 20,
+      listener: function() {
+        gameModel.returnToLevelSelectState();
+      }
+    } );
+    this.gamePlayNode.addChild( backButton );
+    var refreshButton = new RectangularPushButton( {
+      content: new FontAwesomeNode( 'refresh', { scale: 0.7 } ),
+      baseColor: 'rgb( 242, 233, 22 )',
+      xMargin: 9,
+      yMargin: 7,
+      listener: function() {
+        gameModel.refreshCurrentLevel()
+      },
+      left: backButton.left,
+      top: backButton.bottom + 8
+    } );
+    this.gamePlayNode.addChild( refreshButton );
+    this.gamePlayNode.addChild( new ResetAllButton( {
+      right: this.layoutBounds.maxX - 20,
+      bottom: this.layoutBounds.maxY - 20,
+      listener: function() {
+        gameModel.reset();
+      }
+    } ) );
+    this.addChild( this.gamePlayNode );
+
+    // hook up the animations for moving between level selection and game play
+    gameModel.selectingLevelProperty.link( function( selectingLevel ){
+      if ( selectingLevel && self.startGameLevelNode.centerX !== self.layoutBounds.centerX ){
+
+        // animate the level selection node into the viewport
+        new TWEEN.Tween( self.startGameLevelNode )
+          .to( { centerX: self.layoutBounds.centerX }, SCREEN_CHANGE_TIME )
+          .easing( TWEEN.Easing.Cubic.InOut )
+          .onStart( function(){ self.startGameLevelNode.visible = true; } )
+          .start( phet.joist.elapsedTime );
+
+        // animate the game play node out of the viewport
+        new TWEEN.Tween( self.gamePlayNode )
+          .to( { centerX: self.layoutBounds.centerX + slideDistance }, SCREEN_CHANGE_TIME )
+          .easing( TWEEN.Easing.Cubic.InOut )
+          .start( phet.joist.elapsedTime )
+          .onComplete( function(){ self.gamePlayNode.visible = false; } );
+      }
+      else if ( !selectingLevel && self.startGameLevelNode.centerX === self.layoutBounds.centerX ){
+
+        // animate the game play node into the viewport
+        new TWEEN.Tween( self.gamePlayNode )
+          .to( { centerX: self.layoutBounds.centerX }, SCREEN_CHANGE_TIME )
+          .easing( TWEEN.Easing.Cubic.InOut )
+          .onStart( function(){ self.gamePlayNode.visible = true; } )
+          .start( phet.joist.elapsedTime );
+
+        // animate the level selection node out of the viewport
+        new TWEEN.Tween( self.startGameLevelNode )
+          .to( { centerX: self.layoutBounds.centerX - self.layoutBounds.width * 1.25 }, SCREEN_CHANGE_TIME )
+          .easing( TWEEN.Easing.Cubic.InOut )
+          .start( phet.joist.elapsedTime )
+          .onComplete( function(){ self.startGameLevelNode.visible = false; } );
+      }
+    } );
   }
 
   expressionExchange.register( 'EEGameScreenView', EEGameScreenView );

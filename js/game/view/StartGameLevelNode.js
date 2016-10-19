@@ -42,7 +42,8 @@ define( function( require ) {
    * @param {Object} [options] - See code below for options and default values.
    * @constructor
    */
-  function StartGameLevelNode( startLevelFunction, resetFunction, timerEnabledProperty, soundEnabledProperty, iconNodes, scores, options ) {
+  function StartGameLevelNode( startLevelFunction, resetFunction, timerEnabledProperty, soundEnabledProperty, iconNodes,
+                               scores, options ) {
 
     Node.call( this );
 
