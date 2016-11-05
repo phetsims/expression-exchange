@@ -21,6 +21,7 @@ define( function( require ) {
   var ScreenView = require( 'JOIST/ScreenView' );
   var StartGameLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/StartGameLevelNode' );
   var Text = require( 'SCENERY/nodes/Text' );
+  var PhetColorScheme = require( 'SCENERY_PHET/PhetColorScheme' );
 
   // constants
   var GAME_VISIBLE = true; // TODO: Remove this and its usages once game is working
@@ -111,7 +112,7 @@ define( function( require ) {
     this.gamePlayNode.addChild( backButton );
     var refreshButton = new RectangularPushButton( {
       content: new FontAwesomeNode( 'refresh', { scale: 0.7 } ),
-      baseColor: 'rgb( 242, 233, 22 )',
+      baseColor: PhetColorScheme.PHET_YELLOW,
       xMargin: 9,
       yMargin: 7,
       listener: function() {

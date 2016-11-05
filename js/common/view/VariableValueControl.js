@@ -14,6 +14,7 @@ define( function( require ) {
   var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
   var LeftRightNumberSpinner = require( 'EXPRESSION_EXCHANGE/common/view/LeftRightNumberSpinner' );
   var VBox = require( 'SCENERY/nodes/VBox' );
+  var PhetColorScheme = require( 'SCENERY_PHET/PhetColorScheme' );
 
   /**
    * @param {Object} options
@@ -37,7 +38,7 @@ define( function( require ) {
     //  button that will be used to restore the default values
     var restoreDefaultsButton = new RectangularPushButton( {
       content: new FontAwesomeNode( 'refresh', { scale: 0.6 } ),
-      baseColor: 'rgb( 242, 233, 22 )',
+      baseColor: PhetColorScheme.PHET_YELLOW,
       xMargin: 8,
       yMargin: 6,
       listener: function() {
