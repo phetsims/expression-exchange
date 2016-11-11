@@ -11,13 +11,15 @@ define( function( require ) {
   // modules
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  var getQueryParameter = phet.chipper.getQueryParameter;
+  var EEQueryParameters = QueryStringMachine.getAll( {
 
-  var EEQueryParameters = {
+    // turn on logging of coin term and expression creation and removal
+    enableLogging: { type: 'flag' },
 
-    // Automatically answer most problems to enable faster testing of level completion.
-    ADJUST_EXPRESSION_WIDTH: !!getQueryParameter( 'adjustExpressionWidth' )
-  };
+    // control whether expression width is always adjusted or whether it sometimes remains constant
+    adjustExpressionWidth: { type: 'flag' }
+  } );
+
 
   expressionExchange.register( 'EEQueryParameters', EEQueryParameters );
 

@@ -90,7 +90,7 @@ define( function( require ) {
       // TODO:  for the two different view modes so that the expressions don't expand/collapse as the modes change.
       // TODO:  This will need to be moved out or kept based on the feedback we get.  See
       // TODO:  https://github.com/phetsims/expression-exchange/issues/10
-      if ( !EEQueryParameters.ADJUST_EXPRESSION_WIDTH ) {
+      if ( !EEQueryParameters.adjustExpressionWidth ) {
 
         var width = Math.max( coinImageNode.width, termText.width, termWithVariableValuesText.width );
 

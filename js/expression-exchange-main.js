@@ -13,12 +13,15 @@ define( function( require ) {
   var EEExploreScreen = require( 'EXPRESSION_EXCHANGE/explore/EEExploreScreen' );
   var EEGameScreen = require( 'EXPRESSION_EXCHANGE/game/EEGameScreen' );
   var EEVariablesScreen = require( 'EXPRESSION_EXCHANGE/variables/EEVariablesScreen' );
+  var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Sim = require( 'JOIST/Sim' );
   var SimLauncher = require( 'JOIST/SimLauncher' );
 
   // strings
   var expressionExchangeTitleString = require( 'string!EXPRESSION_EXCHANGE/expression-exchange.title' );
 
+  // credits
   var simOptions = {
     credits: {
       leadDesign: 'Amanda McGarry',
@@ -28,6 +31,15 @@ define( function( require ) {
     }
   };
 
+  // add support for logging
+  if ( EEQueryParameters.enableLogging ) {
+    console.log( 'enabling log' );
+    expressionExchange.log = function( message ) {
+      console.log( '%clog: ' + message, 'color: #009900' ); // green
+    };
+  }
+
+  // launch the sim
   SimLauncher.launch( function() {
     var sim = new Sim(
       expressionExchangeTitleString,

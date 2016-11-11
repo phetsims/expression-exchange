@@ -11,15 +11,5 @@ define( function( require ) {
   // modules
   var Namespace = require( 'PHET_CORE/Namespace' );
 
-  var expressionExchange = new Namespace( 'expressionExchange' );
-
-  // add support for logging
-  if ( phet.chipper.getQueryParameter( 'log' ) ) {
-    console.log( 'enabling log' );
-    expressionExchange.log = function( message ) {
-      console.log( '%clog: ' + message, 'color: #009900' ); // green
-    };
-  }
-
-  return expressionExchange;
+  return new Namespace( 'expressionExchange' );
 } );
