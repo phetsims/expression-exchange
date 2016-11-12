@@ -11,6 +11,7 @@ define( function( require ) {
   // modules
   var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -104,7 +105,7 @@ define( function( require ) {
     } );
     var backButton = new BackButton( {
       left: 20,
-      top: 20,
+      top: 80,
       listener: function() {
         gameModel.returnToLevelSelectState();
       }
@@ -122,13 +123,6 @@ define( function( require ) {
       top: backButton.bottom + 8
     } );
     this.gamePlayNode.addChild( refreshButton );
-    this.gamePlayNode.addChild( new ResetAllButton( {
-      right: this.layoutBounds.maxX - 20,
-      bottom: this.layoutBounds.maxY - 20,
-      listener: function() {
-        gameModel.reset();
-      }
-    } ) );
     var levelLabel = new Text( '', {
       font: new PhetFont( 20 ),
       top: 20
@@ -139,27 +133,16 @@ define( function( require ) {
       levelLabel.text = 'Level ' + ( currentLevel + 1 );
       levelLabel.centerX = self.gamePlayNode.width / 2;
     } );
-    // TODO: These rectangles are temporary, for demo purposes
-    this.gamePlayNode.addChild( new Rectangle( 0, 0, 250, 120, {
-      stroke: 'gray',
-      fill: 'white ',
-      right: this.gamePlayNode.width - 60,
-      top: 50
-    } ) );
-    this.gamePlayNode.addChild( new Rectangle( 0, 0, 250, 120, {
-      stroke: 'gray',
-      fill: 'white ',
-      right: this.gamePlayNode.width - 60,
-      top: 200
-    } ) );
-    this.gamePlayNode.addChild( new Rectangle( 0, 0, 250, 120, {
-      stroke: 'gray',
-      fill: 'white ',
-      right: this.gamePlayNode.width - 60,
-      top: 350
-    } ) );
-
     this.addChild( this.gamePlayNode );
+
+    // create the game level views and add them to the main game play node
+    this.gameLevelViews = [];
+    gameModel.gameLevelModels.forEach( function( levelModel ) {
+      var gameLevelView = new ExpressionManipulationView( levelModel );
+      gameLevelView.visible = false; // will be made visible when the corresponding level is activated
+      self.gameLevelViews.push( gameLevelView );
+      self.gamePlayNode.addChild( gameLevelView );
+    } );
 
     // hook up the animations for moving between level selection and game play
     gameModel.selectingLevelProperty.link( function( selectingLevel ) {
@@ -195,6 +178,13 @@ define( function( require ) {
           .start( phet.joist.elapsedTime )
           .onComplete( function() { self.startGameLevelNode.visible = false; } );
       }
+    } );
+
+    gameModel.currentLevelProperty.link( function( currentLevel ) {
+      // make the selected level view visible (and all others invisible)
+      self.gameLevelViews.forEach( function( gameLevelView, index ) {
+        gameLevelView.visible = index === currentLevel;
+      } );
     } );
   }
 
