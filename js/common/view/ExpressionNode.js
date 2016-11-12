@@ -212,7 +212,7 @@ define( function( require ) {
     );
 
     // create a dispose function
-    this.expressionNodeDispose = function(){
+    this.disposeExpressionNode = function(){
       expression.layoutChangedEmitter.removeListener( updateBackgroundAndSymbols );
       updateBackgroundAndSymbolsMultilink.dispose();
       expression.upperLeftCornerProperty.unlink( updatePosition );
@@ -233,7 +233,7 @@ define( function( require ) {
 
     // @public
     dispose: function(){
-      this.expressionNodeDispose();
+      this.disposeExpressionNode();
     }
   } );
 } );

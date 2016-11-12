@@ -220,7 +220,7 @@ define( function( require ) {
     expression.inProgressAnimationProperty.link( addAndRemoveDragHandler );
 
     // create a dispose function
-    this.expressionOverlayNodeDispose = function(){
+    this.disposeExpressionNode = function(){
       expression.upperLeftCornerProperty.unlink( updatePosition );
       expression.inProgressAnimationProperty.unlink( addAndRemoveDragHandler );
       expression.inEditModeProperty.unlink( updateVisibility );
@@ -234,7 +234,7 @@ define( function( require ) {
 
     // @public
     dispose: function(){
-      this.expressionOverlayNodeDispose();
+      this.disposeExpressionNode();
     }
   } );
 } );

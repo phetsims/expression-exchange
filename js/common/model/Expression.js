@@ -158,7 +158,7 @@ define( function( require ) {
     simplifyNegativesProperty.link( updateCoinTermMinusSignFlags );
 
     // create a dispose function
-    this.expressionDispose = function() {
+    this.disposeExpression = function() {
       simplifyNegativesProperty.unlink( updateCoinTermMinusSignFlags );
     };
 
@@ -241,7 +241,7 @@ define( function( require ) {
     },
 
     dispose: function() {
-      this.expressionDispose();
+      this.disposeExpression();
     },
 
     /**
