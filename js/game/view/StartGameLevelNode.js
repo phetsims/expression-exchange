@@ -1,9 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * A node that pretty much fills the screen and that allows the user to select the game level that they wish to play.
- *
- * TODO: This was copied from Balancing Act, used for fast proto, should be replaced with generalized version.
+ * A node that fills most of the screen and allows the user to select the game level that they wish to play.
  *
  * @author John Blanco
  */
@@ -76,6 +74,7 @@ define( function( require ) {
 
     var buttons = new Array( options.numLevels );
     for ( var i = 0; i < options.numLevels; i++ ) {
+      debugger;
       buttons[ i ] = new LevelSelectionButton(
         iconNodes[ i ],
         options.numStarsOnButtons,

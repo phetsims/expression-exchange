@@ -26,6 +26,7 @@ define( function( require ) {
   // constants
   var GAME_VISIBLE = true; // TODO: Remove this and its usages once game is working
   var SCREEN_CHANGE_TIME = 1000; // milliseconds
+  var CHALLENGES_PER_LEVEL = 3; // milliseconds
 
   // TODO: Temporary, remove when real icons are available
   function createIcon( color, label ) {
@@ -80,7 +81,7 @@ define( function( require ) {
       ],
       gameModel.bestScoreProperties,
       {
-        numStarsOnButtons: gameModel.challengesPerSet,
+        numStarsOnButtons: CHALLENGES_PER_LEVEL,
         perfectScore: gameModel.maxPossibleScore,
         numLevels: gameModel.numberOfLevels,
         numButtonRows: 2,
