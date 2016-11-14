@@ -74,7 +74,6 @@ define( function( require ) {
 
     var buttons = new Array( options.numLevels );
     for ( var i = 0; i < options.numLevels; i++ ) {
-      debugger;
       buttons[ i ] = new LevelSelectionButton(
         iconNodes[ i ],
         options.numStarsOnButtons,

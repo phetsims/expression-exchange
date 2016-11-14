@@ -11,7 +11,7 @@ define( function( require ) {
   // modules
   var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
+  var ExpressionManipulationScreenView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationScreenView' );
   var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -138,7 +138,7 @@ define( function( require ) {
     // create the game level views and add them to the main game play node
     this.gameLevelViews = [];
     gameModel.gameLevelModels.forEach( function( levelModel ) {
-      var gameLevelView = new ExpressionManipulationView( levelModel );
+      var gameLevelView = new ExpressionManipulationScreenView( levelModel );
       gameLevelView.visible = false; // will be made visible when the corresponding level is activated
       self.gameLevelViews.push( gameLevelView );
       self.gamePlayNode.addChild( gameLevelView );

@@ -13,7 +13,7 @@ define( function( require ) {
   var EEExploreModel = require( 'EXPRESSION_EXCHANGE/explore/model/EEExploreModel' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
+  var ExpressionExplorationScreenView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionExplorationScreenView' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Screen = require( 'JOIST/Screen' );
 
@@ -33,7 +33,7 @@ define( function( require ) {
 
     Screen.call( this,
       function() { return new EEExploreModel(); },
-      function( model ) { return new ExpressionManipulationView( model ); },
+      function( model ) { return new ExpressionExplorationScreenView( model ); },
       options
     );
   }
