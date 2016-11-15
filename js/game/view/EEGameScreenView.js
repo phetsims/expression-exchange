@@ -11,7 +11,7 @@ define( function( require ) {
   // modules
   var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var ExpressionManipulationScreenView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationScreenView' );
+  var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -59,6 +59,9 @@ define( function( require ) {
       } ) );
       return;
     }
+
+    // set the bounds used to decide when coin terms need to be "pulled back"
+    gameModel.coinTermRetrievalBounds = this.layoutBounds;
 
     // hook up the audio player to the sound settings
     this.gameAudioPlayer = new GameAudioPlayer( gameModel.soundEnabledProperty );
@@ -138,11 +141,14 @@ define( function( require ) {
     // create the game level views and add them to the main game play node
     this.gameLevelViews = [];
     gameModel.gameLevelModels.forEach( function( levelModel ) {
-      var gameLevelView = new ExpressionManipulationScreenView( levelModel );
+      var gameLevelView = new ExpressionManipulationView( levelModel, self.visibleBoundsProperty );
       gameLevelView.visible = false; // will be made visible when the corresponding level is activated
       self.gameLevelViews.push( gameLevelView );
       self.gamePlayNode.addChild( gameLevelView );
     } );
+
+    // set the bounds for retrieving coin terms when expressions or composite coin terms are broken up
+    gameModel.setLevelModelBounds( this.layoutBounds );
 
     // hook up the animations for moving between level selection and game play
     gameModel.selectingLevelProperty.link( function( selectingLevel ) {

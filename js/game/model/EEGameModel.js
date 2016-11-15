@@ -9,7 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var EEBasicsModel = require( 'EXPRESSION_EXCHANGE/basics/model/EEBasicsModel' );
+  var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
@@ -43,7 +43,7 @@ define( function( require ) {
     // create the game level models, one model per level
     this.gameLevelModels = [];
     _.times( NUMBER_OF_LEVELS, function() {
-      self.gameLevelModels.push( new EEBasicsModel() );
+      self.gameLevelModels.push( new ExpressionManipulationModel() );
     } );
 
     // TODO: The next several lines will need to be modded based on answers to outstanding questions about game flow and behavior.
@@ -71,9 +71,17 @@ define( function( require ) {
       //TODO Handle model animation here.
     },
 
+    // @public
     startLevel: function( levelNumber ) {
       this.selectingLevelProperty.set( false );
       this.currentLevelProperty.set( levelNumber );
+    },
+
+    // @public
+    setLevelModelBounds: function( bounds ) {
+      this.gameLevelModels.forEach( function( gameLevelModel ) {
+        gameLevelModel.coinTermRetrievalBounds = bounds;
+      } );
     },
 
     returnToLevelSelectState: function(){

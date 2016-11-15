@@ -19,7 +19,7 @@ define( function( require ) {
   var Dimension2 = require( 'DOT/Dimension2' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var ExpressionManipulationScreenView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationScreenView' );
+  var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var Image = require( 'SCENERY/nodes/Image' );
   var inherit = require( 'PHET_CORE/inherit' );
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
@@ -28,6 +28,7 @@ define( function( require ) {
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
+  var ScreenView = require( 'JOIST/ScreenView' );
   var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
@@ -63,8 +64,14 @@ define( function( require ) {
    */
   function ExpressionExplorationScreenView( model ) {
 
-    ExpressionManipulationScreenView.call( this, model );
+    ScreenView.call( this, model );
     var self = this;
+
+    // set the bounds used to decide when coin terms need to be "pulled back"
+    model.coinTermRetrievalBounds = this.layoutBounds;
+
+    // create the view element where coin terms and expressions will be manipulated, but don't add it yet
+    var expressionManipulationView = new ExpressionManipulationView( model, this.visibleBoundsProperty );
 
     // create the readout that will display the total accumulated value, use max length string initially
     var totalValueText = new Text( StringUtils.format( numberCentsString, 9999 ), { font: new PhetFont( { size: 14 } ) } );
@@ -174,8 +181,8 @@ define( function( require ) {
           switchSize: new Dimension2( 40, 20 ),
           thumbTouchAreaXDilation: 5,
           thumbTouchAreaYDilation: 5,
-          top: this.coinTermCreatorBox.bottom + 10,
-          centerX: this.coinTermCreatorBox.centerX
+          top: expressionManipulationView.coinTermCreatorBox.bottom + 10,
+          centerX: expressionManipulationView.coinTermCreatorBox.centerX
         }
       ) );
     }
@@ -190,8 +197,8 @@ define( function( require ) {
     // create the "My Collection" display element
     var myCollectionDisplay = new CollectionDisplayNode(
       model,
-      _.uniq( _.map( this.coinTermCreatorDescriptors, function( descriptor ) { return descriptor.typeID; } ) ),
-      { width: collectionDisplayWidth, showNegatives: this.negativeTermsPresent }
+      _.uniq( _.map( expressionManipulationView.coinTermCreatorDescriptors, function( descriptor ) { return descriptor.typeID; } ) ),
+      { width: collectionDisplayWidth, showNegatives: expressionManipulationView.negativeTermsPresent }
     );
 
     // add accordion box that will contain the collection display
@@ -249,7 +256,7 @@ define( function( require ) {
     this.addChild( showAllCoefficientsCheckbox );
 
     // if negative values are possible, show the check box that allows them to be simplified
-    if ( this.negativeTermsPresent ) {
+    if ( expressionManipulationView.negativeTermsPresent ) {
       // TODO: The label for this check box is in flux, make sure its name and the string match before publication
       var showSubtractionCheckbox = new CheckBox(
         new ShowSubtractionIcon(),
@@ -269,8 +276,8 @@ define( function( require ) {
         model.reset();
         myCollectionAccordionBox.expandedProperty.reset();
         totalValueAccordionBox.expandedProperty.reset();
-        if ( self.coinTermCreatorBox.pageNumberProperty ) {
-          self.coinTermCreatorBox.pageNumberProperty.reset();
+        if ( expressionManipulationView.coinTermCreatorBox.pageNumberProperty ) {
+          expressionManipulationView.coinTermCreatorBox.pageNumberProperty.reset();
         }
         variableValuesAccordionBox.expandedProperty.value = false;
       },
@@ -295,9 +302,13 @@ define( function( require ) {
       }
       resetAllButton.right = visibleBounds.maxX - FLOATING_PANEL_INSET;
     } );
+
+    // Add the layer where the coin terms and expressions will be shown, done here so that coin terms and expressions
+    // are above the panels and indicators.
+    this.addChild( expressionManipulationView );
   }
 
   expressionExchange.register( 'ExpressionExplorationScreenView', ExpressionExplorationScreenView );
 
-  return inherit( ExpressionManipulationScreenView, ExpressionExplorationScreenView );
+  return inherit( ScreenView, ExpressionExplorationScreenView );
 } );

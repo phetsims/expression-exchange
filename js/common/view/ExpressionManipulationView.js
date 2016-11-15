@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * base class for views where the user can create and manipulate expressions
+ * a view node that allows the user to interact with coin terms to create and manipulate expressions
  *
  * @author John Blanco
  */
@@ -25,7 +25,6 @@ define( function( require ) {
   var Panel = require( 'SUN/Panel' );
   var Path = require( 'SCENERY/nodes/Path' );
   var Property = require( 'AXON/Property' );
-  var ScreenView = require( 'JOIST/ScreenView' );
   var Shape = require( 'KITE/Shape' );
   var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
 
@@ -34,21 +33,19 @@ define( function( require ) {
 
   /**
    * @param {ExpressionManipulationModel} model
+   * @param {Property.<Bounds2>} visibleBoundsProperty
    * @constructor
    */
-  function ExpressionManipulationScreenView( model ) {
+  function ExpressionManipulationView( model, visibleBoundsProperty ) {
 
-    ScreenView.call( this );
+    Node.call( this );
     var self = this;
 
-    this.coinTermCreatorBox = null; // @protected, node that holds the set of creator nodes, initialized below
-    this.negativeTermsPresent = false; // @projected, flag that indicates if negative terms are present
-
-    // set the bounds used to decide when coin terms need to be "pulled back"
-    model.coinTermRetrievalBounds = this.layoutBounds;
+    this.coinTermCreatorBox = null; // @public, read only
+    this.negativeTermsPresent = false; // @public, read only
 
     // descriptors that list the coin terms available to the user in the carousel and their initial count
-    this.coinTermCreatorDescriptors = [];
+    this.coinTermCreatorDescriptors = []; // @public, read only
 
     // create the collection of coin term creator nodes that will be presented to the user, varies based on options
     var itemsPerCarouselPage = 3;
@@ -108,7 +105,7 @@ define( function( require ) {
           initialCount: coinTermCreatorDescriptor.initialCount,
           creationLimit: MAX_COIN_TERMS_PER_TYPE,
           createdCountProperty: createdCountProperty,
-          dragBounds: self.layoutBounds
+          dragBounds: visibleBoundsProperty.get()
         }
       ) );
 
@@ -119,8 +116,8 @@ define( function( require ) {
     } );
 
     // add the panel or carousel that will contain the various coin terms that the user can create
-    var coinTermHolderCenterX = this.layoutBounds.width / 2;
-    var coinTermHolderBottom = this.layoutBounds.height - 50;
+    var coinTermHolderCenterX = visibleBoundsProperty.get().width / 2;
+    var coinTermHolderBottom = visibleBoundsProperty.get().height - 50;
     if ( coinTermCreatorSet.length > 3 ) {
       this.coinTermCreatorBox = new Carousel( coinTermCreatorSet, {
         centerX: coinTermHolderCenterX,
@@ -210,7 +207,7 @@ define( function( require ) {
     }
 
     // monitor the view bounds and update the barrier rectangle size
-    this.visibleBoundsProperty.link( function( visibleBounds ) {
+    visibleBoundsProperty.link( function( visibleBounds ) {
 
       // update the size of the barrier rectangle
       barrierRectangleBounds = visibleBounds;
@@ -257,7 +254,7 @@ define( function( require ) {
           addedCoinTerm,
           model.viewModeProperty,
           model.simplifyNegativesProperty,
-          { addDragHandler: true, dragBounds: self.layoutBounds }
+          { addDragHandler: true, dragBounds: visibleBoundsProperty.get() }
         );
       }
       else {
@@ -267,7 +264,7 @@ define( function( require ) {
           model.showCoinValuesProperty,
           model.showVariableValuesProperty,
           model.showAllCoefficientsProperty,
-          { addDragHandler: true, dragBounds: self.layoutBounds }
+          { addDragHandler: true, dragBounds: visibleBoundsProperty.get() }
         );
       }
 
@@ -311,7 +308,7 @@ define( function( require ) {
       var expressionNode = new ExpressionNode( addedExpression, model.simplifyNegativesProperty );
       expressionLayer.addChild( expressionNode );
 
-      var expressionOverlayNode = new ExpressionOverlayNode( addedExpression, self.layoutBounds );
+      var expressionOverlayNode = new ExpressionOverlayNode( addedExpression, visibleBoundsProperty.get() );
       expressionOverlayLayer.addChild( expressionOverlayNode );
 
       // set up a listener to remove these nodes when the corresponding expression is removed from the model
@@ -351,9 +348,9 @@ define( function( require ) {
     } );
   }
 
-  expressionExchange.register( 'ExpressionManipulationScreenView', ExpressionManipulationScreenView );
+  expressionExchange.register( 'ExpressionManipulationView', ExpressionManipulationView );
 
-  return inherit( ScreenView, ExpressionManipulationScreenView, {
+  return inherit( Node, ExpressionManipulationView, {
 
     step: function( dt ) {
       //TODO Handle view animation here.
