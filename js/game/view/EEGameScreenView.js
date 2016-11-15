@@ -108,7 +108,7 @@ define( function( require ) {
     } );
     var backButton = new BackButton( {
       left: 20,
-      top: 80,
+      top: 20,
       listener: function() {
         gameModel.returnToLevelSelectState();
       }
