@@ -10,6 +10,8 @@ define( function( require ) {
 
   // modules
   var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
+  var Bounds2 = require( 'DOT/Bounds2' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
@@ -46,7 +48,7 @@ define( function( require ) {
   function EEGameScreenView( gameModel ) {
 
     var self = this;
-    ScreenView.call( this );
+    ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
 
     if ( !GAME_VISIBLE ) {
       // add a message about the game coming soon and bail out
@@ -141,7 +143,7 @@ define( function( require ) {
     // create the game level views and add them to the main game play node
     this.gameLevelViews = [];
     gameModel.gameLevelModels.forEach( function( levelModel ) {
-      var gameLevelView = new ExpressionManipulationView( levelModel, self.visibleBoundsProperty );
+      var gameLevelView = new ExpressionManipulationView( levelModel, Bounds2.EMPTY, self.visibleBoundsProperty );
       gameLevelView.visible = false; // will be made visible when the corresponding level is activated
       self.gameLevelViews.push( gameLevelView );
       self.gamePlayNode.addChild( gameLevelView );

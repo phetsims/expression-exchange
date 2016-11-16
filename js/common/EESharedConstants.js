@@ -8,10 +8,13 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var Bounds2 = require( 'DOT/Bounds2' );
   var Color = require( 'SCENERY/util/Color' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
   var EESharedConstants = {
+
+    LAYOUT_BOUNDS: new Bounds2( 0, 0, 1024, 618 ), // at the time of this writing this is the same as the default
 
     // radius at which terms can be combined
     TERM_COMBINE_DISTANCE: 35,

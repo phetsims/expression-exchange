@@ -10,6 +10,7 @@ define( function( require ) {
 
   // modules
   var Carousel = require( 'SUN/Carousel' );
+  var CoinTermCreatorBox = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBox' );
   var CoinTermCreatorSet = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSet' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
@@ -33,114 +34,17 @@ define( function( require ) {
 
   /**
    * @param {ExpressionManipulationModel} model
+   * @param {Bounds2} coinTermCreatorBoxBounds - used to determine when coin terms are being put away by the user
    * @param {Property.<Bounds2>} visibleBoundsProperty
    * @constructor
    */
-  function ExpressionManipulationView( model, visibleBoundsProperty ) {
+  function ExpressionManipulationView( model, coinTermCreatorBoxBounds, visibleBoundsProperty ) {
 
     Node.call( this );
     var self = this;
 
-    this.coinTermCreatorBox = null; // @public, read only
+    coinTermCreatorBoxBounds; // @private
     this.negativeTermsPresent = false; // @public, read only
-
-    // descriptors that list the coin terms available to the user in the carousel and their initial count
-    this.coinTermCreatorDescriptors = []; // @public, read only
-
-    // create the collection of coin term creator nodes that will be presented to the user, varies based on options
-    var itemsPerCarouselPage = 3;
-    var carouselItemSpacing = 45; // empirically determined to handle the worst case term text
-    if ( model.coinTermCollection === CoinTermCreatorSet.BASIC ) {
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Z, initialCount: 1 } );
-    }
-    else if ( model.coinTermCollection === CoinTermCreatorSet.EXPLORE ) {
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Z, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: 2 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y, initialCount: 3 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_TIMES_Y, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y_SQUARED, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, initialCount: 1 } );
-    }
-    else if ( model.coinTermCollection === CoinTermCreatorSet.ADVANCED ) {
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.CONSTANT, initialCount: 1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X_SQUARED, initialCount: -1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.X, initialCount: -1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.Y, initialCount: -1 } );
-      this.coinTermCreatorDescriptors.push( { typeID: CoinTermTypeID.CONSTANT, initialCount: -1 } );
-      itemsPerCarouselPage = 4; // this set works better with four items per page
-      carouselItemSpacing = 40; // can be a bit smaller in this case because the largest term (x^2*y^2) isn't being used
-    }
-    else {
-      assert( false, 'unknown value for coinTermCollection' );
-    }
-
-    // create the set of coin term creator nodes that will appear in the carousel
-    var coinTermCreatorSet = [];
-
-    this.coinTermCreatorDescriptors.forEach( function( coinTermCreatorDescriptor ) {
-
-      // select the appropriate property from the model so that positive and negative counts are property tracked
-      var createdCountProperty;
-      if ( coinTermCreatorDescriptor.initialCount > 0 ) {
-        createdCountProperty = model.getPositiveCountPropertyForType( coinTermCreatorDescriptor.typeID );
-      }
-      else {
-        createdCountProperty = model.getNegativeCountPropertyForType( coinTermCreatorDescriptor.typeID );
-      }
-
-      // create the "creator node" and put it on the list of those that will be shown at the bottom of the view
-      coinTermCreatorSet.push( new CoinTermCreatorNode(
-        model,
-        coinTermCreatorDescriptor.typeID,
-        model.coinTermFactory.createCoinTerm.bind( model.coinTermFactory ),
-        {
-          initialCount: coinTermCreatorDescriptor.initialCount,
-          creationLimit: MAX_COIN_TERMS_PER_TYPE,
-          createdCountProperty: createdCountProperty,
-          dragBounds: visibleBoundsProperty.get()
-        }
-      ) );
-
-      // if one or more has a negative initial count, negatives should be shown in the collection
-      if ( coinTermCreatorDescriptor.initialCount < 0 ) {
-        self.negativeTermsPresent = true;
-      }
-    } );
-
-    // add the panel or carousel that will contain the various coin terms that the user can create
-    var coinTermHolderCenterX = visibleBoundsProperty.get().width / 2;
-    var coinTermHolderBottom = visibleBoundsProperty.get().height - 50;
-    if ( coinTermCreatorSet.length > 3 ) {
-      this.coinTermCreatorBox = new Carousel( coinTermCreatorSet, {
-        centerX: coinTermHolderCenterX,
-        bottom: coinTermHolderBottom,
-        itemsPerPage: itemsPerCarouselPage,
-        spacing: carouselItemSpacing
-      } );
-    }
-    else {
-      // use a panel instead of a carousel
-      // Many of the numbers in the following constructors were empirically determined to match the size of the
-      // carousels on the other screens.
-      var coinTermCreatorHBox = new HBox( { children: coinTermCreatorSet, spacing: 75, resize: false } );
-      this.coinTermCreatorBox = new Panel( coinTermCreatorHBox, {
-        centerX: coinTermHolderCenterX,
-        bottom: coinTermHolderBottom,
-        cornerRadius: 4,
-        xMargin: 75,
-        yMargin: 14,
-        resize: false
-      } );
-    }
-    this.addChild( this.coinTermCreatorBox );
 
     // add the node that will act as the layer where the expression backgrounds and expression hints will come and go
     var expressionLayer = new Node();
@@ -276,10 +180,9 @@ define( function( require ) {
 
         // remove the coin term if it was released over the carousel, but check first to make sure that this event
         // didn't already cause the coin term to join up with an expression or another coin term
-        if ( coinTermNode.bounds.intersectsBounds( self.coinTermCreatorBox.bounds ) &&
+        if ( coinTermNode.bounds.intersectsBounds( coinTermCreatorBoxBounds ) &&
              model.coinTerms.contains( addedCoinTerm ) &&
-             addedCoinTerm.inProgressAnimationProperty.get() === ( null ) &&
-             !model.isCoinTermInExpression( addedCoinTerm ) ) {
+             addedCoinTerm.inProgressAnimationProperty.get() === ( null ) && !model.isCoinTermInExpression( addedCoinTerm ) ) {
           model.removeCoinTerm( addedCoinTerm, true );
         }
 
@@ -325,7 +228,7 @@ define( function( require ) {
       // Add a listener to the expression to detect when it overlaps with the panel or carousel, at which point it will
       // be removed from the model.
       addedExpression.userControlledProperty.onValue( false, function() {
-        if ( addedExpression.getBounds().intersectsBounds( self.coinTermCreatorBox.bounds ) ) {
+        if ( addedExpression.getBounds().intersectsBounds( coinTermCreatorBoxBounds ) ) {
           model.removeExpression( addedExpression );
         }
       } );
@@ -353,7 +256,7 @@ define( function( require ) {
   return inherit( Node, ExpressionManipulationView, {
 
     step: function( dt ) {
-      //TODO Handle view animation here.
+      //TODO Handle view animation here.  Will replace TWEEN animations.
     }
   } );
 } );

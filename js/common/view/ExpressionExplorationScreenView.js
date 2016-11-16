@@ -14,6 +14,7 @@ define( function( require ) {
   var AccordionBox = require( 'SUN/AccordionBox' );
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
   var CheckBox = require( 'SUN/CheckBox' );
+  var CoinTermCreatorBox = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBox' );
   var CoinTermCreatorSet = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSet' );
   var CollectionDisplayNode = require( 'EXPRESSION_EXCHANGE/common/view/CollectionDisplayNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
@@ -64,13 +65,52 @@ define( function( require ) {
    */
   function ExpressionExplorationScreenView( model ) {
 
-    ScreenView.call( this, model );
+    ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
 
     // set the bounds used to decide when coin terms need to be "pulled back"
     model.coinTermRetrievalBounds = this.layoutBounds;
 
+    // decide upon the set of coin term creator nodes that will be available on this screen
+    var coinTermCreatorDescriptors;
+    var coinTermCreatorsPerPage;
+    var coinTermCreatorSpacing;
+    if ( model.coinTermCollection === CoinTermCreatorSet.BASIC ) {
+      coinTermCreatorDescriptors = CoinTermCreatorBox.BASIC_SCREEN_CONFIG;
+      coinTermCreatorsPerPage = 3;
+      coinTermCreatorSpacing = 45;
+    }
+    else if ( model.coinTermCollection === CoinTermCreatorSet.EXPLORE ) {
+      coinTermCreatorDescriptors = CoinTermCreatorBox.EXPLORE_SCREEN_CONFIG;
+      coinTermCreatorsPerPage = 3;
+      coinTermCreatorSpacing = 45;
+    }
+    else {
+      coinTermCreatorDescriptors = CoinTermCreatorBox.VARIABLES_SCREEN_CONFIG;
+      coinTermCreatorsPerPage = 4;
+      coinTermCreatorSpacing = 40;
+    }
+
+    // create the box with the coin term creator nodes
+    var coinTermCreatorBox = new CoinTermCreatorBox(
+      coinTermCreatorDescriptors,
+      model,
+      this.layoutBounds,
+      {
+        centerX: this.layoutBounds.centerX,
+        bottom: this.layoutBounds.bottom - 40,
+        itemsPerCarouselPage: coinTermCreatorsPerPage,
+        itemSpacing: coinTermCreatorSpacing
+      }
+    );
+    this.addChild( coinTermCreatorBox );
+
     // create the view element where coin terms and expressions will be manipulated, but don't add it yet
-    var expressionManipulationView = new ExpressionManipulationView( model, this.visibleBoundsProperty );
+    // TODO: This can probably be moved to where it is added once refactoring for game is complete
+    var expressionManipulationView = new ExpressionManipulationView(
+      model,
+      coinTermCreatorBox.bounds,
+      this.visibleBoundsProperty
+    );
 
     // create the readout that will display the total accumulated value, use max length string initially
     var totalValueText = new Text( StringUtils.format( numberCentsString, 9999 ), { font: new PhetFont( { size: 14 } ) } );
@@ -180,8 +220,8 @@ define( function( require ) {
           switchSize: new Dimension2( 40, 20 ),
           thumbTouchAreaXDilation: 5,
           thumbTouchAreaYDilation: 5,
-          top: expressionManipulationView.coinTermCreatorBox.bottom + 10,
-          centerX: expressionManipulationView.coinTermCreatorBox.centerX
+          top: coinTermCreatorBox.bottom + 10,
+          centerX: coinTermCreatorBox.centerX
         }
       ) );
     }
@@ -196,8 +236,8 @@ define( function( require ) {
     // create the "My Collection" display element
     var myCollectionDisplay = new CollectionDisplayNode(
       model,
-      _.uniq( _.map( expressionManipulationView.coinTermCreatorDescriptors, function( descriptor ) { return descriptor.typeID; } ) ),
-      { width: collectionDisplayWidth, showNegatives: expressionManipulationView.negativeTermsPresent }
+      _.uniq( _.map( coinTermCreatorDescriptors, function( descriptor ) { return descriptor.typeID; } ) ),
+      { width: collectionDisplayWidth, showNegatives: coinTermCreatorBox.negativeTermsPresent }
     );
 
     // add accordion box that will contain the collection display
@@ -255,7 +295,7 @@ define( function( require ) {
     this.addChild( showAllCoefficientsCheckbox );
 
     // if negative values are possible, show the check box that allows them to be simplified
-    if ( expressionManipulationView.negativeTermsPresent ) {
+    if ( coinTermCreatorBox.negativeTermsPresent ) {
       // TODO: The label for this check box is in flux, make sure its name and the string match before publication
       var showSubtractionCheckbox = new CheckBox(
         new ShowSubtractionIcon(),
@@ -275,8 +315,8 @@ define( function( require ) {
         model.reset();
         myCollectionAccordionBox.expandedProperty.reset();
         totalValueAccordionBox.expandedProperty.reset();
-        if ( expressionManipulationView.coinTermCreatorBox.pageNumberProperty ) {
-          expressionManipulationView.coinTermCreatorBox.pageNumberProperty.reset();
+        if ( coinTermCreatorBox.pageNumberProperty ) {
+          coinTermCreatorBox.pageNumberProperty.reset();
         }
         variableValuesAccordionBox.expandedProperty.value = false;
       },

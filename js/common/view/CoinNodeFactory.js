@@ -227,6 +227,7 @@ define( function( require ) {
       return iconNode;
     }
   };
+
   expressionExchange.register( 'CoinNodeFactory', CoinNodeFactory );
 
   return CoinNodeFactory;
