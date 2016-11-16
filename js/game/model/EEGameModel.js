@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -42,8 +43,15 @@ define( function( require ) {
 
     // create the game level models, one model per level
     this.gameLevelModels = [];
-    _.times( NUMBER_OF_LEVELS, function() {
-      self.gameLevelModels.push( new ExpressionManipulationModel() );
+    _.times( NUMBER_OF_LEVELS, function( index ) {
+      var allowedRepresentations;
+      if ( index < 3 ) {
+        allowedRepresentations = AllowedRepresentationsEnum.COINS_ONLY;
+      }
+      else {
+        allowedRepresentations = AllowedRepresentationsEnum.VARIABLES_ONLY;
+      }
+      self.gameLevelModels.push( new ExpressionManipulationModel( { allowedRepresentations: allowedRepresentations } ) );
     } );
 
     // TODO: The next several lines will need to be modded based on answers to outstanding questions about game flow and behavior.
