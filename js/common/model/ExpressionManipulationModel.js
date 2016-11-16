@@ -117,6 +117,15 @@ define( function( require ) {
     // @public, should be set only once, coin terms that end up outside these bounds are moved back inside the bounds
     this.coinTermRetrievalBounds = Bounds2.EVERYTHING;
 
+    // add a listener that resets the coin term values when the view mode switches from variables to coins
+    this.viewModeProperty.link( function( newViewMode, oldViewMode ) {
+      if ( newViewMode === ViewMode.COINS && oldViewMode === ViewMode.VARIABLES ) {
+        self.xTermValueProperty.reset();
+        self.yTermValueProperty.reset();
+        self.zTermValueProperty.reset();
+      }
+    } );
+
     // function to update the total value of the coin terms
     function updateTotal() {
       var total = 0;
@@ -126,14 +135,11 @@ define( function( require ) {
       self.totalValueProperty.set( total );
     }
 
-    // add a listener that resets the coin term values when the view mode switches from variables to coins
-    this.viewModeProperty.link( function( newViewMode, oldViewMode ) {
-      if ( newViewMode === ViewMode.COINS && oldViewMode === ViewMode.VARIABLES ) {
-        self.xTermValueProperty.reset();
-        self.yTermValueProperty.reset();
-        self.zTermValueProperty.reset();
-      }
-    } );
+    // add a listener that updates the total whenever one of the term value properties change
+    Property.multilink( [ this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty ], updateTotal );
+
+    // add a listener that updates the total whenever a coin term is added or removed
+    this.coinTerms.lengthProperty.link( updateTotal );
 
     // when a coin term is added, add listeners to handle the things about it that are dynmaic and can affect the model
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
@@ -292,9 +298,6 @@ define( function( require ) {
 
       addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListener );
 
-      // add a listener that will update the total value of the coin terms when this one's value changes
-      addedCoinTerm.valueProperty.link( updateTotal );
-
       // add a listener that will remove this coin if and when it returns to its original position
       function coinTermReturnedToOriginListener() {
         self.removeCoinTerm( addedCoinTerm, false );
@@ -329,11 +332,7 @@ define( function( require ) {
           addedCoinTerm.breakApartEmitter.removeListener( coinTermBreakApartListener );
           addedCoinTerm.returnedToOriginEmitter.removeListener( coinTermReturnedToOriginListener );
           addedCoinTerm.existenceStrengthProperty.unlink( coinTermExistenceStrengthListener );
-          addedCoinTerm.valueProperty.unlink( updateTotal );
           self.coinTerms.removeItemRemovedListener( coinTermRemovalListener );
-
-          // update the total now that this coin term has been removed
-          updateTotal();
         }
       } );
     } );
