@@ -141,7 +141,7 @@ define( function( require ) {
     // add a listener that updates the total whenever a coin term is added or removed
     this.coinTerms.lengthProperty.link( updateTotal );
 
-    // when a coin term is added, add listeners to handle the things about it that are dynmaic and can affect the model
+    // when a coin term is added, add listeners to handle the things about it that are dynamic and can affect the model
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
       // TODO: Once this is pretty much fully functional, revisit this and verify that it doesn't leak memory, making
       // TODO: sure that all added listeners are removed.  Also, work through this and see if it can be made more
