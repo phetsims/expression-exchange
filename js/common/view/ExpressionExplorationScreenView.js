@@ -65,7 +65,6 @@ define( function( require ) {
   function ExpressionExplorationScreenView( model ) {
 
     ScreenView.call( this, model );
-    var self = this;
 
     // set the bounds used to decide when coin terms need to be "pulled back"
     model.coinTermRetrievalBounds = this.layoutBounds;
