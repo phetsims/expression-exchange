@@ -97,7 +97,7 @@ define( function( require ) {
       this.layoutBounds,
       {
         centerX: this.layoutBounds.centerX,
-        bottom: this.layoutBounds.bottom - 40,
+        bottom: this.layoutBounds.bottom - 50,
         itemsPerCarouselPage: coinTermCreatorsPerPage,
         itemSpacing: coinTermCreatorSpacing
       }
