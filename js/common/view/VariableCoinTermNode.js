@@ -166,7 +166,7 @@ define( function( require ) {
                                            showVariableValuesProperty.value;
 
       // coefficient value and visibility
-      coefficientText.text = coinTerm.showMinusSignWhenNegativeProperty.get ?
+      coefficientText.text = coinTerm.showMinusSignWhenNegativeProperty.get() ?
                              coinTerm.combinedCountProperty.get() :
                              Math.abs( coinTerm.combinedCountProperty.get() );
       coefficientText.visible = coefficientVisible;
