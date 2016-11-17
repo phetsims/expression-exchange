@@ -1,5 +1,5 @@
 {
-  "comment": "# expression-exchange 1.0.0-dev.18 Thu Nov 17 2016 13:55:18 GMT-0700 (Mountain Standard Time)",
+  "comment": "# expression-exchange 1.0.0-dev.18 Thu Nov 17 2016 14:08:29 GMT-0700 (Mountain Standard Time)",
   "assert": {
     "sha": "845be6b591cb746b0b05b7023208aef2e49a8855",
     "branch": "master"
@@ -21,7 +21,7 @@
     "branch": "master"
   },
   "expression-exchange": {
-    "sha": "37164fd4d79fc74bbea76cb4854289459da3c4b5",
+    "sha": "082f9cea5165fa08cd6b11337b5a71a0bdb49abc",
     "branch": "master"
   },
   "joist": {
