@@ -16,6 +16,8 @@ define( function( require ) {
   var ExpressionExplorationScreenView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionExplorationScreenView' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Screen = require( 'JOIST/Screen' );
+  var Property = require( 'AXON/Property' );
+  var Color = require( 'SCENERY/util/Color' );
 
   // strings
   var exploreString = require( 'string!EXPRESSION_EXCHANGE/explore' );
@@ -27,7 +29,7 @@ define( function( require ) {
 
     var options = {
       name: exploreString,
-      backgroundColor: EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR,
+      backgroundColorProperty: new Property( Color.toColor( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ) ),
       homeScreenIcon: new EEExploreIconNode()
     };
 
