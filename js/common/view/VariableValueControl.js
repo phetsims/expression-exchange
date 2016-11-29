@@ -38,7 +38,7 @@ define( function( require ) {
     //  button that will be used to restore the default values
     var restoreDefaultsButton = new RectangularPushButton( {
       content: new FontAwesomeNode( 'refresh', { scale: 0.6 } ),
-      baseColor: PhetColorScheme.PHET_YELLOW,
+      baseColor: PhetColorScheme.PHET_LOGO_YELLOW,
       xMargin: 8,
       yMargin: 6,
       listener: function() {
