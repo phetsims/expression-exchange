@@ -144,17 +144,19 @@ define( function( require ) {
         this.inProgressAnimationProperty.set( null );
       }
       var currentPosition = this.positionProperty.get();
-      this.inProgressAnimationProperty.set( new TWEEN.Tween( { x: currentPosition.x, y: currentPosition.y } )
-        .to( { x: destination.x, y: destination.y }, movementTime )
-        .easing( TWEEN.Easing.Cubic.InOut )
-        .onUpdate( function() {
-          self.positionProperty.set( new Vector2( this.x, this.y ) );
-        } )
-        .onComplete( function() {
-          self.destinationReachedEmitter.emit();
-          self.inProgressAnimationProperty.set( null );
-        } )
-        .start( phet.joist.elapsedTime ) );
+      if ( !currentPosition.equals( destination ) ) {
+        this.inProgressAnimationProperty.set( new TWEEN.Tween( { x: currentPosition.x, y: currentPosition.y } )
+          .to( { x: destination.x, y: destination.y }, movementTime )
+          .easing( TWEEN.Easing.Cubic.InOut )
+          .onUpdate( function() {
+            self.positionProperty.set( new Vector2( this.x, this.y ) );
+          } )
+          .onComplete( function() {
+            self.destinationReachedEmitter.emit();
+            self.inProgressAnimationProperty.set( null );
+          } )
+          .start( phet.joist.elapsedTime ) );
+      }
     },
 
     returnToOrigin: function() {
