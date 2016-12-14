@@ -20,8 +20,8 @@ define( function( require ) {
   function EEGameLevelView( levelModel, screenLayoutBounds, visibleBoundsProperty ) {
     Node.call( this );
 
-    // TODO: Temporarily using this descriptor until we have something to generate them.
-    var coinTermCreatorDescriptors = CoinTermCreatorBox.BASIC_SCREEN_CONFIG;
+    // TODO: Temporarily using this descriptor until the real ones are available.
+    var coinTermCreatorDescriptors = CoinTermCreatorBox.GAME_TEST_CONFIG;
 
     // add the coin term creator box
     var coinTermCreatorBox = new CoinTermCreatorBox(

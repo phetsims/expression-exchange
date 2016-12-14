@@ -41,7 +41,8 @@ define( function( require ) {
 
     options = _.extend( {
       initialCount: 1,
-      initialPosition: Vector2.ZERO
+      initialPosition: Vector2.ZERO,
+      initiallyOnCard: false
     }, options );
 
     //------------------------------------------------------------------------
@@ -51,10 +52,14 @@ define( function( require ) {
     this.positionProperty = new Property( options.initialPosition );// @public (read only), set using methods below
     this.destinationProperty = new Property( options.initialPosition );// @public (read only), set using methods below
     this.userControlledProperty = new Property( false );// @public, indicate whether user is currently dragging this coin
-    this.combinedCountProperty = new Property( options.initialCount );// @public, number of coins/terms combined into this one, can be negative
     this.combineHaloActiveProperty = new Property( false );// @public
-    this.inProgressAnimationProperty = new Property( null ); // @public (read only), tracks the current in-progress animation, if any
     this.showMinusSignWhenNegativeProperty = new Property( true ); // @public, supports showing subtraction in expressions
+
+    // @public (read only), tracks the current in-progress animation, if any
+    this.inProgressAnimationProperty = new Property( null );
+
+    // @public, number of coins/terms combined into this one, can be negative
+    this.combinedCountProperty = new Property( options.initialCount );
 
     // @public, flag set to disallow breaking apart, generally used when coin term is in or over an expression
     this.breakApartAllowedProperty = new Property( true );
@@ -66,6 +71,9 @@ define( function( require ) {
 
     // @public (read only), ranges from 1 to 0, used primarily for fading out of a coin term when cancellation occurs
     this.existenceStrengthProperty = new Property( 1 );
+
+    // @public, determines whether the coin term should be depicted on a card in the view
+    this.onCardProperty = new Property( options.initiallyOnCard );
 
     //------------------------------------------------------------------------
     // non-property attributes

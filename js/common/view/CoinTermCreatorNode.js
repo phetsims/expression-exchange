@@ -18,6 +18,7 @@ define( function( require ) {
   var Util = require( 'DOT/Util' );
   var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
   var Vector2 = require( 'DOT/Vector2' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var STAGGER_OFFSET = 3; // in screen coordinates, empirically determined for optimal look
@@ -27,8 +28,7 @@ define( function( require ) {
    * @param {CoinTermTypeID} typeID - type of coin term to create
    * @param {function} creatorFunction - the function that will be invoked in order to create the model element.  This
    * will be used both for creating a local model instance that will then be used for creating the view node, and it
-   * will also be used to create the elements that will be added to the model.  The function should take no parameters
-   * and should return the created model element.
+   * will also be used to create the elements that will be added to the model.
    * @param {Object} options
    * @constructor
    */
@@ -67,6 +67,14 @@ define( function( require ) {
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
 
+    // In some cases, the creator nodes should appear to be on a cards so that it looks reasonable when it overlaps with
+    // other creator nodes.  That determination is made here.  However, the way this is done is a little bit hokey
+    // because the decision is made, in part, based on the view mode setting of the model at the time this is created.
+    // This works because at the time of this writing, the cards are only used on the game screen and the game screens
+    // don't allow a change of representation.  If this ever changes, this approach will need to be revisited.
+    var onCard = options.staggered && ( options.initialCount > 1 ||
+                                        exploreModel.viewModeProperty.get() === ViewMode.VARIABLES );
+
     // add the coin term node(s) that will be clicked upon to create coins of the same denomination
     var numCoinTermNodes = options.staggered ? options.creationLimit : 1;
     var coinTermNodes = [];
@@ -78,16 +86,17 @@ define( function( require ) {
         x: index * STAGGER_OFFSET,
         y: -index * STAGGER_OFFSET
       };
+      var dummyCoinTerm = creatorFunction( typeID, {
+        initialPosition: Vector2.ZERO,
+        initialCount: options.initialCount,
+        initiallyOnCard: onCard
+      } );
       if ( typeID === CoinTermTypeID.CONSTANT ) {
-        coinTermNode = new ConstantCoinTermNode(
-          creatorFunction( typeID, { initialPosition: Vector2.ZERO, initialCount: options.initialCount } ),
-          exploreModel.viewModeProperty,
-          coinTermNodeOptions
-        );
+        coinTermNode = new ConstantCoinTermNode( dummyCoinTerm, exploreModel.viewModeProperty, coinTermNodeOptions );
       }
       else {
         coinTermNode = new VariableCoinTermNode(
-          creatorFunction( typeID, { initialPosition: Vector2.ZERO, initialCount: options.initialCount } ),
+          dummyCoinTerm,
           exploreModel.viewModeProperty,
           exploreModel.showCoinValuesProperty,
           exploreModel.showVariableValuesProperty,
@@ -138,7 +147,8 @@ define( function( require ) {
         // create and add the new coin term
         createdCoinTerm = creatorFunction( typeID, {
           initialPosition: originPosition,
-          initialCount: options.initialCount
+          initialCount: options.initialCount,
+          initiallyOnCard: onCard
         } );
         createdCoinTerm.setPositionAndDestination( initialPosition );
         createdCoinTerm.userControlledProperty.set( true );

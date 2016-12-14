@@ -103,8 +103,7 @@ define( function( require ) {
       }
 
       // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
-      if ( !coinTerm.relativeViewBoundsProperty.get() ||
-           !coinTerm.relativeViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
+      if ( !coinTerm.relativeViewBoundsProperty.get() || !coinTerm.relativeViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
 
         coinTerm.relativeViewBoundsProperty.set( relativeVisibleBounds );
       }
@@ -147,8 +146,7 @@ define( function( require ) {
 
       // term value text, which shows the variable values and operators such as exponents
       var termValueText = coinTerm.termValueTextProperty.value;
-      if ( coinTerm.combinedCountProperty.get() === -1 &&
-           !showAllCoefficientsProperty.value &&
+      if ( coinTerm.combinedCountProperty.get() === -1 && !showAllCoefficientsProperty.value &&
            coinTerm.showMinusSignWhenNegativeProperty.get() ) {
         // prepend a minus sign
         termValueText = '-' + termValueText;
@@ -185,6 +183,11 @@ define( function( require ) {
         coefficientText.y = textBaseline;
       }
 
+      // update the card background
+      self.cardLikeBackground.visible = false; // make sure card is invisible so it doesn't affect visible bounds
+      self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilated( 10 ) );
+      self.cardLikeBackground.visible = coinTerm.onCardProperty.get();
+
       // update the bounds that are registered with the model
       updateBoundsInModel();
     }
@@ -196,6 +199,7 @@ define( function( require ) {
         coinTerm.valueProperty,
         coinTerm.termValueTextProperty,
         coinTerm.showMinusSignWhenNegativeProperty,
+        coinTerm.onCardProperty,
         viewModeProperty,
         showCoinValuesProperty,
         showVariableValuesProperty,
@@ -214,7 +218,7 @@ define( function( require ) {
   return inherit( AbstractCoinTermNode, VariableCoinTermNode, {
 
     // @public
-    dispose: function(){
+    dispose: function() {
       this.disposeVariableCoinTermNode();
       AbstractCoinTermNode.prototype.dispose.call( this );
     }

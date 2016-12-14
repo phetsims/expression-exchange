@@ -15,10 +15,14 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
+  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var Timer = require( 'PHET_CORE/Timer' );
   var Util = require( 'DOT/Util' );
   var Vector2 = require( 'DOT/Vector2' );
+
+  // constants
+  var BACKGROUND_CORNER_ROUNDING = 5;
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin term
@@ -39,6 +43,15 @@ define( function( require ) {
     // changes in position.
     this.coinAndTextRootNode = new Node();
     this.addChild( this.coinAndTextRootNode );
+
+    // add the card-like background, initially tiny, will be set in subclasses by function that updates the representation
+    this.cardLikeBackground = new Rectangle( -1, -1, 2, 2, BACKGROUND_CORNER_ROUNDING, BACKGROUND_CORNER_ROUNDING, {
+      fill: '#ffffcc',
+      stroke: 'black',
+      lineWidth: 2,
+      visible: false
+    } );
+    this.coinAndTextRootNode.addChild( this.cardLikeBackground );
 
     // add a listener that will update the opacity based on the coin term's existence strength
     function handleExistenceStrengthChanged( existenceStrength ){
