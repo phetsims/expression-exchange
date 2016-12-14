@@ -74,7 +74,6 @@ define( function( require ) {
 
   return inherit( Object, EEGameModel, {
 
-    //TODO Called by the animation loop. Optional, so if your model has no animation, please delete this.
     step: function( dt ) {
       if ( this.currentLevelProperty.get() >= 0 ) {
         this.gameLevelModels[ this.currentLevelProperty.get() ].step( dt );

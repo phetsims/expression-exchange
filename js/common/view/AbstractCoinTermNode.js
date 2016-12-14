@@ -51,8 +51,8 @@ define( function( require ) {
     // timer that will be used to hide the break apart button if user doesn't use it
     var hideButtonTimer = null;
 
-    // Add the button that will allow combined coins to be un-combined.  This is done outside of the rootnode so that it
-    // doesn't affect the bounds used in the model.
+    // Add the button that will allow combined coins to be un-combined.  This is done outside of the root node so that
+    // it doesn't affect the bounds used in the model.
     // TODO: There's a lot of code in here for the break apart button.  Can this be consolidated into a class that
     // TODO: encapsulates a lot of this behavior, such as hiding automatically after a given time, managing the timers,
     // TODO: handling hover?  Seems like a good idea.
@@ -231,6 +231,8 @@ define( function( require ) {
       coinTerm.combinedCountProperty.unlink( handleCombinedCountChanged );
       coinTerm.inProgressAnimationProperty.unlink( handleInProgressAnimationChanged );
     };
+
+    this.mutate( options );
   }
 
   expressionExchange.register( 'AbstractCoinTermNode', AbstractCoinTermNode );

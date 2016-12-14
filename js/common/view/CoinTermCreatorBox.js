@@ -35,7 +35,8 @@ define( function( require ) {
     options = _.extend( {
       itemsPerCarouselPage: 3,
       itemSpacing: 45, // empirically determined to work for most cases in this sim
-      cornerRadius: 4
+      cornerRadius: 4,
+      staggeredCreatorNodes: false
     }, options );
 
     this.negativeTermsPresent = false; // @public, read only
@@ -62,7 +63,8 @@ define( function( require ) {
           initialCount: coinTermCreatorDescriptor.initialCount,
           creationLimit: coinTermCreatorDescriptor.creationLimit,
           createdCountProperty: createdCountProperty,
-          dragBounds: coinTermDragBounds
+          dragBounds: coinTermDragBounds,
+          staggered: options.staggeredCreatorNodes
         }
       ) );
 

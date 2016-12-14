@@ -30,7 +30,8 @@ define( function( require ) {
       screenLayoutBounds,
       {
         centerX: screenLayoutBounds.centerX,
-        bottom: screenLayoutBounds.bottom - 40
+        bottom: screenLayoutBounds.bottom - 40,
+        staggeredCreatorNodes: true
       }
     );
     this.addChild( coinTermCreatorBox );
