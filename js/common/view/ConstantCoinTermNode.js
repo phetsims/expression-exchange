@@ -84,6 +84,11 @@ define( function( require ) {
       valueText.centerX = 0;
       valueText.y = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET;
 
+      // update the card background
+      self.cardLikeBackground.visible = false; // make sure card is invisible so it doesn't affect visible bounds
+      self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilated( 10 ) );
+      self.cardLikeBackground.visible = constantCoinTerm.onCardProperty.get();
+
       // update the bounds that are registered with the model
       updateBoundsInModel();
     }

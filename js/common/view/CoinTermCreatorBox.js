@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * a Scenery node that
+ * a Scenery node that allows the user to create coin terms by dragging them out of a box
  */
 define( function( require ) {
   'use strict';
@@ -15,6 +15,7 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Panel = require( 'SUN/Panel' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var CREATION_LIMIT_FOR_EXPLORE_SCREENS = 8;
@@ -35,7 +36,8 @@ define( function( require ) {
     options = _.extend( {
       itemsPerCarouselPage: 3,
       itemSpacing: 45, // empirically determined to work for most cases in this sim
-      cornerRadius: 4
+      cornerRadius: 4,
+      staggeredCreatorNodes: false
     }, options );
 
     this.negativeTermsPresent = false; // @public, read only
@@ -53,6 +55,15 @@ define( function( require ) {
         createdCountProperty = model.getNegativeCountPropertyForType( coinTermCreatorDescriptor.typeID );
       }
 
+      // In some cases, the creator node should appear to be on a card so that it overlaps well with others.  That
+      // determination is made here.  However, the way this is done is a little bit hokey because the decision is made,
+      // in part, based on the view mode setting of the model at the time this is created.  This works because at the
+      // time of this writing, the cards are only used on the game screen and the game screens don't allow a change of
+      // representation.  If this ever changes, we may need to add something like "onCardProperty" to coin term nodes
+      // and allow it to be changed.
+      var onCard = options.staggeredCreatorNodes && ( coinTermCreatorDescriptor.initialCount > 1 ||
+                                                      model.viewModeProperty.get() === ViewMode.VARIABLES );
+
       // create the "creator node" and put it on the list of those that will be shown at the bottom of the view
       coinTermCreatorSet.push( new CoinTermCreatorNode(
         model,
@@ -62,7 +73,9 @@ define( function( require ) {
           initialCount: coinTermCreatorDescriptor.initialCount,
           creationLimit: coinTermCreatorDescriptor.creationLimit,
           createdCountProperty: createdCountProperty,
-          dragBounds: coinTermDragBounds
+          dragBounds: coinTermDragBounds,
+          staggered: options.staggeredCreatorNodes,
+          onCard: onCard
         }
       ) );
 
@@ -103,7 +116,6 @@ define( function( require ) {
 
   return inherit( Node, CoinTermCreatorBox, {}, {
 
-    // descriptor set for the "Basics" screen
     BASIC_SCREEN_CONFIG: [
       { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
       { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
@@ -127,15 +139,23 @@ define( function( require ) {
     ],
 
     VARIABLES_SCREEN_CONFIG: [
-      { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
       { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.CONSTANT, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.X_SQUARED, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
       { typeID: CoinTermTypeID.X, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.Y, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.CONSTANT, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS }
+      { typeID: CoinTermTypeID.CONSTANT, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
+      { typeID: CoinTermTypeID.CONSTANT, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
+      { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
+      { typeID: CoinTermTypeID.X_SQUARED, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
+      { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
+      { typeID: CoinTermTypeID.Y, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS }
+    ],
+
+    // TODO: This is temporary, should be deleted once came configs are established
+    GAME_TEST_CONFIG: [
+      { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 5 },
+      { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: 5 },
+      { typeID: CoinTermTypeID.Z, initialCount: 2, creationLimit: 5 }
     ]
+
 
   } );
 } );

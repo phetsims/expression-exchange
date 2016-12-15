@@ -18,16 +18,18 @@ define( function( require ) {
   var Util = require( 'DOT/Util' );
   var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
   var Vector2 = require( 'DOT/Vector2' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
+
+  // constants
+  var STAGGER_OFFSET = 3; // in screen coordinates, empirically determined for optimal look
 
   /**
    * @param {ExpressionManipulationModel} exploreModel - model where coins are to be added
    * @param {CoinTermTypeID} typeID - type of coin term to create
    * @param {function} creatorFunction - the function that will be invoked in order to create the model element.  This
    * will be used both for creating a local model instance that will then be used for creating the view node, and it
-   * will also be used to create the elements that will be added to the model.  The function should take no parameters
-   * and should return the created model element.
+   * will also be used to create the elements that will be added to the model.
    * @param {Object} options
-   * TODO: This type may need to be moved and generalized if used in the game
    * @constructor
    */
   function CoinTermCreatorNode( exploreModel, typeID, creatorFunction, options ) {
@@ -43,7 +45,10 @@ define( function( require ) {
       creationLimit: Number.POSITIVE_INFINITY,
 
       // property that indicates the number of this type of coin term in the model
-      createdCountProperty: null
+      createdCountProperty: null,
+
+      // determines whether this node appears as a single coin term or a staggered overlapping set of them
+      staggered: false
 
     }, options );
 
@@ -53,29 +58,55 @@ define( function( require ) {
       'must have a createdCountProperty if the creation limit is finite'
     );
 
+    // if the coin terms are staggered, the creation limit must be non-infinite
+    assert && assert(
+      !options.staggered || options.creationLimit !== Number.POSITIVE_INFINITY,
+      'cannot have unlimited creation with staggered creator objects'
+    );
+
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
 
-    // add the coin node that will be clicked upon to create coins of the same denomination
-    var coinNode;
-    if ( typeID === CoinTermTypeID.CONSTANT ){
-      coinNode = new ConstantCoinTermNode(
-        creatorFunction( typeID, { initialPosition: Vector2.ZERO, initialCount: options.initialCount } ),
-        exploreModel.viewModeProperty,
-        { addDragHandler: false }
-      );
-    }
-    else{
-      coinNode = new VariableCoinTermNode(
-        creatorFunction( typeID, { initialPosition: Vector2.ZERO, initialCount: options.initialCount } ),
-        exploreModel.viewModeProperty,
-        exploreModel.showCoinValuesProperty,
-        exploreModel.showVariableValuesProperty,
-        exploreModel.showAllCoefficientsProperty,
-        { addDragHandler: false }
-      );
-    }
-    this.addChild( coinNode );
+    // In some cases, the creator nodes should appear to be on a cards so that it looks reasonable when it overlaps with
+    // other creator nodes.  That determination is made here.  However, the way this is done is a little bit hokey
+    // because the decision is made, in part, based on the view mode setting of the model at the time this is created.
+    // This works because at the time of this writing, the cards are only used on the game screen and the game screens
+    // don't allow a change of representation.  If this ever changes, this approach will need to be revisited.
+    var onCard = options.staggered && ( options.initialCount > 1 ||
+                                        exploreModel.viewModeProperty.get() === ViewMode.VARIABLES );
+
+    // add the coin term node(s) that will be clicked upon to create coins of the same denomination
+    var numCoinTermNodes = options.staggered ? options.creationLimit : 1;
+    var coinTermNodes = [];
+
+    _.times( numCoinTermNodes, function( index ) {
+      var coinTermNode;
+      var coinTermNodeOptions = {
+        addDragHandler: false,
+        x: index * STAGGER_OFFSET,
+        y: -index * STAGGER_OFFSET
+      };
+      var dummyCoinTerm = creatorFunction( typeID, {
+        initialPosition: Vector2.ZERO,
+        initialCount: options.initialCount,
+        initiallyOnCard: onCard
+      } );
+      if ( typeID === CoinTermTypeID.CONSTANT ) {
+        coinTermNode = new ConstantCoinTermNode( dummyCoinTerm, exploreModel.viewModeProperty, coinTermNodeOptions );
+      }
+      else {
+        coinTermNode = new VariableCoinTermNode(
+          dummyCoinTerm,
+          exploreModel.viewModeProperty,
+          exploreModel.showCoinValuesProperty,
+          exploreModel.showVariableValuesProperty,
+          exploreModel.showAllCoefficientsProperty,
+          coinTermNodeOptions
+        );
+      }
+      self.addChild( coinTermNode );
+      coinTermNodes.push( coinTermNode );
+    } );
 
     // variables used by the input listener
     var parentScreenView = null; // needed for coordinate transforms
@@ -90,6 +121,7 @@ define( function( require ) {
       allowTouchSnag: true,
 
       start: function( event, trail ) {
+
         // find the parent screen if not already found by moving up the scene graph
         if ( !parentScreenView ) {
           var testNode = self;
@@ -115,7 +147,8 @@ define( function( require ) {
         // create and add the new coin term
         createdCoinTerm = creatorFunction( typeID, {
           initialPosition: originPosition,
-          initialCount: options.initialCount
+          initialCount: options.initialCount,
+          initiallyOnCard: onCard
         } );
         createdCoinTerm.setPositionAndDestination( initialPosition );
         createdCoinTerm.userControlledProperty.set( true );
@@ -140,16 +173,24 @@ define( function( require ) {
       }
     } ) );
 
-    // update the enabled state of this creator node - will be disabled if creation limits are reached
     if ( options.createdCountProperty ) {
+
+      // Update the appearance of the node based on how many have been created.
       options.createdCountProperty.link( function( count ) {
-        if ( count + Math.abs( options.initialCount ) > options.creationLimit ) {
-          self.pickable = false;
-          self.opacity = 0.4;
+        if ( options.staggered ) {
+          coinTermNodes.forEach( function( coinTermNode, index ) {
+            coinTermNode.visible = index < coinTermNodes.length - count;
+          } );
         }
         else {
-          self.pickable = true;
-          self.opacity = 1;
+          if ( count + Math.abs( options.initialCount ) > options.creationLimit ) {
+            self.pickable = false;
+            self.opacity = 0.4;
+          }
+          else {
+            self.pickable = true;
+            self.opacity = 1;
+          }
         }
       } );
     }

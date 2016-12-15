@@ -15,10 +15,14 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
+  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var Timer = require( 'PHET_CORE/Timer' );
   var Util = require( 'DOT/Util' );
   var Vector2 = require( 'DOT/Vector2' );
+
+  // constants
+  var BACKGROUND_CORNER_ROUNDING = 5;
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin term
@@ -40,6 +44,15 @@ define( function( require ) {
     this.coinAndTextRootNode = new Node();
     this.addChild( this.coinAndTextRootNode );
 
+    // add the card-like background, initially tiny, will be set in subclasses by function that updates the representation
+    this.cardLikeBackground = new Rectangle( -1, -1, 2, 2, BACKGROUND_CORNER_ROUNDING, BACKGROUND_CORNER_ROUNDING, {
+      fill: '#ffffcc',
+      stroke: 'black',
+      lineWidth: 2,
+      visible: false
+    } );
+    this.coinAndTextRootNode.addChild( this.cardLikeBackground );
+
     // add a listener that will update the opacity based on the coin term's existence strength
     function handleExistenceStrengthChanged( existenceStrength ){
       assert && assert( existenceStrength >= 0 && existenceStrength <= 1, 'existence strength must be between 0 and 1' );
@@ -51,8 +64,8 @@ define( function( require ) {
     // timer that will be used to hide the break apart button if user doesn't use it
     var hideButtonTimer = null;
 
-    // Add the button that will allow combined coins to be un-combined.  This is done outside of the rootnode so that it
-    // doesn't affect the bounds used in the model.
+    // Add the button that will allow combined coins to be un-combined.  This is done outside of the root node so that
+    // it doesn't affect the bounds used in the model.
     // TODO: There's a lot of code in here for the break apart button.  Can this be consolidated into a class that
     // TODO: encapsulates a lot of this behavior, such as hiding automatically after a given time, managing the timers,
     // TODO: handling hover?  Seems like a good idea.
@@ -231,6 +244,8 @@ define( function( require ) {
       coinTerm.combinedCountProperty.unlink( handleCombinedCountChanged );
       coinTerm.inProgressAnimationProperty.unlink( handleInProgressAnimationChanged );
     };
+
+    this.mutate( options );
   }
 
   expressionExchange.register( 'AbstractCoinTermNode', AbstractCoinTermNode );
