@@ -9,8 +9,8 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
-  var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
+  var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
+  var EEGameLevelModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameLevelModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
@@ -44,14 +44,11 @@ define( function( require ) {
     // create the game level models, one model per level
     this.gameLevelModels = [];
     _.times( NUMBER_OF_LEVELS, function( index ) {
-      var allowedRepresentations;
-      if ( index < 3 ) {
-        allowedRepresentations = AllowedRepresentationsEnum.COINS_ONLY;
-      }
-      else {
-        allowedRepresentations = AllowedRepresentationsEnum.VARIABLES_ONLY;
-      }
-      self.gameLevelModels.push( new ExpressionManipulationModel( { allowedRepresentations: allowedRepresentations } ) );
+      var challengeDescriptorListForLevel = EEChallengeDescriptors[ index ];
+      var initialChallengeDescriptor = challengeDescriptorListForLevel[ phet.joist.random.nextInt(
+        challengeDescriptorListForLevel.length
+      ) ];
+      self.gameLevelModels.push( new EEGameLevelModel( initialChallengeDescriptor ) );
     } );
 
     // TODO: The next several lines will need to be modded based on answers to outstanding questions about game flow and behavior.
@@ -89,19 +86,19 @@ define( function( require ) {
     // @public
     setLevelModelBounds: function( bounds ) {
       this.gameLevelModels.forEach( function( gameLevelModel ) {
-        gameLevelModel.coinTermRetrievalBounds = bounds;
+        gameLevelModel.setCoinTermRetrievalBounds( bounds );
       } );
     },
 
-    returnToLevelSelectState: function(){
+    returnToLevelSelectState: function() {
       this.selectingLevelProperty.set( true );
     },
 
-    refreshCurrentLevel: function(){
+    refreshCurrentLevel: function() {
       // TODO: This is stubbed, needs to be implemented.
     },
 
-    reset: function(){
+    reset: function() {
       this.selectingLevelProperty.reset();
     }
   } );

@@ -46,7 +46,7 @@ define( function( require ) {
 
     // add the card-like background, initially tiny, will be set in subclasses by function that updates the representation
     this.cardLikeBackground = new Rectangle( -1, -1, 2, 2, BACKGROUND_CORNER_ROUNDING, BACKGROUND_CORNER_ROUNDING, {
-      fill: '#ffffcc',
+      fill: '#ffffee',
       stroke: 'black',
       lineWidth: 2,
       visible: false

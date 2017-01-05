@@ -41,7 +41,7 @@ define( function( require ) {
   }
 
   /**
-   * @param {EEGameModel} gameModel
+   * @param {EEGameLevelModel} gameModel
    * @constructor
    */
   function EEGameScreenView( gameModel ) {

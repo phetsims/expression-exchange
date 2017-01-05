@@ -147,15 +147,6 @@ define( function( require ) {
       { typeID: CoinTermTypeID.X_SQUARED, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
       { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
       { typeID: CoinTermTypeID.Y, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS }
-    ],
-
-    // TODO: This is temporary, should be deleted once came configs are established
-    GAME_TEST_CONFIG: [
-      { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 5 },
-      { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: 5 },
-      { typeID: CoinTermTypeID.Z, initialCount: 2, creationLimit: 5 }
     ]
-
-
   } );
 } );

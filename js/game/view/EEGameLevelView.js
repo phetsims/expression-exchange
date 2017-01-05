@@ -1,5 +1,10 @@
 // Copyright 2016, University of Colorado Boulder
 
+/**
+ * view for a single level of the Expression Exchange game
+ *
+ * @author John Blanco
+ */
 define( function( require ) {
   'use strict';
 
@@ -20,18 +25,16 @@ define( function( require ) {
   function EEGameLevelView( levelModel, screenLayoutBounds, visibleBoundsProperty ) {
     Node.call( this );
 
-    // TODO: Temporarily using this descriptor until the real ones are available.
-    var coinTermCreatorDescriptors = CoinTermCreatorBox.GAME_TEST_CONFIG;
-
     // add the coin term creator box
     var coinTermCreatorBox = new CoinTermCreatorBox(
-      coinTermCreatorDescriptors,
-      levelModel,
+      levelModel.currentChallengeDescriptor.carouselContents,
+      levelModel.expressionManipulationModel,
       screenLayoutBounds,
       {
         centerX: screenLayoutBounds.centerX,
         bottom: screenLayoutBounds.bottom - 40,
-        staggeredCreatorNodes: true
+        staggeredCreatorNodes: true,
+        itemsPerCarouselPage: levelModel.currentChallengeDescriptor.carouselContents.length
       }
     );
     this.addChild( coinTermCreatorBox );
@@ -62,7 +65,11 @@ define( function( require ) {
     this.addChild( bottomCollectionArea );
 
     // add the view area where the user will interact with coin terms and expressions
-    this.addChild( new ExpressionManipulationView( levelModel, coinTermCreatorBox.bounds, visibleBoundsProperty ) );
+    this.addChild( new ExpressionManipulationView(
+      levelModel.expressionManipulationModel,
+      coinTermCreatorBox.bounds,
+      visibleBoundsProperty
+    ) );
   }
 
   expressionExchange.register( 'EEGameLevelView', EEGameLevelView );
