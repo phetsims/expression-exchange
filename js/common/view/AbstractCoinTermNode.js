@@ -64,7 +64,7 @@ define( function( require ) {
     // timer that will be used to hide the break apart button if user doesn't use it
     var hideButtonTimer = null;
 
-    // Add the button that will allow combined coins to be un-combined.  This is done outside of the root node so that
+    // Add the button that will allow composite coins to be decomposed.  This is done outside of the root node so that
     // it doesn't affect the bounds used in the model.
     // TODO: There's a lot of code in here for the break apart button.  Can this be consolidated into a class that
     // TODO: encapsulates a lot of this behavior, such as hiding automatically after a given time, managing the timers,
@@ -145,7 +145,7 @@ define( function( require ) {
 
     // update the state of the break apart button when the userControlled state changes
     function handleUserControlledChanged( userControlled ){
-      if ( Math.abs( coinTerm.combinedCountProperty.get() ) > 1 && coinTerm.breakApartAllowedProperty.get() ) {
+      if ( Math.abs( coinTerm.totalCountProperty.get() ) > 1 && coinTerm.breakApartAllowedProperty.get() ) {
 
         if ( userControlled ) {
           clearHideButtonTimer(); // called in case the timer was running
@@ -225,7 +225,8 @@ define( function( require ) {
         hideBreakApartButton();
       }
     }
-    coinTerm.combinedCountProperty.link( handleCombinedCountChanged );
+
+    coinTerm.totalCountProperty.link( handleCombinedCountChanged );
 
     // Add a listener that will make this node non-pickable when animating, which solves a lot of multi-touch and fuzz
     // testing issues.
@@ -241,7 +242,7 @@ define( function( require ) {
       breakApartButton.buttonModel.overProperty.unlink( handleOverBreakApartButtonChanged );
       coinTerm.userControlledProperty.unlink( handleUserControlledChanged );
       coinTerm.breakApartAllowedProperty.unlink( handleBreakApartAllowedChanged );
-      coinTerm.combinedCountProperty.unlink( handleCombinedCountChanged );
+      coinTerm.totalCountProperty.unlink( handleCombinedCountChanged );
       coinTerm.inProgressAnimationProperty.unlink( handleInProgressAnimationChanged );
     };
 

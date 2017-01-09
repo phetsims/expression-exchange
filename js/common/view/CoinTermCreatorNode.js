@@ -38,7 +38,7 @@ define( function( require ) {
 
       dragBounds: Bounds2.EVERYTHING,
 
-      // initial combined count of the coin term that will be created
+      // initial count of the coin term that will be created, can be negative
       initialCount: 1,
 
       // max number of coin terms that this can create

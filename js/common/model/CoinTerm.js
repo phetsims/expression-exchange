@@ -62,8 +62,8 @@ define( function( require ) {
     // @public (read only), tracks the current in-progress animation, if any
     this.inProgressAnimationProperty = new Property( null );
 
-    // @public, number of coins/terms combined into this one, can be negative
-    this.combinedCountProperty = new Property( options.initialCount );
+    // @public, total number of coins/terms combined into this one, can be negative
+    this.totalCountProperty = new Property( options.initialCount );
 
     // @public, flag set to disallow breaking apart, generally used when coin term is in or over an expression
     this.breakApartAllowedProperty = new Property( true );
@@ -133,9 +133,9 @@ define( function( require ) {
       }
     } );
 
-    // monitor combined count, start fading the existence strength if the count goes to zero
-    this.combinedCountProperty.lazyLink( function( combinedCount ) {
-      if ( combinedCount === 0 ) {
+    // monitor the total count, start fading the existence strength if it goes to zero
+    this.totalCountProperty.lazyLink( function( totalCount ) {
+      if ( totalCount === 0 ) {
 
         // start the periodic timer that will fade the existence strength to zero
         var timerInterval = Timer.setInterval( function() {
@@ -216,7 +216,7 @@ define( function( require ) {
     absorb: function( coinTerm ) {
       assert && assert( this.typeID === coinTerm.typeID, 'can\'t combine coin terms of different types' );
       var self = this;
-      this.combinedCountProperty.set( this.combinedCountProperty.get() + coinTerm.combinedCountProperty.get() );
+      this.totalCountProperty.set( this.totalCountProperty.get() + coinTerm.totalCountProperty.get() );
       coinTerm.composition.forEach( function( minDecomposableValue ) {
         self.composition.push( minDecomposableValue );
       } );
@@ -248,7 +248,7 @@ define( function( require ) {
 
       // set this to be a single fully decomposed coin term
       this.composition.splice( 1 );
-      this.combinedCountProperty.set( this.composition[ 0 ] );
+      this.totalCountProperty.set( this.composition[ 0 ] );
 
       // return the list of extracted coin terms
       return extractedCoinTerms;

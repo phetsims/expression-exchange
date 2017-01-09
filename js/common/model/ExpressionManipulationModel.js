@@ -89,13 +89,13 @@ define( function( require ) {
     // @public, read only, factory used to create coin terms
     this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
 
-    // @public, read and listen only, tracks the total positive instances and combined instances for each coin term type
+    // @public, read and listen only, tracks the total positive count for each coin term type
     this.positiveCoinTermCountsByType = {};
     _.keys( CoinTermTypeID ).forEach( function( key ) {
       self.positiveCoinTermCountsByType[ constantToCamelCase( key ) ] = new Property( 0 );
     } );
 
-    // @public, read and listen only, tracks the total negative instances and combined instances for each coin term type
+    // @public, read and listen only, tracks the total negative count for each coin term type
     this.negativeCoinTermCountsByType = {};
     _.keys( CoinTermTypeID ).forEach( function( key ) {
       self.negativeCoinTermCountsByType[ constantToCamelCase( key ) ] = new Property( 0 );
@@ -130,7 +130,7 @@ define( function( require ) {
     function updateTotal() {
       var total = 0;
       self.coinTerms.forEach( function( coinTerm ) {
-        total += coinTerm.valueProperty.value * coinTerm.combinedCountProperty.get();
+        total += coinTerm.valueProperty.value * coinTerm.totalCountProperty.get();
       } );
       self.totalValueProperty.set( total );
     }
@@ -229,8 +229,8 @@ define( function( require ) {
             if ( overlappingLikeCoinTerm ) {
 
               // combine the dropped coin term with the one with which it overlaps
-              overlappingLikeCoinTerm.combinedCountProperty.set( overlappingLikeCoinTerm.combinedCountProperty.get() +
-                                                                 addedCoinTerm.combinedCountProperty.get() );
+              overlappingLikeCoinTerm.totalCountProperty.set( overlappingLikeCoinTerm.totalCountProperty.get() +
+                                                              addedCoinTerm.totalCountProperty.get() );
               self.removeCoinTerm( addedCoinTerm );
             }
             else {
@@ -706,11 +706,11 @@ define( function( require ) {
       // update the positive and negative count values
       this.coinTerms.forEach( function( coinTerm ) {
         if ( coinTerm.typeID === coinTermTypeID ) {
-          if ( coinTerm.combinedCountProperty.get() > 0 ) {
-            positiveCountForThisType += coinTerm.combinedCountProperty.get();
+          if ( coinTerm.totalCountProperty.get() > 0 ) {
+            positiveCountForThisType += coinTerm.totalCountProperty.get();
           }
           else {
-            negativeCountForThisType += Math.abs( coinTerm.combinedCountProperty.get() );
+            negativeCountForThisType += Math.abs( coinTerm.totalCountProperty.get() );
           }
         }
       } );
@@ -948,8 +948,8 @@ define( function( require ) {
     getPositiveCoinTermCount: function( typeID ) {
       var count = 0;
       this.coinTerms.forEach( function( coinTerm ) {
-        if ( typeID === coinTerm.typeID && coinTerm.combinedCountProperty.get() > 0 ) {
-          count += coinTerm.combinedCountProperty.get();
+        if ( typeID === coinTerm.typeID && coinTerm.totalCountProperty.get() > 0 ) {
+          count += coinTerm.totalCountProperty.get();
         }
       } );
       return count;
@@ -963,8 +963,8 @@ define( function( require ) {
     getNegativeCoinTermCount: function( typeID ) {
       var count = 0;
       this.coinTerms.forEach( function( coinTerm ) {
-        if ( typeID === coinTerm.typeID && coinTerm.combinedCountProperty.get() < 0 ) {
-          count += Math.abs( coinTerm.combinedCountProperty.get() );
+        if ( typeID === coinTerm.typeID && coinTerm.totalCountProperty.get() < 0 ) {
+          count += Math.abs( coinTerm.totalCountProperty.get() );
         }
       } );
       return count;
