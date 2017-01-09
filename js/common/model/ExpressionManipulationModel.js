@@ -173,13 +173,10 @@ define( function( require ) {
 
               if ( mostOverlappingLikeCoinTerm ) {
 
-                // combine the coin terms into a single coin term with a higher "combine count"
+                // combine the two coin terms into a single coin term
                 addedCoinTerm.travelToDestination( mostOverlappingLikeCoinTerm.positionProperty.get() );
                 addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
-                  mostOverlappingLikeCoinTerm.combinedCountProperty.set(
-                    mostOverlappingLikeCoinTerm.combinedCountProperty.get() +
-                    addedCoinTerm.combinedCountProperty.get()
-                  );
+                  mostOverlappingLikeCoinTerm.absorb( addedCoinTerm );
                   self.removeCoinTerm( addedCoinTerm, false );
                   addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
                 } );
@@ -250,19 +247,16 @@ define( function( require ) {
       // add a listener that will handle requests to break apart the coin term
       function coinTermBreakApartListener() {
 
-        if ( Math.abs( addedCoinTerm.combinedCountProperty.get() ) < 2 ) {
-          // bail if the coin is a single
+        if ( addedCoinTerm.composition.length < 2 ) {
+          // bail if the coin term can't be decomposed
           return;
         }
-        var numToCreate = Math.abs( addedCoinTerm.combinedCountProperty.get() ) - 1;
+        var extractedCoinTerms = addedCoinTerm.extractConstituentCoinTerms();
         var relativeViewBounds = addedCoinTerm.relativeViewBoundsProperty.get();
-
-        // set this coin back to being a single, keeping the sign the same
-        addedCoinTerm.combinedCountProperty.set( addedCoinTerm.combinedCountProperty.get() > 0 ? 1 : -1 );
 
         // If the total combined coin count was even, shift the 'parent coin' a bit so that the coins end up being
         // distributed around the centerX position.
-        if ( numToCreate % 2 === 1 ) {
+        if ( extractedCoinTerms.length % 2 === 1 ) {
           addedCoinTerm.travelToDestination(
             new Vector2(
               addedCoinTerm.positionProperty.get().x - relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
@@ -271,14 +265,13 @@ define( function( require ) {
           );
         }
 
-        // add new coin terms to represent those that were broken out from the initial one
+        // add the extracted coin terms to the model
         var interCoinTermDistance = relativeViewBounds.width + BREAK_APART_SPACING;
         var nextLeftX = addedCoinTerm.destinationProperty.get().x - interCoinTermDistance;
         var nextRightX = addedCoinTerm.destinationProperty.get().x + interCoinTermDistance;
-        _.times( numToCreate, function( index ) {
-          var clonedCoinTerm = addedCoinTerm.cloneMostly();
+        extractedCoinTerms.forEach( function( extractedCoinTerm, index ) {
           var destination;
-          self.addCoinTerm( clonedCoinTerm );
+          self.addCoinTerm( extractedCoinTerm );
           if ( index % 2 === 0 ) {
             destination = new Vector2( nextRightX, addedCoinTerm.positionProperty.get().y );
             nextRightX += interCoinTermDistance;
@@ -294,7 +287,7 @@ define( function( require ) {
           }
 
           // initiate the animation
-          clonedCoinTerm.travelToDestination( destination );
+          extractedCoinTerm.travelToDestination( destination );
         } );
       }
 
