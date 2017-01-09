@@ -214,6 +214,7 @@ define( function( require ) {
      * @param {CoinTerm} coinTerm
      */
     absorb: function( coinTerm ) {
+      assert && assert( this.typeID === coinTerm.typeID, 'can\'t combine coin terms of different types' );
       var self = this;
       this.combinedCountProperty.set( this.combinedCountProperty.get() + coinTerm.combinedCountProperty.get() );
       coinTerm.composition.forEach( function( minDecomposableValue ) {
