@@ -37,6 +37,15 @@ implementation, but may be a little confusing to anyone coming in to maintain th
 model element, i.e. CoinTerm, that can map to one of two view elements, i.e. VariableCoinTermNode and
 ConstantCoinTermNode.  Not a huge deal, but probably worth a "heads up" here in this document.
 
+In the non-game screens, coin terms can always be broken down into 'atomic' elements, for instance, a 2x can always be
+broken down into 2 separate coin terms of 1x each.  This is not true in the game screen - if a 2x moved into the play
+area, it can't be broken apart.  If it is then combined with a 3x to form a 5x, and then broken apart, it will go back
+into a 2x and 3x.  Because of this, the coin terms have to track their composition.  For the non-game screen, composite
+coin terms are always composed of individual coin terms, e.g. a single x, whereas on the game screen the coin terms can
+be composed of pre-combined values that can't be further decomposed.
+
 Note to self (jbphet): I sent myself a snapshot of my whiteboard on 7/22/2016.  When finalizing this document, look it
 over see if it inspires thoughts on other things to add to this doc.  Something about the expression overlay node
 would probably be good, for instance.
+
+
