@@ -94,7 +94,7 @@ define( function( require ) {
 
         var width = Math.max( coinImageNode.width, termText.width, termWithVariableValuesText.width );
 
-        if ( coefficientText.visible || Math.abs( coinTerm.combinedCountProperty.get() ) > 1 ) {
+        if ( coefficientText.visible || Math.abs( coinTerm.totalCountProperty.get() ) > 1 ) {
           width += coefficientText.width + COEFFICIENT_X_SPACING;
         }
 
@@ -123,11 +123,11 @@ define( function( require ) {
       coinValueText.visible = viewModeProperty.value === ViewMode.COINS && showCoinValuesProperty.value;
 
       // determine if the coefficient is visible, since this will be used several times below
-      var coefficientVisible = Math.abs( coinTerm.combinedCountProperty.get() ) !== 1 ||
+      var coefficientVisible = Math.abs( coinTerm.totalCountProperty.get() ) !== 1 ||
                                showAllCoefficientsProperty.value;
 
       // update the term text, which only changes if it switches from positive to negative
-      if ( coinTerm.combinedCountProperty.get() < 0 && !coefficientVisible &&
+      if ( coinTerm.totalCountProperty.get() < 0 && !coefficientVisible &&
            coinTerm.showMinusSignWhenNegativeProperty.get() ) {
 
         termText.text = '-' + coinTerm.termText;
@@ -146,7 +146,7 @@ define( function( require ) {
 
       // term value text, which shows the variable values and operators such as exponents
       var termValueText = coinTerm.termValueTextProperty.value;
-      if ( coinTerm.combinedCountProperty.get() === -1 && !showAllCoefficientsProperty.value &&
+      if ( coinTerm.totalCountProperty.get() === -1 && !showAllCoefficientsProperty.value &&
            coinTerm.showMinusSignWhenNegativeProperty.get() ) {
         // prepend a minus sign
         termValueText = '-' + termValueText;
@@ -165,8 +165,8 @@ define( function( require ) {
 
       // coefficient value and visibility
       coefficientText.text = coinTerm.showMinusSignWhenNegativeProperty.get() ?
-                             coinTerm.combinedCountProperty.get() :
-                             Math.abs( coinTerm.combinedCountProperty.get() );
+                             coinTerm.totalCountProperty.get() :
+                             Math.abs( coinTerm.totalCountProperty.get() );
       coefficientText.visible = coefficientVisible;
 
       // position the coefficient
@@ -195,7 +195,7 @@ define( function( require ) {
     // if anything about the coin term's values changes or any of the display mode, the representation needs to be updated
     var updateRepresentationMultilink = Property.multilink(
       [
-        coinTerm.combinedCountProperty,
+        coinTerm.totalCountProperty,
         coinTerm.valueProperty,
         coinTerm.termValueTextProperty,
         coinTerm.showMinusSignWhenNegativeProperty,

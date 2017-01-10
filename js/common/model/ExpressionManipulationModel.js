@@ -89,13 +89,13 @@ define( function( require ) {
     // @public, read only, factory used to create coin terms
     this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
 
-    // @public, read and listen only, tracks the total positive instances and combined instances for each coin term type
+    // @public, read and listen only, tracks the total positive count for each coin term type
     this.positiveCoinTermCountsByType = {};
     _.keys( CoinTermTypeID ).forEach( function( key ) {
       self.positiveCoinTermCountsByType[ constantToCamelCase( key ) ] = new Property( 0 );
     } );
 
-    // @public, read and listen only, tracks the total negative instances and combined instances for each coin term type
+    // @public, read and listen only, tracks the total negative count for each coin term type
     this.negativeCoinTermCountsByType = {};
     _.keys( CoinTermTypeID ).forEach( function( key ) {
       self.negativeCoinTermCountsByType[ constantToCamelCase( key ) ] = new Property( 0 );
@@ -130,7 +130,7 @@ define( function( require ) {
     function updateTotal() {
       var total = 0;
       self.coinTerms.forEach( function( coinTerm ) {
-        total += coinTerm.valueProperty.value * coinTerm.combinedCountProperty.get();
+        total += coinTerm.valueProperty.value * coinTerm.totalCountProperty.get();
       } );
       self.totalValueProperty.set( total );
     }
@@ -173,13 +173,10 @@ define( function( require ) {
 
               if ( mostOverlappingLikeCoinTerm ) {
 
-                // combine the coin terms into a single coin term with a higher "combine count"
+                // combine the two coin terms into a single coin term
                 addedCoinTerm.travelToDestination( mostOverlappingLikeCoinTerm.positionProperty.get() );
                 addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
-                  mostOverlappingLikeCoinTerm.combinedCountProperty.set(
-                    mostOverlappingLikeCoinTerm.combinedCountProperty.get() +
-                    addedCoinTerm.combinedCountProperty.get()
-                  );
+                  mostOverlappingLikeCoinTerm.absorb( addedCoinTerm );
                   self.removeCoinTerm( addedCoinTerm, false );
                   addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
                 } );
@@ -232,8 +229,8 @@ define( function( require ) {
             if ( overlappingLikeCoinTerm ) {
 
               // combine the dropped coin term with the one with which it overlaps
-              overlappingLikeCoinTerm.combinedCountProperty.set( overlappingLikeCoinTerm.combinedCountProperty.get() +
-                                                                 addedCoinTerm.combinedCountProperty.get() );
+              overlappingLikeCoinTerm.totalCountProperty.set( overlappingLikeCoinTerm.totalCountProperty.get() +
+                                                              addedCoinTerm.totalCountProperty.get() );
               self.removeCoinTerm( addedCoinTerm );
             }
             else {
@@ -250,19 +247,16 @@ define( function( require ) {
       // add a listener that will handle requests to break apart the coin term
       function coinTermBreakApartListener() {
 
-        if ( Math.abs( addedCoinTerm.combinedCountProperty.get() ) < 2 ) {
-          // bail if the coin is a single
+        if ( addedCoinTerm.composition.length < 2 ) {
+          // bail if the coin term can't be decomposed
           return;
         }
-        var numToCreate = Math.abs( addedCoinTerm.combinedCountProperty.get() ) - 1;
+        var extractedCoinTerms = addedCoinTerm.extractConstituentCoinTerms();
         var relativeViewBounds = addedCoinTerm.relativeViewBoundsProperty.get();
-
-        // set this coin back to being a single, keeping the sign the same
-        addedCoinTerm.combinedCountProperty.set( addedCoinTerm.combinedCountProperty.get() > 0 ? 1 : -1 );
 
         // If the total combined coin count was even, shift the 'parent coin' a bit so that the coins end up being
         // distributed around the centerX position.
-        if ( numToCreate % 2 === 1 ) {
+        if ( extractedCoinTerms.length % 2 === 1 ) {
           addedCoinTerm.travelToDestination(
             new Vector2(
               addedCoinTerm.positionProperty.get().x - relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
@@ -271,14 +265,13 @@ define( function( require ) {
           );
         }
 
-        // add new coin terms to represent those that were broken out from the initial one
+        // add the extracted coin terms to the model
         var interCoinTermDistance = relativeViewBounds.width + BREAK_APART_SPACING;
         var nextLeftX = addedCoinTerm.destinationProperty.get().x - interCoinTermDistance;
         var nextRightX = addedCoinTerm.destinationProperty.get().x + interCoinTermDistance;
-        _.times( numToCreate, function( index ) {
-          var clonedCoinTerm = addedCoinTerm.cloneMostly();
+        extractedCoinTerms.forEach( function( extractedCoinTerm, index ) {
           var destination;
-          self.addCoinTerm( clonedCoinTerm );
+          self.addCoinTerm( extractedCoinTerm );
           if ( index % 2 === 0 ) {
             destination = new Vector2( nextRightX, addedCoinTerm.positionProperty.get().y );
             nextRightX += interCoinTermDistance;
@@ -294,7 +287,7 @@ define( function( require ) {
           }
 
           // initiate the animation
-          clonedCoinTerm.travelToDestination( destination );
+          extractedCoinTerm.travelToDestination( destination );
         } );
       }
 
@@ -713,11 +706,11 @@ define( function( require ) {
       // update the positive and negative count values
       this.coinTerms.forEach( function( coinTerm ) {
         if ( coinTerm.typeID === coinTermTypeID ) {
-          if ( coinTerm.combinedCountProperty.get() > 0 ) {
-            positiveCountForThisType += coinTerm.combinedCountProperty.get();
+          if ( coinTerm.totalCountProperty.get() > 0 ) {
+            positiveCountForThisType += coinTerm.totalCountProperty.get();
           }
           else {
-            negativeCountForThisType += Math.abs( coinTerm.combinedCountProperty.get() );
+            negativeCountForThisType += Math.abs( coinTerm.totalCountProperty.get() );
           }
         }
       } );
@@ -955,8 +948,8 @@ define( function( require ) {
     getPositiveCoinTermCount: function( typeID ) {
       var count = 0;
       this.coinTerms.forEach( function( coinTerm ) {
-        if ( typeID === coinTerm.typeID && coinTerm.combinedCountProperty.get() > 0 ) {
-          count += coinTerm.combinedCountProperty.get();
+        if ( typeID === coinTerm.typeID && coinTerm.totalCountProperty.get() > 0 ) {
+          count += coinTerm.totalCountProperty.get();
         }
       } );
       return count;
@@ -970,8 +963,8 @@ define( function( require ) {
     getNegativeCoinTermCount: function( typeID ) {
       var count = 0;
       this.coinTerms.forEach( function( coinTerm ) {
-        if ( typeID === coinTerm.typeID && coinTerm.combinedCountProperty.get() < 0 ) {
-          count += Math.abs( coinTerm.combinedCountProperty.get() );
+        if ( typeID === coinTerm.typeID && coinTerm.totalCountProperty.get() < 0 ) {
+          count += Math.abs( coinTerm.totalCountProperty.get() );
         }
       } );
       return count;

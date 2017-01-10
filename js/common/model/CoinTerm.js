@@ -37,12 +37,16 @@ define( function( require ) {
   function CoinTerm( valueProperty, coinRadius, termText, termValueTextProperty, typeID, options ) {
 
     var self = this;
-    this.id = 'CT-' + (++creationCount);
+    this.id = 'CT-' + ( ++creationCount ); // @public, read only, unique ID useful for debugging
 
     options = _.extend( {
-      initialCount: 1,
+      initialCount: 1, // number of instances of this coin term initially combined together, can be negative
       initialPosition: Vector2.ZERO,
-      initiallyOnCard: false
+      initiallyOnCard: false,
+
+      // flag that controls whether this can be broken down below its initial count, only looked at if the absolute
+      // value of the initial count is greater than one
+      decomposable: true
     }, options );
 
     //------------------------------------------------------------------------
@@ -58,8 +62,8 @@ define( function( require ) {
     // @public (read only), tracks the current in-progress animation, if any
     this.inProgressAnimationProperty = new Property( null );
 
-    // @public, number of coins/terms combined into this one, can be negative
-    this.combinedCountProperty = new Property( options.initialCount );
+    // @public, total number of coins/terms combined into this one, can be negative
+    this.totalCountProperty = new Property( options.initialCount );
 
     // @public, flag set to disallow breaking apart, generally used when coin term is in or over an expression
     this.breakApartAllowedProperty = new Property( true );
@@ -91,6 +95,17 @@ define( function( require ) {
     // @public, listen only, a property with contains the text that should be shown when displaying term value
     this.termValueTextProperty = termValueTextProperty;
 
+    // @public, read only, tracks what this coin term is composed of and what it can be broken down into
+    this.composition = [];
+    if ( Math.abs( options.initialCount ) > 1 && options.decomposable ) {
+      _.times( Math.abs( options.initialCount ), function() {
+        self.composition.push( options.initialCount > 0 ? 1 : -1 );
+      } );
+    }
+    else {
+      this.composition.push( options.initialCount );
+    }
+
     //------------------------------------------------------------------------
     // emitters
     //------------------------------------------------------------------------
@@ -118,9 +133,9 @@ define( function( require ) {
       }
     } );
 
-    // monitor combined count, start fading the existence strength if the count goes to zero
-    this.combinedCountProperty.lazyLink( function( combinedCount ) {
-      if ( combinedCount === 0 ) {
+    // monitor the total count, start fading the existence strength if it goes to zero
+    this.totalCountProperty.lazyLink( function( totalCount ) {
+      if ( totalCount === 0 ) {
 
         // start the periodic timer that will fade the existence strength to zero
         var timerInterval = Timer.setInterval( function() {
@@ -195,30 +210,57 @@ define( function( require ) {
     },
 
     /**
+     * absorb the provided coin term into this one
+     * @param {CoinTerm} coinTerm
+     */
+    absorb: function( coinTerm ) {
+      assert && assert( this.typeID === coinTerm.typeID, 'can\'t combine coin terms of different types' );
+      var self = this;
+      this.totalCountProperty.set( this.totalCountProperty.get() + coinTerm.totalCountProperty.get() );
+      coinTerm.composition.forEach( function( minDecomposableValue ) {
+        self.composition.push( minDecomposableValue );
+      } );
+    },
+
+    /**
+     * pull out the coin terms from which this one is composed, omitting the first one
+     * returns Array.<CoinTerm>
+     */
+    extractConstituentCoinTerms: function() {
+      var extractedCoinTerms = [];
+
+      // create a coin term to reflect each one from which this one is composed
+      for ( var i = 1; i < this.composition.length; i++ ) {
+        var clone = new CoinTerm(
+          this.valueProperty,
+          this.coinRadius,
+          this.termText,
+          this.termValueTextProperty,
+          this.typeID,
+          {
+            initialCount: this.composition[ i ],
+            initialPosition: this.initialPosition,
+            decomposable: false
+          } );
+        clone.setPositionAndDestination( this.positionProperty.get() );
+        extractedCoinTerms.push( clone );
+      }
+
+      // set this to be a single fully decomposed coin term
+      this.composition.splice( 1 );
+      this.totalCountProperty.set( this.composition[ 0 ] );
+
+      // return the list of extracted coin terms
+      return extractedCoinTerms;
+    },
+
+    /**
      * initiate a break apart, which just emits an event and counts on parent model to handle
      * @public
      */
     breakApart: function() {
-      assert && assert( Math.abs( this.combinedCountProperty.get() ) > 1, 'coin term can\'t be broken apart' );
+      assert && assert( Math.abs( this.composition.length ) > 1, 'coin term can\'t be broken apart' );
       this.breakApartEmitter.emit();
-    },
-
-    /**
-     * Get a coin term with all of the same fixed attributes and the same position.  Some attributes, such as
-     * userControlled, are not copied.
-     * @returns {CoinTerm}
-     * @public
-     */
-    cloneMostly: function() {
-      var clone = new CoinTerm(
-        this.valueProperty,
-        this.coinRadius,
-        this.termText,
-        this.termValueTextProperty,
-        this.typeID,
-        { initialCount: this.combinedCountProperty.get(), initialPosition: this.initialPosition } );
-      clone.setPositionAndDestination( this.positionProperty.get() );
-      return clone;
     },
 
     /**

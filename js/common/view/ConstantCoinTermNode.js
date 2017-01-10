@@ -74,10 +74,10 @@ define( function( require ) {
 
       // update value text
       if ( constantCoinTerm.showMinusSignWhenNegativeProperty.get() ){
-        valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.combinedCountProperty.value;
+        valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value;
       }
       else{
-        valueText.text = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.combinedCountProperty.value );
+        valueText.text = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value );
       }
 
       // update position
@@ -95,7 +95,7 @@ define( function( require ) {
 
     // update the representation when model properties that affect it change
     var updateRepresentationMultilink = Property.multilink(
-      [ constantCoinTerm.combinedCountProperty, constantCoinTerm.showMinusSignWhenNegativeProperty ],
+      [ constantCoinTerm.totalCountProperty, constantCoinTerm.showMinusSignWhenNegativeProperty ],
       updateRepresentation
     );
 
