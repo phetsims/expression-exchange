@@ -211,15 +211,34 @@ define( function( require ) {
 
     /**
      * absorb the provided coin term into this one
-     * @param {CoinTerm} coinTerm
+     * @param {CoinTerm} coinTermToAbsorb
+     * @param {boolean} doPartialCancellation - controls whether opposite terms in the composition cancel one another
+     * or are retained, for example, when combining a coin term composed of [ -1, -1 ] with one composed of [ 1 ] and
+     * doPartialCancellation set to true, the result is [ -1 ], if false, it's [ 1, -1, -1 ].
      */
-    absorb: function( coinTerm ) {
-      assert && assert( this.typeID === coinTerm.typeID, 'can\'t combine coin terms of different types' );
+    absorb: function( coinTermToAbsorb, doPartialCancellation ) {
+      assert && assert( this.typeID === coinTermToAbsorb.typeID, 'can\'t combine coin terms of different types' );
       var self = this;
-      this.totalCountProperty.set( this.totalCountProperty.get() + coinTerm.totalCountProperty.get() );
-      coinTerm.composition.forEach( function( minDecomposableValue ) {
-        self.composition.push( minDecomposableValue );
-      } );
+      this.totalCountProperty.set( this.totalCountProperty.get() + coinTermToAbsorb.totalCountProperty.get() );
+
+      if ( doPartialCancellation ) {
+        coinTermToAbsorb.composition.forEach( function( minDecomposableValue ) {
+          var index = self.composition.indexOf( -1 * minDecomposableValue );
+          if ( index > -1 ) {
+            // cancel this value from the composition of the receiving coin term
+            self.composition.splice( index, 1 );
+          }
+          else {
+            // add this element of the incoming coin term to the receiving coin term
+            self.composition.push( minDecomposableValue );
+          }
+        } );
+      }
+      else {
+        coinTermToAbsorb.composition.forEach( function( minDecomposableValue ) {
+          self.composition.push( minDecomposableValue );
+        } );
+      }
     },
 
     /**

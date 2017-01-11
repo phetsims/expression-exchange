@@ -17,6 +17,7 @@ define( function( require ) {
   var CoinTermCreatorSet = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSet' );
   var CoinTermFactory = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermFactory' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
@@ -53,6 +54,7 @@ define( function( require ) {
 
   /**
    * @constructor
+   * {Object} options
    */
   function ExpressionManipulationModel( options ) {
 
@@ -66,7 +68,10 @@ define( function( require ) {
       coinTermCollection: CoinTermCreatorSet.BASIC,
 
       // defines whether to present just coins, just variables, or both to the user
-      allowedRepresentations: AllowedRepresentationsEnum.COINS_AND_VARIABLES
+      allowedRepresentations: AllowedRepresentationsEnum.COINS_AND_VARIABLES,
+
+      // flag that controls how cancellation is handled in cases where coin terms don't completely cancel each other out
+      partialCancellationEnabled: true
 
     }, options );
 
@@ -116,6 +121,27 @@ define( function( require ) {
 
     // @public, should be set only once, coin terms that end up outside these bounds are moved back inside the bounds
     this.coinTermRetrievalBounds = Bounds2.EVERYTHING;
+
+    /*
+     * @private, with some elements accessible via methods define below - This is a populated data structure that
+     * contains counts for the various possible combinations of coin term types and minimum decomposition.  For
+     * instance, it keeps track of the number of 2X values that can't be further decomposed.
+     *
+     * This is structured as an object with each of the possible coin term types as the keys.  Each of the values is
+     * an array that is indexed by the minimum decomposibility, but is offset to account for the fact that the values
+     * can be negative, such as for the number of instances of -2x.  Each element of the array is an object that has
+     * a count value and a count property.  The counts are updated any time a coin term is added or removed.  The count
+     * properties are created lazily when requested via methods defined below, and are updated at the same time as the
+     * counts if they exist.
+     */
+    this.coinTermCounts = {};
+    var countObjectsPerCoinTermType = EESharedConstants.MAX_NON_DECOMPOSABLE_AMOUNT * 2 + 1;
+    _.keys( CoinTermTypeID ).forEach( function( coinTermType ) {
+      self.coinTermCounts[ coinTermType ] = new Array( countObjectsPerCoinTermType );
+      _.times( countObjectsPerCoinTermType, function( index ) {
+        self.coinTermCounts[ coinTermType ][ index ] = { count: 0, countProperty: null };
+      } );
+    } );
 
     // add a listener that resets the coin term values when the view mode switches from variables to coins
     this.viewModeProperty.link( function( newViewMode, oldViewMode ) {
@@ -176,7 +202,7 @@ define( function( require ) {
                 // combine the two coin terms into a single coin term
                 addedCoinTerm.travelToDestination( mostOverlappingLikeCoinTerm.positionProperty.get() );
                 addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
-                  mostOverlappingLikeCoinTerm.absorb( addedCoinTerm );
+                  mostOverlappingLikeCoinTerm.absorb( addedCoinTerm, options.partialCancellationEnabled );
                   self.removeCoinTerm( addedCoinTerm, false );
                   addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
                 } );
@@ -656,6 +682,7 @@ define( function( require ) {
     addCoinTerm: function( coinTerm ) {
       this.coinTerms.add( coinTerm );
       this.updateCoinTermCount( coinTerm.typeID );
+      this.updateCoinTermCounts( coinTerm.typeID );
       expressionExchange.log && expressionExchange.log( 'added ' + coinTerm.id );
     },
 
@@ -676,7 +703,35 @@ define( function( require ) {
           }
         } );
         this.updateCoinTermCount( coinTerm.typeID );
+        this.updateCoinTermCounts( coinTerm.typeID );
       }
+    },
+
+    /**
+     * TODO: finish documenting if retained
+     * @param coinTermTypeID
+     * @param minimumDecomposition
+     * @param createIfUndefined
+     */
+    getCoinTermCountProperty: function( coinTermTypeID, minimumDecomposition, createIfUndefined ) {
+      assert && assert( this.coinTermCounts.hasOwnProperty( coinTermTypeID ), 'unrecognized coin term type ID' );
+      assert && assert( minimumDecomposition !== 0, 'minimumDecomposition cannot be 0' );
+
+      // Calculate the corresponding index into the data structure - this is necessary in order to support negative
+      // minimum decomposition values, e.g. -3X.
+      var countPropertyIndex = minimumDecomposition + EESharedConstants.MAX_NON_DECOMPOSABLE_AMOUNT;
+
+      // get the property or, if specified, create it
+      var coinTermCountProperty = this.coinTermCounts[ coinTermTypeID ][ countPropertyIndex ].countProperty;
+      if ( coinTermCountProperty === null && createIfUndefined ) {
+
+        // the requested count property does not yet exist - create and add it
+        coinTermCountProperty = new Property( 0 );
+        coinTermCountProperty.set( this.coinTermCounts[ coinTermTypeID ][ countPropertyIndex ].count );
+        this.coinTermCounts[ coinTermTypeID ][ countPropertyIndex ].countProperty = coinTermCountProperty;
+      }
+
+      return coinTermCountProperty;
     },
 
     /**
@@ -718,32 +773,31 @@ define( function( require ) {
       this.negativeCoinTermCountsByType[ convertedTypeID ].set( negativeCountForThisType );
     },
 
-    /**
-     * get the positive count property for the given coin term type
-     * @param {CoinTermTypeID} typeID
-     * @public
-     */
-    getPositiveCountPropertyForType: function( typeID ) {
-      var convertedTypeID = constantToCamelCase( typeID );
-      assert && assert(
-        typeof( this.positiveCoinTermCountsByType[ convertedTypeID ] === 'number' ),
-        'no positive count for coin term type ' + convertedTypeID
-      );
-      return this.positiveCoinTermCountsByType[ convertedTypeID ];
-    },
+    // @private - update the count properties for the specified coin term type
+    updateCoinTermCounts: function( coinTermTypeID ) {
 
-    /**
-     * get the negative count property for the given coin term type
-     * @param {CoinTermTypeID} typeID
-     * @public
-     */
-    getNegativeCountPropertyForType: function( typeID ) {
-      var convertedTypeID = constantToCamelCase( typeID );
-      assert && assert(
-        typeof( this.negativeCoinTermCountsByType[ convertedTypeID ] === 'number' ),
-        'no negative count for coin term type ' + convertedTypeID
-      );
-      return this.negativeCoinTermCountsByType[ convertedTypeID ];
+      var self = this;
+
+      // zero the non-property version of the counts
+      this.coinTermCounts[ coinTermTypeID ].forEach( function( countObject ) {
+        countObject.count = 0;
+      } );
+
+      // loop through the current set of coin terms and update counts for the specified coin term type
+      this.coinTerms.forEach( function( coinTerm ) {
+        if ( coinTerm.typeID === coinTermTypeID ) {
+          coinTerm.composition.forEach( function( minDecomposition ) {
+            self.coinTermCounts[ coinTermTypeID ][ minDecomposition + EESharedConstants.MAX_NON_DECOMPOSABLE_AMOUNT ].count++;
+          } );
+        }
+      } );
+
+      // update any count properties that exist
+      this.coinTermCounts[ coinTermTypeID ].forEach( function( countObject ) {
+        if ( countObject.countProperty ) {
+          countObject.countProperty.set( countObject.count );
+        }
+      } );
     },
 
     // @public - remove the specified expression
@@ -881,6 +935,12 @@ define( function( require ) {
       this.totalValueProperty.reset();
       this.expressionBeingEditedProperty.reset();
       this.simplifyNegativesProperty.reset();
+      _.values( this.coinTermCounts ).forEach( function( coinTermCountArray ) {
+        coinTermCountArray.forEach( function( coinTermCountObject ) {
+          coinTermCountObject.count = 0;
+          coinTermCountObject.countProperty && coinTermCountObject.countProperty.reset();
+        } );
+      } );
 
       _.keys( CoinTermTypeID ).forEach( function( coinTermTypeID ) {
         var key = constantToCamelCase( coinTermTypeID );
@@ -938,36 +998,6 @@ define( function( require ) {
         }
       } );
       return joinableFreeCoinTerm;
-    },
-
-    /**
-     * get the positive total count value for the specified coin term type
-     * @param {CoinTermTypeID} typeID
-     * @public
-     */
-    getPositiveCoinTermCount: function( typeID ) {
-      var count = 0;
-      this.coinTerms.forEach( function( coinTerm ) {
-        if ( typeID === coinTerm.typeID && coinTerm.totalCountProperty.get() > 0 ) {
-          count += coinTerm.totalCountProperty.get();
-        }
-      } );
-      return count;
-    },
-
-    /**
-     * get the negative total count value for the specified coin term type
-     * @param {CoinTermTypeID} typeID
-     * @public
-     */
-    getNegativeCoinTermCount: function( typeID ) {
-      var count = 0;
-      this.coinTerms.forEach( function( coinTerm ) {
-        if ( typeID === coinTerm.typeID && coinTerm.totalCountProperty.get() < 0 ) {
-          count += Math.abs( coinTerm.totalCountProperty.get() );
-        }
-      } );
-      return count;
     },
 
     // @private, get the amount of overlap given two coin terms by comparing position and coin radius

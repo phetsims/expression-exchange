@@ -47,13 +47,11 @@ define( function( require ) {
     descriptorSet.forEach( function( coinTermCreatorDescriptor ) {
 
       // select the appropriate property from the model so that positive and negative counts are property tracked
-      var createdCountProperty;
-      if ( coinTermCreatorDescriptor.initialCount > 0 ) {
-        createdCountProperty = model.getPositiveCountPropertyForType( coinTermCreatorDescriptor.typeID );
-      }
-      else {
-        createdCountProperty = model.getNegativeCountPropertyForType( coinTermCreatorDescriptor.typeID );
-      }
+      var createdCountProperty = model.getCoinTermCountProperty(
+        coinTermCreatorDescriptor.typeID,
+        coinTermCreatorDescriptor.initialCount > 0 ? 1 : -1,
+        true
+      );
 
       // In some cases, the creator node should appear to be on a card so that it overlaps well with others.  That
       // determination is made here.  However, the way this is done is a little bit hokey because the decision is made,

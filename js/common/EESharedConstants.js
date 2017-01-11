@@ -34,7 +34,10 @@ define( function( require ) {
     Z_VARIABLE_CHAR: 'z',
 
     // amount of time that the popup buttons are shown
-    POPUP_BUTTON_SHOW_TIME: 1.5 // in seconds
+    POPUP_BUTTON_SHOW_TIME: 1.5, // in seconds,
+
+    // largest supported value for a non-decomposable coin term, e.g. 8x
+    MAX_NON_DECOMPOSABLE_AMOUNT: 8
   };
 
   expressionExchange.register( 'EESharedConstants', EESharedConstants );
