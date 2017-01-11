@@ -15,7 +15,7 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Panel = require( 'SUN/Panel' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
+  var Property = require( 'AXON/Property' );
 
   // constants
   var CREATION_LIMIT_FOR_EXPLORE_SCREENS = 8;
@@ -46,21 +46,21 @@ define( function( require ) {
     var coinTermCreatorSet = [];
     descriptorSet.forEach( function( coinTermCreatorDescriptor ) {
 
-      // select the appropriate property from the model so that positive and negative counts are property tracked
-      var createdCountProperty = model.getCoinTermCountProperty(
-        coinTermCreatorDescriptor.typeID,
-        coinTermCreatorDescriptor.initialCount > 0 ? 1 : -1,
-        true
-      );
+      var numberToShowProperty;
 
-      // In some cases, the creator node should appear to be on a card so that it overlaps well with others.  That
-      // determination is made here.  However, the way this is done is a little bit hokey because the decision is made,
-      // in part, based on the view mode setting of the model at the time this is created.  This works because at the
-      // time of this writing, the cards are only used on the game screen and the game screens don't allow a change of
-      // representation.  If this ever changes, we may need to add something like "onCardProperty" to coin term nodes
-      // and allow it to be changed.
-      var onCard = options.staggeredCreatorNodes && ( coinTermCreatorDescriptor.initialCount > 1 ||
-                                                      model.viewModeProperty.get() === ViewMode.VARIABLES );
+      if ( options.staggeredCreatorNodes ) {
+        numberToShowProperty = new Property( coinTermCreatorDescriptor.creationLimit );
+      }
+      else {
+        numberToShowProperty = new Property( 1 );
+        model.getCoinTermCountProperty(
+          coinTermCreatorDescriptor.typeID,
+          coinTermCreatorDescriptor.initialCount,
+          true
+        ).link( function( count ) {
+          numberToShowProperty.set( count < coinTermCreatorDescriptor.creationLimit ? 1 : 0 )
+        } );
+      }
 
       // create the "creator node" and put it on the list of those that will be shown at the bottom of the view
       coinTermCreatorSet.push( new CoinTermCreatorNode(
@@ -68,12 +68,10 @@ define( function( require ) {
         coinTermCreatorDescriptor.typeID,
         model.coinTermFactory.createCoinTerm.bind( model.coinTermFactory ),
         {
-          initialCount: coinTermCreatorDescriptor.initialCount,
-          creationLimit: coinTermCreatorDescriptor.creationLimit,
-          createdCountProperty: createdCountProperty,
           dragBounds: coinTermDragBounds,
-          staggered: options.staggeredCreatorNodes,
-          onCard: onCard
+          initialCount: coinTermCreatorDescriptor.initialCount,
+          numberToShowProperty: numberToShowProperty,
+          maxNumberShown: options.staggeredCreatorNodes ? coinTermCreatorDescriptor.creationLimit : 1
         }
       ) );
 
