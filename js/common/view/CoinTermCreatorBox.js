@@ -42,6 +42,12 @@ define( function( require ) {
 
     this.negativeTermsPresent = false; // @public, read only
 
+    // @public, read only - list of the coin term types present in this creator box
+    this.coinTermTypeList = _.uniq( _.map(
+      descriptorSet,
+      function( descriptor ) { return descriptor.typeID; }
+    ) );
+
     // go through the provided set of descriptors and create the creator nodes for each
     var coinTermCreatorSet = [];
     descriptorSet.forEach( function( coinTermCreatorDescriptor ) {

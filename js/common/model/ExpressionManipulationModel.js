@@ -3,8 +3,8 @@
 /**
  * A model that allows users to move coin terms around, combine them into expressions, edit the expressions, change the
  * values of the underlying variables, and track different view modes.  This is the main model type used in all of the
- * non-game screens, and options are used to support the different restrictions for each screen.  It is intended to be
- * used as a base class.
+ * explore screens and for each of the game challenges.  Options are used to support the different restrictions for
+ * each screen.
  *
  * @author John Blanco
  */
@@ -14,7 +14,7 @@ define( function( require ) {
   // modules
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
   var Bounds2 = require( 'DOT/Bounds2' );
-  var CoinTermCreatorSet = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSet' );
+  var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var CoinTermFactory = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermFactory' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
@@ -63,9 +63,6 @@ define( function( require ) {
       // TODO: As I write this on 4/15/2016, it occurs to me that maybe the view, rather than the model, is where these
       // TODO: options need to be, and there would be a single model type and variations of the view type.  Revisit this
       // TODO: once the screen behaviors are fully established and refactor if it makes sense to do so.
-
-      // defines the set of coin terms presented to the user in the carousel
-      coinTermCollection: CoinTermCreatorSet.BASIC,
 
       // defines whether to present just coins, just variables, or both to the user
       allowedRepresentations: AllowedRepresentationsEnum.COINS_AND_VARIABLES,

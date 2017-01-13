@@ -1,8 +1,8 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * Base class for views where the user creates and manipulates expressions - used for the non-game screens.  This adds
- * the various control panels and indicators that are common to the non-game screens.
+ * Base class for views where the user creates and manipulates expressions - used for the explore screens.  This adds
+ * the various control panels and indicators that are common to the explore screens.
  *
  * @author John Blanco
  */
@@ -14,8 +14,8 @@ define( function( require ) {
   var AccordionBox = require( 'SUN/AccordionBox' );
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
   var CheckBox = require( 'SUN/CheckBox' );
-  var CoinTermCreatorBox = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBox' );
-  var CoinTermCreatorSet = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSet' );
+  var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
+  var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var CollectionDisplayNode = require( 'EXPRESSION_EXCHANGE/common/view/CollectionDisplayNode' );
   var Dimension2 = require( 'DOT/Dimension2' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
@@ -61,46 +61,21 @@ define( function( require ) {
 
   /**
    * @param {ExpressionManipulationModel} model
+   * @param {CoinTermCreatorSetID} coinTermCreatorSetID
    * @constructor
    */
-  function ExpressionExplorationScreenView( model ) {
+  function ExpressionExplorationScreenView( model, coinTermCreatorSetID ) {
 
     ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
 
     // set the bounds used to decide when coin terms need to be "pulled back"
     model.coinTermRetrievalBounds = this.layoutBounds;
 
-    // decide upon the set of coin term creator nodes that will be available on this screen
-    var coinTermCreatorDescriptors;
-    var coinTermCreatorsPerPage;
-    var coinTermCreatorSpacing;
-    if ( model.coinTermCollection === CoinTermCreatorSet.BASIC ) {
-      coinTermCreatorDescriptors = CoinTermCreatorBox.BASIC_SCREEN_CONFIG;
-      coinTermCreatorsPerPage = 3;
-      coinTermCreatorSpacing = 45;
-    }
-    else if ( model.coinTermCollection === CoinTermCreatorSet.EXPLORE ) {
-      coinTermCreatorDescriptors = CoinTermCreatorBox.EXPLORE_SCREEN_CONFIG;
-      coinTermCreatorsPerPage = 3;
-      coinTermCreatorSpacing = 45;
-    }
-    else {
-      coinTermCreatorDescriptors = CoinTermCreatorBox.VARIABLES_SCREEN_CONFIG;
-      coinTermCreatorsPerPage = 4;
-      coinTermCreatorSpacing = 40;
-    }
-
     // create the box with the coin term creator nodes
-    var coinTermCreatorBox = new CoinTermCreatorBox(
-      coinTermCreatorDescriptors,
+    var coinTermCreatorBox = CoinTermCreatorBoxFactory.createExploreScreenCreatorBox(
+      coinTermCreatorSetID,
       model,
-      this.layoutBounds,
-      {
-        centerX: this.layoutBounds.centerX,
-        bottom: this.layoutBounds.bottom - 50,
-        itemsPerCarouselPage: coinTermCreatorsPerPage,
-        itemSpacing: coinTermCreatorSpacing
-      }
+      { centerX: this.layoutBounds.centerX, bottom: this.layoutBounds.bottom - 50 }
     );
     this.addChild( coinTermCreatorBox );
 
@@ -151,7 +126,7 @@ define( function( require ) {
 
     // create the control that will allow the user to manipulate variable values
     var variableValueControl;
-    if ( model.coinTermCollection === CoinTermCreatorSet.ADVANCED ) {
+    if ( model.coinTermCollection === CoinTermCreatorSetID.VARIABLES ) {
 
       // the variable value control is slightly different for the advanced screen
       variableValueControl = new VariableValueControl( {
@@ -229,16 +204,15 @@ define( function( require ) {
     // TODO: The setting of the width for the "My Collection" element was empirically determined.  When the sim is
     // TODO: further along, I (jbphet) should revisit and see if there is a better way to do this.
     var collectionDisplayWidth = 150;
-    if ( model.coinTermCollection === CoinTermCreatorSet.EXPLORE ) {
+    if ( model.coinTermCollection === CoinTermCreatorSetID.EXPLORE ) {
       collectionDisplayWidth = 180;
     }
 
     // create the "My Collection" display element
-    var myCollectionDisplay = new CollectionDisplayNode(
-      model,
-      _.uniq( _.map( coinTermCreatorDescriptors, function( descriptor ) { return descriptor.typeID; } ) ),
-      { width: collectionDisplayWidth, showNegatives: coinTermCreatorBox.negativeTermsPresent }
-    );
+    var myCollectionDisplay = new CollectionDisplayNode( model, coinTermCreatorBox.coinTermTypeList, {
+      width: collectionDisplayWidth,
+      showNegatives: coinTermCreatorBox.negativeTermsPresent
+    } );
 
     // add accordion box that will contain the collection display
     var myCollectionAccordionBox = new AccordionBox( myCollectionDisplay, {

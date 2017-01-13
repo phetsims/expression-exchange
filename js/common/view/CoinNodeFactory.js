@@ -80,7 +80,7 @@ define( function( require ) {
 
 
   /**
-   * static factor object used to create nodes that represent coins
+   * static factory object used to create nodes that represent coins
    * @public
    */
   var CoinNodeFactory = {

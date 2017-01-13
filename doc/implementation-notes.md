@@ -6,11 +6,6 @@ coherent document before the simulation development can be considered complete.
 
 There is no MVT.
 
-There are three screens where the user is able to simply play with the coin terms and create expressions and manipulate
-expressions, and one screen where they play a game where they have to construct certain expressions specified by the
-game.  The former are referred to in the code and documentation (including the rest of this document) as "explore
-screens" and the latter as "game screens".
-
 CoinTerm is a fundamental model element, and it represents a thing that can either appear to be a coin or a
 mathematical term.  The name is used a lot throughout the code, so it's important to have a clear idea of what it is.
 It is a model object with a position, a front and back image to be used for the coin representation, and formula (which
@@ -20,11 +15,22 @@ behavior and appearance.
 The CoinTerm model element tracks its bounds in the view relative to its position.  This break strict MVC practices,
 but worked well for the needs of the sim.
 
+There are three screens where the user is able to simply play with the coin terms and create expressions and manipulate
+expressions, and one screen where they play a game where they have to construct certain expressions specified by the
+game.  The former are referred to in the code and documentation (including the rest of this document) as "explore
+screens" and the latter as the "game screen".
+
+There is a control that exists on every screen where the user creates and manipulates expressions that allows the user
+to create coin terms by clicking and dragging.  This is similar to what has been called a "tool box" in other PhET
+simulations, but since it doesn't create tools, this name didn't seem appropriate.  The term "coin term creator box"
+was a bit verbose, so the boxes are referred to in most places simply as a "creator box", e.g. the factory method
+"createExploreScreenCreatorBox".
+
+Term: "join zone".
+
 A decision was made that if a coin term overlaps multiple expressions, on the one with the most overlap should have its
 hints activated.  This means that the main model has to compare them and decide which one to activate, which means that
 this decision must be centralized in the main model rather than leaving it to the coin terms or expressions.
-
-Term: "join zone".
 
 The interactions between coin terms and expressions gets fairly complicated, which results in a fair amount of code to
 enforce the behavioral rules, update the various visual cues that indicate what will combine with what when released.

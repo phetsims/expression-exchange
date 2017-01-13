@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * possible view modes for the non-game screens
+ * possible view modes for the coin terms
  *
  * @author John Blanco
  */

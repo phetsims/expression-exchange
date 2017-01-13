@@ -10,7 +10,7 @@ define( function( require ) {
 
   // modules
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
-  var CoinTermCreatorSet = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSet' );
+  var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -21,7 +21,7 @@ define( function( require ) {
   function EEVariablesModel() {
 
     ExpressionManipulationModel.call( this, {
-      coinTermCollection: CoinTermCreatorSet.ADVANCED,
+      coinTermCollection: CoinTermCreatorSetID.VARIABLES,
       allowedRepresentations: AllowedRepresentationsEnum.VARIABLES_ONLY
     } );
 

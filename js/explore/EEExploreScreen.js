@@ -9,11 +9,12 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var EEExploreIconNode = require( 'EXPRESSION_EXCHANGE/explore/view/EEExploreIconNode' );
-  var EEExploreModel = require( 'EXPRESSION_EXCHANGE/explore/model/EEExploreModel' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionExplorationScreenView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionExplorationScreenView' );
+  var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Screen = require( 'JOIST/Screen' );
   var Property = require( 'AXON/Property' );
@@ -34,8 +35,8 @@ define( function( require ) {
     };
 
     Screen.call( this,
-      function() { return new EEExploreModel(); },
-      function( model ) { return new ExpressionExplorationScreenView( model ); },
+      function() { return new ExpressionManipulationModel(); },
+      function( model ) { return new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.EXPLORE ); },
       options
     );
   }

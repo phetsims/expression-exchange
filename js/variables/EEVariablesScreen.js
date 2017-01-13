@@ -9,11 +9,13 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
+  var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  var EEVariablesIconNode = require( 'EXPRESSION_EXCHANGE/variables/view/EEVariablesIconNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionExplorationScreenView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionExplorationScreenView' );
-  var EEVariablesIconNode = require( 'EXPRESSION_EXCHANGE/variables/view/EEVariablesIconNode' );
-  var EEVariablesModel = require( 'EXPRESSION_EXCHANGE/variables/model/EEVariablesModel' );
+  var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Screen = require( 'JOIST/Screen' );
   var Property = require( 'AXON/Property' );
@@ -33,9 +35,14 @@ define( function( require ) {
       homeScreenIcon: new EEVariablesIconNode()
     };
 
-    Screen.call( this,
-      function() { return new EEVariablesModel(); },
-      function( model ) { return new ExpressionExplorationScreenView( model ); },
+    Screen.call(
+      this,
+      function() {
+        return new ExpressionManipulationModel( {
+          allowedRepresentations: AllowedRepresentationsEnum.VARIABLES_ONLY
+        } );
+      },
+      function( model ) { return new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.VARIABLES ); },
       options
     );
   }

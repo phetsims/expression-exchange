@@ -27,13 +27,13 @@ define( function( require ) {
   /**
    * @param {ExpressionManipulationModel} exploreModel - model where coins are to be added
    * @param {CoinTermTypeID} typeID - type of coin term to create
-   * @param {function} creatorFunction - the function that will be invoked in order to create the model element.  This
-   * will be used both for creating a local model instance that will then be used for creating the view node, and it
-   * will also be used to create the elements that will be added to the model.
+   * @param {function} coinTermCreatorFunction - the function that will be invoked in order to create the coin term
+   * model element.  This will be used for creating the elements that are added to the model, and also for creating
+   * "dummy" instances to associate with the view nodes that collectively comprise the constructed creator node.
    * @param {Object} options
    * @constructor
    */
-  function CoinTermCreatorNode( exploreModel, typeID, creatorFunction, options ) {
+  function CoinTermCreatorNode( exploreModel, typeID, coinTermCreatorFunction, options ) {
 
     options = _.extend( {
 
@@ -69,7 +69,7 @@ define( function( require ) {
         x: index * STAGGER_OFFSET,
         y: -index * STAGGER_OFFSET
       };
-      var dummyCoinTerm = creatorFunction( typeID, {
+      var dummyCoinTerm = coinTermCreatorFunction( typeID, {
         initialPosition: Vector2.ZERO,
         initialCount: options.initialCount,
         initiallyOnCard: onCard
@@ -145,7 +145,7 @@ define( function( require ) {
         var initialPosition = parentScreenView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new coin term
-        createdCoinTerm = creatorFunction( typeID, {
+        createdCoinTerm = coinTermCreatorFunction( typeID, {
           initialPosition: originPosition,
           initialCount: options.initialCount,
           initiallyOnCard: onCard

@@ -1,7 +1,8 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * enum that defines the different collections of coin terms that are used on the different screens
+ * enum that defines the coin term collections that are used on the explore screens
+ *
  * @author John Blanco
  */
 define( function( require ) {
@@ -10,16 +11,16 @@ define( function( require ) {
   // modules
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  var CoinTermCreatorSet = {
-    BASIC: 'BASIC',
+  var CoinTermCreatorSetID = {
+    BASICS: 'BASICS',
     EXPLORE: 'EXPLORE',
-    ADVANCED: 'ADVANCED'
+    VARIABLES: 'VARIABLES'
   };
 
   // verify that enum is immutable, without the runtime penalty in production code
-  if ( assert ) { Object.freeze( CoinTermCreatorSet ); }
+  if ( assert ) { Object.freeze( CoinTermCreatorSetID ); }
 
-  expressionExchange.register( 'CoinTermCreatorSet', CoinTermCreatorSet );
+  expressionExchange.register( 'CoinTermCreatorSetID', CoinTermCreatorSetID );
 
-  return CoinTermCreatorSet;
+  return CoinTermCreatorSetID;
 } );
