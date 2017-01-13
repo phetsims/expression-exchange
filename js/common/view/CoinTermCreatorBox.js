@@ -58,7 +58,7 @@ define( function( require ) {
           coinTermCreatorDescriptor.initialCount,
           true
         ).link( function( count ) {
-          numberToShowProperty.set( count < coinTermCreatorDescriptor.creationLimit ? 1 : 0 )
+          numberToShowProperty.set( count < coinTermCreatorDescriptor.creationLimit ? 1 : 0 );
         } );
       }
 
