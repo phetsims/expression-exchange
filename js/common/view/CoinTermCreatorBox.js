@@ -1,37 +1,32 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * a Scenery node that allows the user to create coin terms by dragging them out of a box
+ * Scenery node that holds a set of creator nodes.
+ *
+ * This is somewhat specific to the Expression Exchange simulation, but could easily be turned into a base class and
+ * used more generally.
+ *
+ * @author John Blanco
  */
 define( function( require ) {
   'use strict';
 
   // modules
   var Carousel = require( 'SUN/Carousel' );
-  var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
-  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var HBox = require( 'SCENERY/nodes/HBox' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Panel = require( 'SUN/Panel' );
-  var Property = require( 'AXON/Property' );
-
-  // constants
-  var CREATION_LIMIT_FOR_EXPLORE_SCREENS = 8;
 
   /**
-   * @param {Array.<Object>} descriptorSet - set of descriptors that describe what coin term creator nodes should be
-   * present in the box, see static examples at bottom of this file
-   * @param {ExpressionManipulationModel} model
-   * @param {Bounds2} coinTermDragBounds
+   * @param {Array.<CoinTermCreatorNode>} creatorNodes - set of coin term creator nodes
    * @param {Object} options
    * @constructor
    */
-  function CoinTermCreatorBox( descriptorSet, model, coinTermDragBounds, options ) {
+  function CoinTermCreatorBox( creatorNodes, options ) {
 
     Node.call( this );
-    var self = this;
 
     options = _.extend( {
       itemsPerCarouselPage: 3,
@@ -40,56 +35,21 @@ define( function( require ) {
       staggeredCreatorNodes: false
     }, options );
 
-    this.negativeTermsPresent = false; // @public, read only
+    // @public, read only - a flag that indicates if creator nodes that create coin terms with negative initial values
+    // are present
+    this.negativeTermsPresent = _.some( creatorNodes, function( creatorNode ) {
+      return ( creatorNode.createdCoinTermInitialCount < 0 );
+    } );
 
     // @public, read only - list of the coin term types present in this creator box
     this.coinTermTypeList = _.uniq( _.map(
-      descriptorSet,
-      function( descriptor ) { return descriptor.typeID; }
+      creatorNodes,
+      function( creatorNode ) { return creatorNode.typeID; }
     ) );
 
-    // go through the provided set of descriptors and create the creator nodes for each
-    var coinTermCreatorSet = [];
-    descriptorSet.forEach( function( coinTermCreatorDescriptor ) {
-
-      var numberToShowProperty;
-
-      if ( options.staggeredCreatorNodes ) {
-        numberToShowProperty = new Property( coinTermCreatorDescriptor.creationLimit );
-      }
-      else {
-        numberToShowProperty = new Property( 1 );
-        model.getCoinTermCountProperty(
-          coinTermCreatorDescriptor.typeID,
-          coinTermCreatorDescriptor.initialCount,
-          true
-        ).link( function( count ) {
-          numberToShowProperty.set( count < coinTermCreatorDescriptor.creationLimit ? 1 : 0 );
-        } );
-      }
-
-      // create the "creator node" and put it on the list of those that will be shown at the bottom of the view
-      coinTermCreatorSet.push( new CoinTermCreatorNode(
-        model,
-        coinTermCreatorDescriptor.typeID,
-        model.coinTermFactory.createCoinTerm.bind( model.coinTermFactory ),
-        {
-          dragBounds: coinTermDragBounds,
-          initialCount: coinTermCreatorDescriptor.initialCount,
-          numberToShowProperty: numberToShowProperty,
-          maxNumberShown: options.staggeredCreatorNodes ? coinTermCreatorDescriptor.creationLimit : 1
-        }
-      ) );
-
-      // if one or more has a negative initial count, negatives should be shown in the collection
-      if ( coinTermCreatorDescriptor.initialCount < 0 ) {
-        self.negativeTermsPresent = true;
-      }
-    } );
-
     // add the panel or carousel that will contain the various coin terms that the user can create
-    if ( coinTermCreatorSet.length > options.itemsPerCarouselPage ) {
-      this.coinTermCreatorBox = new Carousel( coinTermCreatorSet, {
+    if ( creatorNodes.length > options.itemsPerCarouselPage ) {
+      this.coinTermCreatorBox = new Carousel( creatorNodes, {
         itemsPerPage: options.itemsPerCarouselPage,
         spacing: options.itemSpacing,
         cornerRadius: options.cornerRadius
@@ -98,7 +58,7 @@ define( function( require ) {
     else {
       // everything will fit on one page, so use a panel instead of a carousel
       var coinTermCreatorHBox = new HBox( {
-        children: coinTermCreatorSet,
+        children: creatorNodes,
         spacing: options.itemSpacing,
         resize: false
       } );
@@ -116,39 +76,5 @@ define( function( require ) {
 
   expressionExchange.register( 'CoinTermCreatorBox', CoinTermCreatorBox );
 
-  return inherit( Node, CoinTermCreatorBox, {}, {
-
-    BASIC_SCREEN_CONFIG: [
-      { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.Z, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS }
-    ],
-
-    EXPLORE_SCREEN_CONFIG: [
-      { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.Z, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.X, initialCount: 2, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.Y, initialCount: 3, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.X_TIMES_Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.Y_SQUARED, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      {
-        typeID: CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED,
-        initialCount: 1,
-        creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS
-      }
-    ],
-
-    VARIABLES_SCREEN_CONFIG: [
-      { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.X, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.CONSTANT, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.CONSTANT, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.X_SQUARED, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-      { typeID: CoinTermTypeID.Y, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS }
-    ]
-  } );
+  return inherit( Node, CoinTermCreatorBox );
 } );

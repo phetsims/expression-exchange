@@ -32,9 +32,6 @@ define( function( require ) {
 
     Node.call( this );
 
-    coinTermCreatorBoxBounds; // @private
-    this.negativeTermsPresent = false; // @public, read only
-
     // add the node that will act as the layer where the expression backgrounds and expression hints will come and go
     var expressionLayer = new Node();
     this.addChild( expressionLayer );

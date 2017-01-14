@@ -40,7 +40,7 @@ define( function( require ) {
       dragBounds: Bounds2.EVERYTHING,
 
       // initial count of the coin term that will be created, can be negative
-      initialCount: 1,
+      createdCoinTermInitialCount: 1,
 
       // property that controls the number of creator nodes to show as a stack
       numberToShowProperty: new Property( 1 ),
@@ -52,6 +52,8 @@ define( function( require ) {
 
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
+    this.createdCoinTermInitialCount = options.createdCoinTermInitialCount; // @public, read only
+    this.typeID = typeID; // @public, read only
 
     // In some cases, the creator nodes should appear to be on a cards so that it looks reasonable when it overlaps with
     // other creator nodes.  That determination is made here.  However, the way this is done is a little bit hokey
@@ -71,7 +73,7 @@ define( function( require ) {
       };
       var dummyCoinTerm = coinTermCreatorFunction( typeID, {
         initialPosition: Vector2.ZERO,
-        initialCount: options.initialCount,
+        initialCount: options.createdCoinTermInitialCount,
         initiallyOnCard: onCard
       } );
       if ( typeID === CoinTermTypeID.CONSTANT ) {
@@ -94,11 +96,14 @@ define( function( require ) {
     // control the visibility of the individual coin term nodes
     options.numberToShowProperty.link( function( numberToShow ) {
 
+      self.pickable = numberToShow > 0;
+
       coinTermNodes.forEach( function( coinTermNode, index ) {
         coinTermNode.visible = index < numberToShow;
       } );
 
       if ( numberToShow === 0 ) {
+
         // show a faded version of the first node
         coinTermNodes[ 0 ].opacity = 0.4;
         coinTermNodes[ 0 ].visible = true;
@@ -147,7 +152,7 @@ define( function( require ) {
         // create and add the new coin term
         createdCoinTerm = coinTermCreatorFunction( typeID, {
           initialPosition: originPosition,
-          initialCount: options.initialCount,
+          initialCount: options.createdCoinTermInitialCount,
           initiallyOnCard: onCard
         } );
         createdCoinTerm.setPositionAndDestination( initialPosition );

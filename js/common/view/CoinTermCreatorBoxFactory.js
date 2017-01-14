@@ -16,8 +16,10 @@ define( function( require ) {
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var CoinTermCreatorBox = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBox' );
+  var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  var Property = require( 'AXON/Property' );
 
   // constants
   var CREATION_LIMIT_FOR_EXPLORE_SCREENS = 8;
@@ -25,35 +27,56 @@ define( function( require ) {
   // descriptors for the coin term creator sets used in the explore screens
   var EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS = {};
   EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS[ CoinTermCreatorSetID.BASICS ] = [
-    { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.Z, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS }
+    { typeID: CoinTermTypeID.X, initialCount: 1 },
+    { typeID: CoinTermTypeID.Y, initialCount: 1 },
+    { typeID: CoinTermTypeID.Z, initialCount: 1 }
   ];
   EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS[ CoinTermCreatorSetID.EXPLORE ] = [
-    { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.Z, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.X, initialCount: 2, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.Y, initialCount: 3, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.X_TIMES_Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.Y_SQUARED, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    {
-      typeID: CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED,
-      initialCount: 1,
-      creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS
-    }
+    { typeID: CoinTermTypeID.X, initialCount: 1 },
+    { typeID: CoinTermTypeID.Y, initialCount: 1 },
+    { typeID: CoinTermTypeID.Z, initialCount: 1 },
+    { typeID: CoinTermTypeID.X, initialCount: 2 },
+    { typeID: CoinTermTypeID.Y, initialCount: 3 },
+    { typeID: CoinTermTypeID.X_TIMES_Y, initialCount: 1 },
+    { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1 },
+    { typeID: CoinTermTypeID.Y_SQUARED, initialCount: 1 },
+    { typeID: CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, initialCount: 1 }
   ];
   EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS[ CoinTermCreatorSetID.VARIABLES ] = [
-    { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.X, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.CONSTANT, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.CONSTANT, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.X_SQUARED, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS },
-    { typeID: CoinTermTypeID.Y, initialCount: -1, creationLimit: CREATION_LIMIT_FOR_EXPLORE_SCREENS }
+    { typeID: CoinTermTypeID.X, initialCount: 1 },
+    { typeID: CoinTermTypeID.X, initialCount: -1 },
+    { typeID: CoinTermTypeID.CONSTANT, initialCount: 1 },
+    { typeID: CoinTermTypeID.CONSTANT, initialCount: -1 },
+    { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1 },
+    { typeID: CoinTermTypeID.X_SQUARED, initialCount: -1 },
+    { typeID: CoinTermTypeID.Y, initialCount: 1 },
+    { typeID: CoinTermTypeID.Y, initialCount: -1 }
   ];
+
+  // helper function for making coin term creator nodes for the explore screens, which use a non-staggered format
+  function makeExploreScreenCreatorNode( typeID, createdCoinTermInitialCount, model ) {
+
+    // Create a property that will control number of coin terms shown in this creator node.  For the explore screens,
+    // only one is even shown, and the property goes to zero when the max number of this type have been added to the
+    // model.
+    var numberToShowProperty = new Property( 1 );
+    model.getCoinTermCountProperty( typeID, createdCoinTermInitialCount, true ).link( function( count ) {
+      numberToShowProperty.set( count < CREATION_LIMIT_FOR_EXPLORE_SCREENS ? 1 : 0 );
+    } );
+
+    // create the "creator node" for the specified coin term type
+    return new CoinTermCreatorNode(
+      model,
+      typeID,
+      model.coinTermFactory.createCoinTerm.bind( model.coinTermFactory ),
+      {
+        dragBounds: EESharedConstants.LAYOUT_BOUNDS,
+        createdCoinTermInitialCount: createdCoinTermInitialCount,
+        maxNumberShown: 1,
+        numberToShowProperty: numberToShowProperty
+      }
+    );
+  }
 
   /**
    * static factory object used to create "toolbox-ish" controls that allows the user to created coin terms by clicking
@@ -69,12 +92,17 @@ define( function( require ) {
         itemSpacing: creatorSetID === CoinTermCreatorSetID.VARIABLES ? 40 : 45
       }, options );
 
-      return new CoinTermCreatorBox(
-        EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS[ creatorSetID ],
-        model,
-        EESharedConstants.LAYOUT_BOUNDS,
-        options
-      );
+      // create the list of creator nodes from the descriptor list
+      var creatorNodes = [];
+      EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS[ creatorSetID ].forEach( function( descriptor ) {
+        creatorNodes.push( makeExploreScreenCreatorNode(
+          descriptor.typeID,
+          descriptor.initialCount,
+          model
+        ) );
+      } );
+
+      return new CoinTermCreatorBox( creatorNodes, options );
     },
 
     createGameScreenCreatorBox: function( level, challengeNumber ) {

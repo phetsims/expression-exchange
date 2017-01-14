@@ -9,7 +9,8 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var CoinTermCreatorBox = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBox' );
+  var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
+  var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -26,17 +27,24 @@ define( function( require ) {
     Node.call( this );
 
     // add the coin term creator box
-    var coinTermCreatorBox = new CoinTermCreatorBox(
-      levelModel.currentChallengeDescriptor.carouselContents,
+    // TODO: this is using creator box from an explore screen until this is working for the game levels.  The
+    // commented-out code below this can inform the process of making this work for game levels.
+    var coinTermCreatorBox = CoinTermCreatorBoxFactory.createExploreScreenCreatorBox(
+      CoinTermCreatorSetID.BASICS,
       levelModel.expressionManipulationModel,
-      screenLayoutBounds,
-      {
-        centerX: screenLayoutBounds.centerX,
-        bottom: screenLayoutBounds.bottom - 40,
-        staggeredCreatorNodes: true,
-        itemsPerCarouselPage: levelModel.currentChallengeDescriptor.carouselContents.length
-      }
+      { centerX: screenLayoutBounds.centerX, bottom: screenLayoutBounds.bottom - 40 }
     );
+    //coinTermCreatorBox = new CoinTermCreatorBox(
+    //  levelModel.currentChallengeDescriptor.carouselContents,
+    //  levelModel.expressionManipulationModel,
+    //  screenLayoutBounds,
+    //  {
+    //    centerX: screenLayoutBounds.centerX,
+    //    bottom: screenLayoutBounds.bottom - 40,
+    //    staggeredCreatorNodes: true,
+    //    itemsPerCarouselPage: levelModel.currentChallengeDescriptor.carouselContents.length
+    //  }
+    //);
     this.addChild( coinTermCreatorBox );
 
     // TODO: Temp for demo purposes - add some boxes that look like the collection area
