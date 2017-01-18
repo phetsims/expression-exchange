@@ -14,15 +14,18 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
 
   /**
+   * TODO: Document parameters when finalized
    * @constructor
    */
-  function EEGameLevelModel( initialChallengeDescriptor ) {
+  function EEGameLevelModel( level, allowedRepresentations ) {
 
+    this.level = level; // @public, read only
+    this.challengeNumber = 0;
+
+    // @public, model that allows user to manipulate coin terms and expressions
     this.expressionManipulationModel = new ExpressionManipulationModel( {
-      allowedRepresentations: initialChallengeDescriptor.representationType
+      allowedRepresentations: allowedRepresentations
     } );
-    this.currentChallengeDescriptor = initialChallengeDescriptor;
-    this.challengeHistory = [ initialChallengeDescriptor ];
   }
 
   expressionExchange.register( 'EEGameLevelModel', EEGameLevelModel );

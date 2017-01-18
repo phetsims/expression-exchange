@@ -29,8 +29,9 @@ define( function( require ) {
     // add the coin term creator box
     // TODO: this is using creator box from an explore screen until this is working for the game levels.  The
     // commented-out code below this can inform the process of making this work for game levels.
-    var coinTermCreatorBox = CoinTermCreatorBoxFactory.createExploreScreenCreatorBox(
-      CoinTermCreatorSetID.BASICS,
+    var coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
+      levelModel.level,
+      levelModel.challengeNumber,
       levelModel.expressionManipulationModel,
       { centerX: screenLayoutBounds.centerX, bottom: screenLayoutBounds.bottom - 40 }
     );

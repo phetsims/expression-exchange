@@ -60,8 +60,13 @@ define( function( require ) {
     // only one is even shown, and the property goes to zero when the max number of this type have been added to the
     // model.
     var numberToShowProperty = new Property( 1 );
-    model.getCoinTermCountProperty( typeID, createdCoinTermInitialCount, true ).link( function( count ) {
-      numberToShowProperty.set( count < CREATION_LIMIT_FOR_EXPLORE_SCREENS ? 1 : 0 );
+    var instanceCount = model.getCoinTermCountProperty(
+      typeID,
+      createdCoinTermInitialCount > 0 ? 1 : -1,
+      true
+    );
+    instanceCount.link( function( count ) {
+      numberToShowProperty.set( count + Math.abs( createdCoinTermInitialCount ) <= CREATION_LIMIT_FOR_EXPLORE_SCREENS ? 1 : 0 );
     } );
 
     // create the "creator node" for the specified coin term type
@@ -78,6 +83,32 @@ define( function( require ) {
     );
   }
 
+  // helper function for making creator nodes for the game screen, which uses a staggered format
+  function makeGameScreenCreatorNode( typeID, createdCoinTermInitialCount, numInstancesAllowed, model ) {
+
+    // Create a property that will control number of coin terms shown in this creator node.  For the game screen,
+    // multiple creator nodes are shown and a staggered arrangement.
+    var numberToShowProperty = new Property( numInstancesAllowed );
+    var instanceCount = model.getCoinTermCountProperty( typeID, createdCoinTermInitialCount, true );
+    instanceCount.link( function( count ) {
+      numberToShowProperty.set( numInstancesAllowed - count );
+    } );
+
+    // create the "creator node" for the specified coin term type
+    return new CoinTermCreatorNode(
+      model,
+      typeID,
+      model.coinTermFactory.createCoinTerm.bind( model.coinTermFactory ),
+      {
+        dragBounds: EESharedConstants.LAYOUT_BOUNDS,
+        createdCoinTermInitialCount: createdCoinTermInitialCount,
+        maxNumberShown: numInstancesAllowed,
+        numberToShowProperty: numberToShowProperty
+      }
+    );
+  }
+
+
   /**
    * static factory object used to create "toolbox-ish" controls that allows the user to created coin terms by clicking
    * and dragging
@@ -85,6 +116,14 @@ define( function( require ) {
    */
   var CoinTermCreatorBoxFactory = {
 
+    /**
+     *
+     * @param {Object} creatorSetID
+     * @param {ExpressionManipulationModel} model
+     * @param {Object} options
+     * @returns {CoinTermCreatorBox}
+     * @public
+     */
     createExploreScreenCreatorBox: function( creatorSetID, model, options ) {
 
       options = _.extend( {
@@ -105,7 +144,32 @@ define( function( require ) {
       return new CoinTermCreatorBox( creatorNodes, options );
     },
 
-    createGameScreenCreatorBox: function( level, challengeNumber ) {
+    /**
+     * @param {number} level
+     * @param {number} challengeNumber
+     * @param {ExpressionManipulationModel} model
+     * @param {Object} options
+     * @returns {CoinTermCreatorBox}
+     * @public
+     */
+    createGameScreenCreatorBox: function( level, challengeNumber, model, options ) {
+      options = _.extend( {
+        itemsPerCarouselPage: 3,
+        itemSpacing: 40
+      }, options );
+
+      // create the list of creator nodes from the descriptor list
+      var creatorNodes = [];
+      EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS[ CoinTermCreatorSetID.BASICS ].forEach( function( descriptor ) {
+        creatorNodes.push( makeGameScreenCreatorNode(
+          descriptor.typeID,
+          descriptor.initialCount,
+          3,
+          model
+        ) );
+      } );
+
+      return new CoinTermCreatorBox( creatorNodes, options );
     }
   };
 

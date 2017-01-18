@@ -11,7 +11,7 @@ define( function( require ) {
   // modules
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/model/AllowedRepresentationsEnum' );
+  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
 
   /*
    * two-dimensional array of game challenge descriptors, organized as a 2D array where the first dimension corresponds

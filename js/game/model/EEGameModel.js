@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
   var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
   var EEGameLevelModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameLevelModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -43,12 +44,10 @@ define( function( require ) {
 
     // create the game level models, one model per level
     this.gameLevelModels = [];
-    _.times( NUMBER_OF_LEVELS, function( index ) {
-      var challengeDescriptorListForLevel = EEChallengeDescriptors[ index ];
-      var initialChallengeDescriptor = challengeDescriptorListForLevel[ phet.joist.random.nextInt(
-        challengeDescriptorListForLevel.length
-      ) ];
-      self.gameLevelModels.push( new EEGameLevelModel( initialChallengeDescriptor ) );
+    _.times( NUMBER_OF_LEVELS, function( level ) {
+      self.gameLevelModels.push( new EEGameLevelModel(
+        level,
+        level < 4 ? AllowedRepresentationsEnum.COINS_ONLY : AllowedRepresentationsEnum.VARIABLES_ONLY ) );
     } );
 
     // TODO: The next several lines will need to be modded based on answers to outstanding questions about game flow and behavior.
