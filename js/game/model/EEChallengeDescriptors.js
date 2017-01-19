@@ -194,9 +194,10 @@ define( function( require ) {
     [
       {
         carouselContents: [
-          { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 5 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 1 },
+          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: 1, creationLimit: 6 },
+          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -1, creationLimit: 4 }
         ],
         expressionsToCollect: [
           'x^2 + y^2',
