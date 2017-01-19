@@ -156,7 +156,6 @@ define( function( require ) {
      */
     createGameScreenCreatorBox: function( level, challengeNumber, model, options ) {
       options = _.extend( {
-        itemsPerCarouselPage: 3,
         itemSpacing: 40
       }, options );
 
@@ -170,6 +169,9 @@ define( function( require ) {
           model
         ) );
       } );
+
+      // set the options so that all creator nodes are always shown
+      options.itemsPerCarouselPage = creatorNodes.length;
 
       return new CoinTermCreatorBox( creatorNodes, options );
     }
