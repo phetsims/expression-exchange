@@ -90,18 +90,6 @@ define( function( require ) {
     // @public, read only, factory used to create coin terms
     this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
 
-    // @public, read and listen only, tracks the total positive count for each coin term type
-    this.positiveCoinTermCountsByType = {};
-    _.keys( CoinTermTypeID ).forEach( function( key ) {
-      self.positiveCoinTermCountsByType[ constantToCamelCase( key ) ] = new Property( 0 );
-    } );
-
-    // @public, read and listen only, tracks the total negative count for each coin term type
-    this.negativeCoinTermCountsByType = {};
-    _.keys( CoinTermTypeID ).forEach( function( key ) {
-      self.negativeCoinTermCountsByType[ constantToCamelCase( key ) ] = new Property( 0 );
-    } );
-
     // @public, read only, options that control what is available to the user to manipulate
     this.coinTermCollection = options.coinTermCollection;
     this.allowedRepresentations = options.allowedRepresentations;
@@ -677,7 +665,6 @@ define( function( require ) {
     // @public
     addCoinTerm: function( coinTerm ) {
       this.coinTerms.add( coinTerm );
-      this.updateCoinTermCount( coinTerm.typeID );
       this.updateCoinTermCounts( coinTerm.typeID );
       expressionExchange.log && expressionExchange.log( 'added ' + coinTerm.id );
     },
@@ -698,7 +685,6 @@ define( function( require ) {
             expression.removeCoinTerm( coinTerm );
           }
         } );
-        this.updateCoinTermCount( coinTerm.typeID );
         this.updateCoinTermCounts( coinTerm.typeID );
       }
     },
@@ -745,28 +731,6 @@ define( function( require ) {
       }
 
       this.expressionBeingEditedProperty.set( null );
-    },
-
-    // @private - update the positive and negative counts for the specified coin term type
-    updateCoinTermCount: function( coinTermTypeID ) {
-
-      var positiveCountForThisType = 0;
-      var negativeCountForThisType = 0;
-      var convertedTypeID = constantToCamelCase( coinTermTypeID );
-
-      // update the positive and negative count values
-      this.coinTerms.forEach( function( coinTerm ) {
-        if ( coinTerm.typeID === coinTermTypeID ) {
-          if ( coinTerm.totalCountProperty.get() > 0 ) {
-            positiveCountForThisType += coinTerm.totalCountProperty.get();
-          }
-          else {
-            negativeCountForThisType += Math.abs( coinTerm.totalCountProperty.get() );
-          }
-        }
-      } );
-      this.positiveCoinTermCountsByType[ convertedTypeID ].set( positiveCountForThisType );
-      this.negativeCoinTermCountsByType[ convertedTypeID ].set( negativeCountForThisType );
     },
 
     // @private - update the count properties for the specified coin term type
@@ -936,12 +900,6 @@ define( function( require ) {
           coinTermCountObject.count = 0;
           coinTermCountObject.countProperty && coinTermCountObject.countProperty.reset();
         } );
-      } );
-
-      _.keys( CoinTermTypeID ).forEach( function( coinTermTypeID ) {
-        var key = constantToCamelCase( coinTermTypeID );
-        self.positiveCoinTermCountsByType[ key ].reset();
-        self.negativeCoinTermCountsByType[ key ].reset();
       } );
     },
 
