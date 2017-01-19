@@ -27,25 +27,12 @@ define( function( require ) {
     Node.call( this );
 
     // add the coin term creator box
-    // TODO: this is using creator box from an explore screen until this is working for the game levels.  The
-    // commented-out code below this can inform the process of making this work for game levels.
     var coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
       levelModel.level,
       levelModel.challengeNumber,
       levelModel.expressionManipulationModel,
       { centerX: screenLayoutBounds.centerX, bottom: screenLayoutBounds.bottom - 40 }
     );
-    //coinTermCreatorBox = new CoinTermCreatorBox(
-    //  levelModel.currentChallengeDescriptor.carouselContents,
-    //  levelModel.expressionManipulationModel,
-    //  screenLayoutBounds,
-    //  {
-    //    centerX: screenLayoutBounds.centerX,
-    //    bottom: screenLayoutBounds.bottom - 40,
-    //    staggeredCreatorNodes: true,
-    //    itemsPerCarouselPage: levelModel.currentChallengeDescriptor.carouselContents.length
-    //  }
-    //);
     this.addChild( coinTermCreatorBox );
 
     // TODO: Temp for demo purposes - add some boxes that look like the collection area

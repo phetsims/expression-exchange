@@ -93,7 +93,7 @@ define( function( require ) {
     },
 
     refreshCurrentLevel: function() {
-      // TODO: This is stubbed, needs to be implemented.
+      this.gameLevelModels[ this.currentLevelProperty.get() ].reset();
     },
 
     reset: function() {

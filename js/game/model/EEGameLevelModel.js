@@ -32,8 +32,20 @@ define( function( require ) {
 
   return inherit( Object, EEGameLevelModel, {
 
+    /**
+     * @param {number} dt
+     * @public
+     */
     step: function( dt ) {
       this.expressionManipulationModel.step( dt );
+    },
+
+    /**
+     * @public
+     */
+    reset: function() {
+      // TODO: This is incomplete and will need to be expanded once the collection boxes are implemented.
+      this.expressionManipulationModel.reset();
     },
 
     /**
