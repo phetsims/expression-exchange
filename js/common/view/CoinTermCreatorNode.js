@@ -63,7 +63,8 @@ define( function( require ) {
     // because the decision is made, in part, based on the view mode setting of the model at the time this is created.
     // This works because at the time of this writing, the cards are only used on the game screen and the game screens
     // don't allow a change of representation.  If this ever changes, this approach will need to be revisited.
-    var onCard = options.maxNumberShown > 1 && exploreModel.viewModeProperty.get() === ViewMode.VARIABLES;
+    var onCard = options.maxNumberShown > 1 &&
+                 ( exploreModel.viewModeProperty.get() === ViewMode.VARIABLES || options.createdCoinTermInitialCount > 1 );
 
     // add the individual coin term node(s)
     var coinTermNodes = [];
