@@ -24,7 +24,8 @@ define( function( require ) {
 
     // @public, model that allows user to manipulate coin terms and expressions
     this.expressionManipulationModel = new ExpressionManipulationModel( {
-      allowedRepresentations: allowedRepresentations
+      allowedRepresentations: allowedRepresentations,
+      partialCancellationEnabled: false // partial cancellation isn't performed in the games
     } );
   }
 
