@@ -11,23 +11,21 @@ define( function( require ) {
   // modules
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
 
   /*
    * two-dimensional array of game challenge descriptors, organized as a 2D array where the first dimension corresponds
    * to the game level and the 2nd is the available challenges within that level
    *
-   * TODO: Add challenge descriptor format when finalized
+   * TODO: document challenge descriptor format when finalized
    */
   var EEChallengeDescriptors = [
 
     // level 1 challenges
     [
       {
-        representationType: AllowedRepresentationsEnum.COINS_ONLY,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: 5 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 }
         ],
         expressionsToCollect: [
           '2x + y',
@@ -36,11 +34,10 @@ define( function( require ) {
         ]
       },
       {
-        representationType: AllowedRepresentationsEnum.COINS_ONLY,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 3 },
-          { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: 4 },
-          { typeID: CoinTermTypeID.Z, initialCount: 1, creationLimit: 3 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 3 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 3 }
         ],
         expressionsToCollect: [
           'x + y + z',
@@ -49,11 +46,10 @@ define( function( require ) {
         ]
       },
       {
-        representationType: AllowedRepresentationsEnum.COINS_ONLY,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Z, initialCount: 1, creationLimit: 4 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 4 }
         ],
         expressionsToCollect: [
           '3xf + 2y',
@@ -66,10 +62,9 @@ define( function( require ) {
     // level 2
     [
       {
-        representationType: AllowedRepresentationsEnum.COINS,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: 5 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 }
         ],
         expressionsToCollect: [
           '2x + y',
@@ -78,11 +73,10 @@ define( function( require ) {
         ]
       },
       {
-        representationType: AllowedRepresentationsEnum.COINS,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 4 },
-          { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y, initialCount: 2, creationLimit: 2 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 }
         ],
         expressionsToCollect: [
           'x + y',
@@ -95,11 +89,10 @@ define( function( require ) {
     // level 3
     [
       {
-        representationType: AllowedRepresentationsEnum.COINS,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 7 },
-          { typeID: CoinTermTypeID.X, initialCount: 2, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y, initialCount: 4, creationLimit: 1 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 7 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 4, creationLimit: 1 }
         ],
         expressionsToCollect: [
           '5x',
@@ -112,11 +105,10 @@ define( function( require ) {
     // level 4
     [
       {
-        representationType: AllowedRepresentationsEnum.VARIABLES_ONLY,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.X, initialCount: 2, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: 3 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 }
         ],
         expressionsToCollect: [
           '3x',
@@ -125,11 +117,10 @@ define( function( require ) {
         ]
       },
       {
-        representationType: AllowedRepresentationsEnum.VARIABLES_ONLY,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 4 },
-          { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y, initialCount: 2, creationLimit: 2 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 }
         ],
         expressionsToCollect: [
           'x + y',
@@ -142,12 +133,11 @@ define( function( require ) {
     // level 5
     [
       {
-        representationType: AllowedRepresentationsEnum.VARIABLES_ONLY,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: 2, creationLimit: 2 },
-          { typeID: CoinTermTypeID.X, initialCount: -1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: 1 },
-          { typeID: CoinTermTypeID.Y, initialCount: -1, creationLimit: 3 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: -1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: -1, creationLimit: 5 }
         ],
         expressionsToCollect: [
           '2x - y',
@@ -156,12 +146,11 @@ define( function( require ) {
         ]
       },
       {
-        representationType: AllowedRepresentationsEnum.VARIABLES_ONLY,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: 2, creationLimit: 3 },
-          { typeID: CoinTermTypeID.X, initialCount: 3, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y, initialCount: 2, creationLimit: 3 },
-          { typeID: CoinTermTypeID.Y, initialCount: -1, creationLimit: 3 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 3 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 3, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 3 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: -1, creationLimit: 3 }
         ],
         expressionsToCollect: [
           '5x + y',
@@ -174,12 +163,11 @@ define( function( require ) {
     // level 6
     [
       {
-        representationType: AllowedRepresentationsEnum.VARIABLES_ONLY,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: -1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 1 },
-          { typeID: CoinTermTypeID.X, initialCount: 2, creationLimit: 3 },
-          { typeID: CoinTermTypeID.X, initialCount: 4, creationLimit: 1 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: -4, creationLimit: 1 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: -2, creationLimit: 2 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: -1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 1 }
         ],
         expressionsToCollect: [
           '3x',
@@ -188,12 +176,11 @@ define( function( require ) {
         ]
       },
       {
-        representationType: AllowedRepresentationsEnum.VARIABLES_ONLY,
         carouselContents: [
-          { typeID: CoinTermTypeID.X, initialCount: 1, creationLimit: 4 },
-          { typeID: CoinTermTypeID.X, initialCount: 2, creationLimit: 1 },
-          { typeID: CoinTermTypeID.X, initialCount: 3, creationLimit: 1 },
-          { typeID: CoinTermTypeID.Y, initialCount: 1, creationLimit: 3 }
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 1 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 3, creationLimit: 1 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 }
         ],
         expressionsToCollect: [
           '3x + y',
@@ -206,11 +193,10 @@ define( function( require ) {
     // level 7
     [
       {
-        representationType: AllowedRepresentationsEnum.VARIABLES_ONLY,
         carouselContents: [
-          { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Y_SQUARED, initialCount: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Z, initialCount: 1, creationLimit: 5 }
+          { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 5 }
         ],
         expressionsToCollect: [
           'x^2 + y^2',
@@ -223,11 +209,10 @@ define( function( require ) {
     // level 8
     [
       {
-        representationType: AllowedRepresentationsEnum.VARIABLES_ONLY,
         carouselContents: [
-          { typeID: CoinTermTypeID.X_SQUARED, initialCount: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Y_SQUARED, initialCount: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Z, initialCount: 1, creationLimit: 5 }
+          { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 5 }
         ],
         expressionsToCollect: [
           'x^2 + y^2',

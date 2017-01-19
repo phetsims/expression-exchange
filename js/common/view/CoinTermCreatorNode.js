@@ -42,6 +42,9 @@ define( function( require ) {
       // initial count of the coin term that will be created, can be negative
       createdCoinTermInitialCount: 1,
 
+      // flag that controls whether created coin term can be decomposed
+      createdCoinTermDecomposable: true,
+
       // property that controls the number of creator nodes to show as a stack
       numberToShowProperty: new Property( 1 ),
 
@@ -153,6 +156,7 @@ define( function( require ) {
         createdCoinTerm = coinTermCreatorFunction( typeID, {
           initialPosition: originPosition,
           initialCount: options.createdCoinTermInitialCount,
+          decomposable: options.createdCoinTermDecomposable,
           initiallyOnCard: onCard
         } );
         createdCoinTerm.setPositionAndDestination( initialPosition );

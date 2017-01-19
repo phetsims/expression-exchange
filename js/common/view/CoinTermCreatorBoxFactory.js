@@ -17,6 +17,7 @@ define( function( require ) {
   var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var CoinTermCreatorBox = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBox' );
   var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
+  var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Property = require( 'AXON/Property' );
@@ -102,6 +103,7 @@ define( function( require ) {
       {
         dragBounds: EESharedConstants.LAYOUT_BOUNDS,
         createdCoinTermInitialCount: createdCoinTermInitialCount,
+        createdCoinTermDecomposable: false,
         maxNumberShown: numInstancesAllowed,
         numberToShowProperty: numberToShowProperty
       }
@@ -160,11 +162,11 @@ define( function( require ) {
 
       // create the list of creator nodes from the descriptor list
       var creatorNodes = [];
-      EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS[ CoinTermCreatorSetID.BASICS ].forEach( function( descriptor ) {
+      EEChallengeDescriptors[ level ][ challengeNumber ].carouselContents.forEach( function( descriptor ) {
         creatorNodes.push( makeGameScreenCreatorNode(
           descriptor.typeID,
-          descriptor.initialCount,
-          3,
+          descriptor.minimumDecomposition,
+          descriptor.creationLimit,
           model
         ) );
       } );
