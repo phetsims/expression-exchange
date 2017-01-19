@@ -239,9 +239,8 @@ define( function( require ) {
             if ( overlappingLikeCoinTerm ) {
 
               // combine the dropped coin term with the one with which it overlaps
-              overlappingLikeCoinTerm.totalCountProperty.set( overlappingLikeCoinTerm.totalCountProperty.get() +
-                                                              addedCoinTerm.totalCountProperty.get() );
-              self.removeCoinTerm( addedCoinTerm );
+              overlappingLikeCoinTerm.absorb( addedCoinTerm, options.partialCancellationEnabled );
+              self.removeCoinTerm( addedCoinTerm, false );
             }
             else {
 
