@@ -2,6 +2,12 @@
 
 /**
  * a UI component that is used to create coin terms when clicked upon
+ *
+ * This is generally used in a carousel or other "creator box".  There are a few sim-specific items currently used, but
+ * this could probably be generalized fairly easily so that it could be reused in similar situations.  My (jbphet)
+ * initial thoughts are that we would need to decide whether to extract much of the functionality into a base class
+ * and derive subclasses to handle sim-specific behavior, or have some sort of options that could make it work in all
+ * cases.
  */
 define( function( require ) {
   'use strict';
