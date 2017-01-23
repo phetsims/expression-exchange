@@ -187,6 +187,10 @@ define( function( require ) {
                 addedCoinTerm.travelToDestination( mostOverlappingLikeCoinTerm.positionProperty.get() );
                 addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
                   mostOverlappingLikeCoinTerm.absorb( addedCoinTerm, options.partialCancellationEnabled );
+                  expressionExchange.log && expressionExchange.log(
+                    mostOverlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' +
+                    mostOverlappingLikeCoinTerm.id + ' composition = ' + '[' +
+                    mostOverlappingLikeCoinTerm.composition + ']' );
                   self.removeCoinTerm( addedCoinTerm, false );
                   addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
                 } );
@@ -240,6 +244,9 @@ define( function( require ) {
 
               // combine the dropped coin term with the one with which it overlaps
               overlappingLikeCoinTerm.absorb( addedCoinTerm, options.partialCancellationEnabled );
+              expressionExchange.log && expressionExchange.log(
+                overlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' + overlappingLikeCoinTerm.id +
+                ' composition = ' + '[' + overlappingLikeCoinTerm.composition + ']' );
               self.removeCoinTerm( addedCoinTerm, false );
             }
             else {
@@ -665,7 +672,9 @@ define( function( require ) {
     addCoinTerm: function( coinTerm ) {
       this.coinTerms.add( coinTerm );
       this.updateCoinTermCounts( coinTerm.typeID );
-      expressionExchange.log && expressionExchange.log( 'added ' + coinTerm.id );
+      expressionExchange.log && expressionExchange.log(
+        'added ' + coinTerm.id + ', composition = [' + coinTerm.composition + ']'
+      );
     },
 
     // @public
