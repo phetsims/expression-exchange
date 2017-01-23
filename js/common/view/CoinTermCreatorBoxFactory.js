@@ -105,7 +105,8 @@ define( function( require ) {
         createdCoinTermInitialCount: createdCoinTermInitialCount,
         createdCoinTermDecomposable: false,
         maxNumberShown: numInstancesAllowed,
-        numberToShowProperty: numberToShowProperty
+        numberToShowProperty: numberToShowProperty,
+        onCard: true
       }
     );
   }

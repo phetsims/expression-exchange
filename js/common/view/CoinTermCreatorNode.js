@@ -55,22 +55,16 @@ define( function( require ) {
       numberToShowProperty: new Property( 1 ),
 
       // the maximum number of this coin term that will be shown
-      maxNumberShown: 1
+      maxNumberShown: 1,
 
+      // controls whether the coin term(s) that comprise this node should be on backgrounds that look like cards
+      onCard: false
     }, options );
 
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
     this.createdCoinTermInitialCount = options.createdCoinTermInitialCount; // @public, read only
     this.typeID = typeID; // @public, read only
-
-    // In some cases, the creator nodes should appear to be on a cards so that it looks reasonable when it overlaps with
-    // other creator nodes.  That determination is made here.  However, the way this is done is a little bit hokey
-    // because the decision is made, in part, based on the view mode setting of the model at the time this is created.
-    // This works because at the time of this writing, the cards are only used on the game screen and the game screens
-    // don't allow a change of representation.  If this ever changes, this approach will need to be revisited.
-    var onCard = options.maxNumberShown > 1 &&
-                 ( exploreModel.viewModeProperty.get() === ViewMode.VARIABLES || options.createdCoinTermInitialCount > 1 );
 
     // add the individual coin term node(s)
     var coinTermNodes = [];
@@ -84,7 +78,7 @@ define( function( require ) {
       var dummyCoinTerm = coinTermCreatorFunction( typeID, {
         initialPosition: Vector2.ZERO,
         initialCount: options.createdCoinTermInitialCount,
-        initiallyOnCard: onCard
+        initiallyOnCard: options.onCard
       } );
       if ( typeID === CoinTermTypeID.CONSTANT ) {
         coinTermNode = new ConstantCoinTermNode( dummyCoinTerm, exploreModel.viewModeProperty, coinTermNodeOptions );
@@ -164,7 +158,7 @@ define( function( require ) {
           initialPosition: originPosition,
           initialCount: options.createdCoinTermInitialCount,
           decomposable: options.createdCoinTermDecomposable,
-          initiallyOnCard: onCard
+          initiallyOnCard: options.onCard
         } );
         createdCoinTerm.setPositionAndDestination( initialPosition );
         createdCoinTerm.userControlledProperty.set( true );
