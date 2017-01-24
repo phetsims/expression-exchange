@@ -296,6 +296,7 @@ define( function( require ) {
 
     /**
      * return the bounds of this model elements representation in the view
+     * @returns {Bounds2}
      * @public
      */
     getViewBounds: function() {
@@ -307,6 +308,19 @@ define( function( require ) {
         position.x + relativeViewBounds.maxX,
         position.y + relativeViewBounds.maxY
       );
+    },
+
+    /**
+     * returns true if this coin term is composed of more than one coin term and all constituent coin terms have a
+     * minimum decomposition of 1
+     * @returns {boolean}
+     * @public
+     */
+    isFullyDecomposable: function() {
+      if ( this.composition.length <= 1 ) {
+        return false;
+      }
+      return _.every( this.composition, function( minDecomposition ) { return Math.abs( minDecomposition ) === 1; } );
     }
   } );
 } );

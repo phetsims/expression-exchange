@@ -128,6 +128,7 @@ define( function( require ) {
     function showBreakApartButton() {
       breakApartButton.centerX = 0;
       breakApartButton.bottom = self.coinAndTextRootNode.visibleLocalBounds.minY - 3; // just above the coin term
+      breakApartButton.inverted = !coinTerm.isFullyDecomposable();
       breakApartButton.visible = true;
     }
 
