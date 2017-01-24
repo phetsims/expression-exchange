@@ -34,23 +34,6 @@ define( function( require ) {
   var NUM_RETRIEVED_COIN_TERM_COLUMNS = 6;
   var MIN_RETRIEVAL_PLACEMENT_DISTANCE = 30; // empirically determined
 
-  // convenience function used to convert a constant name to a camel-cased variable name
-  function constantToCamelCase( str ) {
-
-    var lowerCaseString = str.toLowerCase();
-
-    // anything after an underscore should be a capital letter
-    var previousChar = null;
-    var stringWithCaps = '';
-    for ( var i = 0; i < lowerCaseString.length; i++ ) {
-      stringWithCaps += previousChar === '_' ? lowerCaseString[ i ].toUpperCase() : lowerCaseString[ i ];
-      previousChar = lowerCaseString[ i ];
-    }
-
-    // remove the underscores
-    return stringWithCaps.replace( /_/g, '' );
-  }
-
   /**
    * @constructor
    * {Object} options
@@ -887,8 +870,6 @@ define( function( require ) {
 
     // @public
     reset: function() {
-
-      var self = this;
 
       // TODO: Probably need to reset expressions here so that they can cancel any in-progress animations.
       this.expressions.clear();

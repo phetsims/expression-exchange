@@ -25,7 +25,6 @@ define( function( require ) {
   var Util = require( 'DOT/Util' );
   var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
   var Vector2 = require( 'DOT/Vector2' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var STAGGER_OFFSET = 3; // in screen coordinates, empirically determined for optimal look
