@@ -88,6 +88,7 @@ define( function( require ) {
     this.valueProperty = valueProperty;
     this.termText = termText;
     this.coinRadius = coinRadius;
+    this.initiallyOnCard = options.initiallyOnCard;
 
     // @public, read only, indicates that the value will never change, will be displayed differently in the view
     this.isConstant = typeID === CoinTermTypeID.CONSTANT;
@@ -250,7 +251,7 @@ define( function( require ) {
 
       // create a coin term to reflect each one from which this one is composed
       for ( var i = 1; i < this.composition.length; i++ ) {
-        var clone = new CoinTerm(
+        var extractedCoinTerm = new CoinTerm(
           this.valueProperty,
           this.coinRadius,
           this.termText,
@@ -259,10 +260,12 @@ define( function( require ) {
           {
             initialCount: this.composition[ i ],
             initialPosition: this.initialPosition,
+            initiallyOnCard: this.initiallyOnCard,
             decomposable: false
           } );
-        clone.setPositionAndDestination( this.positionProperty.get() );
-        extractedCoinTerms.push( clone );
+        extractedCoinTerm.onCardProperty.set( false );
+        extractedCoinTerm.setPositionAndDestination( this.positionProperty.get() );
+        extractedCoinTerms.push( extractedCoinTerm );
       }
 
       // set this to be a single fully decomposed coin term
@@ -293,6 +296,7 @@ define( function( require ) {
 
     /**
      * return the bounds of this model elements representation in the view
+     * @returns {Bounds2}
      * @public
      */
     getViewBounds: function() {
@@ -304,6 +308,19 @@ define( function( require ) {
         position.x + relativeViewBounds.maxX,
         position.y + relativeViewBounds.maxY
       );
+    },
+
+    /**
+     * returns true if this coin term is composed of more than one coin term and all constituent coin terms have a
+     * minimum decomposition of 1
+     * @returns {boolean}
+     * @public
+     */
+    isFullyDecomposable: function() {
+      if ( this.composition.length <= 1 ) {
+        return false;
+      }
+      return _.every( this.composition, function( minDecomposition ) { return Math.abs( minDecomposition ) === 1; } );
     }
   } );
 } );
