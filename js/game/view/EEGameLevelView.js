@@ -63,7 +63,8 @@ define( function( require ) {
     this.addChild( new ExpressionManipulationView(
       levelModel.expressionManipulationModel,
       coinTermCreatorBox.bounds,
-      visibleBoundsProperty
+      visibleBoundsProperty,
+      { coinTermBreakApartButtonMode: 'inverted' }
     ) );
   }
 

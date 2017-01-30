@@ -33,7 +33,8 @@ define( function( require ) {
 
     options = _.extend( {}, {
       addDragHandler: true,
-      dragBounds: Bounds2.EVERYTHING
+      dragBounds: Bounds2.EVERYTHING,
+      breakApartButtonMode: 'normal'
     }, options );
 
     var self = this;
@@ -70,7 +71,7 @@ define( function( require ) {
     // TODO: There's a lot of code in here for the break apart button.  Can this be consolidated into a class that
     // TODO: encapsulates a lot of this behavior, such as hiding automatically after a given time, managing the timers,
     // TODO: handling hover?  Seems like a good idea.
-    var breakApartButton = new BreakApartButton( { visible: false } );
+    var breakApartButton = new BreakApartButton( { visible: false, mode: options.breakApartButtonMode } );
     this.addChild( breakApartButton );
 
     // adjust the touch area of the break apart button to make it easier to use on touch devices
@@ -128,7 +129,6 @@ define( function( require ) {
     function showBreakApartButton() {
       breakApartButton.centerX = 0;
       breakApartButton.bottom = self.coinAndTextRootNode.visibleLocalBounds.minY - 3; // just above the coin term
-      breakApartButton.inverted = !coinTerm.isFullyDecomposable();
       breakApartButton.visible = true;
     }
 

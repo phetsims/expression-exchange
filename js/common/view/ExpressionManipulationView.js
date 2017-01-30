@@ -28,7 +28,11 @@ define( function( require ) {
    * @param {Property.<Bounds2>} visibleBoundsProperty
    * @constructor
    */
-  function ExpressionManipulationView( model, coinTermCreatorBoxBounds, visibleBoundsProperty ) {
+  function ExpressionManipulationView( model, coinTermCreatorBoxBounds, visibleBoundsProperty, options ) {
+
+    options = _.extend( {
+      coinTermBreakApartButtonMode: 'normal' // passed through to the coin terms
+    }, options );
 
     Node.call( this );
 
@@ -144,7 +148,11 @@ define( function( require ) {
           addedCoinTerm,
           model.viewModeProperty,
           model.simplifyNegativesProperty,
-          { addDragHandler: true, dragBounds: visibleBoundsProperty.get() }
+          {
+            addDragHandler: true,
+            dragBounds: visibleBoundsProperty.get(),
+            breakApartButtonMode: options.coinTermBreakApartButtonMode
+          }
         );
       }
       else {
@@ -154,7 +162,11 @@ define( function( require ) {
           model.showCoinValuesProperty,
           model.showVariableValuesProperty,
           model.showAllCoefficientsProperty,
-          { addDragHandler: true, dragBounds: visibleBoundsProperty.get() }
+          {
+            addDragHandler: true,
+            dragBounds: visibleBoundsProperty.get(),
+            breakApartButtonMode: options.coinTermBreakApartButtonMode
+          }
         );
       }
 
