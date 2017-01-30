@@ -23,9 +23,11 @@ define( function( require ) {
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
-  var FADE_TIME = 0.75; // in seconds
-  var NUM_FADE_STEPS = 10; // number of steps for fade out to occur
+  var COIN_TERM_FADE_TIME = 0.75; // in seconds
   var CLOSE_ENOUGH_TO_HOME = 1E-6; // distance at which a coin term is considered to have returned to origin
+  var CARD_PRE_FADE_TIME = 0.25; // time before card starts to fade after user grabs it, in seconds
+  var CARD_FADE_TIME = 0.5; // time for a card to fade out
+  var NUM_FADE_STEPS = 10; // number of steps for fade out to occur for the coin term and the card
 
   // class var for creating unique IDs
   var creationCount = 0;
@@ -76,8 +78,8 @@ define( function( require ) {
     // @public (read only), ranges from 1 to 0, used primarily for fading out of a coin term when cancellation occurs
     this.existenceStrengthProperty = new Property( 1 );
 
-    // @public, determines whether the coin term should be depicted on a card in the view
-    this.onCardProperty = new Property( options.initiallyOnCard );
+    // @public, determines the opacity of the card on which the coin term can reside
+    this.cardOpacityProperty = new Property( options.initiallyOnCard ? 1.0 : 0 );
 
     //------------------------------------------------------------------------
     // non-property attributes
@@ -134,6 +136,8 @@ define( function( require ) {
       }
     } );
 
+    // TODO: Consider moving the fadeout and card fade code (below) into a step function when animations are moved there.
+
     // monitor the total count, start fading the existence strength if it goes to zero
     this.totalCountProperty.lazyLink( function( totalCount ) {
       if ( totalCount === 0 ) {
@@ -145,7 +149,52 @@ define( function( require ) {
             // fading complete, stop the timer
             Timer.clearInterval( timerInterval );
           }
-        }, Math.max( FADE_TIME / NUM_FADE_STEPS * 1000, 1 / 60 * 1000 ) ); // interval should be at least one animation frame
+        }, Math.max( COIN_TERM_FADE_TIME / NUM_FADE_STEPS * 1000, 1 / 60 * 1000 ) ); // interval should be at least one animation frame
+      }
+    } );
+
+    // function to fade the card out, used below
+    var cardFadeIntervalTimerID = null;
+    var cardPreFadeTimeoutID = null;
+
+    function fadeCard() {
+      self.cardOpacityProperty.set( Math.max( self.cardOpacityProperty.get() - 1 / NUM_FADE_STEPS, 0 ) );
+      if ( self.cardOpacityProperty.get() === 0 ) {
+        Timer.clearInterval( cardFadeIntervalTimerID );
+        cardFadeIntervalTimerID = null;
+      }
+    }
+
+    // update the appearance of the background card as the user interacts with this coin term
+    this.userControlledProperty.lazyLink( function( userControlled ) {
+
+      if ( options.initiallyOnCard ) {
+
+        // cancel any timers involved in the card fading process that might be running
+        if ( cardPreFadeTimeoutID ) {
+          Timer.clearTimeout( cardPreFadeTimeoutID );
+          cardPreFadeTimeoutID = null;
+        }
+        if ( cardFadeIntervalTimerID ) {
+          Timer.clearInterval( cardFadeIntervalTimerID );
+          cardFadeIntervalTimerID = null;
+        }
+
+        if ( userControlled ) {
+
+          // If this card is decomposed as far as it can go, show the card when the user grabs it, but fade it out
+          // after a little while.
+          if ( self.composition.length === 1 ) {
+            self.cardOpacityProperty.set( 1.0 );
+            cardPreFadeTimeoutID = Timer.setTimeout( function() {
+              cardPreFadeTimeoutID = null;
+              cardFadeIntervalTimerID = Timer.setInterval( fadeCard, CARD_FADE_TIME / NUM_FADE_STEPS * 1000 );
+            }, CARD_PRE_FADE_TIME * 1000 );
+          }
+        }
+        else if ( self.cardOpacityProperty.get() !== 0 ) {
+          self.cardOpacityProperty.set( 0 ); // the card is not visible if not controlled by the user
+        }
       }
     } );
   }
@@ -263,7 +312,7 @@ define( function( require ) {
             initiallyOnCard: this.initiallyOnCard,
             decomposable: false
           } );
-        extractedCoinTerm.onCardProperty.set( false );
+        extractedCoinTerm.cardOpacityProperty.set( 0 ); // set card invisible when extracted
         extractedCoinTerm.setPositionAndDestination( this.positionProperty.get() );
         extractedCoinTerms.push( extractedCoinTerm );
       }

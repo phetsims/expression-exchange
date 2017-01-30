@@ -161,16 +161,6 @@ define( function( require ) {
           startHideButtonTimer();
         }
       }
-      //else{
-      //  if ( coinTerm.composition.length === 1 && Math.abs( coinTerm.composition[ 0 ] ) > 1 ){
-      //    coinTerm.onCardProperty.set( userControlled );
-      //  }
-      //}
-      else {
-        if ( coinTerm.initiallyOnCard && coinTerm.composition.length === 1 ) {
-          coinTerm.onCardProperty.set( userControlled );
-        }
-      }
     }
 
     coinTerm.userControlledProperty.lazyLink( handleUserControlledChanged );

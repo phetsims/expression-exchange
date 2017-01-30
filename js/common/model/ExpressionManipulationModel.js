@@ -146,8 +146,6 @@ define( function( require ) {
 
         if ( userControlled === false ) {
 
-          addedCoinTerm.onCardProperty.set( false ); // make sure coin term is not shown on a card after user drops it
-
           var expressionBeingEdited = self.expressionBeingEditedProperty.get();
 
           if ( !expressionBeingEdited ) {

@@ -87,7 +87,13 @@ define( function( require ) {
       // update the card background
       self.cardLikeBackground.visible = false; // make sure card is invisible so it doesn't affect visible bounds
       self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilated( 10 ) );
-      self.cardLikeBackground.visible = constantCoinTerm.onCardProperty.get();
+      if ( constantCoinTerm.cardOpacityProperty.get() === 0 ) {
+        self.cardLikeBackground.visible = false;
+      }
+      else {
+        self.cardLikeBackground.visible = true;
+        self.cardLikeBackground.opacity = constantCoinTerm.cardOpacityProperty.get();
+      }
 
       // update the bounds that are registered with the model
       updateBoundsInModel();
