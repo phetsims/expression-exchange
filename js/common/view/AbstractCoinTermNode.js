@@ -49,7 +49,7 @@ define( function( require ) {
     this.cardLikeBackground = new Rectangle( -1, -1, 2, 2, BACKGROUND_CORNER_ROUNDING, BACKGROUND_CORNER_ROUNDING, {
       fill: '#ffffee',
       stroke: 'black',
-      lineWidth: 2,
+      lineWidth: 1,
       visible: false
     } );
     this.coinAndTextRootNode.addChild( this.cardLikeBackground );
