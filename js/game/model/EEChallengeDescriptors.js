@@ -1,7 +1,7 @@
 // Copyright 2017, University of Colorado Boulder
 
 /**
- * an array of static objects that describe the Expression Exchange game levels
+ * an array of static objects that describe the Expression Exchange challenges, organized by game level
  *
  * @author John Blanco
  */
