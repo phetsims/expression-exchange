@@ -1,5 +1,13 @@
 {
-  "break-apart-icon.png": {
+  "break-apart-icon-black.png": {
+    "text": [
+      "Copyright 20016 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": ""
+  },
+  "break-apart-icon-yellow.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],

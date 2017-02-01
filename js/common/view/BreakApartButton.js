@@ -15,8 +15,8 @@ define( function( require ) {
   var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
 
   // images
-  var breakApartIconImage = require( 'image!EXPRESSION_EXCHANGE/break-apart-icon.png' );
-  var yellowBreakApartIconImage = require( 'image!EXPRESSION_EXCHANGE/break-apart-icon-yellow.png' );
+  var breakApartIconBlackImage = require( 'image!EXPRESSION_EXCHANGE/break-apart-icon-black.png' );
+  var breakApartIconYellowImage = require( 'image!EXPRESSION_EXCHANGE/break-apart-icon-yellow.png' );
 
   // constants
   var MARGIN = 3.5;
@@ -45,10 +45,10 @@ define( function( require ) {
 
     // set up the content node
     if ( options.mode === 'normal' ) {
-      options.content = new Image( breakApartIconImage, { scale: ICON_SCALE } );
+      options.content = new Image( breakApartIconBlackImage, { scale: ICON_SCALE } );
     }
     else if ( options.mode === 'inverted' ) {
-      options.content = new Image( yellowBreakApartIconImage, { scale: ICON_SCALE } );
+      options.content = new Image( breakApartIconYellowImage, { scale: ICON_SCALE } );
     }
 
     RectangularPushButton.call( this, options );
