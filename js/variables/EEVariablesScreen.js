@@ -19,7 +19,6 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Screen = require( 'JOIST/Screen' );
   var Property = require( 'AXON/Property' );
-  var Color = require( 'SCENERY/util/Color' );
 
   // strings
   var variablesString = require( 'string!EXPRESSION_EXCHANGE/variables' );
@@ -31,7 +30,7 @@ define( function( require ) {
 
     var options = {
       name: variablesString,
-      backgroundColorProperty: new Property( Color.toColor( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ) ),
+      backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
       homeScreenIcon: new EEVariablesIconNode()
     };
 
