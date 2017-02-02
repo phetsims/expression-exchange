@@ -11,6 +11,7 @@ define( function( require ) {
   // modules
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  var ExpressionDescription = require( 'EXPRESSION_EXCHANGE/game/model/ExpressionDescription' );
 
   /*
    * two-dimensional array of game challenge descriptors, organized as a 2D array where the first dimension corresponds
@@ -28,9 +29,10 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 }
         ],
         expressionsToCollect: [
-          '2x + y',
-          '2x + 2y',
-          'x + 2y'
+          new ExpressionDescription( '2x + y' ),
+          new ExpressionDescription( '2x + 2y' ),
+          new ExpressionDescription( 'x + 2y' )
+
         ]
       },
       {
@@ -52,7 +54,7 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 4 }
         ],
         expressionsToCollect: [
-          '3xf + 2y',
+          '3x + 2y',
           'y + 2z',
           '2x + 2y + 2z'
         ]
