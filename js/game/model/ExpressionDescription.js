@@ -119,7 +119,7 @@ define( function( require ) {
     }
   }
 
-  expressionExchange.register( 'ExpressionDescription', expressionExchange );
+  expressionExchange.register( 'ExpressionDescription', ExpressionDescription );
 
   return inherit( Object, ExpressionDescription, {
 
