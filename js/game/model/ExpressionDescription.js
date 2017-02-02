@@ -26,7 +26,7 @@ define( function( require ) {
     // return an object with the updated index and the coefficient value, assuming 1 if no numbers are found
     return {
       newIndex: currentIndex,
-      coefficient: coefficientString.length > 0 ? parseInt( coefficientString ) : 1
+      coefficient: coefficientString.length > 0 ? parseInt( coefficientString, 10 ) : 1
     };
   }
 
@@ -84,7 +84,7 @@ define( function( require ) {
     this.expressionDescriptionArray = [];
 
     // remove all spaces from the expression
-    var noWhitespaceExpressionString = expressionString.replace( /\s/g, '' )
+    var noWhitespaceExpressionString = expressionString.replace( /\s/g, '' );
 
     // parse the string - this is limited to only what is needed by the Expression Exchange simulation
     var index = 0;
