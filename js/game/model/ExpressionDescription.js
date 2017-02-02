@@ -117,7 +117,6 @@ define( function( require ) {
         expectedNext = 'term';
       }
     }
-    debugger;
   }
 
   expressionExchange.register( 'ExpressionDescription', expressionExchange );
