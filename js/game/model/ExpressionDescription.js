@@ -14,63 +14,74 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
 
-  // helper function to extract a coefficient that precedes a term, if none is found it assumes a value of 1
-  function extractCoefficient( expressionString, currentIndex ) {
+  // helper function to extract a term from the equation string and interpret it as a coin term and quantity
+  function extractTerm( expressionString, index ) {
+
+    // handle the sign in front of the coefficient, if present
+    var signMultiplier = 1;
+    if ( expressionString[ index ] === '-' ) {
+      signMultiplier = -1;
+      index++;
+    }
+    else if ( expressionString[ index ] === '+' ) {
+      index++;
+    }
+
     var coefficientString = '';
 
     // pull out any numbers, and note that this assumes only integers are used as coefficients
-    while ( !isNaN( expressionString.charAt( currentIndex ) ) ) {
-      coefficientString += expressionString.charAt( currentIndex++ );
+    while ( !isNaN( parseInt( expressionString.charAt( index ) ) ) ) {
+      coefficientString += expressionString.charAt( index++ );
     }
 
-    // return an object with the updated index and the coefficient value, assuming 1 if no numbers are found
-    return {
-      newIndex: currentIndex,
-      coefficient: coefficientString.length > 0 ? parseInt( coefficientString, 10 ) : 1
-    };
-  }
+    // determine the numerical value of the coefficient
+    var coefficient = ( coefficientString.length > 0 ? parseInt( coefficientString, 10 ) : 1 ) * signMultiplier;
 
-  // helper function to extract a term from the equation and interpret it as a coin term
-  function extractTerm( expressionString, currentIndex ) {
-
-    var nextPlusSignIndex = expressionString.indexOf( '+', currentIndex );
-    var nextMinusSignIndex = expressionString.indexOf( '-', currentIndex );
+    // determine where the term ends within the expression string
+    var nextPlusSignIndex = expressionString.indexOf( '+', index );
+    var nextMinusSignIndex = expressionString.indexOf( '-', index );
     var termEndIndex = Math.min(
       nextPlusSignIndex > 0 ? nextPlusSignIndex : Number.POSITIVE_INFINITY,
       nextMinusSignIndex > 0 ? nextMinusSignIndex : Number.POSITIVE_INFINITY,
       expressionString.length
     );
-    var termString = expressionString.substring( currentIndex, termEndIndex ).toLowerCase();
 
-    var coinTermType = null;
-    if ( termString === 'x^2*y2' ) {
-      coinTermType = CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED;
+    // extract the string that represents the term
+    var termString = expressionString.substring( index, termEndIndex ).toLowerCase();
+
+    var coinTermTypeID = null;
+    if ( termString.length === 0 ) {
+      coinTermTypeID = CoinTermTypeID.CONSTANT;
+    }
+    else if ( termString === 'x^2*y2' ) {
+      coinTermTypeID = CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED;
     }
     else if ( termString === 'x^2' ) {
-      coinTermType = CoinTermTypeID.X_SQUARED;
+      coinTermTypeID = CoinTermTypeID.X_SQUARED;
     }
     else if ( termString === 'y^2' ) {
-      coinTermType = CoinTermTypeID.Y_SQUARED;
+      coinTermTypeID = CoinTermTypeID.Y_SQUARED;
     }
     else if ( termString === 'x*y' ) {
-      coinTermType = CoinTermTypeID.X_TIMES_Y;
+      coinTermTypeID = CoinTermTypeID.X_TIMES_Y;
     }
     else if ( termString === 'x' ) {
-      coinTermType = CoinTermTypeID.X;
+      coinTermTypeID = CoinTermTypeID.X;
     }
     else if ( termString === 'y' ) {
-      coinTermType = CoinTermTypeID.Y;
+      coinTermTypeID = CoinTermTypeID.Y;
     }
     else if ( termString === 'z' ) {
-      coinTermType = CoinTermTypeID.Z;
+      coinTermTypeID = CoinTermTypeID.Z;
     }
     else {
       assert && assert( false, 'unrecognized term string, value = ' + termString );
     }
 
     return {
-      coinTermType: coinTermType,
-      newIndex: currentIndex + termString.length
+      coefficient: coefficient,
+      coinTermTypeID: coinTermTypeID,
+      newIndex: index + termString.length
     };
   }
 
@@ -80,42 +91,23 @@ define( function( require ) {
    */
   function ExpressionDescription( expressionString ) {
 
-    // @public, read-only - description of the express, ordered set of coefficient, coin term type, operator
+    // @public, read-only - description of the expression as an ordered set of objects that contain the coefficient and
+    // the coin term ID
     this.expressionDescriptionArray = [];
 
     // remove all spaces from the expression
     var noWhitespaceExpressionString = expressionString.replace( /\s/g, '' );
 
-    // parse the string - this is limited to only what is needed by the Expression Exchange simulation
+    // extract the individual terms from the expression
     var index = 0;
-    var expectedNext = 'term'; // valid values are 'term' and 'operation'
-    var coefficientExtractionResult = null;
     var termExtractionResult = null;
     while ( index < noWhitespaceExpressionString.length ) {
-      if ( expectedNext === 'term' ) {
-        coefficientExtractionResult = extractCoefficient( noWhitespaceExpressionString, index );
-        this.expressionDescriptionArray.push( coefficientExtractionResult.coefficient );
-        index = coefficientExtractionResult.newIndex;
-        if ( noWhitespaceExpressionString[ index ] === '+' ||
-             noWhitespaceExpressionString[ index ] === '-' ||
-             index === noWhitespaceExpressionString.length ) {
-
-          // the extracted value was a constant
-          this.expressionDescriptionArray.push( CoinTermTypeID.CONSTANT );
-        }
-        else {
-          termExtractionResult = extractTerm( noWhitespaceExpressionString, index );
-          this.expressionDescriptionArray.push( termExtractionResult.coinTermType );
-          index = termExtractionResult.newIndex;
-        }
-        expectedNext = 'operator';
-      }
-      else if ( expectedNext === 'operator' ) {
-        var operator = noWhitespaceExpressionString[ index++ ];
-        assert && assert( operator === '+' || operator === '-' );
-        this.expressionDescriptionArray.push( operator );
-        expectedNext = 'term';
-      }
+      termExtractionResult = extractTerm( noWhitespaceExpressionString, index );
+      this.expressionDescriptionArray.push( {
+        coefficient: termExtractionResult.coefficient,
+        coinTermTypeID: termExtractionResult.coinTermTypeID
+      } );
+      index = termExtractionResult.newIndex;
     }
   }
 
