@@ -42,7 +42,7 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 3 }
         ],
         expressionsToCollect: [
-          'x + y + z',
+          new ExpressionDescription( 'x + y + z' ),
           '2x + y',
           '2y + 2z'
         ]
@@ -97,7 +97,7 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 4, creationLimit: 1 }
         ],
         expressionsToCollect: [
-          '5x',
+          new ExpressionDescription( '5x' ),
           '5x',
           '5x'
         ]
@@ -144,7 +144,7 @@ define( function( require ) {
         expressionsToCollect: [
           '2x - y',
           'x - 2y',
-          '-x + y'
+          new ExpressionDescription( '-x + y' )
         ]
       },
       {
@@ -156,7 +156,7 @@ define( function( require ) {
         ],
         expressionsToCollect: [
           '5x + y',
-          '4x - 2y',
+          new ExpressionDescription( '4x - 2y' ),
           '3x + 4y'
         ]
       }
