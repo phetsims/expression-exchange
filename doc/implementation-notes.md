@@ -6,6 +6,9 @@ coherent document before the simulation development can be considered complete.
 
 There is no MVT.
 
+Out of habit, I (jbphet) followed the model-view architecture.  After getting in to it a ways, I began to find this a
+little forced, because there really is no model in the sense of most sims.  (I may get rid of the divide at some point).
+
 CoinTerm is a fundamental model element, and it represents a thing that can either appear to be a coin or a
 mathematical term.  The name is used a lot throughout the code, so it's important to have a clear idea of what it is.
 It is a model object with a position, a front and back image to be used for the coin representation, and formula (which

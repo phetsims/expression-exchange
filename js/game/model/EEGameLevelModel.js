@@ -9,9 +9,16 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var ExpressionCollectionArea = require( 'EXPRESSION_EXCHANGE/game/model/ExpressionCollectionArea' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
+
+  // constants
+  var EXPRESSION_COLLECTION_AREA_X_OFFSET = 750;
+  var EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET = 100;
+  var EXPRESSION_COLLECTION_AREA_Y_SPACING = 130;
+  var NUM_EXPRESSION_COLLECTION_AREAS = 3;
 
   /**
    * TODO: Document parameters when finalized
@@ -19,6 +26,7 @@ define( function( require ) {
    */
   function EEGameLevelModel( level, allowedRepresentations ) {
 
+    var self = this;
     this.level = level; // @public, read only
     this.challengeNumber = 0;
 
@@ -26,6 +34,15 @@ define( function( require ) {
     this.expressionManipulationModel = new ExpressionManipulationModel( {
       allowedRepresentations: allowedRepresentations,
       partialCancellationEnabled: false // partial cancellation isn't performed in the games
+    } );
+
+    // @public, read only - areas where expressions can be collected
+    this.expressionCollectionAreas = [];
+    _.times( NUM_EXPRESSION_COLLECTION_AREAS, function( index ) {
+      self.expressionCollectionAreas.push( new ExpressionCollectionArea(
+        EXPRESSION_COLLECTION_AREA_X_OFFSET,
+        EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET + index * EXPRESSION_COLLECTION_AREA_Y_SPACING
+      ) );
     } );
   }
 
