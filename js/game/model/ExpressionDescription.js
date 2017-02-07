@@ -30,7 +30,7 @@ define( function( require ) {
     var coefficientString = '';
 
     // pull out any numbers, and note that this assumes only integers are used as coefficients
-    while ( !isNaN( parseInt( expressionString.charAt( index ) ) ) ) {
+    while ( !isNaN( parseInt( expressionString.charAt( index ), 10 ) ) ) {
       coefficientString += expressionString.charAt( index++ );
     }
 
