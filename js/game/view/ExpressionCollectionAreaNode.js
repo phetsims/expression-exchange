@@ -7,6 +7,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var ExpressionDescriptionNode = require( 'EXPRESSION_EXCHANGE/game/view/ExpressionDescriptionNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -18,9 +19,16 @@ define( function( require ) {
    */
   function ExpressionCollectionAreaNode( expressionCollectionArea ) {
     Node.call( this );
-    this.addChild( new Rectangle( expressionCollectionArea.bounds, {
+
+    var collectionArea = new Rectangle( expressionCollectionArea.bounds, {
       fill: 'white',
       stroke: 'black'
+    } );
+    this.addChild( collectionArea );
+
+    this.addChild( new ExpressionDescriptionNode( null, {
+      left: collectionArea.left,
+      bottom: collectionArea.top - 4
     } ) );
   }
 
