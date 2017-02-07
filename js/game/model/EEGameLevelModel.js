@@ -9,10 +9,12 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
   var ExpressionCollectionArea = require( 'EXPRESSION_EXCHANGE/game/model/ExpressionCollectionArea' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var Property = require( 'AXON/Property' );
 
   // constants
   var EXPRESSION_COLLECTION_AREA_X_OFFSET = 750;
@@ -27,10 +29,14 @@ define( function( require ) {
   function EEGameLevelModel( level, allowedRepresentations ) {
 
     var self = this;
-    this.level = level; // @public, read only
-    this.challengeNumber = 0;
 
-    // @public, model that allows user to manipulate coin terms and expressions
+    this.challengeNumber = 0; // TODO: Make this private later if possible
+    this.level = level; // {number} @public, read only
+
+    // @public - property that refers to the current challenge
+    this.currentChallengeProperty = new Property( EEChallengeDescriptors[ level ][ this.challengeNumber ] );
+
+    // @public, read only, model that allows user to manipulate coin terms and expressions
     this.expressionManipulationModel = new ExpressionManipulationModel( {
       allowedRepresentations: allowedRepresentations,
       partialCancellationEnabled: false // partial cancellation isn't performed in the games
@@ -43,6 +49,13 @@ define( function( require ) {
         EXPRESSION_COLLECTION_AREA_X_OFFSET,
         EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET + index * EXPRESSION_COLLECTION_AREA_Y_SPACING
       ) );
+    } );
+
+    // update the expression description associated with the expression collection areas each time a new challenge is set
+    this.currentChallengeProperty.link( function( currentChallenge ) {
+      self.expressionCollectionAreas.forEach( function( expressionCollectionArea, index ) {
+        expressionCollectionArea.expressionDescriptionProperty.set( currentChallenge.expressionsToCollect[ index ] );
+      } );
     } );
   }
 

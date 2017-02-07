@@ -27,6 +27,7 @@ define( function( require ) {
     Node.call( this );
 
     // add the coin term creator box
+    // TODO: Pass in the challenge itself instead of the number
     var coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
       levelModel.level,
       levelModel.challengeNumber,
@@ -35,7 +36,7 @@ define( function( require ) {
     );
     this.addChild( coinTermCreatorBox );
 
-    // add the expression collection areas
+    // add the expression collection area nodes
     levelModel.expressionCollectionAreas.forEach( function( expressionCollectionArea ) {
       self.addChild( new ExpressionCollectionAreaNode( expressionCollectionArea ) );
     } );
