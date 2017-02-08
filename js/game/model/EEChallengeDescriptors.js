@@ -43,8 +43,8 @@ define( function( require ) {
         ],
         expressionsToCollect: [
           new ExpressionDescription( 'x + y + z' ),
-          '2x + y',
-          '2y + 2z'
+          new ExpressionDescription( '2x + y' ),
+          new ExpressionDescription( '2y + 2z' )
         ]
       },
       {
@@ -54,9 +54,9 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 4 }
         ],
         expressionsToCollect: [
-          '3x + 2y',
-          'y + 2z',
-          '2x + 2y + 2z'
+          new ExpressionDescription( '3x + 2y' ),
+          new ExpressionDescription( 'y + 2z' ),
+          new ExpressionDescription( '2x + 2y + 2z' )
         ]
       }
     ],
@@ -69,9 +69,9 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 }
         ],
         expressionsToCollect: [
-          '2x + y',
-          '2x + 2y',
-          'x + 2y'
+          new ExpressionDescription( '2x + y' ),
+          new ExpressionDescription( '2x + 2y' ),
+          new ExpressionDescription( 'x + 2y' )
         ]
       },
       {
@@ -81,9 +81,9 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 }
         ],
         expressionsToCollect: [
-          'x + y',
-          '2x + 2y',
-          'x + 3y'
+          new ExpressionDescription( 'x + y' ),
+          new ExpressionDescription( '2x + 2y' ),
+          new ExpressionDescription( 'x + 3y' )
         ]
       }
     ],
@@ -98,8 +98,8 @@ define( function( require ) {
         ],
         expressionsToCollect: [
           new ExpressionDescription( '5x' ),
-          '5x',
-          '5x'
+          new ExpressionDescription( '5x' ),
+          new ExpressionDescription( '5x' )
         ]
       }
     ],
@@ -113,9 +113,9 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 }
         ],
         expressionsToCollect: [
-          '3x',
-          '2x + y',
-          'x + 2y'
+          new ExpressionDescription( '3x' ),
+          new ExpressionDescription( '2x + y' ),
+          new ExpressionDescription( 'x + 2y' )
         ]
       },
       {
@@ -125,9 +125,9 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 }
         ],
         expressionsToCollect: [
-          'x + y',
-          '2x + 2y',
-          'x + 3y'
+          new ExpressionDescription( 'x + y' ),
+          new ExpressionDescription( '2x + 2y' ),
+          new ExpressionDescription( 'x + 3y' )
         ]
       }
     ],
@@ -142,8 +142,8 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Y, minimumDecomposition: -1, creationLimit: 5 }
         ],
         expressionsToCollect: [
-          '2x - y',
-          'x - 2y',
+          new ExpressionDescription( '2x - y' ),
+          new ExpressionDescription( 'x - 2y' ),
           new ExpressionDescription( '-x + y' )
         ]
       },
@@ -155,9 +155,9 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Y, minimumDecomposition: -1, creationLimit: 3 }
         ],
         expressionsToCollect: [
-          '5x + y',
+          new ExpressionDescription( '5x + y' ),
           new ExpressionDescription( '4x - 2y' ),
-          '3x + 4y'
+          new ExpressionDescription( '3x + 4y' )
         ]
       }
     ],
@@ -172,9 +172,9 @@ define( function( require ) {
           { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 1 }
         ],
         expressionsToCollect: [
-          '3x',
-          '3x',
-          '3x'
+          new ExpressionDescription( '3x' ),
+          new ExpressionDescription( '3x' ),
+          new ExpressionDescription( '3x' )
         ]
       },
       {
@@ -185,9 +185,9 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 }
         ],
         expressionsToCollect: [
-          '3x + y',
-          '3x + y',
-          '3x + y'
+          new ExpressionDescription( '3x + y' ),
+          new ExpressionDescription( '3x + y' ),
+          new ExpressionDescription( '3x + y' )
         ]
       }
     ],
@@ -202,9 +202,9 @@ define( function( require ) {
           { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -1, creationLimit: 4 }
         ],
         expressionsToCollect: [
-          'x^2 + y^2',
-          'y^2 + z',
-          'x^2 + z'
+          new ExpressionDescription( 'x^2 + y^2' ),
+          new ExpressionDescription( 'y^2 + z' ),
+          new ExpressionDescription( 'x^2 + z' )
         ]
       }
     ],
@@ -218,9 +218,9 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 5 }
         ],
         expressionsToCollect: [
-          'x^2 + y^2',
-          'y^2 + z',
-          'x^2 + z'
+          new ExpressionDescription( 'x^2 + y^2' ),
+          new ExpressionDescription( 'y^2 + z' ),
+          new ExpressionDescription( 'x^2 + z' )
         ]
       }
     ]
