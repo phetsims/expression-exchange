@@ -69,7 +69,7 @@ define( function( require ) {
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 }
         ],
         expressionsToCollect: [
-          new ExpressionDescription( '2x + y' ),
+          new ExpressionDescription( '2x + y + z' ),
           new ExpressionDescription( '2x + 2y' ),
           new ExpressionDescription( 'x + 2y' )
         ]

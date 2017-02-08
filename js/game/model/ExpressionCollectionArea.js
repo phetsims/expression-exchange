@@ -14,7 +14,7 @@ define( function( require ) {
   var Property = require( 'AXON/Property' );
 
   // constants
-  var WIDTH = 200;
+  var WIDTH = 220;
   var HEIGHT = 90;
 
   /**
