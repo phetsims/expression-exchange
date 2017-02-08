@@ -37,10 +37,11 @@ define( function( require ) {
 
       // add the description node for the new expression
       if ( expressionDescription ) {
-        expressionDescriptionNode = new ExpressionDescriptionNode( expressionDescription, {
-          left: collectionArea.left,
-          bottom: collectionArea.top - 4
-        } );
+        expressionDescriptionNode = new ExpressionDescriptionNode(
+          expressionDescription,
+          expressionCollectionArea.viewMode,
+          { left: collectionArea.left, bottom: collectionArea.top - 4 }
+        );
         self.addChild( expressionDescriptionNode );
       }
     } );

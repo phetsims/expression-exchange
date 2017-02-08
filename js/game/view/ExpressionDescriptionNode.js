@@ -22,7 +22,7 @@ define( function( require ) {
   // constants
   var COIN_TO_COIN_SPACING = 10; // empirically determined
   var VARIABLE_TO_OPERATOR_SPACING = 10;
-  var OPERATOR_FONT = new PhetFont( 26 );
+  var OPERATOR_FONT = new PhetFont( 22 );
   var COEFFICIENT_FONT = new PhetFont( 20 );
   var ALWAYS_FALSE_PROPERTY = new Property( false );
   var ALWAYS_VARIABLE_MODE_PROPERTY = new Property( ViewMode.VARIABLES );
@@ -31,22 +31,18 @@ define( function( require ) {
   var COIN_TERM_FACTORY = new CoinTermFactory( new Property( 2 ), new Property( 5 ), new Property( 10 ) );
 
   /**
-   * @param {Object} expressionDescription
+   * @param {ExpressionDescription} expressionDescription
+   * @param {ViewMode} viewMode
    * @param {Object} options
    * @constructor
    */
-  function ExpressionDescriptionNode( expressionDescription, options ) {
+  function ExpressionDescriptionNode( expressionDescription, viewMode, options ) {
     var self = this;
     Node.call( this );
 
-    options = _.extend( {
-      //displayMode: ViewMode.COINS
-      displayMode: ViewMode.VARIABLES
-    }, options );
-
     var nextXPos = 0;
 
-    if ( options.displayMode === ViewMode.COINS ) {
+    if ( viewMode === ViewMode.COINS ) {
       expressionDescription.termsArray.forEach( function( expressionTerm, termIndex ) {
 
         // add the coin icons for this term
@@ -58,7 +54,7 @@ define( function( require ) {
         } );
       } );
     }
-    else if ( options.displayMode === ViewMode.VARIABLES ) {
+    else if ( viewMode === ViewMode.VARIABLES ) {
       expressionDescription.termsArray.forEach( function( expressionTerm, termIndex ) {
 
         // TODO: The following code to create the expression description as variable and operators is ugly and should

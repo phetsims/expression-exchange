@@ -20,12 +20,16 @@ define( function( require ) {
   /**
    * @param {number} x
    * @param {number} y
+   * @param {ViewMode} viewMode
    * @constructor
    */
-  function ExpressionCollectionArea( x, y ) {
+  function ExpressionCollectionArea( x, y, viewMode ) {
 
     // @public, read-only - bounds in model space of this capture area
     this.bounds = new Bounds2( x, y, x + WIDTH, y + HEIGHT );
+
+    // @public, read-only - view mode (coins or variables)
+    this.viewMode = viewMode;
 
     // @public, read-write - description of the expression that this capture area can hold
     this.expressionDescriptionProperty = new Property( null );

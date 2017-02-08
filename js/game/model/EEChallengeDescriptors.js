@@ -220,7 +220,7 @@ define( function( require ) {
         expressionsToCollect: [
           new ExpressionDescription( 'x^2 + y^2' ),
           new ExpressionDescription( 'y^2 + z' ),
-          new ExpressionDescription( 'x^2 + z' )
+          new ExpressionDescription( 'x^2 + 1' )
         ]
       }
     ]

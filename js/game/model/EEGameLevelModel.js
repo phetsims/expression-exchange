@@ -9,12 +9,14 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
   var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
   var ExpressionCollectionArea = require( 'EXPRESSION_EXCHANGE/game/model/ExpressionCollectionArea' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
+  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var EXPRESSION_COLLECTION_AREA_X_OFFSET = 750;
@@ -42,12 +44,18 @@ define( function( require ) {
       partialCancellationEnabled: false // partial cancellation isn't performed in the games
     } );
 
+    assert && assert(
+      allowedRepresentations !== AllowedRepresentationsEnum.COINS_AND_VARIABLES,
+      'games do not support switching between coin and variable view'
+    );
+
     // @public, read only - areas where expressions can be collected
     this.expressionCollectionAreas = [];
     _.times( NUM_EXPRESSION_COLLECTION_AREAS, function( index ) {
       self.expressionCollectionAreas.push( new ExpressionCollectionArea(
         EXPRESSION_COLLECTION_AREA_X_OFFSET,
-        EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET + index * EXPRESSION_COLLECTION_AREA_Y_SPACING
+        EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET + index * EXPRESSION_COLLECTION_AREA_Y_SPACING,
+        allowedRepresentations === AllowedRepresentationsEnum.COINS_ONLY ? ViewMode.COINS : ViewMode.VARIABLES
       ) );
     } );
 
