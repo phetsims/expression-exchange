@@ -13,13 +13,8 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionDescription = require( 'EXPRESSION_EXCHANGE/game/model/ExpressionDescription' );
 
-  /*
-   * two-dimensional array of game challenge descriptors, organized as a 2D array where the first dimension corresponds
-   * to the game level and the 2nd is the available challenges within that level
-   *
-   * TODO: document challenge descriptor format when finalized
-   */
-  var EEChallengeDescriptors = [
+  // the challenge set, organized as a 2D array where the first dimension is level, the second is challenge number
+  var challengeSets = [
 
     // level 1 challenges
     [
@@ -225,6 +220,32 @@ define( function( require ) {
       }
     ]
   ];
+
+  /**
+   * static object with methods for accessing the challenge descriptors defined above
+   */
+  var EEChallengeDescriptors = {
+
+    /**
+     * get a challenge descriptor for the specified level
+     * @param {number} level
+     * @param {number} challengeNumber
+     * @returns {Object}
+     * @public
+     */
+    getChallengeDescriptor: function( level, challengeNumber ) {
+      return challengeSets[ level ][ challengeNumber ];
+    },
+
+    /**
+     * randomize the challenge sets
+     */
+    shuffleChallenges: function() {
+      for ( var i = 0; i < challengeSets.length; i++ ) {
+        challengeSets[ i ] = phet.joist.random.shuffle( challengeSets[ i ] );
+      }
+    }
+  };
 
   expressionExchange.register( 'EEChallengeDescriptors', EEChallengeDescriptors );
 

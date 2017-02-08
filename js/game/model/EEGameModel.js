@@ -10,6 +10,7 @@ define( function( require ) {
 
   // modules
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
+  var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
   var EEGameLevelModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameLevelModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -38,8 +39,11 @@ define( function( require ) {
     this.currentLevelProperty = new Property( -1 ); // currently selected level, 0 indexed, -1 indicates none
 
     //------------------------------------------------------------------------
-    // other attributes
+    // other initialization
     //------------------------------------------------------------------------
+
+    // shuffle the challenge descriptors before creating the levels
+    EEChallengeDescriptors.shuffleChallenges();
 
     // create the game level models, one model per level
     this.gameLevelModels = [];

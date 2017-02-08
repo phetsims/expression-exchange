@@ -36,7 +36,9 @@ define( function( require ) {
     this.level = level; // {number} @public, read only
 
     // @public - property that refers to the current challenge
-    this.currentChallengeProperty = new Property( EEChallengeDescriptors[ level ][ this.challengeNumber ] );
+    this.currentChallengeProperty = new Property(
+      EEChallengeDescriptors.getChallengeDescriptor( level, this.challengeNumber )
+    );
 
     // @public, read only, model that allows user to manipulate coin terms and expressions
     this.expressionManipulationModel = new ExpressionManipulationModel( {

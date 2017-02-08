@@ -162,7 +162,7 @@ define( function( require ) {
 
       // create the list of creator nodes from the descriptor list
       var creatorNodes = [];
-      EEChallengeDescriptors[ level ][ challengeNumber ].carouselContents.forEach( function( descriptor ) {
+      EEChallengeDescriptors.getChallengeDescriptor( level, challengeNumber ).carouselContents.forEach( function( descriptor ) {
         creatorNodes.push( makeGameScreenCreatorNode(
           descriptor.typeID,
           descriptor.minimumDecomposition,
