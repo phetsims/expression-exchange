@@ -34,7 +34,7 @@ define( function( require ) {
    * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
    * @constructor
    */
-  function CoinTermIconNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty ) {
+  function CoinTermIconNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty, options ) {
 
     Node.call( this );
 
@@ -112,6 +112,8 @@ define( function( require ) {
       }
     );
     variableTextVisibleProperty.linkAttribute( termWithVariableValuesText, 'visible' );
+
+    this.mutate( options );
   }
 
   expressionExchange.register( 'CoinTermIconNode', CoinTermIconNode );

@@ -93,7 +93,7 @@ define( function( require ) {
 
     // @public, read-only - description of the expression as an ordered set of objects that contain the coefficient and
     // the coin term ID
-    this.expressionDescriptionArray = [];
+    this.termsArray = [];
 
     // remove all spaces from the expression
     var noWhitespaceExpressionString = expressionString.replace( /\s/g, '' );
@@ -103,7 +103,7 @@ define( function( require ) {
     var termExtractionResult = null;
     while ( index < noWhitespaceExpressionString.length ) {
       termExtractionResult = extractTerm( noWhitespaceExpressionString, index );
-      this.expressionDescriptionArray.push( {
+      this.termsArray.push( {
         coefficient: termExtractionResult.coefficient,
         coinTermTypeID: termExtractionResult.coinTermTypeID
       } );

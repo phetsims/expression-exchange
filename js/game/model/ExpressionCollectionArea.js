@@ -15,7 +15,7 @@ define( function( require ) {
 
   // constants
   var WIDTH = 200;
-  var HEIGHT = 100;
+  var HEIGHT = 90;
 
   /**
    * @param {number} x
@@ -27,7 +27,7 @@ define( function( require ) {
     // @public, read-only - bounds in model space of this capture area
     this.bounds = new Bounds2( x, y, x + WIDTH, y + HEIGHT );
 
-    // @public, description of the expression that this capture area can hold
+    // @public, read-write - description of the expression that this capture area can hold
     this.expressionDescriptionProperty = new Property( null );
   }
 

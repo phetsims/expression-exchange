@@ -18,6 +18,7 @@ define( function( require ) {
    * @constructor
    */
   function ExpressionCollectionAreaNode( expressionCollectionArea ) {
+    var self = this;
     Node.call( this );
 
     var collectionArea = new Rectangle( expressionCollectionArea.bounds, {
@@ -26,10 +27,23 @@ define( function( require ) {
     } );
     this.addChild( collectionArea );
 
-    this.addChild( new ExpressionDescriptionNode( null, {
-      left: collectionArea.left,
-      bottom: collectionArea.top - 4
-    } ) );
+    var expressionDescriptionNode = null;
+    expressionCollectionArea.expressionDescriptionProperty.link( function( expressionDescription ) {
+
+      // remove the previous expression description node, if present
+      if ( expressionDescriptionNode ) {
+        self.removeChild( expressionDescriptionNode );
+      }
+
+      // add the description node for the new expression
+      if ( expressionDescription ) {
+        expressionDescriptionNode = new ExpressionDescriptionNode( expressionDescription, {
+          left: collectionArea.left,
+          bottom: collectionArea.top - 4
+        } );
+        self.addChild( expressionDescriptionNode );
+      }
+    } );
   }
 
   expressionExchange.register( 'ExpressionCollectionAreaNode', ExpressionCollectionAreaNode );
