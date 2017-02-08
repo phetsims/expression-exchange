@@ -1,8 +1,8 @@
 // Copyright 2017, University of Colorado Boulder
 
 /**
- * a static factory object that provide methods for creating the 'boxes' (either a panel or a carouse) containing the
- * set of creator nodes for all explore screens and game levels
+ * a static factory object that provide methods for creating the 'boxes' (either a panel or a carousel) that contain
+ * coin term creator nodes
  *
  * This was centralized into a factory object because the simulation requires a rather large number of different
  * creator node sets, 43 at the time of this writing.
