@@ -50,7 +50,7 @@ define( function( require ) {
     _.times( NUMBER_OF_LEVELS, function( level ) {
       self.gameLevelModels.push( new EEGameLevelModel(
         level,
-        level < 4 ? AllowedRepresentationsEnum.COINS_ONLY : AllowedRepresentationsEnum.VARIABLES_ONLY ) );
+        level < 3 ? AllowedRepresentationsEnum.COINS_ONLY : AllowedRepresentationsEnum.VARIABLES_ONLY ) );
     } );
 
     // TODO: The next several lines will need to be modded based on answers to outstanding questions about game flow and behavior.
