@@ -62,7 +62,7 @@ define( function( require ) {
     else if ( termString === 'y^2' ) {
       coinTermTypeID = CoinTermTypeID.Y_SQUARED;
     }
-    else if ( termString === 'x*y' ) {
+    else if ( termString === 'xy' ) {
       coinTermTypeID = CoinTermTypeID.X_TIMES_Y;
     }
     else if ( termString === 'x' ) {

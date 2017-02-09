@@ -19,63 +19,62 @@ define( function( require ) {
     // level 1 challenges
     [
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( '2x + y' ),
           new ExpressionDescription( '2x + 2y' ),
           new ExpressionDescription( 'x + 2y' )
-
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 }
         ]
       },
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 3 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 4 },
-          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 3 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( 'x + y + z' ),
           new ExpressionDescription( '2x + y' ),
           new ExpressionDescription( '2y + 2z' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 3 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 3 }
         ]
       },
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 4 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( '3x + 2y' ),
           new ExpressionDescription( 'y + 2z' ),
           new ExpressionDescription( '2x + 2y + 2z' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 4 }
         ]
       },
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 },
-          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 2 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( 'x + y + z' ),
           new ExpressionDescription( '2x + z' ),
           new ExpressionDescription( 'x + 2y' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 2 }
         ]
       },
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 3 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 },
-          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 3 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( 'x + y' ),
           new ExpressionDescription( '2x + 2z' ),
           new ExpressionDescription( '2y + z' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 3 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 3 }
         ]
       }
     ],
@@ -83,66 +82,66 @@ define( function( require ) {
     // level 2
     [
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( '3x' ),
           new ExpressionDescription( '2x + y' ),
           new ExpressionDescription( '3y' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 }
         ]
       },
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( 'x + y' ),
           new ExpressionDescription( '2x + 2y' ),
           new ExpressionDescription( 'x + 3y' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 }
         ]
       },
       {
+        expressionsToCollect: [
+          new ExpressionDescription( '2x + 2z' ),
+          new ExpressionDescription( '3x + 3y' ),
+          new ExpressionDescription( '3y + 2z' )
+        ],
         carouselContents: [
           { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 1 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 3, creationLimit: 2 },
           { typeID: CoinTermTypeID.Z, minimumDecomposition: 2, creationLimit: 2 }
-        ],
-        expressionsToCollect: [
-          new ExpressionDescription( '2x + 2z' ),
-          new ExpressionDescription( '3x + 3y' ),
-          new ExpressionDescription( '3y + 2z' )
         ]
       },
       {
+        expressionsToCollect: [
+          new ExpressionDescription( '4y + 4z' ),
+          new ExpressionDescription( '2y + z' ),
+          new ExpressionDescription( 'y + 3z' )
+        ],
         carouselContents: [
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 1 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 3 },
           { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 2 },
           { typeID: CoinTermTypeID.Z, minimumDecomposition: 2, creationLimit: 3 }
-        ],
-        expressionsToCollect: [
-          new ExpressionDescription( '4y + 4z' ),
-          new ExpressionDescription( '2y + z' ),
-          new ExpressionDescription( 'y + 3z' )
         ]
       },
       {
+        expressionsToCollect: [
+          new ExpressionDescription( '4x' ),
+          new ExpressionDescription( 'x + 2y' ),
+          new ExpressionDescription( '2x + 2y' )
+        ],
         carouselContents: [
           { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 3 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 1 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 }
-        ],
-        expressionsToCollect: [
-          new ExpressionDescription( '4x' ),
-          new ExpressionDescription( 'x + 2y' ),
-          new ExpressionDescription( '2x + 2y' )
         ]
       }
     ],
@@ -150,63 +149,63 @@ define( function( require ) {
     // level 3
     [
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 7 },
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 4, creationLimit: 1 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( '5x' ),
           new ExpressionDescription( '5x' ),
           new ExpressionDescription( '5x' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 7 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 4, creationLimit: 1 }
         ]
       },
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 3, creationLimit: 1 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( '4x' ),
           new ExpressionDescription( '4x' ),
           new ExpressionDescription( '4x' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 3, creationLimit: 1 }
         ]
       },
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 3 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 3, creationLimit: 2 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( '5y' ),
           new ExpressionDescription( '5y' ),
           new ExpressionDescription( '5y' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 3 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 3, creationLimit: 2 }
         ]
       },
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 3, creationLimit: 3 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 4, creationLimit: 1 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( '6y' ),
           new ExpressionDescription( '6y' ),
           new ExpressionDescription( '6y' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 3, creationLimit: 3 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 4, creationLimit: 1 }
         ]
       },
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 8 },
-          { typeID: CoinTermTypeID.Z, minimumDecomposition: 3, creationLimit: 1 },
-          { typeID: CoinTermTypeID.Z, minimumDecomposition: 4, creationLimit: 1 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( '5z' ),
           new ExpressionDescription( '5z' ),
           new ExpressionDescription( '5z' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 8 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 3, creationLimit: 1 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 4, creationLimit: 1 }
         ]
       }
     ],
@@ -214,66 +213,66 @@ define( function( require ) {
     // level 4
     [
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
-          { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: 1, creationLimit: 3 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( '3x' ),
           new ExpressionDescription( '2x + x^2' ),
           new ExpressionDescription( 'x + 2x^2' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
+          { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: 1, creationLimit: 3 }
         ]
       },
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( 'x + y' ),
           new ExpressionDescription( '2x + 2y' ),
           new ExpressionDescription( 'x + 3y' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 }
         ]
       },
       {
+        expressionsToCollect: [
+          new ExpressionDescription( '2x + 2z' ),
+          new ExpressionDescription( '3x + 3y' ),
+          new ExpressionDescription( '3y + 2z' )
+        ],
         carouselContents: [
           { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 1 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 3, creationLimit: 2 },
           { typeID: CoinTermTypeID.Z, minimumDecomposition: 2, creationLimit: 2 }
-        ],
-        expressionsToCollect: [
-          new ExpressionDescription( '2x + 2z' ),
-          new ExpressionDescription( '3x + 3y' ),
-          new ExpressionDescription( '3y + 2z' )
         ]
       },
       {
+        expressionsToCollect: [
+          new ExpressionDescription( '4y + 4z' ),
+          new ExpressionDescription( '2y + z' ),
+          new ExpressionDescription( 'y + 3z' )
+        ],
         carouselContents: [
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 1 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 3 },
           { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 2 },
           { typeID: CoinTermTypeID.Z, minimumDecomposition: 2, creationLimit: 3 }
-        ],
-        expressionsToCollect: [
-          new ExpressionDescription( '4y + 4z' ),
-          new ExpressionDescription( '2y + z' ),
-          new ExpressionDescription( 'y + 3z' )
         ]
       },
       {
+        expressionsToCollect: [
+          new ExpressionDescription( '4y' ),
+          new ExpressionDescription( 'y + 2y^2' ),
+          new ExpressionDescription( '2y + 2y^2' )
+        ],
         carouselContents: [
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 },
           { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 1, creationLimit: 1 },
           { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 2, creationLimit: 2 }
-        ],
-        expressionsToCollect: [
-          new ExpressionDescription( '4y' ),
-          new ExpressionDescription( 'y + 2y^2' ),
-          new ExpressionDescription( '2y + 2y^2' )
         ]
       }
     ],
@@ -281,29 +280,67 @@ define( function( require ) {
     // level 5
     [
       {
+        expressionsToCollect: [
+          new ExpressionDescription( '2x - 3' ),
+          new ExpressionDescription( 'x - 2' ),
+          new ExpressionDescription( '-x + 2' )
+        ],
         carouselContents: [
           { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: -1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 4 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: -1, creationLimit: 5 }
-        ],
-        expressionsToCollect: [
-          new ExpressionDescription( '2x - y' ),
-          new ExpressionDescription( 'x - 2y' ),
-          new ExpressionDescription( '-x + y' )
+          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -1, creationLimit: 5 }
         ]
       },
       {
+        expressionsToCollect: [
+          new ExpressionDescription( '5x^2 + y' ),
+          new ExpressionDescription( '4x^2 - 2y' ),
+          new ExpressionDescription( '3x^2 + 4y' )
+        ],
         carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 3 },
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 3, creationLimit: 2 },
+          { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: 2, creationLimit: 3 },
+          { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: 3, creationLimit: 2 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 3 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: -1, creationLimit: 3 }
-        ],
+        ]
+      },
+      {
         expressionsToCollect: [
-          new ExpressionDescription( '5x + y' ),
-          new ExpressionDescription( '4x - 2y' ),
-          new ExpressionDescription( '3x + 4y' )
+          new ExpressionDescription( 'y - 2y' ),
+          new ExpressionDescription( '2xy' ),
+          new ExpressionDescription( '3x + 2y' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 3 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: -2, creationLimit: 1 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 },
+          { typeID: CoinTermTypeID.X_TIMES_Y, minimumDecomposition: 1, creationLimit: 2 }
+        ]
+      },
+      {
+        expressionsToCollect: [
+          new ExpressionDescription( '-y + 2xy' ),
+          new ExpressionDescription( '2y + xy' ),
+          new ExpressionDescription( '2xy - 3y' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: -1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.X_TIMES_Y, minimumDecomposition: 1, creationLimit: 5 }
+        ]
+      },
+      {
+        expressionsToCollect: [
+          new ExpressionDescription( '2y^2 - 2' ),
+          new ExpressionDescription( '2 - 2y^2' ),
+          new ExpressionDescription( '2y^2 + 2' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: -1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -1, creationLimit: 2 }
         ]
       }
     ],
@@ -311,29 +348,67 @@ define( function( require ) {
     // level 6
     [
       {
+        expressionsToCollect: [
+          new ExpressionDescription( '-3x' ),
+          new ExpressionDescription( '-3x' ),
+          new ExpressionDescription( '-3x' )
+        ],
         carouselContents: [
           { typeID: CoinTermTypeID.X, minimumDecomposition: -4, creationLimit: 1 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: -2, creationLimit: 2 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: -1, creationLimit: 4 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 1 }
-        ],
-        expressionsToCollect: [
-          new ExpressionDescription( '3x' ),
-          new ExpressionDescription( '3x' ),
-          new ExpressionDescription( '3x' )
         ]
       },
       {
+        expressionsToCollect: [
+          new ExpressionDescription( '3x - y' ),
+          new ExpressionDescription( '3x - y' ),
+          new ExpressionDescription( '3x - y' )
+        ],
         carouselContents: [
           { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 1 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: 3, creationLimit: 1 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 }
-        ],
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: -1, creationLimit: 3 }
+        ]
+      },
+      {
         expressionsToCollect: [
-          new ExpressionDescription( '3x + y' ),
-          new ExpressionDescription( '3x + y' ),
-          new ExpressionDescription( '3x + y' )
+          new ExpressionDescription( '-5z' ),
+          new ExpressionDescription( '-5z' ),
+          new ExpressionDescription( '-5z' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: -1, creationLimit: 7 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: -2, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: -3, creationLimit: 1 }
+        ]
+      },
+      {
+        expressionsToCollect: [
+          new ExpressionDescription( '3y - 2' ),
+          new ExpressionDescription( '3y - 2' ),
+          new ExpressionDescription( '3y - 2' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 3 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: -1, creationLimit: 1 },
+          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -2, creationLimit: 3 }
+        ]
+      },
+      {
+        expressionsToCollect: [
+          new ExpressionDescription( '4y - 1' ),
+          new ExpressionDescription( '4y - 1' ),
+          new ExpressionDescription( '4y - 1' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 3, creationLimit: 1 },
+          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -1, creationLimit: 3 }
         ]
       }
     ],
@@ -341,16 +416,16 @@ define( function( require ) {
     // level 7
     [
       {
+        expressionsToCollect: [
+          new ExpressionDescription( 'x^2 + y^2' ),
+          new ExpressionDescription( 'y^2 + z' ),
+          new ExpressionDescription( 'x^2 + z' )
+        ],
         carouselContents: [
           { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 4 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 1 },
           { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: 1, creationLimit: 6 },
           { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -1, creationLimit: 4 }
-        ],
-        expressionsToCollect: [
-          new ExpressionDescription( 'x^2 + y^2' ),
-          new ExpressionDescription( 'y^2 + z' ),
-          new ExpressionDescription( 'x^2 + z' )
         ]
       }
     ],
@@ -358,15 +433,15 @@ define( function( require ) {
     // level 8
     [
       {
-        carouselContents: [
-          { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 1, creationLimit: 5 },
-          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 5 }
-        ],
         expressionsToCollect: [
           new ExpressionDescription( 'x^2 + y^2' ),
           new ExpressionDescription( 'y^2 + z' ),
           new ExpressionDescription( 'x^2 + 1' )
+        ],
+        carouselContents: [
+          { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 1, creationLimit: 5 },
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: 1, creationLimit: 5 }
         ]
       }
     ]
