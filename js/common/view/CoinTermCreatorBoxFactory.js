@@ -17,7 +17,6 @@ define( function( require ) {
   var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var CoinTermCreatorBox = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBox' );
   var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
-  var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Property = require( 'AXON/Property' );
@@ -148,21 +147,21 @@ define( function( require ) {
     },
 
     /**
-     * @param {number} level
+     * @param {ChallengeDescriptor} challengeDescriptor
      * @param {number} challengeNumber
      * @param {ExpressionManipulationModel} model
      * @param {Object} options
      * @returns {CoinTermCreatorBox}
      * @public
      */
-    createGameScreenCreatorBox: function( level, challengeNumber, model, options ) {
+    createGameScreenCreatorBox: function( challengeDescriptor, model, options ) {
       options = _.extend( {
         itemSpacing: 40
       }, options );
 
       // create the list of creator nodes from the descriptor list
       var creatorNodes = [];
-      EEChallengeDescriptors.getChallengeDescriptor( level, challengeNumber ).carouselContents.forEach( function( descriptor ) {
+      challengeDescriptor.carouselContents.forEach( function( descriptor ) {
         creatorNodes.push( makeGameScreenCreatorNode(
           descriptor.typeID,
           descriptor.minimumDecomposition,

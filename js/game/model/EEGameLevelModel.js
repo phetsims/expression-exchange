@@ -90,13 +90,20 @@ define( function( require ) {
     },
 
     /**
-     * set up a new challenge
-     * @param {Object} challengeDescriptor
      * @public
      */
-    setUpChallenge: function( challengeDescriptor ) {
-      // TODO: TBD
-      assert && assert( false, 'not implemented' );
+    refresh: function() {
+      // TODO: This is probably incomplete, and will need to do something like only go to the next challenge if the
+      // current one has been completed.
+      this.loadNextChallenge();
+    },
+
+    loadNextChallenge: function() {
+      this.challengeNumber = ( this.challengeNumber + 1 ) % EEChallengeDescriptors.CHALLENGES_PER_LEVEL;
+      this.currentChallengeProperty.set( EEChallengeDescriptors.getChallengeDescriptor(
+        this.level,
+        this.challengeNumber
+      ) );
     },
 
     setCoinTermRetrievalBounds: function( bounds ) {

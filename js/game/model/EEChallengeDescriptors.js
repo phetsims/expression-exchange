@@ -13,7 +13,9 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionDescription = require( 'EXPRESSION_EXCHANGE/game/model/ExpressionDescription' );
 
-  // the challenge set, organized as a 2D array where the first dimension is level, the second is challenge number
+  // The challenge set, organized as a 2D array where the first dimension is level, the second is challenge number.
+  // The challenge descriptions are organized as a set of expressions that the user should construct and collect and
+  // a description of the contents of the coin term box.
   var challengeSets = [
 
     // level 1 challenges
@@ -575,7 +577,9 @@ define( function( require ) {
       for ( var i = 0; i < challengeSets.length; i++ ) {
         challengeSets[ i ] = phet.joist.random.shuffle( challengeSets[ i ] );
       }
-    }
+    },
+
+    CHALLENGES_PER_LEVEL: 5
   };
 
   expressionExchange.register( 'EEChallengeDescriptors', EEChallengeDescriptors );

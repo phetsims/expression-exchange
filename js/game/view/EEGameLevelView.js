@@ -27,14 +27,18 @@ define( function( require ) {
     Node.call( this );
 
     // add the coin term creator box
-    // TODO: Pass in the challenge itself instead of the number
-    var coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
-      levelModel.level,
-      levelModel.challengeNumber,
-      levelModel.expressionManipulationModel,
-      { centerX: screenLayoutBounds.centerX, bottom: screenLayoutBounds.bottom - 40 }
-    );
-    this.addChild( coinTermCreatorBox );
+    var coinTermCreatorBox = null;
+    levelModel.currentChallengeProperty.link( function( currentChallenge ) {
+      if ( coinTermCreatorBox ) {
+        self.removeChild( coinTermCreatorBox );
+      }
+      coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
+        currentChallenge,
+        levelModel.expressionManipulationModel,
+        { centerX: screenLayoutBounds.centerX, bottom: screenLayoutBounds.bottom - 40 }
+      );
+      self.addChild( coinTermCreatorBox );
+    } );
 
     // add the expression collection area nodes
     levelModel.expressionCollectionAreas.forEach( function( expressionCollectionArea ) {
