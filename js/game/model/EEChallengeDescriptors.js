@@ -85,7 +85,7 @@ define( function( require ) {
         expressionsToCollect: [
           new ExpressionDescription( '3x' ),
           new ExpressionDescription( '2x + y' ),
-          new ExpressionDescription( '3y' )
+          new ExpressionDescription( 'x + 2y' )
         ],
         carouselContents: [
           { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 2 },
