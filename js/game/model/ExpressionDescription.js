@@ -3,7 +3,7 @@
 /**
  * A description of a mathematical expression using coin term types and operations, used in the game.   This is limited
  * to handling only the expressions needed for the ExpressionExchange simulation.  In other words, it isn't a general
- * epression parser, though it could probably be generalized with some effort.
+ * expression parser, though it could probably be generalized with some effort.
  *
  * @author John Blanco
  */
