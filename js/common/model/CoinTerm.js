@@ -206,6 +206,7 @@ define( function( require ) {
     /**
      * move to the specified destination, but do so a step at a time rather than all at once
      * @param {Vector2} destination
+     * @public
      */
     travelToDestination: function( destination ) {
       var self = this;
@@ -265,6 +266,7 @@ define( function( require ) {
      * @param {boolean} doPartialCancellation - controls whether opposite terms in the composition cancel one another
      * or are retained, for example, when combining a coin term composed of [ -1, -1 ] with one composed of [ 1 ] and
      * doPartialCancellation set to true, the result is [ -1 ], if false, it's [ 1, -1, -1 ].
+     * @public
      */
     absorb: function( coinTermToAbsorb, doPartialCancellation ) {
       assert && assert( this.typeID === coinTermToAbsorb.typeID, 'can\'t combine coin terms of different types' );
@@ -293,7 +295,8 @@ define( function( require ) {
 
     /**
      * pull out the coin terms from which this one is composed, omitting the first one
-     * returns Array.<CoinTerm>
+     * @returns Array.<CoinTerm>
+     * @public
      */
     extractConstituentCoinTerms: function() {
       var extractedCoinTerms = [];
@@ -338,6 +341,7 @@ define( function( require ) {
      * tests if this coin term can be legitimately combined with another coin term
      * @param {CoinTerm} coinTerm
      * @returns {boolean}
+     * @public
      */
     canCombineWith: function( coinTerm ) {
       return coinTerm !== this && coinTerm.typeID === this.typeID;
