@@ -309,7 +309,7 @@ define( function( require ) {
       },
       {
         expressionsToCollect: [
-          new ExpressionDescription( 'y - 2y' ),
+          new ExpressionDescription( 'y - 2x' ),
           new ExpressionDescription( '2xy' ),
           new ExpressionDescription( '3x + 2y' )
         ],
@@ -384,7 +384,7 @@ define( function( require ) {
         carouselContents: [
           { typeID: CoinTermTypeID.Z, minimumDecomposition: -1, creationLimit: 7 },
           { typeID: CoinTermTypeID.Z, minimumDecomposition: -2, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Z, minimumDecomposition: -3, creationLimit: 1 }
+          { typeID: CoinTermTypeID.Z, minimumDecomposition: -4, creationLimit: 1 }
         ]
       },
       {
@@ -452,7 +452,7 @@ define( function( require ) {
         carouselContents: [
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 7 },
           { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: 1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: 3, creationLimit: 1 },
+          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: 3, creationLimit: 2 },
           { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -1, creationLimit: 3 }
         ]
       },
