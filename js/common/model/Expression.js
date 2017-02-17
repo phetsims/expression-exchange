@@ -631,11 +631,11 @@ define( function( require ) {
 
     /**
      * get the amount of overlap between the provided expression and this expression
-     * @param {Expression} otherExpression
+     * @param {Expression||ExpressionCollectionArea} otherEntity - must provide a 'getBounds' method
      */
-    getExpressionOverlap: function( otherExpression ) {
+    getOverlap: function( otherEntity ) {
       // TODO: Test and see if having pre-allocated bounds helps performance (right now getBounds does an allocation)
-      var otherExpressionBounds = otherExpression.getBounds();
+      var otherExpressionBounds = otherEntity.getBounds();
       var thisExpressionBounds = this.getBounds();
       var xOverlap = Math.max(
         0,

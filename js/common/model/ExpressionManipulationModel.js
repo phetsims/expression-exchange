@@ -824,7 +824,7 @@ define( function( require ) {
       this.expressions.forEach( function( testExpression ) {
         if ( testExpression !== expression && !testExpression.userControlledProperty.get() && // exclude expressions that are being moved by a user
              !testExpression.inProgressAnimationProperty.get() && // exclude expressions that are moving somewhere
-             expression.getExpressionOverlap( testExpression ) > maxOverlap ) {
+             expression.getOverlap( testExpression ) > maxOverlap ) {
           mostOverlappingExpression = testExpression;
         }
       } );

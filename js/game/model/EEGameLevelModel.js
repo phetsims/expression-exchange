@@ -35,16 +35,16 @@ define( function( require ) {
     this.challengeNumber = 0; // TODO: Make this private later if possible
     this.level = level; // {number} @public, read only
 
-    // @public - property that refers to the current challenge
-    this.currentChallengeProperty = new Property(
-      EEChallengeDescriptors.getChallengeDescriptor( level, this.challengeNumber )
-    );
-
     // @public, read only, model that allows user to manipulate coin terms and expressions
     this.expressionManipulationModel = new ExpressionManipulationModel( {
       allowedRepresentations: allowedRepresentations,
       partialCancellationEnabled: false // partial cancellation isn't performed in the games
     } );
+
+    // @public - property that refers to the current challenge
+    this.currentChallengeProperty = new Property(
+      EEChallengeDescriptors.getChallengeDescriptor( level, this.challengeNumber )
+    );
 
     assert && assert(
       allowedRepresentations !== AllowedRepresentationsEnum.COINS_AND_VARIABLES,
@@ -67,6 +67,36 @@ define( function( require ) {
         expressionCollectionArea.expressionDescriptionProperty.set( currentChallenge.expressionsToCollect[ index ] );
       } );
     } );
+
+    // handle interaction between expressions and the collection areas
+    this.expressionManipulationModel.expressions.addItemAddedListener( function( addedExpression ) {
+
+      // define a function that will attempt to collect this expression if it is dropped over a collection area
+      function expressionUserControlledListener( userControlled ) {
+        if ( !userControlled ) {
+
+          // test if this expression was dropped over a collection area
+          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionArea( addedExpression );
+
+          if ( mostOverlappingCollectionArea ) {
+
+            // Attempt to put this expression into the collection area.  The collection area will take care of either
+            // moving the expression inside or pushing it to the side.
+            mostOverlappingCollectionArea.collectOrRejectExpression( addedExpression );
+          }
+        }
+      }
+
+      // hook up the listener
+      addedExpression.userControlledProperty.lazyLink( expressionUserControlledListener );
+
+      // listen for the removal of this expression and unhook the listener in order to avoid memory leaks
+      self.expressionManipulationModel.expressions.addItemRemovedListener( function( removedExpression ) {
+        if ( addedExpression === removedExpression ) {
+          removedExpression.userControlledProperty.unlink( expressionUserControlledListener );
+        }
+      } );
+    } );
   }
 
   expressionExchange.register( 'EEGameLevelModel', EEGameLevelModel );
@@ -79,6 +109,25 @@ define( function( require ) {
      */
     step: function( dt ) {
       this.expressionManipulationModel.step( dt );
+    },
+
+    /**
+     * get a reference to the collection area that most overlaps with the provided expression, if not overlap exists
+     * then return null
+     * @param {Expression} expression
+     * @private
+     */
+    getMostOverlappingCollectionArea: function( expression ) {
+      var maxOverlap = 0;
+      var mostOverlappingCollectionArea = null;
+      this.expressionCollectionAreas.forEach( function( collectionArea ) {
+        if ( collectionArea.collectedExpressionProperty.get() === null && // collection area must be empty
+             expression.getOverlap( collectionArea ) > maxOverlap ) {
+          mostOverlappingCollectionArea = collectionArea;
+          maxOverlap = expression.getOverlap( collectionArea );
+        }
+      } );
+      return mostOverlappingCollectionArea;
     },
 
     /**

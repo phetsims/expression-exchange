@@ -12,10 +12,11 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
+  var Vector2 = require( 'DOT/Vector2' );
 
   // constants
-  var WIDTH = 220;
-  var HEIGHT = 90;
+  var WIDTH = 220; // empirically determined
+  var HEIGHT = 90; // empirically determined
 
   /**
    * @param {number} x
@@ -24,6 +25,9 @@ define( function( require ) {
    * @constructor
    */
   function ExpressionCollectionArea( x, y, viewMode ) {
+
+    // @public, read-only - expression that has been collected, null if no expression has been collected
+    this.collectedExpressionProperty = new Property( null );
 
     // @public, read-only - bounds in model space of this capture area
     this.bounds = new Bounds2( x, y, x + WIDTH, y + HEIGHT );
@@ -37,5 +41,43 @@ define( function( require ) {
 
   expressionExchange.register( 'ExpressionCollectionArea', ExpressionCollectionArea );
 
-  return inherit( Object, ExpressionCollectionArea );
+  return inherit( Object, ExpressionCollectionArea, {
+
+    /**
+     * Test the provided expression and, if it matches the spec, capture it by moving it into the center of this
+     * collection area and, if it doesn't match, push it away.
+     * @param {Expression} expression
+     * @public
+     */
+    collectOrRejectExpression: function( expression ) {
+
+      var expressionBounds = expression.getBounds();
+
+      // TODO: this is stubbed for now to always collect
+
+      expression.travelToDestination( new Vector2(
+        this.bounds.getCenterX() - expressionBounds.width / 2,
+        this.bounds.getCenterY() - expressionBounds.height / 2 )
+      );
+      this.collectedExpressionProperty.set( expression );
+    },
+
+    /**
+     * eject the currently collected expression, no-op if no expression is currently collected
+     * @public
+     */
+    ejectExpression: function() {
+      // TODO: implement
+    },
+
+    /**
+     * get a reference to this collection area's model bounds, the results should not be changed
+     * @returns {Bounds2}
+     * @public
+     */
+    getBounds: function() {
+      return this.bounds;
+    }
+
+  } );
 } );
