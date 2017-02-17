@@ -214,7 +214,7 @@ define( function( require ) {
     var noWhitespaceExpressionString = expressionString.replace( /\s/g, '' );
 
     // @public, read-only - description of the expression as an ordered set of objects that contain the coefficient and
-    // the coin term ID
+    // the coin term ID, e.g. { coefficient: 2, coinTermTypeID: CoinTermTypeID.X }
     this.termsArray = interpretExpression( noWhitespaceExpressionString, 0 ).termsArray;
   }
 
@@ -230,6 +230,35 @@ define( function( require ) {
        */
       expressionMatches: function( expression ) {
 
+        // count the totals of the coin term types in the provided expression
+        var expressionCoinTermCounts = {};
+        expression.coinTerms.forEach( function( coinTerm ) {
+          if ( expressionCoinTermCounts[ coinTerm.typeID ] ) {
+            expressionCoinTermCounts[ coinTerm.typeID ] += coinTerm.totalCountProperty.get();
+          }
+          else {
+            expressionCoinTermCounts[ coinTerm.typeID ] = coinTerm.totalCountProperty.get();
+          }
+        } );
+
+        var expressionCoinTermCountKeys = Object.keys( expressionCoinTermCounts );
+
+        // Does the expression have the same number of coin term types as the description?
+        if ( this.termsArray.length !== expressionCoinTermCountKeys.length ) {
+          return false;
+        }
+
+        // Do the counts match?  Note that this assumes the expression description is reduced.
+        for ( var i = 0; i < this.termsArray.length; i++ ) {
+          var termDescriptor = this.termsArray[ i ];
+          var expressionCount = expressionCoinTermCounts[ termDescriptor.coinTermTypeID ];
+          if ( !expressionCount || expressionCount !== termDescriptor.coefficient ) {
+            return false;
+          }
+        }
+
+        // if we made it to here, the expression matches the description
+        return true;
       }
     }
   );

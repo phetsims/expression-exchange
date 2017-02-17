@@ -588,6 +588,30 @@ define( function( require ) {
     },
 
     /**
+     * returns true if this expression is fully reduced, i.e. there is only one instance of each contained coin term
+     * type, and false if not
+     * @returns {boolean}
+     * @public
+     */
+    isReduced: function() {
+
+      var coinTermCounts = {};
+      var multipleTermsWithSameIdFound = false;
+
+      this.coinTerms.forEach( function( coinTerm ) {
+        if ( coinTermCounts[ coinTerm.typeID ] ) {
+          coinTermCounts[ coinTerm.typeID ]++;
+          multipleTermsWithSameIdFound = true;
+        }
+        else {
+          coinTermCounts[ coinTerm.typeID ] = 1;
+        }
+      } );
+
+      return !multipleTermsWithSameIdFound;
+    },
+
+    /**
      * initiate a break apart, which just emits an event and counts on parent model to handle
      * @public
      */
