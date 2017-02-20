@@ -35,7 +35,7 @@ define( function( require ) {
       coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
         currentChallenge,
         levelModel.expressionManipulationModel,
-        { centerX: screenLayoutBounds.centerX, bottom: screenLayoutBounds.bottom - 40 }
+        { centerX: screenLayoutBounds.width * 0.4, bottom: screenLayoutBounds.bottom - 40 }
       );
       self.addChild( coinTermCreatorBox );
     } );
