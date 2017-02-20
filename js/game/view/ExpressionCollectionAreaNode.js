@@ -14,10 +14,12 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
+  var UndoButton = require( 'EXPRESSION_EXCHANGE/game/view/UndoButton' );
 
   // constants
   var DOTTED_CIRCLE_RADIUS = 20; // empirically determined to be close to coin term radii in expressions
   var INTER_CIRCLE_SPACING = 30; // empirically determined to roughly match up with expression spacing
+  var CORNER_RADIUS = 4;
 
   /**
    * @param expressionCollectionArea
@@ -28,16 +30,37 @@ define( function( require ) {
     Node.call( this );
 
     // create the basic rectangular background
-    var collectionArea = new Rectangle( expressionCollectionArea.bounds, {
-      fill: 'white',
-      stroke: 'black'
-    } );
+    var collectionArea = new Rectangle(
+      0,
+      0,
+      expressionCollectionArea.bounds.width,
+      expressionCollectionArea.bounds.height,
+      CORNER_RADIUS,
+      CORNER_RADIUS,
+      {
+        fill: 'white',
+        stroke: 'black'
+      }
+    );
     this.addChild( collectionArea );
+
+    // add the button that will eject a collected expression
+    var undoButton = new UndoButton( {
+      listener: function() { expressionCollectionArea.ejectExpression(); }
+    } );
+    collectionArea.addChild( undoButton );
 
     // add a node that will contain the dotted line circles (only used in coin view mode)
     var dottedCirclesRootNode = new Node();
-    this.addChild( dottedCirclesRootNode );
+    collectionArea.addChild( dottedCirclesRootNode );
 
+    // monitor the collected expression and update the state when it changes
+    expressionCollectionArea.collectedExpressionProperty.link( function( collectedExpression ) {
+      dottedCirclesRootNode.visible = collectedExpression === null;
+      undoButton.visible = collectedExpression !== null;
+    } );
+
+    // add the expression description representation, which will update if the expression description changes
     var expressionDescriptionNode = null;
     expressionCollectionArea.expressionDescriptionProperty.link( function( expressionDescription ) {
 
@@ -64,7 +87,8 @@ define( function( require ) {
           var circle = new Circle( DOTTED_CIRCLE_RADIUS, {
             stroke: '#999999',
             lineDash: [ 4, 3 ],
-            left: nextCircleXPos
+            left: nextCircleXPos,
+            y: collectionArea.height / 2
           } );
           dottedCirclesRootNode.addChild( circle );
           nextCircleXPos += circle.width + INTER_CIRCLE_SPACING;
@@ -72,6 +96,8 @@ define( function( require ) {
         dottedCirclesRootNode.center = collectionArea.center;
       }
     } );
+
+    this.setTranslation( expressionCollectionArea.bounds.minX, expressionCollectionArea.bounds.minY );
   }
 
   expressionExchange.register( 'ExpressionCollectionAreaNode', ExpressionCollectionAreaNode );
