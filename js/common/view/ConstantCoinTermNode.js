@@ -101,7 +101,11 @@ define( function( require ) {
 
     // update the representation when model properties that affect it change
     var updateRepresentationMultilink = Property.multilink(
-      [ constantCoinTerm.totalCountProperty, constantCoinTerm.showMinusSignWhenNegativeProperty ],
+      [
+        constantCoinTerm.totalCountProperty,
+        constantCoinTerm.showMinusSignWhenNegativeProperty,
+        constantCoinTerm.cardOpacityProperty
+      ],
       updateRepresentation
     );
 
