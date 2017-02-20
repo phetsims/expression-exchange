@@ -147,7 +147,6 @@ define( function( require ) {
         coinTermNode = new ConstantCoinTermNode(
           addedCoinTerm,
           model.viewModeProperty,
-          model.simplifyNegativesProperty,
           {
             addDragHandler: true,
             dragBounds: visibleBoundsProperty.get(),
