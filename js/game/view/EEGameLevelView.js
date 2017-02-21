@@ -9,12 +9,14 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
   var ExpressionCollectionAreaNode = require( 'EXPRESSION_EXCHANGE/game/view/ExpressionCollectionAreaNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
+  var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
 
   /**
    * @param {EEGameLevelModel} levelModel
@@ -43,6 +45,32 @@ define( function( require ) {
     // add the expression collection area nodes
     levelModel.expressionCollectionAreas.forEach( function( expressionCollectionArea ) {
       self.addChild( new ExpressionCollectionAreaNode( expressionCollectionArea ) );
+    } );
+
+    // add the check box that allows expressions with negative values to be simplified
+    var boundsOfLowestExpressionCollectionArea = levelModel.expressionCollectionAreas[ 2 ].bounds;
+    var showSubtractionCheckbox = new CheckBox(
+      new ShowSubtractionIcon(),
+      levelModel.expressionManipulationModel.simplifyNegativesProperty,
+      {
+        left: boundsOfLowestExpressionCollectionArea.minX,
+        top: boundsOfLowestExpressionCollectionArea.maxY + 10,
+        maxWidth: boundsOfLowestExpressionCollectionArea.minX
+      }
+    );
+    this.addChild( showSubtractionCheckbox );
+
+    // only show the checkbox for simplifying expressions with negative values if some are present in the challenge
+    levelModel.currentChallengeProperty.link( function( currentChallenge ) {
+
+      // determine whether negative values are present in this challenge
+      var negativesExist = false;
+      currentChallenge.carouselContents.forEach( function( carouselContent ) {
+        if ( carouselContent.minimumDecomposition < 0 ) {
+          negativesExist = true;
+        }
+      } );
+      showSubtractionCheckbox.visible = negativesExist;
     } );
 
     // add the view area where the user will interact with coin terms and expressions

@@ -270,7 +270,6 @@ define( function( require ) {
 
     // if negative values are possible, show the check box that allows them to be simplified
     if ( coinTermCreatorBox.negativeTermsPresent ) {
-      // TODO: The label for this check box is in flux, make sure its name and the string match before publication
       var showSubtractionCheckbox = new CheckBox(
         new ShowSubtractionIcon(),
         model.simplifyNegativesProperty,
