@@ -130,6 +130,7 @@ define( function( require ) {
     // @public
     dispose: function(){
       this.expressionHintNodeDispose();
+      Node.prototype.dispose.call( this );
     }
   } );
 } );
