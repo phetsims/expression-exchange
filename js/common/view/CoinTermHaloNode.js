@@ -87,6 +87,7 @@ define( function( require ) {
     // @public
     dispose: function(){
       this.disposeCoinTermHaloNode();
+      Node.prototype.dispose.call( this );
     }
   } );
 } );

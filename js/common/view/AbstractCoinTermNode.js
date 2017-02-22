@@ -263,6 +263,7 @@ define( function( require ) {
     // @public
     dispose: function() {
       this.disposeAbstractCoinTermNode();
+      Node.prototype.dispose.call( this );
     }
   }, {
 
