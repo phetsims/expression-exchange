@@ -223,7 +223,7 @@ define( function( require ) {
   return inherit( Object, ExpressionDescription, {
 
       /**
-       * compares the content of an user-created expression with this description, returns true if they are equivalent
+       * compares the content of a user-created expression with this description, returns true if they are equivalent
        * @param {Expression} expression
        * @return {boolean}
        * @public
@@ -259,6 +259,23 @@ define( function( require ) {
 
         // if we made it to here, the expression matches the description
         return true;
+      },
+
+      /**
+       * compares a coin term with this description, returns true if they are equivalent
+       * @param {CoinTerm} coinTerm
+       * @return {boolean}
+       * @public
+       */
+      coinTermMatches: function( coinTerm ) {
+
+        // there must be only a single coin term in the the description for this to be a match
+        if ( this.termsArray.length !== 1 ) {
+          return false;
+        }
+
+        return this.termsArray[ 0 ].coinTermTypeID === coinTerm.typeID &&
+               this.termsArray[ 0 ].coefficient === coinTerm.totalCountProperty.get();
       }
     }
   );

@@ -655,7 +655,7 @@ define( function( require ) {
 
     /**
      * get the amount of overlap between the provided expression and this expression
-     * @param {Expression||ExpressionCollectionArea} otherEntity - must provide a 'getBounds' method
+     * @param {Expression||EECollectionArea} otherEntity - must provide a 'getBounds' method
      */
     getOverlap: function( otherEntity ) {
       // TODO: Test and see if having pre-allocated bounds helps performance (right now getBounds does an allocation)

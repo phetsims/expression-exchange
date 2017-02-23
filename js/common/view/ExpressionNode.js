@@ -221,6 +221,7 @@ define( function( require ) {
       expression.combineHaloActiveProperty.unlink( activateCombineHint );
       leftHintMultilink.dispose();
       rightHintMultilink.dispose();
+      Node.prototype.dispose.call( this );
     };
 
     // do the initial update

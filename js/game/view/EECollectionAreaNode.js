@@ -25,7 +25,7 @@ define( function( require ) {
    * @param expressionCollectionArea
    * @constructor
    */
-  function ExpressionCollectionAreaNode( expressionCollectionArea ) {
+  function EECollectionAreaNode( expressionCollectionArea ) {
     var self = this;
     Node.call( this );
 
@@ -46,7 +46,7 @@ define( function( require ) {
 
     // add the button that will eject a collected expression
     var undoButton = new UndoButton( {
-      listener: function() { expressionCollectionArea.ejectExpression(); }
+      listener: function() { expressionCollectionArea.ejectCollectedItem(); }
     } );
     collectionArea.addChild( undoButton );
 
@@ -55,7 +55,7 @@ define( function( require ) {
     collectionArea.addChild( dottedCirclesRootNode );
 
     // monitor the collected expression and update the state when it changes
-    expressionCollectionArea.collectedExpressionProperty.link( function( collectedExpression ) {
+    expressionCollectionArea.collectedItemProperty.link( function( collectedExpression ) {
       dottedCirclesRootNode.visible = collectedExpression === null;
       undoButton.visible = collectedExpression !== null;
     } );
@@ -100,7 +100,7 @@ define( function( require ) {
     this.setTranslation( expressionCollectionArea.bounds.minX, expressionCollectionArea.bounds.minY );
   }
 
-  expressionExchange.register( 'ExpressionCollectionAreaNode', ExpressionCollectionAreaNode );
+  expressionExchange.register( 'EECollectionAreaNode', EECollectionAreaNode );
 
-  return inherit( Node, ExpressionCollectionAreaNode );
+  return inherit( Node, EECollectionAreaNode );
 } );

@@ -11,7 +11,7 @@ define( function( require ) {
   // modules
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
   var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
-  var ExpressionCollectionArea = require( 'EXPRESSION_EXCHANGE/game/model/ExpressionCollectionArea' );
+  var EECollectionArea = require( 'EXPRESSION_EXCHANGE/game/model/EECollectionArea' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -51,10 +51,10 @@ define( function( require ) {
       'games do not support switching between coin and variable view'
     );
 
-    // @public, read only - areas where expressions can be collected
-    this.expressionCollectionAreas = [];
+    // @public, read only - areas where  expressions or coin terms can be collected
+    this.collectionAreas = [];
     _.times( NUM_EXPRESSION_COLLECTION_AREAS, function( index ) {
-      self.expressionCollectionAreas.push( new ExpressionCollectionArea(
+      self.collectionAreas.push( new EECollectionArea(
         EXPRESSION_COLLECTION_AREA_X_OFFSET,
         EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET + index * EXPRESSION_COLLECTION_AREA_Y_SPACING,
         allowedRepresentations === AllowedRepresentationsEnum.COINS_ONLY ? ViewMode.COINS : ViewMode.VARIABLES
@@ -63,12 +63,15 @@ define( function( require ) {
 
     // update the expression description associated with the expression collection areas each time a new challenge is set
     this.currentChallengeProperty.link( function( currentChallenge ) {
-      self.expressionCollectionAreas.forEach( function( expressionCollectionArea, index ) {
+      self.collectionAreas.forEach( function( expressionCollectionArea, index ) {
         expressionCollectionArea.expressionDescriptionProperty.set( currentChallenge.expressionsToCollect[ index ] );
       } );
     } );
 
     // handle interaction between expressions and the collection areas
+    // TODO: This will probably need to be pulled into the expression model once I've worked it out so that the model
+    // can prioritize expressions going into collection areas over pulling in other terms (the issue that Steele showed
+    // me).
     this.expressionManipulationModel.expressions.addItemAddedListener( function( addedExpression ) {
 
       // define a function that will attempt to collect this expression if it is dropped over a collection area
@@ -76,7 +79,7 @@ define( function( require ) {
         if ( !userControlled ) {
 
           // test if this expression was dropped over a collection area
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionArea( addedExpression );
+          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( addedExpression );
 
           if ( mostOverlappingCollectionArea ) {
 
@@ -97,6 +100,39 @@ define( function( require ) {
         }
       } );
     } );
+
+    // handle interaction between expressions and the collection areas
+    // TODO: This will probably need to be pulled into the expression model once I've worked it out so that the model
+    // can prioritize expressions going into collection areas over pulling in other terms (the issue that Steele showed
+    // me).
+    this.expressionManipulationModel.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
+
+      // define a function that will attempt to collect this expression if it is dropped over a collection area
+      function coinTermUserControlledListener( userControlled ) {
+        if ( !userControlled ) {
+
+          // test if this coin term was dropped over a collection area
+          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( addedCoinTerm );
+
+          if ( mostOverlappingCollectionArea ) {
+
+            // Attempt to put this coin term into the collection area.  The collection area will take care of either
+            // moving the coin term inside or pushing it to the side.
+            mostOverlappingCollectionArea.collectOrRejectCoinTerm( addedCoinTerm );
+          }
+        }
+      }
+
+      // hook up the listener
+      addedCoinTerm.userControlledProperty.lazyLink( coinTermUserControlledListener );
+
+      // listen for the removal of this coin term and unhook the listener in order to avoid memory leaks
+      self.expressionManipulationModel.expressions.addItemRemovedListener( function( removedCoinTerm ) {
+        if ( addedCoinTerm === removedCoinTerm ) {
+          removedCoinTerm.userControlledProperty.unlink( coinTermUserControlledListener );
+        }
+      } );
+    } );
   }
 
   expressionExchange.register( 'EEGameLevelModel', EEGameLevelModel );
@@ -112,19 +148,48 @@ define( function( require ) {
     },
 
     /**
-     * get a reference to the collection area that most overlaps with the provided expression, if not overlap exists
-     * then return null
+     * get a reference to the collection area that most overlaps with the provided expression, null if no overlap exists
      * @param {Expression} expression
      * @private
      */
-    getMostOverlappingCollectionArea: function( expression ) {
+    getMostOverlappingCollectionAreaForExpression: function( expression ) {
       var maxOverlap = 0;
       var mostOverlappingCollectionArea = null;
-      this.expressionCollectionAreas.forEach( function( collectionArea ) {
-        if ( collectionArea.collectedExpressionProperty.get() === null && // collection area must be empty
+      this.collectionAreas.forEach( function( collectionArea ) {
+        if ( collectionArea.collectedItemProperty.get() === null && // collection area must be empty
              expression.getOverlap( collectionArea ) > maxOverlap ) {
           mostOverlappingCollectionArea = collectionArea;
           maxOverlap = expression.getOverlap( collectionArea );
+        }
+      } );
+      return mostOverlappingCollectionArea;
+    },
+
+    /**
+     * get a reference to the collection area that most overlaps with the provided coin term, null if no overlap exists
+     * @param {CoinTerm} coinTerm
+     * @private
+     */
+    getMostOverlappingCollectionAreaForCoinTerm: function( coinTerm ) {
+      var maxOverlap = 0;
+      var mostOverlappingCollectionArea = null;
+      this.collectionAreas.forEach( function( collectionArea ) {
+        if ( collectionArea.collectedItemProperty.get() === null ) { // collection area must be empty
+          var coinTermBounds = coinTerm.getViewBounds();
+          var collectionAreaBounds = collectionArea.getBounds();
+          var xOverlap = Math.max(
+            0,
+            Math.min( coinTermBounds.maxX, collectionAreaBounds.maxX ) - Math.max( coinTermBounds.minX, collectionAreaBounds.minX )
+          );
+          var yOverlap = Math.max(
+            0,
+            Math.min( coinTermBounds.maxY, collectionAreaBounds.maxY ) - Math.max( coinTermBounds.minY, collectionAreaBounds.minY )
+          );
+          var totalOverlap = xOverlap * yOverlap;
+          if ( totalOverlap > maxOverlap ) {
+            maxOverlap = totalOverlap;
+            mostOverlappingCollectionArea = collectionArea;
+          }
         }
       } );
       return mostOverlappingCollectionArea;
@@ -144,6 +209,10 @@ define( function( require ) {
     refresh: function() {
       // TODO: This is probably incomplete, and will need to do something like only go to the next challenge if the
       // current one has been completed.
+      this.collectionAreas.forEach( function( collectionArea ) {
+        collectionArea.reset();
+      } );
+      this.expressionManipulationModel.reset();
       this.loadNextChallenge();
     },
 

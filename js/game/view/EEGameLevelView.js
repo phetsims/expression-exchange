@@ -11,7 +11,7 @@ define( function( require ) {
   // modules
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
-  var ExpressionCollectionAreaNode = require( 'EXPRESSION_EXCHANGE/game/view/ExpressionCollectionAreaNode' );
+  var EECollectionAreaNode = require( 'EXPRESSION_EXCHANGE/game/view/EECollectionAreaNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -43,19 +43,19 @@ define( function( require ) {
     } );
 
     // add the expression collection area nodes
-    levelModel.expressionCollectionAreas.forEach( function( expressionCollectionArea ) {
-      self.addChild( new ExpressionCollectionAreaNode( expressionCollectionArea ) );
+    levelModel.collectionAreas.forEach( function( collectionArea ) {
+      self.addChild( new EECollectionAreaNode( collectionArea ) );
     } );
 
     // add the check box that allows expressions with negative values to be simplified
-    var boundsOfLowestExpressionCollectionArea = levelModel.expressionCollectionAreas[ 2 ].bounds;
+    var boundsOfLowestCollectionArea = levelModel.collectionAreas[ 2 ].bounds;
     var showSubtractionCheckbox = new CheckBox(
       new ShowSubtractionIcon(),
       levelModel.expressionManipulationModel.simplifyNegativesProperty,
       {
-        left: boundsOfLowestExpressionCollectionArea.minX,
-        top: boundsOfLowestExpressionCollectionArea.maxY + 10,
-        maxWidth: boundsOfLowestExpressionCollectionArea.minX
+        left: boundsOfLowestCollectionArea.minX,
+        top: boundsOfLowestCollectionArea.maxY + 10,
+        maxWidth: boundsOfLowestCollectionArea.minX
       }
     );
     this.addChild( showSubtractionCheckbox );

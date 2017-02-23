@@ -64,18 +64,18 @@ define( function( require ) {
     // @public (read only), tracks the current in-progress animation, if any
     this.inProgressAnimationProperty = new Property( null );
 
-    // @public, total number of coins/terms combined into this one, can be negative
+    // @public (read-only) - total number of coins/terms combined into this one, can be negative
     this.totalCountProperty = new Property( options.initialCount );
 
-    // @public, flag set to disallow breaking apart, generally used when coin term is in or over an expression
+    // @public (read-write) - flag that controls whether breaking apart is allowed
     this.breakApartAllowedProperty = new Property( true );
 
-    // @public - The bounds of this model element's view representation relative to the element's current position.
-    // This admittedly breaks the usual model-view rules, but many things in the view need to know this, so having it
-    // available on the model element after being set by the view worked out to be the best approach.
+    // @public (read only) - The bounds of this model element's view representation relative to the element's current
+    // position. This admittedly breaks the usual model-view rules, but many things in the view need to know this, so
+    // having it available on the model element after being set by the view worked out to be the best approach.
     this.relativeViewBoundsProperty = new Property( null );
 
-    // @public (read only), ranges from 1 to 0, used primarily for fading out of a coin term when cancellation occurs
+    // @public (read only) - ranges from 1 to 0, used primarily for fading out of a coin term when cancellation occurs
     this.existenceStrengthProperty = new Property( 1 );
 
     // @public, determines the opacity of the card on which the coin term can reside
