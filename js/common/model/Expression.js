@@ -46,6 +46,7 @@ define( function( require ) {
     this.heightProperty = new Property( 0 ); // @public (read only)
     this.userControlledProperty = new Property( false ); // @public (read-write)
     this.inEditModeProperty = new Property( false ); // @public, indicates whether this expression is being edited
+    this.collectedProperty = new Property( false ); // @public, indicates whether this is in a collection box (for game)
 
     // @public (read only), tracks the current in-progress animation, if any
     this.inProgressAnimationProperty = new Property( null );

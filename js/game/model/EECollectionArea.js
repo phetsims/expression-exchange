@@ -75,6 +75,7 @@ define( function( require ) {
           this.bounds.getCenterY() - expressionBounds.height / 2
         ) );
         this.collectedItemProperty.set( expression );
+        expression.collectedProperty.set( true );
       }
       else {
 
@@ -106,6 +107,7 @@ define( function( require ) {
 
         // collect this coin term
         coinTerm.travelToDestination( new Vector2( this.bounds.getCenterX(), this.bounds.getCenterY() ) );
+        coinTerm.collectedProperty.set( true );
         this.collectedItemProperty.set( coinTerm );
       }
       else {
@@ -127,6 +129,7 @@ define( function( require ) {
       var xDestination;
       var yDestination;
 
+      // figure out the destination, which is slightly different for coin terms versus expressions
       if ( collectedItem instanceof Expression ) {
         collectedItemBounds = collectedItem.getBounds();
         xDestination = this.bounds.minX - collectedItemBounds.width - REJECTED_ITEM_DISTANCE;
@@ -137,11 +140,13 @@ define( function( require ) {
         collectedItemBounds = collectedItem.getViewBounds();
         xDestination = this.bounds.minX - collectedItemBounds.width - REJECTED_ITEM_DISTANCE;
         yDestination = this.bounds.getCenterY();
-
       }
 
       // send it outside of the collection area
       collectedItem.travelToDestination( new Vector2( xDestination, yDestination ) );
+
+      // clear flags
+      collectedItem.collectedProperty.set( false );
       this.collectedItemProperty.reset();
     },
 
@@ -154,7 +159,14 @@ define( function( require ) {
       return this.bounds;
     },
 
+    /**
+     * reset the collection area
+     * @public
+     */
     reset: function() {
+      if ( this.collectedItemProperty.get() ) {
+        this.collectedItemProperty.get().collectedProperty.set( false );
+      }
       this.collectedItemProperty.reset();
     }
 

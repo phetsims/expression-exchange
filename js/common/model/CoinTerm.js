@@ -60,6 +60,7 @@ define( function( require ) {
     this.userControlledProperty = new Property( false );// @public, indicate whether user is currently dragging this coin
     this.combineHaloActiveProperty = new Property( false );// @public
     this.showMinusSignWhenNegativeProperty = new Property( true ); // @public, supports showing subtraction in expressions
+    this.collectedProperty = new Property( false ); // @public, indicates whether this is in a collection box (for game)
 
     // @public (read only), tracks the current in-progress animation, if any
     this.inProgressAnimationProperty = new Property( null );
@@ -151,6 +152,12 @@ define( function( require ) {
           }
         }, Math.max( COIN_TERM_FADE_TIME / NUM_FADE_STEPS * 1000, 1 / 60 * 1000 ) ); // interval should be at least one animation frame
       }
+    } );
+
+    this.collectedProperty.link( function( collected ) {
+
+      // set the flag that is used to disable breaking apart whenever this coin term is captured in a collection area
+      self.breakApartAllowedProperty.set( !collected );
     } );
 
     // function to fade the card out, used below
