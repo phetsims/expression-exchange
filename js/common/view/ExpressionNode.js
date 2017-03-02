@@ -4,6 +4,9 @@
  * This type represents an expression in the view, which basically looks like a rectangle with two or more coin terms
  * in it and plus signs between them.
  *
+ * Note that this works in conjunction with ExpressionOverlayNode to implement the view-oriented behaviors of the
+ * expressions so, if you don't find what you're looking for here, you may want to check that type.
+ *
  * @author John Blanco
  */
 define( function( require ) {
@@ -157,6 +160,11 @@ define( function( require ) {
 
     // update the appearance if the layout changes
     expression.layoutChangedEmitter.addListener( updateBackgroundAndSymbols );
+
+    // make the background invisible whenever this expression is in a collection area
+    expression.collectedProperty.link( function( collected ) {
+      backgroundPath.fill = collected ? 'rgba( 0, 0, 0, 0 )' : BACKGROUND_COLOR;
+    } );
 
     // update the shape when hint states of the expression change
     var updateBackgroundAndSymbolsMultilink = Property.multilink(

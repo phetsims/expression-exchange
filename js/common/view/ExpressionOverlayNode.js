@@ -39,19 +39,14 @@ define( function( require ) {
     var self = this;
 
     // shape and path
-    var shape;
-    var expressionShapeNode = null;
+    var shape = new Shape.rect( 0, 0, 0.1, 0.1 ); // tiny rect, will be set in update function
+    var expressionShapeNode = new Path( shape, { fill: 'rgba( 255, 255, 255, 0.01 )' } ); // TODO: this works great, but review with JO to see if there is a better way;
+    this.addChild( expressionShapeNode );
 
     // define a function that will create or update the shape based on the width and height
     function updateShape() {
       shape = new Shape.rect( 0, 0, expression.widthProperty.get(), expression.heightProperty.get() );
-      if ( !expressionShapeNode ) {
-        expressionShapeNode = new Path( shape, { fill: 'rgba( 255, 255, 255, 0.01 )' } ); // TODO: this works great, but review with JO to see if there is a better way
-        self.addChild( expressionShapeNode );
-      }
-      else {
-        expressionShapeNode.shape = shape;
-      }
+      expressionShapeNode.shape = shape;
     }
 
     // update the shape if the height or width change
@@ -206,25 +201,43 @@ define( function( require ) {
         }
       }
     } );
+    var dragHandlerAttached = false;
 
-    // the drag handler is removed if an animation is in progress to prevent problematic race conditions
-    // TODO: Can I just set unpickable when animating instead?  If tried, remember to fuzz test, since that probably revealed the original issue.
-    function addAndRemoveDragHandler( inProgressAnimation ) {
-      if ( inProgressAnimation ) {
-        expressionShapeNode.removeInputListener( dragHandler );
-      }
-      else {
+    // Helper function that adds the drag handler when we want this expression to be draggable and removes it when we
+    // don't.  This is done instead of setting pickability because we need to prevent interaction with the coin terms
+    // underneath this overlay node.
+    function updateDragHandlerAttachmentState( inProgressAnimation, collected ) {
+      if ( !dragHandlerAttached && inProgressAnimation === null && !collected ) {
         expressionShapeNode.addInputListener( dragHandler );
+        dragHandlerAttached = true;
+        self.cursor = 'pointer';
+      }
+      else if ( dragHandlerAttached && ( inProgressAnimation || collected ) ) {
+        expressionShapeNode.removeInputListener( dragHandler );
+        dragHandlerAttached = false;
+        self.cursor = null;
       }
     }
-    expression.inProgressAnimationProperty.link( addAndRemoveDragHandler );
+
+    var updateDragHandlerAttachmentMultilink = Property.multilink(
+      [ expression.inProgressAnimationProperty, expression.collectedProperty ],
+      updateDragHandlerAttachmentState
+    );
+
+    // update popup button visibility whenever the expression is added to or removed from a collection area
+    expression.collectedProperty.lazyLink( function( collected ) {
+      if ( collected ) {
+        hidePopUpButtons();
+      }
+    } );
 
     // create a dispose function
     this.disposeExpressionNode = function(){
       expression.upperLeftCornerProperty.unlink( updatePosition );
-      expression.inProgressAnimationProperty.unlink( addAndRemoveDragHandler );
+      expression.inProgressAnimationProperty.unlink( updateDragHandlerAttachmentState );
       expression.inEditModeProperty.unlink( updateVisibility );
       updateShapeMultilink.dispose();
+      updateDragHandlerAttachmentMultilink.dispose();
     };
   }
 
