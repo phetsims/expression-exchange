@@ -14,7 +14,6 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
-  var UndoButton = require( 'EXPRESSION_EXCHANGE/game/view/UndoButton' );
 
   // constants
   var DOTTED_CIRCLE_RADIUS = 20; // empirically determined to be close to coin term radii in expressions
@@ -22,19 +21,19 @@ define( function( require ) {
   var CORNER_RADIUS = 4;
 
   /**
-   * @param expressionCollectionArea
+   * @param collectionArea
    * @constructor
    */
-  function EECollectionAreaNode( expressionCollectionArea ) {
+  function EECollectionAreaNode( collectionArea ) {
     var self = this;
     Node.call( this );
 
     // create the basic rectangular background
-    var collectionArea = new Rectangle(
+    var collectionAreaRectangle = new Rectangle(
       0,
       0,
-      expressionCollectionArea.bounds.width,
-      expressionCollectionArea.bounds.height,
+      collectionArea.bounds.width,
+      collectionArea.bounds.height,
       CORNER_RADIUS,
       CORNER_RADIUS,
       {
@@ -42,27 +41,20 @@ define( function( require ) {
         stroke: 'black'
       }
     );
-    this.addChild( collectionArea );
-
-    // add the button that will eject a collected expression
-    var undoButton = new UndoButton( {
-      listener: function() { expressionCollectionArea.ejectCollectedItem(); }
-    } );
-    collectionArea.addChild( undoButton );
+    this.addChild( collectionAreaRectangle );
 
     // add a node that will contain the dotted line circles (only used in coin view mode)
     var dottedCirclesRootNode = new Node();
-    collectionArea.addChild( dottedCirclesRootNode );
+    collectionAreaRectangle.addChild( dottedCirclesRootNode );
 
     // monitor the collected expression and update the state when it changes
-    expressionCollectionArea.collectedItemProperty.link( function( collectedExpression ) {
+    collectionArea.collectedItemProperty.link( function( collectedExpression ) {
       dottedCirclesRootNode.visible = collectedExpression === null;
-      undoButton.visible = collectedExpression !== null;
     } );
 
     // add the expression description representation, which will update if the expression description changes
     var expressionDescriptionNode = null;
-    expressionCollectionArea.expressionDescriptionProperty.link( function( expressionDescription ) {
+    collectionArea.expressionDescriptionProperty.link( function( expressionDescription ) {
 
       // remove the previous expression description node, if present
       if ( expressionDescriptionNode ) {
@@ -73,14 +65,14 @@ define( function( require ) {
       if ( expressionDescription ) {
         expressionDescriptionNode = new ExpressionDescriptionNode(
           expressionDescription,
-          expressionCollectionArea.viewMode,
-          { left: collectionArea.left, bottom: collectionArea.top - 4 }
+          collectionArea.viewMode,
+          { left: collectionAreaRectangle.left, bottom: collectionAreaRectangle.top - 4 }
         );
         self.addChild( expressionDescriptionNode );
       }
 
       // set up the dotted line circles if in coin view mode
-      if ( expressionCollectionArea.viewMode === ViewMode.COINS ) {
+      if ( collectionArea.viewMode === ViewMode.COINS ) {
         dottedCirclesRootNode.removeAllChildren();
         var nextCircleXPos = 0;
         _.times( expressionDescription.termsArray.length, function() {
@@ -88,16 +80,16 @@ define( function( require ) {
             stroke: '#999999',
             lineDash: [ 4, 3 ],
             left: nextCircleXPos,
-            y: collectionArea.height / 2
+            y: collectionAreaRectangle.height / 2
           } );
           dottedCirclesRootNode.addChild( circle );
           nextCircleXPos += circle.width + INTER_CIRCLE_SPACING;
         } );
-        dottedCirclesRootNode.center = collectionArea.center;
+        dottedCirclesRootNode.center = collectionAreaRectangle.center;
       }
     } );
 
-    this.setTranslation( expressionCollectionArea.bounds.minX, expressionCollectionArea.bounds.minY );
+    this.setTranslation( collectionArea.bounds.minX, collectionArea.bounds.minY );
   }
 
   expressionExchange.register( 'EECollectionAreaNode', EECollectionAreaNode );

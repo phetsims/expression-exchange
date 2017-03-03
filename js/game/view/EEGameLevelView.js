@@ -17,6 +17,7 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
+  var UndoButton = require( 'EXPRESSION_EXCHANGE/game/view/UndoButton' );
 
   /**
    * @param {EEGameLevelModel} levelModel
@@ -80,6 +81,22 @@ define( function( require ) {
       visibleBoundsProperty,
       { coinTermBreakApartButtonMode: 'inverted' }
     ) );
+
+    // add the buttons for ejecting expressions from the collection area, must be above the expressions in the z-order
+    levelModel.collectionAreas.forEach( function( collectionArea ) {
+
+      var ejectButton = new UndoButton( {
+        listener: function() { collectionArea.ejectCollectedItem(); },
+        left: collectionArea.bounds.minX,
+        top: collectionArea.bounds.minY
+      } );
+      self.addChild( ejectButton );
+
+      // control the visibility of the eject button
+      collectionArea.collectedItemProperty.link( function( collectedItem ) {
+        ejectButton.visible = collectedItem !== null;
+      } );
+    } );
   }
 
   expressionExchange.register( 'EEGameLevelView', EEGameLevelView );
