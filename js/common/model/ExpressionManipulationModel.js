@@ -50,7 +50,10 @@ define( function( require ) {
       allowedRepresentations: AllowedRepresentationsEnum.COINS_AND_VARIABLES,
 
       // flag that controls how cancellation is handled in cases where coin terms don't completely cancel each other out
-      partialCancellationEnabled: true
+      partialCancellationEnabled: true,
+
+      // flag that controls whether the 'simplify negatives' setting is on or off by default
+      simplifyNegativesDefault: false
 
     }, options );
 
@@ -66,7 +69,7 @@ define( function( require ) {
     this.zTermValueProperty = new Property( 10 ); // @public
     this.totalValueProperty = new Property( 0 ); // @public, read-only
     this.expressionBeingEditedProperty = new Property( null ); // @public, read-only, null when no expression is in edit mode
-    this.simplifyNegativesProperty = new Property( false ); // @public TODO: The terminology for this field is in flux, make sure its name and the view checkbox name match before publication
+    this.simplifyNegativesProperty = new Property( options.simplifyNegativesDefault ); // @public
 
     var self = this;
 

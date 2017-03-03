@@ -38,7 +38,8 @@ define( function( require ) {
     // @public, read only, model that allows user to manipulate coin terms and expressions
     this.expressionManipulationModel = new ExpressionManipulationModel( {
       allowedRepresentations: allowedRepresentations,
-      partialCancellationEnabled: false // partial cancellation isn't performed in the games
+      partialCancellationEnabled: false, // partial cancellation isn't performed in the games
+      simplifyNegativesDefault: true
     } );
 
     // @public - property that refers to the current challenge
