@@ -37,5 +37,8 @@
   },
   "chooseYourLevel": {
     "value": "Choose Your Level!"
+  },
+  "levelN": {
+    "value": " Level {0}"
   }
 }

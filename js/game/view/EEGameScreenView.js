@@ -21,6 +21,7 @@ define( function( require ) {
   var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var StartGameLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/StartGameLevelNode' );
+  var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
   var PhetColorScheme = require( 'SCENERY_PHET/PhetColorScheme' );
 
@@ -28,6 +29,9 @@ define( function( require ) {
   var GAME_VISIBLE = true; // TODO: Remove this and its usages once game is working
   var SCREEN_CHANGE_TIME = 1000; // milliseconds
   var CHALLENGES_PER_LEVEL = 3; // milliseconds
+
+  // strings
+  var levelNString = require( 'string!EXPRESSION_EXCHANGE/levelN' );
 
   // TODO: Temporary, remove when real icons are available
   function createIcon( color, label ) {
@@ -133,9 +137,8 @@ define( function( require ) {
     } );
     this.gamePlayNode.addChild( levelLabel );
     gameModel.currentLevelProperty.link( function( currentLevel ) {
-      // TODO: i18n
-      levelLabel.text = 'Level ' + ( currentLevel + 1 );
-      levelLabel.centerX = self.gamePlayNode.width / 2;
+      levelLabel.text = StringUtils.format( levelNString, ( currentLevel + 1 ) );
+      levelLabel.centerX = self.layoutBounds.width * 0.4; // empirically determined
     } );
     this.addChild( this.gamePlayNode );
 
