@@ -41,6 +41,7 @@ define( function( require ) {
         { centerX: screenLayoutBounds.width * 0.4, bottom: screenLayoutBounds.bottom - 40 }
       );
       self.addChild( coinTermCreatorBox );
+      coinTermCreatorBox.moveToBack(); // needs to be behind coin term and other layers
     } );
 
     // add the expression collection area nodes
