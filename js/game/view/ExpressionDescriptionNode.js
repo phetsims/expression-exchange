@@ -140,7 +140,13 @@ define( function( require ) {
       index++;
     }
 
-    assert && assert( fragmentString.length, 'no expression fragment found, method should not have been caslled' );
+    assert && assert( fragmentString.length, 'no expression fragment found, method should not have been called' );
+
+    // replace the minus sign used in subtraction operations with the unicode character
+    if ( fragmentString.indexOf( '-' ) > 0 ) {
+      debugger;
+    }
+    fragmentString = fragmentString.replace( / - /g, ' ' + EESharedConstants.MINUS_SIGN_UNICODE + ' ' );
 
     return {
       node: new Text( fragmentString, { font: EXPRESSION_FONT_FOR_NON_VARIABLE } ),

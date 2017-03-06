@@ -33,6 +33,9 @@ define( function( require ) {
     Y_VARIABLE_CHAR: 'y',
     Z_VARIABLE_CHAR: 'z',
 
+    // operator characters
+    MINUS_SIGN_UNICODE: '\u2212',
+
     // amount of time that the popup buttons are shown
     POPUP_BUTTON_SHOW_TIME: 1.5, // in seconds,
 

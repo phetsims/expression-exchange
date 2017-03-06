@@ -133,7 +133,7 @@ define( function( require ) {
           if ( simplifyNegativesProperty.value &&
                coinTermsLeftToRight[ i + 1 ].totalCountProperty.get() < 0 &&
                !coinTermsLeftToRight[ i + 1 ].userControlledProperty.get() ){
-            symbolText = '\u2212'; // unicode minus sign
+            symbolText = EESharedConstants.MINUS_SIGN_UNICODE;
           }
           else{
             symbolText = '+';
