@@ -142,8 +142,8 @@ define( function( require ) {
         carouselContents: [
           { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 3 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 1 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 }
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 1 }
         ]
       }
     ],
@@ -273,8 +273,8 @@ define( function( require ) {
         carouselContents: [
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 3 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 },
-          { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 1, creationLimit: 1 },
-          { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 2, creationLimit: 2 }
+          { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 1, creationLimit: 2 },
+          { typeID: CoinTermTypeID.Y_SQUARED, minimumDecomposition: 2, creationLimit: 1 }
         ]
       }
     ],
@@ -290,7 +290,7 @@ define( function( require ) {
         carouselContents: [
           { typeID: CoinTermTypeID.X, minimumDecomposition: 2, creationLimit: 2 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: -1, creationLimit: 2 },
-          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: 1, creationLimit: 2 },
           { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -1, creationLimit: 5 }
         ]
       },
@@ -357,7 +357,7 @@ define( function( require ) {
         ],
         carouselContents: [
           { typeID: CoinTermTypeID.X, minimumDecomposition: -4, creationLimit: 1 },
-          { typeID: CoinTermTypeID.X, minimumDecomposition: -2, creationLimit: 2 },
+          { typeID: CoinTermTypeID.X, minimumDecomposition: -2, creationLimit: 1 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: -1, creationLimit: 4 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 1 }
         ]
@@ -394,8 +394,8 @@ define( function( require ) {
           new ExpressionDescription( '3y - 2' )
         ],
         carouselContents: [
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 3 },
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 2 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: -1, creationLimit: 1 },
           { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -2, creationLimit: 3 }
         ]
@@ -407,7 +407,7 @@ define( function( require ) {
           new ExpressionDescription( '4y - 1' )
         ],
         carouselContents: [
-          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 4 },
+          { typeID: CoinTermTypeID.Y, minimumDecomposition: 1, creationLimit: 5 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 2, creationLimit: 2 },
           { typeID: CoinTermTypeID.Y, minimumDecomposition: 3, creationLimit: 1 },
           { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -1, creationLimit: 3 }
@@ -532,7 +532,7 @@ define( function( require ) {
           new ExpressionDescription( 'x(x + 2) + 1' )
         ],
         carouselContents: [
-          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: 1, creationLimit: 1 },
+          { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: 1, creationLimit: 3 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 5 },
           { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: 1, creationLimit: 6 },
           { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: -1, creationLimit: 2 }
