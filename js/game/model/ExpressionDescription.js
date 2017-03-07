@@ -123,12 +123,34 @@ define( function( require ) {
           return multiplyTerms( termExtractionResult, term );
         } );
 
-        // add the new terms to the terms array and update the index
+        // add the new terms to the terms array or consolidate it with existing therms, and then update the index
         multipliedSubExpression.forEach( function( termWithIndex ) {
-          termsArray.push( {
-            coefficient: termWithIndex.coefficient,
-            coinTermTypeID: termWithIndex.coinTermTypeID
+
+          // extract terms from the term array that match this one - there should be zero or one, no more
+          var matchingTermsArray = _.filter( termsArray, function( term ) {
+            return term.coinTermTypeID === termWithIndex.coinTermTypeID;
           } );
+
+          // test that the terms array was properly reduced before reaching this point
+          assert && assert( matchingTermsArray.length <= 1, 'error - terms array was not properly reduced' );
+
+          if ( matchingTermsArray.length === 1 ) {
+            var matchingTerm = matchingTermsArray[ 0 ];
+
+            matchingTerm.coefficient += termWithIndex.coefficient;
+            if ( matchingTerm.coefficient === 0 ) {
+              // this term has cancelled, so remove it from the array
+              termsArray = _.without( termsArray, matchingTerm );
+            }
+          }
+          else {
+
+            // this is a new term, so simply add it to the array of terms
+            termsArray.push( {
+              coefficient: termWithIndex.coefficient,
+              coinTermTypeID: termWithIndex.coinTermTypeID
+            } );
+          }
         } );
         currentIndex = subExpressionInterpretationResult.newIndex;
       }
