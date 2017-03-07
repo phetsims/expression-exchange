@@ -10,6 +10,7 @@ define( function( require ) {
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -18,8 +19,6 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var WIDTH = 220; // empirically determined
-  var HEIGHT = 90; // empirically determined
   var REJECTED_ITEM_DISTANCE = 20; // empirically determined
 
   /**
@@ -37,7 +36,12 @@ define( function( require ) {
     this.expressionDescriptionProperty = new Property( null );
 
     // @public, read-only - bounds in model space of this capture area
-    this.bounds = new Bounds2( x, y, x + WIDTH, y + HEIGHT );
+    this.bounds = new Bounds2(
+      x,
+      y,
+      x + EESharedConstants.COLLECTION_AREA_SIZE.width,
+      y + EESharedConstants.COLLECTION_AREA_SIZE.height
+    );
 
     // @public, read-only - view mode (coins or variables)
     this.viewMode = viewMode;

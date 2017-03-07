@@ -131,11 +131,10 @@ define( function( require ) {
           // determine whether to show a plus sign or a minus sign
           var symbolText;
           if ( simplifyNegativesProperty.value &&
-               coinTermsLeftToRight[ i + 1 ].totalCountProperty.get() < 0 &&
-               !coinTermsLeftToRight[ i + 1 ].userControlledProperty.get() ){
+               coinTermsLeftToRight[ i + 1 ].totalCountProperty.get() < 0 && !coinTermsLeftToRight[ i + 1 ].userControlledProperty.get() ) {
             symbolText = EESharedConstants.MINUS_SIGN_UNICODE;
           }
-          else{
+          else {
             symbolText = '+';
           }
 
@@ -177,6 +176,7 @@ define( function( require ) {
       self.x = upperLeftCorner.x;
       self.y = upperLeftCorner.y;
     }
+
     expression.upperLeftCornerProperty.link( updatePosition );
 
     // update the visibility of the left and right hints
@@ -187,6 +187,7 @@ define( function( require ) {
     function activateCombineHint( combineHintActive ) {
       backgroundPath.stroke = combineHintActive ? 'yellow' : null;
     }
+
     expression.combineHaloActiveProperty.link( activateCombineHint );
 
     // update the shape of the left hint
@@ -220,7 +221,7 @@ define( function( require ) {
     );
 
     // create a dispose function
-    this.disposeExpressionNode = function(){
+    this.disposeExpressionNode = function() {
       expression.layoutChangedEmitter.removeListener( updateBackgroundAndSymbols );
       updateBackgroundAndSymbolsMultilink.dispose();
       expression.upperLeftCornerProperty.unlink( updatePosition );
@@ -241,7 +242,7 @@ define( function( require ) {
   return inherit( Node, ExpressionNode, {
 
     // @public
-    dispose: function(){
+    dispose: function() {
       this.disposeExpressionNode();
       Node.prototype.dispose.call( this );
     }

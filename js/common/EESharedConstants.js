@@ -10,6 +10,7 @@ define( function( require ) {
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
   var Color = require( 'SCENERY/util/Color' );
+  var Dimension2 = require( 'DOT/Dimension2' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
   var EESharedConstants = {
@@ -40,7 +41,10 @@ define( function( require ) {
     POPUP_BUTTON_SHOW_TIME: 1.5, // in seconds,
 
     // largest supported value for a non-decomposable coin term, e.g. 8x
-    MAX_NON_DECOMPOSABLE_AMOUNT: 8
+    MAX_NON_DECOMPOSABLE_AMOUNT: 8,
+
+    // size of the collection areas in the game, in view coordinates, empirically determined
+    COLLECTION_AREA_SIZE: new Dimension2( 220, 90 )
   };
 
   expressionExchange.register( 'EESharedConstants', EESharedConstants );
