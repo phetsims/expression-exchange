@@ -263,6 +263,13 @@ define( function( require ) {
           }
         } );
 
+        // remove any terms that were present in the equation but were ultimately cancelled out
+        _.keys( expressionCoinTermCounts ).forEach( function( key ) {
+          if ( expressionCoinTermCounts[ key ] === 0 ) {
+            delete expressionCoinTermCounts[ key ];
+          }
+        } );
+
         var expressionCoinTermCountKeys = Object.keys( expressionCoinTermCounts );
 
         // Does the expression have the same number of coin term types as the description?

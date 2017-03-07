@@ -544,8 +544,7 @@ define( function( require ) {
           new ExpressionDescription( 'x(2x + 1)' ),
           new ExpressionDescription( '2(x^2 - 1)' )
         ],
-        carouselContents: [
-          { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 2 },
+        carouselContents: [ { typeID: CoinTermTypeID.X, minimumDecomposition: 1, creationLimit: 2 },
           { typeID: CoinTermTypeID.X, minimumDecomposition: -1, creationLimit: 3 },
           { typeID: CoinTermTypeID.CONSTANT, minimumDecomposition: -1, creationLimit: 4 },
           { typeID: CoinTermTypeID.X_SQUARED, minimumDecomposition: 1, creationLimit: 4 }
