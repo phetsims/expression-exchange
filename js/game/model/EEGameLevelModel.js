@@ -28,14 +28,18 @@ define( function( require ) {
    * TODO: Document parameters when finalized
    * @constructor
    */
-  function EEGameLevelModel( level, allowedRepresentations ) {
+  function EEGameLevelModel( level, allowedRepresentations, soundEnabledProperty ) {
 
     var self = this;
 
     this.challengeNumber = 0; // TODO: Make this private later if possible
     this.level = level; // {number} @public, read only
+    this.soundEnabledProperty = soundEnabledProperty; // @public (listen-only)
 
-    // @public, read only, model that allows user to manipulate coin terms and expressions
+    // @public (read only) - current score for this level
+    this.scoreProperty = new Property( 0 );
+
+    // @public (read only) - model that allows user to manipulate coin terms and expressions
     this.expressionManipulationModel = new ExpressionManipulationModel( {
       allowedRepresentations: allowedRepresentations,
       partialCancellationEnabled: false, // partial cancellation isn't performed in the games
@@ -52,14 +56,29 @@ define( function( require ) {
       'games do not support switching between coin and variable view'
     );
 
-    // @public, read only - areas where  expressions or coin terms can be collected
+    // @public, read only - areas where expressions or coin terms can be collected, initialized below
     this.collectionAreas = [];
+
+    // helper function to update the score when items are collected or un-collected
+    function updateScore() {
+      var score = 0;
+      self.collectionAreas.forEach( function( collectionArea ) {
+        if ( collectionArea.collectedItemProperty.get() ) {
+          score++;
+        }
+      } );
+      self.scoreProperty.set( score );
+    }
+
+    // initialize the collection areas
     _.times( NUM_EXPRESSION_COLLECTION_AREAS, function( index ) {
-      self.collectionAreas.push( new EECollectionArea(
+      var collectionArea = new EECollectionArea(
         EXPRESSION_COLLECTION_AREA_X_OFFSET,
         EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET + index * EXPRESSION_COLLECTION_AREA_Y_SPACING,
         allowedRepresentations === AllowedRepresentationsEnum.COINS_ONLY ? ViewMode.COINS : ViewMode.VARIABLES
-      ) );
+      );
+      collectionArea.collectedItemProperty.link( updateScore );
+      self.collectionAreas.push( collectionArea );
     } );
 
     // update the expression description associated with the expression collection areas each time a new challenge is set

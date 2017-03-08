@@ -14,6 +14,7 @@ define( function( require ) {
   var EECollectionAreaNode = require( 'EXPRESSION_EXCHANGE/game/view/EECollectionAreaNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
+  var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
@@ -97,6 +98,14 @@ define( function( require ) {
       collectionArea.collectedItemProperty.link( function( collectedItem ) {
         ejectButton.visible = collectedItem !== null;
       } );
+    } );
+
+    // hook up the audio player to the sound settings
+    var gameAudioPlayer = new GameAudioPlayer( levelModel.soundEnabledProperty );
+    levelModel.scoreProperty.link( function( newScore, oldScore ) {
+      if ( newScore > oldScore ) {
+        gameAudioPlayer.correctAnswer();
+      }
     } );
   }
 

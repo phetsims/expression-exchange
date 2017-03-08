@@ -79,14 +79,14 @@ define( function( require ) {
     var rightHintNode = new Path( rightHintShape, { fill: BACKGROUND_COLOR } );
     this.addChild( rightHintNode );
 
-    // layer where the plus symbols go
+    // layer where the plus and/or minus symbols go
     var symbolsLayer = new Node();
     this.addChild( symbolsLayer );
 
     // function to update the background and the plus/minus symbols
     function updateBackgroundAndSymbols() {
 
-      // plus symbols are recreated each time to keep things simple
+      // symbols are recreated each time to keep things simple
       symbolsLayer.removeAllChildren();
 
       if ( expression.coinTerms.length > 0 ) {
