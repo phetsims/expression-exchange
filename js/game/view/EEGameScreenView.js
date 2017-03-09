@@ -9,29 +9,21 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
   var EEGameLevelView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameLevelView' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
   var inherit = require( 'PHET_CORE/inherit' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var Property = require( 'AXON/Property' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var StartGameLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/StartGameLevelNode' );
-  var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
-  var PhetColorScheme = require( 'SCENERY_PHET/PhetColorScheme' );
 
   // constants
-  var GAME_VISIBLE = true; // TODO: Remove this and its usages once game is working
   var SCREEN_CHANGE_TIME = 1000; // milliseconds
   var CHALLENGES_PER_LEVEL = 3; // milliseconds
-
-  // strings
-  var levelNString = require( 'string!EXPRESSION_EXCHANGE/levelN' );
 
   // TODO: Temporary, remove when real icons are available
   function createIcon( color, label ) {
@@ -53,18 +45,6 @@ define( function( require ) {
     var self = this;
     ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
 
-    if ( !GAME_VISIBLE ) {
-      // add a message about the game coming soon and bail out
-      // TODO: This is temporary while the game is in development and should be removed when the game is live
-      this.addChild( new Text( 'Game coming soon.', {
-        font: new PhetFont( 60 ),
-        fill: 'rgba( 50, 50, 50, 0.5 )',
-        centerX: this.layoutBounds.width / 2,
-        centerY: this.layoutBounds.height * 0.33
-      } ) );
-      return;
-    }
-
     // set the bounds used to decide when coin terms need to be "pulled back"
     gameModel.coinTermRetrievalBounds = this.layoutBounds;
 
@@ -72,8 +52,8 @@ define( function( require ) {
     this.gameAudioPlayer = new GameAudioPlayer( gameModel.soundEnabledProperty );
 
     // add the node that allows the user to choose a game level to play
-    this.startGameLevelNode = new StartGameLevelNode(
-      function( level ) { gameModel.startLevel( level ); },
+    this.levelSelectionNode = new StartGameLevelNode(
+      function( level ) { gameModel.selectLevel( level ); },
       function() { gameModel.reset(); },
       gameModel.timerEnabledProperty,
       gameModel.soundEnabledProperty,
@@ -99,103 +79,87 @@ define( function( require ) {
       }
     );
 
-    this.addChild( this.startGameLevelNode );
+    this.addChild( this.levelSelectionNode );
+
+    // currently displayed level node, null if none
+    var currentlyShownLevelNode = null;
 
     // define the value used to define how far the screens slide when moving in and out of view
     var slideDistance = this.layoutBounds.width * 1.25;
 
-    // TODO: If the gamePlayNode lives on, I should consider moving it to its own class.
-    // add the parent node where the game play will occur
-    this.gamePlayNode = new Rectangle( 0, 0, this.layoutBounds.width, this.layoutBounds.height, {
-      fill: 'rgba( 0, 0, 0, 0.01 )',
-      centerX: this.layoutBounds.centerX + slideDistance, // initially out of view
-      visible: false
-    } );
-    var backButton = new BackButton( {
-      left: 20,
-      top: 20,
-      listener: function() {
-        gameModel.returnToLevelSelectState();
-      }
-    } );
-    this.gamePlayNode.addChild( backButton );
-    var refreshButton = new RectangularPushButton( {
-      content: new FontAwesomeNode( 'refresh', { scale: 0.7 } ),
-      baseColor: PhetColorScheme.PHET_LOGO_YELLOW,
-      xMargin: 9,
-      yMargin: 7,
-      listener: function() {
-        gameModel.refreshCurrentLevel();
-      },
-      left: backButton.left,
-      top: backButton.bottom + 8
-    } );
-    this.gamePlayNode.addChild( refreshButton );
-    var levelLabel = new Text( '', {
-      font: new PhetFont( 20 ),
-      top: 20
-    } );
-    this.gamePlayNode.addChild( levelLabel );
-    gameModel.currentLevelProperty.link( function( currentLevel ) {
-      levelLabel.text = StringUtils.format( levelNString, ( currentLevel + 1 ) );
-      levelLabel.centerX = self.layoutBounds.width * 0.4; // empirically determined
-    } );
-    this.addChild( this.gamePlayNode );
+    // helper function for moving to next game level
+    function goToNextLevel() {
+      console.log( 'goToNextLevel called' );
+    }
+
+    // helper function for returning to level selection mode
+    function returnToLevelSelection() {
+      gameModel.selectingLevelProperty.set( true );
+    }
 
     // create the game level views and add them to the main game play node
     this.gameLevelViews = [];
     gameModel.gameLevelModels.forEach( function( levelModel ) {
-      var gameLevelView = new EEGameLevelView( levelModel, self.layoutBounds, self.visibleBoundsProperty );
+      var gameLevelView = new EEGameLevelView(
+        levelModel,
+        self.layoutBounds,
+        self.visibleBoundsProperty,
+        goToNextLevel,
+        returnToLevelSelection
+      );
       gameLevelView.visible = false; // will be made visible when the corresponding level is activated
       self.gameLevelViews.push( gameLevelView );
-      self.gamePlayNode.addChild( gameLevelView );
+      self.addChild( gameLevelView );
     } );
 
     // set the bounds for retrieving coin terms when expressions or composite coin terms are broken up
     gameModel.setLevelModelBounds( this.layoutBounds );
 
     // hook up the animations for moving between level selection and game play
-    gameModel.selectingLevelProperty.link( function( selectingLevel ) {
-      if ( selectingLevel && self.startGameLevelNode.centerX !== self.layoutBounds.centerX ) {
+    Property.multilink(
+      [ gameModel.selectingLevelProperty, gameModel.currentLevelProperty ],
+      function( selectingLevel, currentLevel ) {
+        if ( selectingLevel && self.levelSelectionNode.centerX !== self.layoutBounds.centerX ) {
 
-        // animate the level selection node into the viewport
-        new TWEEN.Tween( self.startGameLevelNode )
-          .to( { centerX: self.layoutBounds.centerX }, SCREEN_CHANGE_TIME )
-          .easing( TWEEN.Easing.Cubic.InOut )
-          .onStart( function() { self.startGameLevelNode.visible = true; } )
-          .start( phet.joist.elapsedTime );
+          // animate the level selection node into the viewport
+          new TWEEN.Tween( self.levelSelectionNode )
+            .to( { centerX: self.layoutBounds.centerX }, SCREEN_CHANGE_TIME )
+            .easing( TWEEN.Easing.Cubic.InOut )
+            .onStart( function() { self.levelSelectionNode.visible = true; } )
+            .start( phet.joist.elapsedTime );
 
-        // animate the game play node out of the viewport
-        new TWEEN.Tween( self.gamePlayNode )
-          .to( { centerX: self.layoutBounds.centerX + slideDistance }, SCREEN_CHANGE_TIME )
-          .easing( TWEEN.Easing.Cubic.InOut )
-          .start( phet.joist.elapsedTime )
-          .onComplete( function() { self.gamePlayNode.visible = false; } );
+          if ( currentlyShownLevelNode ) {
+            // animate the currently visible game level node out of the viewport
+            new TWEEN.Tween( currentlyShownLevelNode )
+              .to( { centerX: self.layoutBounds.centerX + slideDistance }, SCREEN_CHANGE_TIME )
+              .easing( TWEEN.Easing.Cubic.InOut )
+              .start( phet.joist.elapsedTime )
+              .onComplete( function() {
+                currentlyShownLevelNode.visible = false;
+                currentlyShownLevelNode = null;
+              } );
+          }
+        }
+        else if ( !selectingLevel && currentLevel >= 0 && currentlyShownLevelNode === null ) {
+
+          // animate the game level node into the viewport
+          currentlyShownLevelNode = self.gameLevelViews[ currentLevel ];
+          currentlyShownLevelNode.left = self.layoutBounds.width * 1.25;
+          currentlyShownLevelNode.visible = true;
+          new TWEEN.Tween( currentlyShownLevelNode )
+            .to( { centerX: self.layoutBounds.centerX }, SCREEN_CHANGE_TIME )
+            .easing( TWEEN.Easing.Cubic.InOut )
+            .start( phet.joist.elapsedTime );
+
+          // animate the level selection node out of the viewport
+          new TWEEN.Tween( self.levelSelectionNode )
+            .to( { centerX: self.layoutBounds.centerX - self.layoutBounds.width * 1.25 }, SCREEN_CHANGE_TIME )
+            .easing( TWEEN.Easing.Cubic.InOut )
+            .start( phet.joist.elapsedTime )
+            .onComplete( function() { self.levelSelectionNode.visible = false; } );
+        }
       }
-      else if ( !selectingLevel && self.startGameLevelNode.centerX === self.layoutBounds.centerX ) {
-
-        // animate the game play node into the viewport
-        new TWEEN.Tween( self.gamePlayNode )
-          .to( { centerX: self.layoutBounds.centerX }, SCREEN_CHANGE_TIME )
-          .easing( TWEEN.Easing.Cubic.InOut )
-          .onStart( function() { self.gamePlayNode.visible = true; } )
-          .start( phet.joist.elapsedTime );
-
-        // animate the level selection node out of the viewport
-        new TWEEN.Tween( self.startGameLevelNode )
-          .to( { centerX: self.layoutBounds.centerX - self.layoutBounds.width * 1.25 }, SCREEN_CHANGE_TIME )
-          .easing( TWEEN.Easing.Cubic.InOut )
-          .start( phet.joist.elapsedTime )
-          .onComplete( function() { self.startGameLevelNode.visible = false; } );
-      }
-    } );
-
-    gameModel.currentLevelProperty.link( function( currentLevel ) {
-      // make the selected level view visible (and all others invisible)
-      self.gameLevelViews.forEach( function( gameLevelView, index ) {
-        gameLevelView.visible = index === currentLevel;
-      } );
-    } );
+    );
   }
 
   expressionExchange.register( 'EEGameScreenView', EEGameScreenView );

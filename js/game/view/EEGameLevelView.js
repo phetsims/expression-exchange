@@ -9,26 +9,68 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
   var EECollectionAreaNode = require( 'EXPRESSION_EXCHANGE/game/view/EECollectionAreaNode' );
+  var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
+  var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var NextLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/NextLevelNode' );
   var Node = require( 'SCENERY/nodes/Node' );
+  var PhetColorScheme = require( 'SCENERY_PHET/PhetColorScheme' );
+  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
   var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
+  var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
+  var Text = require( 'SCENERY/nodes/Text' );
   var UndoButton = require( 'EXPRESSION_EXCHANGE/game/view/UndoButton' );
+
+  // strings
+  var levelNString = require( 'string!EXPRESSION_EXCHANGE/levelN' );
 
   /**
    * @param {EEGameLevelModel} levelModel
    * @param {Bounds2} screenLayoutBounds
    * @param {Property.<Bounds2>} visibleBoundsProperty
+   * @param {function} nextLevelFunction
+   * @param {function} returnToLevelSelectionFunction
    * @constructor
    */
-  function EEGameLevelView( levelModel, screenLayoutBounds, visibleBoundsProperty ) {
+  function EEGameLevelView( levelModel, screenLayoutBounds, visibleBoundsProperty, nextLevelFunction, returnToLevelSelectionFunction ) {
     var self = this;
     Node.call( this );
+
+    // add the level label
+    var title = new Text( StringUtils.format( levelNString, ( levelModel.level + 1 ) ), {
+      font: new PhetFont( 20 ),
+      centerX: screenLayoutBounds.width * 0.4,
+      top: 20
+    } );
+    this.addChild( title );
+
+    // add the back button
+    var backButton = new BackButton( {
+      left: screenLayoutBounds.minX + 30,
+      top: screenLayoutBounds.minY + 30,
+      listener: returnToLevelSelectionFunction
+    } );
+    this.addChild( backButton );
+
+    // add the refresh button
+    var refreshButton = new RectangularPushButton( {
+      content: new FontAwesomeNode( 'refresh', { scale: 0.7 } ),
+      baseColor: PhetColorScheme.PHET_LOGO_YELLOW,
+      xMargin: 9,
+      yMargin: 7,
+      listener: function() { levelModel.refresh(); },
+      left: backButton.left,
+      top: backButton.bottom + 8
+    } );
+    this.addChild( refreshButton );
 
     // add the coin term creator box
     var coinTermCreatorBox = null;
@@ -39,7 +81,7 @@ define( function( require ) {
       coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
         currentChallenge,
         levelModel.expressionManipulationModel,
-        { centerX: screenLayoutBounds.width * 0.4, bottom: screenLayoutBounds.bottom - 40 }
+        { centerX: title.centerX, bottom: screenLayoutBounds.bottom - 40 }
       );
       self.addChild( coinTermCreatorBox );
       coinTermCreatorBox.moveToBack(); // needs to be behind coin term and other layers
@@ -62,6 +104,16 @@ define( function( require ) {
       }
     );
     this.addChild( showSubtractionCheckbox );
+
+    // add the node for moving to the next level, only shown when all challenges on this level have been answered
+    var nextLevelNode = new NextLevelNode( nextLevelFunction, {
+      centerX: title.centerX,
+      centerY: screenLayoutBounds.height * 0.33 // empirically determined
+    } );
+    this.addChild( nextLevelNode );
+    levelModel.scoreProperty.link( function( score ) {
+      nextLevelNode.visible = score === EEGameModel.MAX_SCORE_PER_LEVEL;
+    } );
 
     // only show the checkbox for simplifying expressions with negative values if some are present in the challenge
     levelModel.currentChallengeProperty.link( function( currentChallenge ) {

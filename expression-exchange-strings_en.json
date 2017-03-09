@@ -39,6 +39,9 @@
     "value": "Choose Your Level!"
   },
   "levelN": {
-    "value": " Level {0}"
+    "value": "Level {0}"
+  },
+  "next": {
+    "value": "Next"
   }
 }

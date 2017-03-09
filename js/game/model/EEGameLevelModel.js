@@ -227,8 +227,6 @@ define( function( require ) {
      * @public
      */
     refresh: function() {
-      // TODO: This is probably incomplete, and will need to do something like only go to the next challenge if the
-      // current one has been completed.
       this.collectionAreas.forEach( function( collectionArea ) {
         collectionArea.reset();
       } );

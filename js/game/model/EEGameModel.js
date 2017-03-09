@@ -83,7 +83,7 @@ define( function( require ) {
       },
 
       // @public
-      startLevel: function( levelNumber ) {
+      selectLevel: function( levelNumber ) {
         this.selectingLevelProperty.set( false );
         this.currentLevelProperty.set( levelNumber );
       },
@@ -109,6 +109,7 @@ define( function( require ) {
     },
     {
       // statics
-      MAX_SCORE_PER_LEVEL: MAX_SCORE_PER_LEVEL
+      MAX_SCORE_PER_LEVEL: MAX_SCORE_PER_LEVEL,
+      NUMBER_OF_LEVELS: NUMBER_OF_LEVELS
     } );
 } );
