@@ -144,10 +144,11 @@ define( function( require ) {
       }
 
       // move out the old node
-      new TWEEN.Tween( nodeInViewport )
-        .to( { centerX: outgoingNodeDestinationX }, SCREEN_CHANGE_TIME )
+      new TWEEN.Tween( { x: nodeInViewport.centerX } )
+        .to( { x: outgoingNodeDestinationX }, SCREEN_CHANGE_TIME )
         .easing( TWEEN.Easing.Cubic.InOut )
         .start( phet.joist.elapsedTime )
+        .onUpdate( function() { nodeInViewport.centerX = this.x; } )
         .onComplete( function() {
           nodeInViewport.visible = false;
           nodeInViewport = null;
@@ -156,10 +157,11 @@ define( function( require ) {
       // move in the new node
       incomingViewNode.centerX = incomingNodeStartX;
       incomingViewNode.visible = true;
-      new TWEEN.Tween( incomingViewNode )
-        .to( { centerX: self.layoutBounds.centerX }, SCREEN_CHANGE_TIME )
+      new TWEEN.Tween( { x: incomingViewNode.centerX } )
+        .to( { x: self.layoutBounds.centerX }, SCREEN_CHANGE_TIME )
         .easing( TWEEN.Easing.Cubic.InOut )
         .start( phet.joist.elapsedTime )
+        .onUpdate( function() { incomingViewNode.centerX = this.x; } )
         .onComplete( function() {
           nodeInViewport = incomingViewNode;
         } );
