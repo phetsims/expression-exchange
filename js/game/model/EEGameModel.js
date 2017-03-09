@@ -35,8 +35,10 @@ define( function( require ) {
     // @public
     this.soundEnabledProperty = new Property( true );
     this.timerEnabledProperty = new Property( true );
-    this.selectingLevelProperty = new Property( true );
-    this.currentLevelProperty = new Property( -1 ); // currently selected level, 0 indexed, -1 indicates none
+
+    // @public, currently selected level, null indicates no level selected which means that the level selection screen
+    // should be shown in the view
+    this.currentLevelProperty = new Property( null );
 
     //------------------------------------------------------------------------
     // other initialization
@@ -77,14 +79,13 @@ define( function( require ) {
   return inherit( Object, EEGameModel, {
 
       step: function( dt ) {
-        if ( this.currentLevelProperty.get() >= 0 ) {
+        if ( this.currentLevelProperty.get() !== null ) {
           this.gameLevelModels[ this.currentLevelProperty.get() ].step( dt );
         }
       },
 
       // @public
       selectLevel: function( levelNumber ) {
-        this.selectingLevelProperty.set( false );
         this.currentLevelProperty.set( levelNumber );
       },
 
@@ -95,16 +96,16 @@ define( function( require ) {
         } );
       },
 
-      returnToLevelSelectState: function() {
-        this.selectingLevelProperty.set( true );
-      },
-
-      refreshCurrentLevel: function() {
-        this.gameLevelModels[ this.currentLevelProperty.get() ].refresh();
+      // @public
+      returnToLevelSelection: function() {
+        this.currentLevelProperty.reset();
       },
 
       reset: function() {
-        this.selectingLevelProperty.reset();
+        this.currentLevelProperty.reset();
+        this.soundEnabledProperty.reset();
+        this.timerEnabledProperty.reset();
+
       }
     },
     {
