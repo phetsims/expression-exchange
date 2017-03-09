@@ -23,6 +23,7 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetColorScheme = require( 'SCENERY_PHET/PhetColorScheme' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
   var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
@@ -43,6 +44,11 @@ define( function( require ) {
   function EEGameLevelView( levelModel, screenLayoutBounds, visibleBoundsProperty, nextLevelFunction, returnToLevelSelectionFunction ) {
     var self = this;
     Node.call( this );
+
+    // add an invisible background rectangle so that bounds are correct
+    this.addChild( new Rectangle( screenLayoutBounds, {
+      stroke: 'rgba( 0, 0, 200, 0.01 )' // increase opacity to make the outline visible if desired (for debugging)
+    } ) );
 
     // add the level label
     var title = new Text( StringUtils.format( levelNString, ( levelModel.level + 1 ) ), {
