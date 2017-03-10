@@ -58,14 +58,15 @@ define( function( require ) {
       ) );
     } );
 
-    // TODO: The next several lines will need to be modded based on answers to outstanding questions about game flow and behavior.
     this.numberOfLevels = NUMBER_OF_LEVELS; // @public, read only
-    this.bestScoreProperties = []; // @public, read only
-    _.times( this.numberOfLevels, function() {
-      self.bestScoreProperties.push( new Property( 0 ) );
+    this.levelScoreProperties = []; // @public, read only
+    _.times( NUMBER_OF_LEVELS, function( index ) {
+      self.levelScoreProperties.push( self.gameLevelModels[ index ].scoreProperty );
     } );
+
+    // TODO: Are we tracking times?
     self.bestTimes = []; // @public, read only
-    _.times( this.numberOfLevels, function() {
+    _.times( NUMBER_OF_LEVELS, function() {
       self.bestTimes.push( null );
     } );
 
@@ -110,6 +111,7 @@ define( function( require ) {
     },
     {
       // statics
+      CHALLENGES_PER_LEVEL: CHALLENGES_PER_LEVEL,
       MAX_SCORE_PER_LEVEL: MAX_SCORE_PER_LEVEL,
       NUMBER_OF_LEVELS: NUMBER_OF_LEVELS
     } );

@@ -24,7 +24,6 @@ define( function( require ) {
 
   // constants
   var SCREEN_CHANGE_TIME = 1000; // milliseconds
-  var CHALLENGES_PER_LEVEL = 3; // milliseconds
 
   // TODO: Temporary, remove when real icons are available
   function createIcon( color, label ) {
@@ -68,11 +67,11 @@ define( function( require ) {
         createIcon( '#cd5c5c', 7 ),
         createIcon( '#dda0dd', 8 )
       ],
-      gameModel.bestScoreProperties,
+      gameModel.levelScoreProperties,
       {
-        numStarsOnButtons: CHALLENGES_PER_LEVEL,
-        perfectScore: gameModel.maxPossibleScore,
-        numLevels: gameModel.numberOfLevels,
+        numStarsOnButtons: EEGameModel.CHALLENGES_PER_LEVEL,
+        perfectScore: EEGameModel.MAX_SCORE_PER_LEVEL,
+        numLevels: EEGameModel.NUMBER_OF_LEVELS,
         numButtonRows: 2,
         controlsInset: 20,
         size: this.layoutBounds,
