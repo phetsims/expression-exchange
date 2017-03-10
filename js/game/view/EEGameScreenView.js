@@ -170,11 +170,5 @@ define( function( require ) {
 
   expressionExchange.register( 'EEGameScreenView', EEGameScreenView );
 
-  return inherit( ScreenView, EEGameScreenView, {
-
-    //TODO Called by the animation loop. Optional, so if your view has no animation, please delete this.
-    step: function( dt ) {
-      //TODO Handle view animation here.
-    }
-  } );
+  return inherit( ScreenView, EEGameScreenView );
 } );
