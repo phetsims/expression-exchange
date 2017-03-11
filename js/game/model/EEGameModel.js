@@ -64,12 +64,6 @@ define( function( require ) {
       self.levelScoreProperties.push( self.gameLevelModels[ index ].scoreProperty );
     } );
 
-    // TODO: Are we tracking times?
-    self.bestTimes = []; // @public, read only
-    _.times( NUMBER_OF_LEVELS, function() {
-      self.bestTimes.push( null );
-    } );
-
     // TODO: Make these static constants?
     this.maxPointsPerChallenge = POINTS_PER_CHALLENGE; // @public, read only
     this.maxPossibleScore = NUMBER_OF_LEVELS * CHALLENGES_PER_LEVEL * POINTS_PER_CHALLENGE; // @public, read only

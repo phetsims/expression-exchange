@@ -55,7 +55,6 @@ define( function( require ) {
     this.levelSelectionNode = new StartGameLevelNode(
       function( level ) { gameModel.selectLevel( level ); },
       function() { gameModel.reset(); },
-      gameModel.timerEnabledProperty,
       gameModel.soundEnabledProperty,
       [
         createIcon( '#CB99C9', 1 ),

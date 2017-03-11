@@ -31,7 +31,6 @@ define( function( require ) {
    * @param {Function} startLevelFunction - Function used to initiate a game
    * level, will be called with a zero-based index value.
    * @param {Function} resetFunction - Function to reset game and scores.
-   * @param {Property} timerEnabledProperty
    * @param {Property} soundEnabledProperty
    * @param {Array} iconNodes - Set of iconNodes to use on the buttons, sizes
    * should be the same, length of array must match number of levels.
@@ -40,8 +39,7 @@ define( function( require ) {
    * @param {Object} [options] - See code below for options and default values.
    * @constructor
    */
-  function StartGameLevelNode( startLevelFunction, resetFunction, timerEnabledProperty, soundEnabledProperty, iconNodes,
-                               scores, options ) {
+  function StartGameLevelNode( startLevelFunction, resetFunction, soundEnabledProperty, iconNodes, scores, options ) {
 
     Node.call( this );
 
@@ -88,12 +86,7 @@ define( function( require ) {
       this.addChild( buttons[ i ] );
     }
 
-    // Sound and timer controls.
-    var timerToggleButton = new TimerToggleButton( timerEnabledProperty, {
-      touchAreaXDilation: CONTROL_BUTTON_TOUCH_AREA_DILATION,
-      touchAreaYDilation: CONTROL_BUTTON_TOUCH_AREA_DILATION
-    } );
-    this.addChild( timerToggleButton );
+    // sound on/off button
     var soundToggleButton = new SoundToggleButton( soundEnabledProperty, {
       touchAreaXDilation: CONTROL_BUTTON_TOUCH_AREA_DILATION,
       touchAreaYDilation: CONTROL_BUTTON_TOUCH_AREA_DILATION
@@ -123,8 +116,6 @@ define( function( require ) {
     title.centerY = buttons[ 0 ].top / 2;
     soundToggleButton.left = options.controlsInset;
     soundToggleButton.bottom = options.size.height - options.controlsInset;
-    timerToggleButton.left = options.controlsInset;
-    timerToggleButton.bottom = soundToggleButton.top - 10;
   }
 
   expressionExchange.register( 'StartGameLevelNode', StartGameLevelNode );
