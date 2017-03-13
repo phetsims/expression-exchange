@@ -16,7 +16,6 @@ define( function( require ) {
   var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
   var inherit = require( 'PHET_CORE/inherit' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Property = require( 'AXON/Property' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var StartGameLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/StartGameLevelNode' );

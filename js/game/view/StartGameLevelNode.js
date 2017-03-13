@@ -18,7 +18,6 @@ define( function( require ) {
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   var SoundToggleButton = require( 'SCENERY_PHET/buttons/SoundToggleButton' );
   var Text = require( 'SCENERY/nodes/Text' );
-  var TimerToggleButton = require( 'SCENERY_PHET/buttons/TimerToggleButton' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // strings
