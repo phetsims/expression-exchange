@@ -77,7 +77,6 @@ define( function( require ) {
     this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
 
     // @public, read only, options that control what is available to the user to manipulate
-    this.coinTermCollection = options.coinTermCollection;
     this.allowedRepresentations = options.allowedRepresentations;
 
     // @public, read and listen only, list of all coin terms in the model

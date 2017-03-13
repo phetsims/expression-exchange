@@ -126,7 +126,7 @@ define( function( require ) {
 
     // create the control that will allow the user to manipulate variable values
     var variableValueControl;
-    if ( model.coinTermCollection === CoinTermCreatorSetID.VARIABLES ) {
+    if ( coinTermCreatorSetID === CoinTermCreatorSetID.VARIABLES ) {
 
       // the variable value control is slightly different for the advanced screen
       variableValueControl = new VariableValueControl( {
@@ -204,7 +204,7 @@ define( function( require ) {
     // TODO: The setting of the width for the "My Collection" element was empirically determined.  When the sim is
     // TODO: further along, I (jbphet) should revisit and see if there is a better way to do this.
     var collectionDisplayWidth = 150;
-    if ( model.coinTermCollection === CoinTermCreatorSetID.EXPLORE ) {
+    if ( coinTermCreatorSetID === CoinTermCreatorSetID.EXPLORE ) {
       collectionDisplayWidth = 180;
     }
 

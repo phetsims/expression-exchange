@@ -63,9 +63,21 @@ define( function( require ) {
     // create the tweaker controls
     var controls = [];
     var tweakerOptions = { minValue: options.minValue, maxValue: options.maxValue };
-    xValueProperty && controls.push( new LeftRightNumberSpinner( xValueProperty, EESharedConstants.X_VARIABLE_CHAR, tweakerOptions ) );
-    yValueProperty && controls.push( new LeftRightNumberSpinner( yValueProperty, EESharedConstants.Y_VARIABLE_CHAR, tweakerOptions ) );
-    zValueProperty && controls.push( new LeftRightNumberSpinner( zValueProperty, EESharedConstants.Z_VARIABLE_CHAR, tweakerOptions ) );
+    xValueProperty && controls.push( new LeftRightNumberSpinner(
+      xValueProperty,
+      EESharedConstants.X_VARIABLE_CHAR,
+      tweakerOptions
+    ) );
+    yValueProperty && controls.push( new LeftRightNumberSpinner(
+      yValueProperty,
+      EESharedConstants.Y_VARIABLE_CHAR,
+      tweakerOptions
+    ) );
+    zValueProperty && controls.push( new LeftRightNumberSpinner(
+      zValueProperty,
+      EESharedConstants.Z_VARIABLE_CHAR,
+      tweakerOptions
+    ) );
 
     // add in the 'restore defaults' button
     controls.push( restoreDefaultsButton );
