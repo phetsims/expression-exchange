@@ -58,15 +58,11 @@ define( function( require ) {
       ) );
     } );
 
-    this.numberOfLevels = NUMBER_OF_LEVELS; // @public, read only
+    // @public - score properties for each level
     this.levelScoreProperties = []; // @public, read only
     _.times( NUMBER_OF_LEVELS, function( index ) {
       self.levelScoreProperties.push( self.gameLevelModels[ index ].scoreProperty );
     } );
-
-    // TODO: Make these static constants?
-    this.maxPointsPerChallenge = POINTS_PER_CHALLENGE; // @public, read only
-    this.maxPossibleScore = NUMBER_OF_LEVELS * CHALLENGES_PER_LEVEL * POINTS_PER_CHALLENGE; // @public, read only
   }
 
   expressionExchange.register( 'EEGameModel', EEGameModel );

@@ -30,11 +30,21 @@ define( function( require ) {
    */
   function EEGameLevelModel( level, allowedRepresentations, soundEnabledProperty ) {
 
+    assert && assert(
+      allowedRepresentations !== AllowedRepresentationsEnum.COINS_AND_VARIABLES,
+      'games do not support switching between coin and variable view'
+    );
+
     var self = this;
 
-    this.challengeNumber = 0; // TODO: Make this private later if possible
     this.level = level; // {number} @public, read only
-    this.soundEnabledProperty = soundEnabledProperty; // @public (listen-only)
+    this.soundEnabledProperty = soundEnabledProperty; // @public (listen-only), used by view to enable/disable sounds
+    this.currentChallengeNumber = 0;
+
+    // @public - property that refers to the current challenge
+    this.currentChallengeProperty = new Property(
+      EEChallengeDescriptors.getChallengeDescriptor( level, this.currentChallengeNumber )
+    );
 
     // @public (read only) - current score for this level
     this.scoreProperty = new Property( 0 );
@@ -45,16 +55,6 @@ define( function( require ) {
       partialCancellationEnabled: false, // partial cancellation isn't performed in the games
       simplifyNegativesDefault: true
     } );
-
-    // @public - property that refers to the current challenge
-    this.currentChallengeProperty = new Property(
-      EEChallengeDescriptors.getChallengeDescriptor( level, this.challengeNumber )
-    );
-
-    assert && assert(
-      allowedRepresentations !== AllowedRepresentationsEnum.COINS_AND_VARIABLES,
-      'games do not support switching between coin and variable view'
-    );
 
     // @public, read only - areas where expressions or coin terms can be collected, initialized below
     this.collectionAreas = [];
@@ -235,10 +235,10 @@ define( function( require ) {
     },
 
     loadNextChallenge: function() {
-      this.challengeNumber = ( this.challengeNumber + 1 ) % EEChallengeDescriptors.CHALLENGES_PER_LEVEL;
+      this.currentChallengeNumber = ( this.currentChallengeNumber + 1 ) % EEChallengeDescriptors.CHALLENGES_PER_LEVEL;
       this.currentChallengeProperty.set( EEChallengeDescriptors.getChallengeDescriptor(
         this.level,
-        this.challengeNumber
+        this.currentChallengeNumber
       ) );
     },
 
