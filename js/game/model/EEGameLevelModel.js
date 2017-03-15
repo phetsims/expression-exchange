@@ -83,39 +83,6 @@ define( function( require ) {
         expressionCollectionArea.expressionDescriptionProperty.set( currentChallenge.expressionsToCollect[ index ] );
       } );
     } );
-
-    // handle interaction between expressions and the collection areas
-    // TODO: This will probably need to be pulled into the expression model once I've worked it out so that the model
-    // can prioritize expressions going into collection areas over pulling in other terms (the issue that Steele showed
-    // me).
-    this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
-
-      // define a function that will attempt to collect this expression if it is dropped over a collection area
-      function coinTermUserControlledListener( userControlled ) {
-        if ( !userControlled ) {
-
-          // test if this coin term was dropped over a collection area
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( addedCoinTerm );
-
-          if ( mostOverlappingCollectionArea ) {
-
-            // Attempt to put this coin term into the collection area.  The collection area will take care of either
-            // moving the coin term inside or pushing it to the side.
-            mostOverlappingCollectionArea.collectOrRejectCoinTerm( addedCoinTerm );
-          }
-        }
-      }
-
-      // hook up the listener
-      addedCoinTerm.userControlledProperty.lazyLink( coinTermUserControlledListener );
-
-      // listen for the removal of this coin term and unhook the listener in order to avoid memory leaks
-      self.coinTerms.addItemRemovedListener( function( removedCoinTerm ) {
-        if ( addedCoinTerm === removedCoinTerm ) {
-          removedCoinTerm.userControlledProperty.unlink( coinTermUserControlledListener );
-        }
-      } );
-    } );
   }
 
   expressionExchange.register( 'EEGameLevelModel', EEGameLevelModel );

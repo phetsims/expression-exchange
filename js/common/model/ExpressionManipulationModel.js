@@ -878,16 +878,21 @@ define( function( require ) {
       var self = this;
       var maxOverlap = 0;
       var mostOverlappingFreeCoinTerm = null;
-      this.coinTerms.forEach( function( coinTerm ) {
 
-        // make sure the coin term is eligible and then compare the amount of overlap to what was previously seen
-        if ( !coinTerm.userControlledProperty.get() && !self.isCoinTermInExpression( coinTerm ) && !coinTerm.collectedProperty.get() &&
-             coinTerm.existenceStrengthProperty.get() === 1 &&
-             expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
-          maxOverlap = expression.getCoinTermJoinZoneOverlap( coinTerm );
-          mostOverlappingFreeCoinTerm = coinTerm;
-        }
-      } );
+      // no coin terms should be considered eligible to combine if the expression is over a collection area
+      if ( !this.isExpressionOverCollectionArea( expression ) ) {
+
+        this.coinTerms.forEach( function( coinTerm ) {
+
+          // make sure the coin term is eligible and then compare the amount of overlap to what was previously seen
+          if ( !coinTerm.userControlledProperty.get() && !self.isCoinTermInExpression( coinTerm ) && !coinTerm.collectedProperty.get() &&
+               coinTerm.existenceStrengthProperty.get() === 1 &&
+               expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
+            maxOverlap = expression.getCoinTermJoinZoneOverlap( coinTerm );
+            mostOverlappingFreeCoinTerm = coinTerm;
+          }
+        } );
+      }
       return mostOverlappingFreeCoinTerm;
     },
 
