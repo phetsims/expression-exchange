@@ -35,6 +35,12 @@ define( function( require ) {
       'games do not support switching between coin and variable view'
     );
 
+    ExpressionManipulationModel.call( this, {
+      allowedRepresentations: allowedRepresentations,
+      partialCancellationEnabled: false, // partial cancellation isn't performed in the games
+      simplifyNegativesDefault: true
+    } );
+
     var self = this;
 
     this.level = level; // {number} @public, read only
@@ -48,16 +54,6 @@ define( function( require ) {
 
     // @public (read only) - current score for this level
     this.scoreProperty = new Property( 0 );
-
-    // @public (read only) - model that allows user to manipulate coin terms and expressions
-    this.expressionManipulationModel = new ExpressionManipulationModel( {
-      allowedRepresentations: allowedRepresentations,
-      partialCancellationEnabled: false, // partial cancellation isn't performed in the games
-      simplifyNegativesDefault: true
-    } );
-
-    // @public, read only - areas where expressions or coin terms can be collected, initialized below
-    this.collectionAreas = [];
 
     // helper function to update the score when items are collected or un-collected
     function updateScore() {
@@ -92,40 +88,7 @@ define( function( require ) {
     // TODO: This will probably need to be pulled into the expression model once I've worked it out so that the model
     // can prioritize expressions going into collection areas over pulling in other terms (the issue that Steele showed
     // me).
-    this.expressionManipulationModel.expressions.addItemAddedListener( function( addedExpression ) {
-
-      // define a function that will attempt to collect this expression if it is dropped over a collection area
-      function expressionUserControlledListener( userControlled ) {
-        if ( !userControlled ) {
-
-          // test if this expression was dropped over a collection area
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( addedExpression );
-
-          if ( mostOverlappingCollectionArea ) {
-
-            // Attempt to put this expression into the collection area.  The collection area will take care of either
-            // moving the expression inside or pushing it to the side.
-            mostOverlappingCollectionArea.collectOrRejectExpression( addedExpression );
-          }
-        }
-      }
-
-      // hook up the listener
-      addedExpression.userControlledProperty.lazyLink( expressionUserControlledListener );
-
-      // listen for the removal of this expression and unhook the listener in order to avoid memory leaks
-      self.expressionManipulationModel.expressions.addItemRemovedListener( function( removedExpression ) {
-        if ( addedExpression === removedExpression ) {
-          removedExpression.userControlledProperty.unlink( expressionUserControlledListener );
-        }
-      } );
-    } );
-
-    // handle interaction between expressions and the collection areas
-    // TODO: This will probably need to be pulled into the expression model once I've worked it out so that the model
-    // can prioritize expressions going into collection areas over pulling in other terms (the issue that Steele showed
-    // me).
-    this.expressionManipulationModel.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
+    this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
 
       // define a function that will attempt to collect this expression if it is dropped over a collection area
       function coinTermUserControlledListener( userControlled ) {
@@ -147,7 +110,7 @@ define( function( require ) {
       addedCoinTerm.userControlledProperty.lazyLink( coinTermUserControlledListener );
 
       // listen for the removal of this coin term and unhook the listener in order to avoid memory leaks
-      self.expressionManipulationModel.expressions.addItemRemovedListener( function( removedCoinTerm ) {
+      self.coinTerms.addItemRemovedListener( function( removedCoinTerm ) {
         if ( addedCoinTerm === removedCoinTerm ) {
           removedCoinTerm.userControlledProperty.unlink( coinTermUserControlledListener );
         }
@@ -157,32 +120,7 @@ define( function( require ) {
 
   expressionExchange.register( 'EEGameLevelModel', EEGameLevelModel );
 
-  return inherit( Object, EEGameLevelModel, {
-
-    /**
-     * @param {number} dt
-     * @public
-     */
-    step: function( dt ) {
-      this.expressionManipulationModel.step( dt );
-    },
-
-    /**
-     * get a reference to the collection area that most overlaps with the provided expression, null if no overlap exists
-     * @param {Expression} expression
-     * @private
-     */
-    getMostOverlappingCollectionAreaForExpression: function( expression ) {
-      var maxOverlap = 0;
-      var mostOverlappingCollectionArea = null;
-      this.collectionAreas.forEach( function( collectionArea ) {
-        if ( expression.getOverlap( collectionArea ) > maxOverlap ) {
-          mostOverlappingCollectionArea = collectionArea;
-          maxOverlap = expression.getOverlap( collectionArea );
-        }
-      } );
-      return mostOverlappingCollectionArea;
-    },
+  return inherit( ExpressionManipulationModel, EEGameLevelModel, {
 
     /**
      * get a reference to the collection area that most overlaps with the provided coin term, null if no overlap exists
@@ -216,8 +154,11 @@ define( function( require ) {
      * @public
      */
     reset: function() {
-      // TODO: This is incomplete and will need to be expanded once the collection boxes are implemented.
-      this.expressionManipulationModel.reset();
+      ExpressionManipulationModel.prototype.reset.call( this );
+      this.currentChallengeNumber = 0;
+      this.currentChallengeProperty.set(
+        EEChallengeDescriptors.getChallengeDescriptor( this.level, this.currentChallengeNumber )
+      );
     },
 
     /**
@@ -227,7 +168,7 @@ define( function( require ) {
       this.collectionAreas.forEach( function( collectionArea ) {
         collectionArea.reset();
       } );
-      this.expressionManipulationModel.reset();
+      ExpressionManipulationModel.prototype.reset.call( this );
       this.loadNextChallenge();
     },
 
@@ -237,10 +178,6 @@ define( function( require ) {
         this.level,
         this.currentChallengeNumber
       ) );
-    },
-
-    setCoinTermRetrievalBounds: function( bounds ) {
-      this.expressionManipulationModel.coinTermRetrievalBounds = bounds;
     }
   } );
 } );

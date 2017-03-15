@@ -69,7 +69,7 @@ define( function( require ) {
     ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
 
     // set the bounds used to decide when coin terms need to be "pulled back"
-    model.coinTermRetrievalBounds = this.layoutBounds;
+    model.setCoinTermRetrievalBounds( this.layoutBounds );
 
     // create the box with the coin term creator nodes
     var coinTermCreatorBox = CoinTermCreatorBoxFactory.createExploreScreenCreatorBox(

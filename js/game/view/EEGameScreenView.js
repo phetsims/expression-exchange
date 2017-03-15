@@ -44,9 +44,6 @@ define( function( require ) {
     var self = this;
     ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
 
-    // set the bounds used to decide when coin terms need to be "pulled back"
-    gameModel.coinTermRetrievalBounds = this.layoutBounds;
-
     // hook up the audio player to the sound settings
     this.gameAudioPlayer = new GameAudioPlayer( gameModel.soundEnabledProperty );
 
@@ -116,7 +113,7 @@ define( function( require ) {
     } );
 
     // set the bounds for retrieving coin terms when expressions or composite coin terms are broken up
-    gameModel.setLevelModelBounds( this.layoutBounds );
+    gameModel.setCoinTermRetrievalBounds( this.layoutBounds );
 
     // hook up the animations for moving between level selection and game play
     gameModel.currentLevelProperty.lazyLink( function( newLevel ) {

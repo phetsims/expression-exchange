@@ -88,8 +88,11 @@ define( function( require ) {
     // @public, read and listen only, list of expression hints in the model
     this.expressionHints = new ObservableArray();
 
-    // @public, should be set only once, coin terms that end up outside these bounds are moved back inside the bounds
+    // @public (read-only) - coin terms that end up outside these bounds are moved back inside the bounds
     this.coinTermRetrievalBounds = Bounds2.EVERYTHING;
+
+    // @public, read only - areas where expressions or coin terms can be collected, used only in game
+    this.collectionAreas = [];
 
     /*
      * @private, with some elements accessible via methods define below - This is a populated data structure that
@@ -339,79 +342,92 @@ define( function( require ) {
 
         if ( !userControlled ) {
 
-          // check for overlap with other expressions, if there is one or more, combine with the one with the most overlap
-          var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( addedExpression );
-          if ( mostOverlappingExpression ) {
+          // test if this expression was dropped over a collection area (collection areas are only used in the game)
+          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( addedExpression );
 
-            // remove the expression from the list of those hovering
-            mostOverlappingExpression.removeHoveringExpression( addedExpression );
+          if ( mostOverlappingCollectionArea ) {
 
-            // send the combining expression to the right side of receiving expression
-            addedExpression.travelToDestination(
-              mostOverlappingExpression.upperLeftCornerProperty.get().plusXY(
-                mostOverlappingExpression.widthProperty.get(), 0
-              )
-            );
-
-            // Listen for when the expression is in place and, when it is, transfer its coin terms to the receiving expression.
-            addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener() {
-              var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
-              self.expressions.remove( addedExpression );
-              coinTermsToBeMoved.forEach( function( coinTerm ) {
-                expressionExchange.log && expressionExchange.log( 'moving ' + coinTerm.id + ' from ' +
-                                                                  addedExpression.id + ' to ' +
-                                                                  mostOverlappingExpression.id );
-                mostOverlappingExpression.addCoinTerm( coinTerm );
-              } );
-              addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
-              // TODO: I haven't thought through and added handling for the case where a reset occurs during the course
-              // TODO: of this animation.  How does the listener get removed in that case, or does it even have to?  I'll
-              // TODO: need to do that at some point.
-            } );
+            // Attempt to put this expression into the collection area.  The collection area will take care of either
+            // moving the expression inside or pushing it to the side.
+            mostOverlappingCollectionArea.collectOrRejectExpression( addedExpression );
           }
           else {
 
-            // check for free coin terms that overlap with this expression and thus should be combined with it
-            var numOverlappingCoinTerms = addedExpression.hoveringCoinTerms.length;
+            // check for overlap with other expressions, if there is one or more, combine with the one with the most overlap
+            var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( addedExpression );
 
-            assert && assert(
-              numOverlappingCoinTerms === 0 || numOverlappingCoinTerms === 1,
-              'max of one overlapping free coin term when expression is released, seeing ' + numOverlappingCoinTerms
-            );
+            if ( mostOverlappingExpression ) {
 
-            if ( numOverlappingCoinTerms === 1 ) {
-              var coinTermToAddToExpression = addedExpression.hoveringCoinTerms[ 0 ];
-              if ( addedExpression.rightHintActiveProperty.get() ) {
+              // remove the expression from the list of those hovering
+              mostOverlappingExpression.removeHoveringExpression( addedExpression );
 
-                // move to the left side of the coin term
-                addedExpression.travelToDestination(
-                  coinTermToAddToExpression.positionProperty.get().plusXY(
-                    -addedExpression.widthProperty.get() - addedExpression.rightHintWidthProperty.get() / 2,
-                    -addedExpression.heightProperty.get() / 2
-                  )
-                );
-              }
-              else {
+              // send the combining expression to the right side of receiving expression
+              addedExpression.travelToDestination(
+                mostOverlappingExpression.upperLeftCornerProperty.get().plusXY(
+                  mostOverlappingExpression.widthProperty.get(), 0
+                )
+              );
 
-                assert && assert(
-                  addedExpression.leftHintActiveProperty.get(),
-                  'at least one hint should be active if there is a hovering coin term'
-                );
-
-                // move to the right side of the coin term
-                addedExpression.travelToDestination(
-                  coinTermToAddToExpression.positionProperty.get().plusXY(
-                    addedExpression.leftHintWidthProperty.get() / 2,
-                    -addedExpression.heightProperty.get() / 2
-                  )
-                );
-              }
-
-              addedExpression.destinationReachedEmitter.addListener( function addCoinTermAfterAnimation() {
-                addedExpression.addCoinTerm( coinTermToAddToExpression );
-                addedExpression.destinationReachedEmitter.removeListener( addCoinTermAfterAnimation );
+              // Listen for when the expression is in place and, when it is, transfer its coin terms to the receiving expression.
+              addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener() {
+                var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
+                self.expressions.remove( addedExpression );
+                coinTermsToBeMoved.forEach( function( coinTerm ) {
+                  expressionExchange.log && expressionExchange.log( 'moving ' + coinTerm.id + ' from ' +
+                                                                    addedExpression.id + ' to ' +
+                                                                    mostOverlappingExpression.id );
+                  mostOverlappingExpression.addCoinTerm( coinTerm );
+                } );
+                addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
+                // TODO: I haven't thought through and added handling for the case where a reset occurs during the course
+                // TODO: of this animation.  How does the listener get removed in that case, or does it even have to?  I'll
+                // TODO: need to do that at some point.
               } );
+            }
+            else {
 
+              // check for free coin terms that overlap with this expression and thus should be combined with it
+              var numOverlappingCoinTerms = addedExpression.hoveringCoinTerms.length;
+
+              assert && assert(
+                numOverlappingCoinTerms === 0 || numOverlappingCoinTerms === 1,
+                'max of one overlapping free coin term when expression is released, seeing ' + numOverlappingCoinTerms
+              );
+
+              if ( numOverlappingCoinTerms === 1 ) {
+                var coinTermToAddToExpression = addedExpression.hoveringCoinTerms[ 0 ];
+                if ( addedExpression.rightHintActiveProperty.get() ) {
+
+                  // move to the left side of the coin term
+                  addedExpression.travelToDestination(
+                    coinTermToAddToExpression.positionProperty.get().plusXY(
+                      -addedExpression.widthProperty.get() - addedExpression.rightHintWidthProperty.get() / 2,
+                      -addedExpression.heightProperty.get() / 2
+                    )
+                  );
+                }
+                else {
+
+                  assert && assert(
+                    addedExpression.leftHintActiveProperty.get(),
+                    'at least one hint should be active if there is a hovering coin term'
+                  );
+
+                  // move to the right side of the coin term
+                  addedExpression.travelToDestination(
+                    coinTermToAddToExpression.positionProperty.get().plusXY(
+                      addedExpression.leftHintWidthProperty.get() / 2,
+                      -addedExpression.heightProperty.get() / 2
+                    )
+                  );
+                }
+
+                addedExpression.destinationReachedEmitter.addListener( function addCoinTermAfterAnimation() {
+                  addedExpression.addCoinTerm( coinTermToAddToExpression );
+                  addedExpression.destinationReachedEmitter.removeListener( addCoinTermAfterAnimation );
+                } );
+
+              }
             }
           }
         }
@@ -774,6 +790,21 @@ define( function( require ) {
     },
 
     /**
+     * @param {Expression} expression
+     * @returns {boolean}
+     * @public
+     */
+    isExpressionOverCollectionArea: function( expression ) {
+      var expressionOverCollectionArea = false;
+      this.collectionAreas.forEach( function( collectionArea ) {
+        if ( collectionArea.bounds.intersectsBounds( expression.getBounds() ) ) {
+          expressionOverCollectionArea = true;
+        }
+      } );
+      return expressionOverCollectionArea;
+    },
+
+    /**
      * get the expression that overlaps the most with the provided coin term, null if no overlap exists, user controlled
      * expressions are excluded
      * @param {CoinTerm} coinTerm
@@ -824,14 +855,16 @@ define( function( require ) {
      * @private
      */
     getExpressionMostOverlappingWithExpression: function( expression ) {
+      var self = this;
       var maxOverlap = 0;
       var mostOverlappingExpression = null;
       this.expressions.forEach( function( testExpression ) {
 
-        // make sure the expression is eligible for consideration and is the most overlapping
+        // make sure the expression is eligible for consideration, then determine if it is the most overlapping
         if ( testExpression !== expression && !testExpression.userControlledProperty.get() && // exclude expressions that are being moved by a user
              !testExpression.inProgressAnimationProperty.get() && // exclude expressions that are moving somewhere
              !testExpression.collectedProperty.get() && // exclude expressions that are in a collection area
+             !self.isExpressionOverCollectionArea( expression ) &&
              expression.getOverlap( testExpression ) > maxOverlap ) {
           mostOverlappingExpression = testExpression;
         }
@@ -840,7 +873,7 @@ define( function( require ) {
     },
 
     /**
-     * Get the next location where a retrived coin term (i.e. one that ended up out of bounds) can be placed.
+     * Get the next location where a retrieved coin term (i.e. one that ended up out of bounds) can be placed.
      * @returns {Vector2}
      * @private
      */
@@ -874,8 +907,30 @@ define( function( require ) {
       return location;
     },
 
+    /**
+     * get a reference to the collection area that most overlaps with the provided expression, null if no overlap exists
+     * @param {Expression} expression
+     * @private
+     */
+    getMostOverlappingCollectionAreaForExpression: function( expression ) {
+      var maxOverlap = 0;
+      var mostOverlappingCollectionArea = null;
+      this.collectionAreas.forEach( function( collectionArea ) {
+        if ( expression.getOverlap( collectionArea ) > maxOverlap ) {
+          mostOverlappingCollectionArea = collectionArea;
+          maxOverlap = expression.getOverlap( collectionArea );
+        }
+      } );
+      return mostOverlappingCollectionArea;
+    },
+
     // @public
     reset: function() {
+
+      // reset any collection areas that have been created
+      this.collectionAreas.forEach( function( collectionArea ) {
+        collectionArea.reset();
+      } );
 
       // TODO: Probably need to reset expressions here so that they can cancel any in-progress animations.
       this.expressions.clear();
@@ -1028,6 +1083,14 @@ define( function( require ) {
         }
       }
       return overlappingCoinTerm;
+    },
+
+    /**
+     * @param {Bounds2} bounds
+     */
+    setCoinTermRetrievalBounds: function( bounds ) {
+      assert && assert( this.coinTermRetrievalBounds === Bounds2.EVERYTHING, 'coin term bounds should only be set once' );
+      this.coinTermRetrievalBounds = bounds;
     }
 
   } );

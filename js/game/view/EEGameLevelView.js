@@ -86,7 +86,7 @@ define( function( require ) {
       }
       coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
         currentChallenge,
-        levelModel.expressionManipulationModel,
+        levelModel,
         { centerX: title.centerX, bottom: screenLayoutBounds.bottom - 40 }
       );
       self.addChild( coinTermCreatorBox );
@@ -102,7 +102,7 @@ define( function( require ) {
     var boundsOfLowestCollectionArea = levelModel.collectionAreas[ 2 ].bounds;
     var showSubtractionCheckbox = new CheckBox(
       new ShowSubtractionIcon(),
-      levelModel.expressionManipulationModel.simplifyNegativesProperty,
+      levelModel.simplifyNegativesProperty,
       {
         left: boundsOfLowestCollectionArea.minX,
         top: boundsOfLowestCollectionArea.maxY + 10,
@@ -136,7 +136,7 @@ define( function( require ) {
 
     // add the view area where the user will interact with coin terms and expressions
     this.addChild( new ExpressionManipulationView(
-      levelModel.expressionManipulationModel,
+      levelModel,
       coinTermCreatorBox.bounds,
       visibleBoundsProperty,
       { coinTermBreakApartButtonMode: 'inverted' }

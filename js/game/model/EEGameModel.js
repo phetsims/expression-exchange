@@ -81,7 +81,7 @@ define( function( require ) {
       },
 
       // @public
-      setLevelModelBounds: function( bounds ) {
+      setCoinTermRetrievalBounds: function( bounds ) {
         this.gameLevelModels.forEach( function( gameLevelModel ) {
           gameLevelModel.setCoinTermRetrievalBounds( bounds );
         } );
@@ -96,7 +96,6 @@ define( function( require ) {
         this.currentLevelProperty.reset();
         this.soundEnabledProperty.reset();
         this.timerEnabledProperty.reset();
-
       }
     },
     {
