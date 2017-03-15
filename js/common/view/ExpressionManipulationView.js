@@ -11,6 +11,7 @@ define( function( require ) {
   // modules
   var CoinTermHaloNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermHaloNode' );
   var ConstantCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/ConstantCoinTermNode' );
+  var EECollectionAreaNode = require( 'EXPRESSION_EXCHANGE/game/view/EECollectionAreaNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionHintNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionHintNode' );
   var ExpressionNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionNode' );
@@ -20,6 +21,7 @@ define( function( require ) {
   var Path = require( 'SCENERY/nodes/Path' );
   var Property = require( 'AXON/Property' );
   var Shape = require( 'KITE/Shape' );
+  var UndoButton = require( 'EXPRESSION_EXCHANGE/game/view/UndoButton' );
   var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
 
   /**
@@ -30,11 +32,17 @@ define( function( require ) {
    */
   function ExpressionManipulationView( model, coinTermCreatorBoxBounds, visibleBoundsProperty, options ) {
 
+    var self = this;
     options = _.extend( {
       coinTermBreakApartButtonMode: 'normal' // passed through to the coin terms
     }, options );
 
     Node.call( this );
+
+    // add the expression collection area nodes
+    model.collectionAreas.forEach( function( collectionArea ) {
+      self.addChild( new EECollectionAreaNode( collectionArea ) );
+    } );
 
     // add the node that will act as the layer where the expression backgrounds and expression hints will come and go
     var expressionLayer = new Node();
@@ -51,6 +59,21 @@ define( function( require ) {
     // add the node that will act as the layer where the expression overlays will come and go
     var expressionOverlayLayer = new Node();
     this.addChild( expressionOverlayLayer );
+
+    // add the buttons for ejecting expressions from the collection area, must be above the expressions in the z-order
+    model.collectionAreas.forEach( function( collectionArea ) {
+      var ejectButton = new UndoButton( {
+        listener: function() { collectionArea.ejectCollectedItem(); },
+        left: collectionArea.bounds.minX,
+        top: collectionArea.bounds.minY
+      } );
+      self.addChild( ejectButton );
+
+      // control the visibility of the eject button
+      collectionArea.collectedItemProperty.link( function( collectedItem ) {
+        ejectButton.visible = collectedItem !== null;
+      } );
+    } );
 
     // TODO: Consider putting the barrier rectangle into its own class for modularity
     // add the node that will act as the barrier to interaction with other expressions when editing an expression

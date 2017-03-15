@@ -12,7 +12,6 @@ define( function( require ) {
   var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
-  var EECollectionAreaNode = require( 'EXPRESSION_EXCHANGE/game/view/EECollectionAreaNode' );
   var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
@@ -28,7 +27,6 @@ define( function( require ) {
   var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
-  var UndoButton = require( 'EXPRESSION_EXCHANGE/game/view/UndoButton' );
 
   // strings
   var levelNString = require( 'string!EXPRESSION_EXCHANGE/levelN' );
@@ -93,11 +91,6 @@ define( function( require ) {
       coinTermCreatorBox.moveToBack(); // needs to be behind coin term and other layers
     } );
 
-    // add the expression collection area nodes
-    levelModel.collectionAreas.forEach( function( collectionArea ) {
-      self.addChild( new EECollectionAreaNode( collectionArea ) );
-    } );
-
     // add the check box that allows expressions with negative values to be simplified
     var boundsOfLowestCollectionArea = levelModel.collectionAreas[ 2 ].bounds;
     var showSubtractionCheckbox = new CheckBox(
@@ -141,22 +134,6 @@ define( function( require ) {
       visibleBoundsProperty,
       { coinTermBreakApartButtonMode: 'inverted' }
     ) );
-
-    // add the buttons for ejecting expressions from the collection area, must be above the expressions in the z-order
-    levelModel.collectionAreas.forEach( function( collectionArea ) {
-
-      var ejectButton = new UndoButton( {
-        listener: function() { collectionArea.ejectCollectedItem(); },
-        left: collectionArea.bounds.minX,
-        top: collectionArea.bounds.minY
-      } );
-      self.addChild( ejectButton );
-
-      // control the visibility of the eject button
-      collectionArea.collectedItemProperty.link( function( collectedItem ) {
-        ejectButton.visible = collectedItem !== null;
-      } );
-    } );
 
     // hook up the audio player to the sound settings
     var gameAudioPlayer = new GameAudioPlayer( levelModel.soundEnabledProperty );
