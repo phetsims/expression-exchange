@@ -488,9 +488,9 @@ define( function( require ) {
       var coinTermsWithHalos = [];
 
       // TODO: Part of the state control for expressions, hints, halos, etc, is done where while part of it is done
-      // TODO: with event handlers on the userControlled property for the coin terms and expressions.  At some point,
-      // TODO: when the functionality is fairly mature, I (jbphet) should look at consolidating these in order to make
-      // TODO: the code more understandable and maintainable.
+      // with event handlers on the userControlled property for the coin terms and expressions.  At some point, when the
+      // functionality is fairly mature, I (jbphet) should look at consolidating these in order to make the code more
+      // understandable and maintainable.
 
       if ( !this.expressionBeingEditedProperty.get() ) {
 
@@ -807,7 +807,7 @@ define( function( require ) {
       this.coinTerms.forEach( function( coinTerm ) {
 
         // make sure the coin term is eligible and then compare the amount of overlap to what was previously seen
-        if ( !coinTerm.userControlledProperty.get() && !self.isCoinTermInExpression( coinTerm ) &&
+        if ( !coinTerm.userControlledProperty.get() && !self.isCoinTermInExpression( coinTerm ) && !coinTerm.collectedProperty().get() &&
              coinTerm.existenceStrengthProperty.get() === 1 &&
              expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
           maxOverlap = expression.getCoinTermJoinZoneOverlap( coinTerm );
@@ -937,7 +937,7 @@ define( function( require ) {
       var joinableFreeCoinTerm = null;
       var self = this;
       this.coinTerms.forEach( function( ct ) {
-        if ( ct !== testCoinTerm && !self.isCoinTermInExpression( ct ) && !ct.inProgressAnimationProperty.get() ) {
+        if ( ct !== testCoinTerm && !self.isCoinTermInExpression( ct ) && !ct.collectedProperty.get() && !ct.inProgressAnimationProperty.get() ) {
           // test if the provided coin term is in one of the compare coin term's "expression combine zones"
           if ( self.isCoinTermInExpressionCombineZone( ct, testCoinTerm ) ) {
             if ( !joinableFreeCoinTerm || ( joinableFreeCoinTerm.positionProperty.get().distance( ct ) < joinableFreeCoinTerm.positionProperty.get().distance( testCoinTerm ) ) ) {

@@ -63,7 +63,7 @@ define( function( require ) {
     function updateScore() {
       var score = 0;
       self.collectionAreas.forEach( function( collectionArea ) {
-        if ( collectionArea.collectedItemProperty.get() ) {
+        if ( !collectionArea.isEmpty() ) {
           score++;
         }
       } );
@@ -176,8 +176,7 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingCollectionArea = null;
       this.collectionAreas.forEach( function( collectionArea ) {
-        if ( collectionArea.collectedItemProperty.get() === null && // collection area must be empty
-             expression.getOverlap( collectionArea ) > maxOverlap ) {
+        if ( expression.getOverlap( collectionArea ) > maxOverlap ) {
           mostOverlappingCollectionArea = collectionArea;
           maxOverlap = expression.getOverlap( collectionArea );
         }
@@ -194,22 +193,20 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingCollectionArea = null;
       this.collectionAreas.forEach( function( collectionArea ) {
-        if ( collectionArea.collectedItemProperty.get() === null ) { // collection area must be empty
-          var coinTermBounds = coinTerm.getViewBounds();
-          var collectionAreaBounds = collectionArea.getBounds();
-          var xOverlap = Math.max(
-            0,
-            Math.min( coinTermBounds.maxX, collectionAreaBounds.maxX ) - Math.max( coinTermBounds.minX, collectionAreaBounds.minX )
-          );
-          var yOverlap = Math.max(
-            0,
-            Math.min( coinTermBounds.maxY, collectionAreaBounds.maxY ) - Math.max( coinTermBounds.minY, collectionAreaBounds.minY )
-          );
-          var totalOverlap = xOverlap * yOverlap;
-          if ( totalOverlap > maxOverlap ) {
-            maxOverlap = totalOverlap;
-            mostOverlappingCollectionArea = collectionArea;
-          }
+        var coinTermBounds = coinTerm.getViewBounds();
+        var collectionAreaBounds = collectionArea.getBounds();
+        var xOverlap = Math.max(
+          0,
+          Math.min( coinTermBounds.maxX, collectionAreaBounds.maxX ) - Math.max( coinTermBounds.minX, collectionAreaBounds.minX )
+        );
+        var yOverlap = Math.max(
+          0,
+          Math.min( coinTermBounds.maxY, collectionAreaBounds.maxY ) - Math.max( coinTermBounds.minY, collectionAreaBounds.minY )
+        );
+        var totalOverlap = xOverlap * yOverlap;
+        if ( totalOverlap > maxOverlap ) {
+          maxOverlap = totalOverlap;
+          mostOverlappingCollectionArea = collectionArea;
         }
       } );
       return mostOverlappingCollectionArea;

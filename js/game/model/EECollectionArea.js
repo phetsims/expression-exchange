@@ -61,7 +61,6 @@ define( function( require ) {
 
       // test that this collection area is in the correct state
       assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
-      assert && assert( this.collectedItemProperty.get() === null, 'expression collection area already full' );
 
       // get bounds for positioning of the expression
       var expressionBounds = expression.getBounds();
@@ -71,7 +70,9 @@ define( function( require ) {
       var reductionStateCorrect = this.viewMode === ViewMode.VARIABLES ? true : expression.isReduced();
 
       // test whether the provided expression matches the expression spec for this collection area
-      if ( reductionStateCorrect && this.expressionDescriptionProperty.get().expressionMatches( expression ) ) {
+      if ( this.isEmpty() &&
+           reductionStateCorrect &&
+           this.expressionDescriptionProperty.get().expressionMatches( expression ) ) {
 
         // collect this expression
         expression.travelToDestination( new Vector2(
@@ -101,13 +102,12 @@ define( function( require ) {
 
       // test that this collection area is in the correct state
       assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
-      assert && assert( this.collectedItemProperty.get() === null, 'collection area already full' );
 
       // get bounds for positioning of the coin term
       var coinTermViewBounds = coinTerm.getViewBounds();
 
       // test whether the provided expression matches the expression spec for this collection area
-      if ( this.expressionDescriptionProperty.get().coinTermMatches( coinTerm ) ) {
+      if ( this.isEmpty() && this.expressionDescriptionProperty.get().coinTermMatches( coinTerm ) ) {
 
         // collect this coin term
         coinTerm.travelToDestination( new Vector2( this.bounds.getCenterX(), this.bounds.getCenterY() ) );
@@ -121,6 +121,14 @@ define( function( require ) {
           this.bounds.minX - coinTermViewBounds.width - REJECTED_ITEM_DISTANCE, this.bounds.getCenterY()
         ) );
       }
+    },
+
+    /**
+     * @returns {boolean}
+     * @public
+     */
+    isEmpty: function() {
+      return this.collectedItemProperty.get() === null;
     },
 
     /**

@@ -640,6 +640,7 @@ define( function( require ) {
     /**
      * get the amount of overlap between the provided coin term's bounds and this expression's "join zone"
      * @param {CoinTerm} coinTerm
+     * @public
      */
     getCoinTermJoinZoneOverlap: function( coinTerm ) {
       var coinTermBounds = coinTerm.getViewBounds();
