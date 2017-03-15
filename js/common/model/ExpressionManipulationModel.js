@@ -807,7 +807,7 @@ define( function( require ) {
       this.coinTerms.forEach( function( coinTerm ) {
 
         // make sure the coin term is eligible and then compare the amount of overlap to what was previously seen
-        if ( !coinTerm.userControlledProperty.get() && !self.isCoinTermInExpression( coinTerm ) && !coinTerm.collectedProperty().get() &&
+        if ( !coinTerm.userControlledProperty.get() && !self.isCoinTermInExpression( coinTerm ) && !coinTerm.collectedProperty.get() &&
              coinTerm.existenceStrengthProperty.get() === 1 &&
              expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
           maxOverlap = expression.getCoinTermJoinZoneOverlap( coinTerm );
