@@ -785,6 +785,7 @@ define( function( require ) {
       this.expressions.forEach( function( expression ) {
         if ( !expression.userControlledProperty.get() && // exclude expressions that are being moved by a user
              !expression.inProgressAnimationProperty.get() && // exclude expressions that are animating to a destination
+             !expression.collectedProperty.get() && // exclude expression that are in a collection area
              expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
           mostOverlappingExpression = expression;
         }
@@ -804,6 +805,8 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingFreeCoinTerm = null;
       this.coinTerms.forEach( function( coinTerm ) {
+
+        // make sure the coin term is eligible and then compare the amount of overlap to what was previously seen
         if ( !coinTerm.userControlledProperty.get() && !self.isCoinTermInExpression( coinTerm ) &&
              coinTerm.existenceStrengthProperty.get() === 1 &&
              expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
