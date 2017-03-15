@@ -824,8 +824,11 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingExpression = null;
       this.expressions.forEach( function( testExpression ) {
+
+        // make sure the expression is eligible for consideration and is the most overlapping
         if ( testExpression !== expression && !testExpression.userControlledProperty.get() && // exclude expressions that are being moved by a user
              !testExpression.inProgressAnimationProperty.get() && // exclude expressions that are moving somewhere
+             !testExpression.collectedProperty.get() && // exclude expressions that are in a collection area
              expression.getOverlap( testExpression ) > maxOverlap ) {
           mostOverlappingExpression = testExpression;
         }
@@ -973,9 +976,11 @@ define( function( require ) {
       var mostOverlappingLikeCoinTerm = null;
       var maxOverlapAmount = 0;
       this.coinTerms.forEach( function( testCoinTerm ) {
+
+        // test that the coin term is eligible for consideration before testing it
         if ( coinTerm !== testCoinTerm &&
              coinTerm.canCombineWith( testCoinTerm ) && !testCoinTerm.userControlledProperty.get() &&
-             testCoinTerm.existenceStrengthProperty.get() === 1 && !self.isCoinTermInExpression( testCoinTerm ) ) {
+             testCoinTerm.existenceStrengthProperty.get() === 1 && !testCoinTerm.collectedProperty.get() && !self.isCoinTermInExpression( testCoinTerm ) ) {
 
           // calculate and compare the relative overlap amounts, done a bit differently in the different view modes
           var overlapAmount;
