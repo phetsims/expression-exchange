@@ -1070,7 +1070,7 @@ define( function( require ) {
       var self = this;
       this.coinTerms.forEach( function( thatCoinTerm ) {
         if ( thatCoinTerm !== thisCoinTerm && // exclude thisCoinTerm
-             !thatCoinTerm.getUserControlledProperty.get() && // exclude coin terms that are user controlled
+             !thatCoinTerm.userControlledProperty.get() && // exclude coin terms that are user controlled
              !self.isCoinTermInExpression( thatCoinTerm ) && // exclude coin terms that are already in expressions
              !thatCoinTerm.collectedProperty.get() && // exclude coin terms that are in a collection
              !thatCoinTerm.inProgressAnimationProperty.get() /* exclude coin terms that are moving */ ) {
