@@ -123,34 +123,6 @@ define( function( require ) {
   return inherit( ExpressionManipulationModel, EEGameLevelModel, {
 
     /**
-     * get a reference to the collection area that most overlaps with the provided coin term, null if no overlap exists
-     * @param {CoinTerm} coinTerm
-     * @private
-     */
-    getMostOverlappingCollectionAreaForCoinTerm: function( coinTerm ) {
-      var maxOverlap = 0;
-      var mostOverlappingCollectionArea = null;
-      this.collectionAreas.forEach( function( collectionArea ) {
-        var coinTermBounds = coinTerm.getViewBounds();
-        var collectionAreaBounds = collectionArea.getBounds();
-        var xOverlap = Math.max(
-          0,
-          Math.min( coinTermBounds.maxX, collectionAreaBounds.maxX ) - Math.max( coinTermBounds.minX, collectionAreaBounds.minX )
-        );
-        var yOverlap = Math.max(
-          0,
-          Math.min( coinTermBounds.maxY, collectionAreaBounds.maxY ) - Math.max( coinTermBounds.minY, collectionAreaBounds.minY )
-        );
-        var totalOverlap = xOverlap * yOverlap;
-        if ( totalOverlap > maxOverlap ) {
-          maxOverlap = totalOverlap;
-          mostOverlappingCollectionArea = collectionArea;
-        }
-      } );
-      return mostOverlappingCollectionArea;
-    },
-
-    /**
      * @public
      */
     reset: function() {
