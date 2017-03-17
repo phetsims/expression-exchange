@@ -564,7 +564,8 @@ define( function( require ) {
           return coin.userControlledProperty.get();
         } );
 
-        // check each user-controlled coin term to see if it's in a position to combine with an expression or another coin term
+        // check each user-controlled coin term to see if it's in a position to combine with an expression or another
+        // coin term
         var neededExpressionHints = [];
         userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
 
@@ -1071,23 +1072,32 @@ define( function( require ) {
      * @private
      */
     checkForJoinableFreeCoinTerm: function( thisCoinTerm ) {
+
       var joinableFreeCoinTerm = null;
       var self = this;
-      this.coinTerms.forEach( function( thatCoinTerm ) {
-        if ( thatCoinTerm !== thisCoinTerm && // exclude thisCoinTerm
-             !thatCoinTerm.userControlledProperty.get() && // exclude coin terms that are user controlled
-             !self.isCoinTermInExpression( thatCoinTerm ) && // exclude coin terms that are already in expressions
-             !thatCoinTerm.collectedProperty.get() && // exclude coin terms that are in a collection
-             !thatCoinTerm.inProgressAnimationProperty.get() /* exclude coin terms that are moving */ ) {
 
-          // test if the provided coin term is in one of the compare coin term's "expression combine zones"
-          if ( self.isCoinTermInExpressionCombineZone( thatCoinTerm, thisCoinTerm ) ) {
-            if ( !joinableFreeCoinTerm || ( joinableFreeCoinTerm.positionProperty.get().distance( thatCoinTerm ) < joinableFreeCoinTerm.positionProperty.get().distance( thisCoinTerm ) ) ) {
-              joinableFreeCoinTerm = thatCoinTerm;
+      // make sure the coin term is not over a collection area, otherwise it is ineligible to combine with anything
+      if ( !this.isCoinTermOverCollectionArea( thisCoinTerm ) ) {
+
+        this.coinTerms.forEach( function( thatCoinTerm ) {
+          if ( thatCoinTerm !== thisCoinTerm && // exclude thisCoinTerm
+               !thatCoinTerm.userControlledProperty.get() && // exclude coin terms that are user controlled
+               !self.isCoinTermInExpression( thatCoinTerm ) && // exclude coin terms that are already in expressions
+               !thatCoinTerm.collectedProperty.get() && // exclude coin terms that are in a collection
+               !thatCoinTerm.inProgressAnimationProperty.get() /* exclude coin terms that are moving */ ) {
+
+            // test if the provided coin term is in one of the compare coin term's "expression combine zones"
+            if ( self.isCoinTermInExpressionCombineZone( thatCoinTerm, thisCoinTerm ) ) {
+              if ( !joinableFreeCoinTerm ||
+                   ( joinableFreeCoinTerm.positionProperty.get().distance( thatCoinTerm ) <
+                     joinableFreeCoinTerm.positionProperty.get().distance( thisCoinTerm ) ) ) {
+                joinableFreeCoinTerm = thatCoinTerm;
+              }
             }
           }
-        }
-      } );
+        } );
+
+      }
       return joinableFreeCoinTerm;
     },
 
@@ -1121,7 +1131,7 @@ define( function( require ) {
       var mostOverlappingLikeCoinTerm = null;
       var maxOverlapAmount = 0;
 
-      // make sure the coin term is not over a collection area, otherwise it is ineligible
+      // make sure the coin term is not over a collection area, otherwise it is ineligible to combine with anything
       if ( !self.isCoinTermOverCollectionArea( thisCoinTerm ) ) {
 
         this.coinTerms.forEach( function( thatCoinTerm ) {
