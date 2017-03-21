@@ -11,6 +11,8 @@ define( function( require ) {
 
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
+  var DerivedProperty = require( 'AXON/DerivedProperty' );
+  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Emitter = require( 'AXON/Emitter' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -62,6 +64,13 @@ define( function( require ) {
 
     // @private, used to update whether or not coin terms should show minus sign when negative
     this.simplifyNegativesProperty = simplifyNegativesProperty;
+
+    // @public (read-only) - scale, used to shrink the expression when it is collected or uncollected
+    this.scaleProperty = new DerivedProperty( [ this.collectedProperty ], function( collected ) {
+      return collected ?
+             Math.min( EESharedConstants.COLLECTION_AREA_SIZE.width / self.widthProperty.get(), 1 ) * 0.9 :
+             1;
+    } );
 
     //------------------------------------------------------------------------
     // observable arrays
@@ -151,6 +160,33 @@ define( function( require ) {
       } );
     } );
 
+    // add a listener that will adjust the scale when needed, generally done when expression is collected or uncollected
+    this.scaleProperty.lazyLink( function( scale, previousScale ) {
+
+      // state checking
+      assert && assert( scale <= 1, 'scaling up beyond 1 is not supported' );
+      assert && assert(
+        ( scale <= 1 && previousScale === 1 ) || ( scale === 1 && previousScale <= 1 ),
+        'expressions only scale down from 1 or up to 1, anything else is unexpected'
+      );
+
+      // set the scale of each constituent coin term
+      self.coinTerms.forEach( function( coinTerm ) {
+        coinTerm.scaleProperty.set( scale );
+      } );
+
+      // Setting the scale of the resident coin terms will often set the 'resizeNeeded' flag, which is intended to be
+      // handled during the next call to the step function.  This is done for efficiency, since we don't want to resize
+      // the expression on every single coin term size change.  However, this approach is problematic in the case of
+      // scale changes because expressions are often scaled when collected and then immediately moved into or out of a
+      // collection area, and if the expression's bounds aren't accurate, the placement of the expression (generally
+      // animated) gets screwed up.  Because of this, we handle the resizing immediately when the scale changes.
+      if ( self.resizeNeeded ) {
+        self.updateSizeAndCoinTermPositions( false );
+        self.resizeNeeded = false;
+      }
+    } );
+
     // monitor the setting for whether negatives are simplified and update the contained coin terms when it changes
     function updateCoinTermMinusSignFlags() {
       self.updateCoinTermShowMinusSignFlag();
@@ -184,7 +220,7 @@ define( function( require ) {
       // in the step function so that it is only done a max of once per animation frame rather than redoing it for each
       // coin term whose bounds change.
       if ( this.resizeNeeded ) {
-        this.updateSizeAndCoinTermPositions();
+        this.updateSizeAndCoinTermPositions( true );
         this.resizeNeeded = false;
       }
 
@@ -275,9 +311,10 @@ define( function( require ) {
      * Size the expression and, if necessary, move the contained coin terms so that all coin terms are appropriately
      * positioned.  This is generally done when something affects the view bounds of the coin terms, such as turning
      * on coefficients or switching from coin view to variable view.
+     * {boolean} animate
      * @private
      */
-    updateSizeAndCoinTermPositions: function() {
+    updateSizeAndCoinTermPositions: function( animate ) {
 
       // keep track of original size so we know when to fire event about layout changes
       var originalWidth = this.widthProperty.get();
@@ -290,6 +327,7 @@ define( function( require ) {
       var middleCoinTermIndex = Math.floor( ( coinTermsLeftToRight.length - 1 ) / 2 );
       var xPos;
       var yPos = coinTermsLeftToRight[ middleCoinTermIndex ].destinationProperty.get().y;
+      var scaledCoinTermSpacing = INTER_COIN_TERM_SPACING * this.scaleProperty.get();
 
       // adjust the positions of coin terms to the right of the middle
       for ( var i = middleCoinTermIndex + 1; i < coinTermsLeftToRight.length; i++ ) {
@@ -297,9 +335,9 @@ define( function( require ) {
         // adjust the position of this coin term to be the correct distance from its neighbor to the left
         var leftNeighbor = coinTermsLeftToRight[ i - 1 ];
         xPos = leftNeighbor.destinationProperty.get().x + leftNeighbor.relativeViewBoundsProperty.get().maxX +
-               INTER_COIN_TERM_SPACING - coinTermsLeftToRight[ i ].relativeViewBoundsProperty.get().minX;
-        if ( coinTermsLeftToRight[ i ].positionProperty.get().x !== xPos ) {
-          coinTermsLeftToRight[ i ].travelToDestination( new Vector2( xPos, yPos ) );
+               scaledCoinTermSpacing - coinTermsLeftToRight[ i ].relativeViewBoundsProperty.get().minX;
+        if ( coinTermsLeftToRight[ i ].destinationProperty.get().x !== xPos ) {
+          coinTermsLeftToRight[ i ].goToPosition( new Vector2( xPos, yPos ), animate );
           coinTermsMoved = true;
         }
       }
@@ -309,9 +347,9 @@ define( function( require ) {
         // adjust the position of this coin term to be the correct distance from its neighbor to the right
         var rightNeighbor = coinTermsLeftToRight[ i + 1 ];
         xPos = rightNeighbor.destinationProperty.get().x + rightNeighbor.relativeViewBoundsProperty.get().minX -
-               INTER_COIN_TERM_SPACING - coinTermsLeftToRight[ i ].relativeViewBoundsProperty.get().maxX;
+               scaledCoinTermSpacing - coinTermsLeftToRight[ i ].relativeViewBoundsProperty.get().maxX;
         if ( coinTermsLeftToRight[ i ].positionProperty.get().x !== xPos ) {
-          coinTermsLeftToRight[ i ].travelToDestination( new Vector2( xPos, yPos ) );
+          coinTermsLeftToRight[ i ].goToPosition( new Vector2( xPos, yPos ), animate );
           coinTermsMoved = true;
         }
       }
@@ -324,13 +362,14 @@ define( function( require ) {
         maxHeight = relativeViewBounds.height > maxHeight ? relativeViewBounds.height : maxHeight;
         totalWidth += relativeViewBounds.width;
       } );
+      var scaledInset = INSET * this.scaleProperty.get();
       this.upperLeftCornerProperty.set( new Vector2(
         coinTermsLeftToRight[ 0 ].destinationProperty.get().x +
-        coinTermsLeftToRight[ 0 ].relativeViewBoundsProperty.get().minX - INSET,
-        yPos - maxHeight / 2 - INSET
+        coinTermsLeftToRight[ 0 ].relativeViewBoundsProperty.get().minX - scaledInset,
+        yPos - maxHeight / 2 - scaledInset
       ) );
-      this.heightProperty.set( maxHeight + 2 * INSET );
-      this.widthProperty.set( totalWidth + 2 * INSET + INTER_COIN_TERM_SPACING * ( coinTermsLeftToRight.length - 1 ) );
+      this.heightProperty.set( maxHeight + 2 * scaledInset );
+      this.widthProperty.set( totalWidth + 2 * scaledInset + scaledCoinTermSpacing * ( coinTermsLeftToRight.length - 1 ) );
 
       // emit an event if the size or the coin term positions changed
       if ( this.widthProperty.get() !== originalWidth || this.heightProperty.get() !== originalHeight || coinTermsMoved ) {
@@ -555,13 +594,14 @@ define( function( require ) {
     /**
      * move to the specified destination, but do so a step at a time rather than all at once
      * @param {Vector2} upperLeftCornerDestination
+     * @public
      */
     travelToDestination: function( upperLeftCornerDestination ) {
       var self = this;
       var prevX = this.upperLeftCornerProperty.get().x;
       var prevY = this.upperLeftCornerProperty.get().y;
       var movementTime = self.upperLeftCornerProperty.get().distance( upperLeftCornerDestination ) / ANIMATION_SPEED * 1000;
-      this.inProgressAnimationProperty.set( new TWEEN.Tween( { x: prevX, y: prevY} )
+      this.inProgressAnimationProperty.set( new TWEEN.Tween( { x: prevX, y: prevY } )
         .to( { x: upperLeftCornerDestination.x, y: upperLeftCornerDestination.y }, movementTime )
         .easing( TWEEN.Easing.Cubic.InOut )
         .onUpdate( function() {

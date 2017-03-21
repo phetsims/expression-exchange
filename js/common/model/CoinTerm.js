@@ -55,12 +55,23 @@ define( function( require ) {
     // properties
     //------------------------------------------------------------------------
 
-    this.positionProperty = new Property( options.initialPosition );// @public (read only), set using methods below
-    this.destinationProperty = new Property( options.initialPosition );// @public (read only), set using methods below
-    this.userControlledProperty = new Property( false );// @public, indicate whether user is currently dragging this coin
-    this.combineHaloActiveProperty = new Property( false );// @public
-    this.showMinusSignWhenNegativeProperty = new Property( true ); // @public, supports showing subtraction in expressions
-    this.collectedProperty = new Property( false ); // @public, indicates whether this is in a collection box (for game)
+    // @public (read only), set using methods below
+    this.positionProperty = new Property( options.initialPosition );
+
+    // @public (read only), set using methods below
+    this.destinationProperty = new Property( options.initialPosition );
+
+    // @public, indicate whether user is currently dragging this coin
+    this.userControlledProperty = new Property( false );
+
+    // @public
+    this.combineHaloActiveProperty = new Property( false );
+
+    // @public, supports showing subtraction in expressions
+    this.showMinusSignWhenNegativeProperty = new Property( true );
+
+    // @public, indicates whether this is in a collection box (for game)
+    this.collectedProperty = new Property( false );
 
     // @public (read only), tracks the current in-progress animation, if any
     this.inProgressAnimationProperty = new Property( null );
@@ -81,6 +92,9 @@ define( function( require ) {
 
     // @public, determines the opacity of the card on which the coin term can reside
     this.cardOpacityProperty = new Property( options.initiallyOnCard ? 1.0 : 0 );
+
+    // @public, used by view to make the coin terms appear smaller if necessary when put in collection areas (game only)
+    this.scaleProperty = new Property( 1 );
 
     //------------------------------------------------------------------------
     // non-property attributes
@@ -264,6 +278,20 @@ define( function( require ) {
         this.inProgressAnimationProperty.get().stop();
         this.inProgressAnimationProperty.set( null );
         this.positionProperty.set( this.destinationProperty.get() );
+      }
+    },
+
+    /**
+     * an alternative way to set position that uses a flag to determine whether to animate or travel instantly
+     * @param {Vector2} position
+     * @param {boolean} animate
+     */
+    goToPosition: function( position, animate ) {
+      if ( animate ) {
+        this.travelToDestination( position );
+      }
+      else {
+        this.setPositionAndDestination( position );
       }
     },
 

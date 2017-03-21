@@ -141,12 +141,13 @@ define( function( require ) {
           // add the operator
           var operator = new Text( symbolText, {
             font: OPERATOR_FONT,
+            scale: expression.scaleProperty.get(),
             centerX: ( coinTermsLeftToRight[ i ].destinationProperty.get().x +
                        coinTermsLeftToRight[ i ].relativeViewBoundsProperty.get().maxX +
                        coinTermsLeftToRight[ i + 1 ].destinationProperty.get().x +
                        coinTermsLeftToRight[ i + 1 ].relativeViewBoundsProperty.get().minX ) / 2 -
                      expression.upperLeftCornerProperty.get().x,
-            centerY: expression.heightProperty.get() / 2
+            centerY: coinTermsLeftToRight[ i ].destinationProperty.get().y - expression.upperLeftCornerProperty.get().y
           } );
           symbolsLayer.addChild( operator );
         }

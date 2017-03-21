@@ -62,29 +62,31 @@ define( function( require ) {
       // test that this collection area is in the correct state
       assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
 
-      // get bounds for positioning of the expression
-      var expressionBounds = expression.getBounds();
-
       // If in coin mode, the expression must be reduced, but in variable mode it doesn't.  This was just a design
       // decision, not some fundamental axiom of coin expressions.
       var reductionStateCorrect = this.viewMode === ViewMode.VARIABLES ? true : expression.isReduced();
+
+      // bounds used for positioning of the expression
+      var expressionBounds;
 
       // test whether the provided expression matches the expression spec for this collection area
       if ( this.isEmpty() &&
            reductionStateCorrect &&
            this.expressionDescriptionProperty.get().expressionMatches( expression ) ) {
 
-        // collect this expression
+        // collect this expression - the collection state must be set first in case it causes an update of the bounds
+        expression.collectedProperty.set( true );
+        expressionBounds = expression.getBounds();
         expression.travelToDestination( new Vector2(
           this.bounds.getCenterX() - expressionBounds.width / 2,
           this.bounds.getCenterY() - expressionBounds.height / 2
         ) );
         this.collectedItemProperty.set( expression );
-        expression.collectedProperty.set( true );
       }
       else {
 
         // reject this expression
+        expressionBounds = expression.getBounds();
         expression.travelToDestination( new Vector2(
           this.bounds.minX - expressionBounds.width - REJECTED_ITEM_DISTANCE,
           this.bounds.getCenterY() - expressionBounds.height / 2
@@ -141,6 +143,9 @@ define( function( require ) {
       var xDestination;
       var yDestination;
 
+      // the item's collected state must be updated first, since this can sometimes cause its bounds to change
+      collectedItem.collectedProperty.set( false );
+
       // figure out the destination, which is slightly different for coin terms versus expressions
       if ( collectedItem instanceof Expression ) {
         collectedItemBounds = collectedItem.getBounds();
@@ -154,11 +159,10 @@ define( function( require ) {
         yDestination = this.bounds.getCenterY();
       }
 
-      // send it outside of the collection area
+      // send the collected item outside of the collection area
       collectedItem.travelToDestination( new Vector2( xDestination, yDestination ) );
 
-      // clear flags
-      collectedItem.collectedProperty.set( false );
+      // update internal state
       this.collectedItemProperty.reset();
     },
 

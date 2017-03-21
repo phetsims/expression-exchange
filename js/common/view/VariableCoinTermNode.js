@@ -80,7 +80,7 @@ define( function( require ) {
     } );
     this.coinAndTextRootNode.addChild( coefficientText );
 
-    // helper function to take the view bounds information and communicate it to the model
+    // helper function to take the view bounds information and communicates it to the model
     function updateBoundsInModel() {
 
       // make the bounds relative to the coin term's position, which corresponds to the center of the coin
@@ -113,11 +113,20 @@ define( function( require ) {
 
       // TODO: this was written with no thought given to performance, may need to optimize
 
+      var scale = coinTerm.scaleProperty.get(); // for convenience
+
       // control front coin image visibility
+      var desiredCoinImageWidth = coinTerm.coinRadius * 2 * coinTerm.scaleProperty.get();
+      if ( coinImageNode.width !== desiredCoinImageWidth ) {
+        coinImageNode.setScaleMagnitude( 1 );
+        coinImageNode.setScaleMagnitude( desiredCoinImageWidth / coinImageNode.width );
+        coinImageNode.center = Vector2.ZERO;
+      }
       coinImageNode.visible = viewModeProperty.value === ViewMode.COINS;
 
       // update coin value text
       coinValueText.text = coinTerm.valueProperty.value;
+      coinValueText.setScaleMagnitude( scale );
       coinValueText.center = Vector2.ZERO;
       coinValueText.visible = viewModeProperty.value === ViewMode.COINS && showCoinValuesProperty.value;
 
@@ -126,6 +135,7 @@ define( function( require ) {
                                showAllCoefficientsProperty.value;
 
       // update the term text, which only changes if it switches from positive to negative
+      termText.setScaleMagnitude( scale );
       if ( coinTerm.totalCountProperty.get() < 0 && !coefficientVisible &&
            coinTerm.showMinusSignWhenNegativeProperty.get() ) {
 
@@ -135,7 +145,7 @@ define( function( require ) {
         termText.text = coinTerm.termText;
       }
       termText.centerX = 0;
-      termText.y = textBaseline;
+      termText.y = textBaseline * scale;
       termText.mouseArea = termText.localBounds
         .dilatedX( POINTER_AREA_X_DILATION_AMOUNT )
         .dilatedY( POINTER_AREA_Y_DILATION_AMOUNT )
@@ -151,9 +161,10 @@ define( function( require ) {
         termValueText = '-' + termValueText;
       }
 
+      termWithVariableValuesText.setScaleMagnitude( scale );
       termWithVariableValuesText.text = termValueText;
       termWithVariableValuesText.centerX = 0;
-      termWithVariableValuesText.y = textBaseline;
+      termWithVariableValuesText.y = textBaseline * scale;
       termWithVariableValuesText.mouseArea = termWithVariableValuesText.localBounds
         .dilatedX( POINTER_AREA_X_DILATION_AMOUNT )
         .dilatedY( POINTER_AREA_Y_DILATION_AMOUNT )
@@ -163,6 +174,7 @@ define( function( require ) {
                                            showVariableValuesProperty.value;
 
       // coefficient value and visibility
+      coefficientText.setScaleMagnitude( scale );
       coefficientText.text = coinTerm.showMinusSignWhenNegativeProperty.get() ?
                              coinTerm.totalCountProperty.get() :
                              Math.abs( coinTerm.totalCountProperty.get() );
@@ -175,11 +187,11 @@ define( function( require ) {
       }
       else if ( termText.visible ) {
         coefficientText.right = termText.left - COEFFICIENT_X_SPACING;
-        coefficientText.y = textBaseline;
+        coefficientText.y = textBaseline * scale;
       }
       else {
         coefficientText.right = termWithVariableValuesText.left - COEFFICIENT_X_SPACING;
-        coefficientText.y = textBaseline;
+        coefficientText.y = textBaseline * scale;
       }
 
       // update the card background
@@ -205,6 +217,7 @@ define( function( require ) {
         coinTerm.termValueTextProperty,
         coinTerm.showMinusSignWhenNegativeProperty,
         coinTerm.cardOpacityProperty,
+        coinTerm.scaleProperty,
         viewModeProperty,
         showCoinValuesProperty,
         showVariableValuesProperty,

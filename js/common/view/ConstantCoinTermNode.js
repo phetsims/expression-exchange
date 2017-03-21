@@ -56,10 +56,9 @@ define( function( require ) {
 
       // In order to be consistent with the behavior of the variable coin terms, the bounds need to be a minimum width,
       // see https://github.com/phetsims/expression-exchange/issues/10.
-      if ( relativeVisibleBounds.width < MIN_RELATIVE_BOUNDS_WIDTH ){
-        relativeVisibleBounds = relativeVisibleBounds.dilatedX(
-          ( MIN_RELATIVE_BOUNDS_WIDTH - relativeVisibleBounds.width ) / 2
-        );
+      var minBoundsWidth = MIN_RELATIVE_BOUNDS_WIDTH * constantCoinTerm.scaleProperty.get();
+      if ( relativeVisibleBounds.width < minBoundsWidth ) {
+        relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( minBoundsWidth - relativeVisibleBounds.width ) / 2 );
       }
 
       // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
@@ -73,6 +72,7 @@ define( function( require ) {
     function updateRepresentation() {
 
       // update value text
+      valueText.setScaleMagnitude( constantCoinTerm.scaleProperty.get() );
       if ( constantCoinTerm.showMinusSignWhenNegativeProperty.get() ){
         valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value;
       }
@@ -82,7 +82,7 @@ define( function( require ) {
 
       // update position
       valueText.centerX = 0;
-      valueText.y = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET;
+      valueText.y = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET * constantCoinTerm.scaleProperty.get();
 
       // update the card background
       self.cardLikeBackground.visible = false; // make sure card is invisible so it doesn't affect visible bounds
@@ -104,7 +104,8 @@ define( function( require ) {
       [
         constantCoinTerm.totalCountProperty,
         constantCoinTerm.showMinusSignWhenNegativeProperty,
-        constantCoinTerm.cardOpacityProperty
+        constantCoinTerm.cardOpacityProperty,
+        constantCoinTerm.scaleProperty
       ],
       updateRepresentation
     );
