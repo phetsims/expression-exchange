@@ -533,9 +533,17 @@ define( function( require ) {
           return expression.userControlledProperty.get();
         } );
 
-        // Check each user controlled expression to see if it is in a position to combine with another expression and,
-        // if it is, add the appropriate hints
+        var collectionAreasWhoseHalosShouldBeActive = [];
+
+        // Update hints for expressions and collection areas.
         userControlledExpressions.forEach( function( userControlledExpression ) {
+
+          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( userControlledExpression );
+
+          if ( mostOverlappingCollectionArea ) {
+            collectionAreasWhoseHalosShouldBeActive.push( mostOverlappingCollectionArea );
+          }
+
           var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( userControlledExpression );
 
           // update hover info for each expression with respect to this expression, which in turn activates halos
@@ -568,6 +576,12 @@ define( function( require ) {
         // coin term
         var neededExpressionHints = [];
         userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
+
+          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( userControlledCoinTerm );
+
+          if ( mostOverlappingCollectionArea ) {
+            collectionAreasWhoseHalosShouldBeActive.push( mostOverlappingCollectionArea );
+          }
 
           var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( userControlledCoinTerm );
 
@@ -646,6 +660,13 @@ define( function( require ) {
             self.removeExpressionHint( existingExpressionHint );
           } );
         }
+
+        // update hover info for each collection area
+        self.collectionAreas.forEach( function( collectionArea ) {
+          collectionArea.haloActiveProperty.set(
+            collectionAreasWhoseHalosShouldBeActive.indexOf( collectionArea ) >= 0
+          );
+        } );
 
         // step the expressions
         this.expressions.forEach( function( expression ) {

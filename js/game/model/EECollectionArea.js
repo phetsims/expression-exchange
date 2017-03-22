@@ -43,8 +43,12 @@ define( function( require ) {
       y + EESharedConstants.COLLECTION_AREA_SIZE.height
     );
 
-    // @public, read-only - view mode (coins or variables)
+    // @public (read-only) - view mode (coins or variables)
     this.viewMode = viewMode;
+
+    // @public - used by the view to turn on/off a "halo" for the collection area, generally used when the user holds
+    // something over the collection area
+    this.haloActiveProperty = new Property( false );
   }
 
   expressionExchange.register( 'EECollectionArea', EECollectionArea );

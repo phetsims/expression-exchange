@@ -28,6 +28,24 @@ define( function( require ) {
     var self = this;
     Node.call( this );
 
+    // create the 'halo' that will turn on as a hint that the user can drop something into the collection area
+    var halo = new Rectangle(
+      0,
+      0,
+      collectionArea.bounds.width,
+      collectionArea.bounds.height,
+      CORNER_RADIUS,
+      CORNER_RADIUS,
+      {
+        lineWidth: 9,
+        stroke: '#66FF33'
+      }
+    );
+    this.addChild( halo );
+
+    // control halo visibility
+    collectionArea.haloActiveProperty.linkAttribute( halo, 'visible' );
+
     // create the basic rectangular background
     var collectionAreaRectangle = new Rectangle(
       0,
