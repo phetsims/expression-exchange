@@ -30,7 +30,7 @@ define( function( require ) {
 
     options = _.extend( {
       itemsPerCarouselPage: 3,
-      itemSpacing: 45, // empirically determined to work for most cases in this sim
+      itemSpacing: 20, // empirically determined to work for most cases in this sim
       cornerRadius: 4,
       staggeredCreatorNodes: false
     }, options );
@@ -64,7 +64,7 @@ define( function( require ) {
       } );
       this.coinTermCreatorBox = new Panel( coinTermCreatorHBox, {
         cornerRadius: options.cornerRadius,
-        xMargin: 75, // empirically determined to be similar in appearance to carousels
+        xMargin: 65, // empirically determined to be similar in appearance to carousels
         yMargin: 14, // empirically determined to be similar in appearance to carousels
         resize: false
       } );

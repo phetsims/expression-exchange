@@ -231,7 +231,7 @@ define( function( require ) {
       new Text( coinValuesString, { font: CHECK_BOX_FONT } ),
       model.showCoinValuesProperty,
       {
-        top: myCollectionAccordionBox.bottom + CHECK_BOX_VERTICAL_SPACING,
+        top: coinTermCreatorBox.top,
         left: myCollectionAccordionBox.left,
         maxWidth: myCollectionAccordionBox.width
       }
@@ -243,7 +243,7 @@ define( function( require ) {
       new Text( variableValuesString, { font: CHECK_BOX_FONT } ),
       model.showVariableValuesProperty,
       {
-        top: myCollectionAccordionBox.bottom + CHECK_BOX_VERTICAL_SPACING,
+        top: coinTermCreatorBox.top,
         left: myCollectionAccordionBox.left,
         maxWidth: myCollectionAccordionBox.width
       }

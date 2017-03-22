@@ -130,7 +130,7 @@ define( function( require ) {
 
       options = _.extend( {
         itemsPerCarouselPage: creatorSetID === CoinTermCreatorSetID.VARIABLES ? 4 : 3,
-        itemSpacing: creatorSetID === CoinTermCreatorSetID.VARIABLES ? 40 : 45
+        itemSpacing: creatorSetID === CoinTermCreatorSetID.VARIABLES ? 35 : 40
       }, options );
 
       // create the list of creator nodes from the descriptor list
@@ -156,7 +156,7 @@ define( function( require ) {
      */
     createGameScreenCreatorBox: function( challengeDescriptor, model, options ) {
       options = _.extend( {
-        itemSpacing: 40
+        itemSpacing: 30
       }, options );
 
       // create the list of creator nodes from the descriptor list

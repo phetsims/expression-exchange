@@ -18,9 +18,9 @@ define( function( require ) {
   var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var MATH_FONT = new MathSymbolFont( { size: 22, weight: 'bold' } );
+  var MATH_FONT = new MathSymbolFont( { size: 21, weight: 'bold' } );
   var RECTANGLE_BACKGROUND_COLOR = 'rgba( 255, 255, 255, 0.6 )';
-  var RECT_CORNER_RADIUS = 8;
+  var RECT_CORNER_RADIUS = 6;
 
   /**
    * @constructor
@@ -36,7 +36,7 @@ define( function( require ) {
       0,
       0,
       firstTextPortion.width * 1.4,
-      firstTextPortion.height * 1.1,
+      firstTextPortion.height * 1.05,
       RECT_CORNER_RADIUS,
       RECT_CORNER_RADIUS,
       { fill: RECTANGLE_BACKGROUND_COLOR }
