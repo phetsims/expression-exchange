@@ -248,7 +248,7 @@ define( function( require ) {
       // Add a listener to the expression to detect when it overlaps with the panel or carousel, at which point it will
       // be removed from the model.
       addedExpression.userControlledProperty.onValue( false, function() {
-        if ( addedExpression.getBounds().intersectsBounds( coinTermCreatorBoxBounds ) ) {
+        if ( addedExpression.getBounds().intersectsBounds( coinTermCreatorBoxBounds ) && !addedExpression.collectedProperty.get() ) {
           model.removeExpression( addedExpression );
         }
       } );
