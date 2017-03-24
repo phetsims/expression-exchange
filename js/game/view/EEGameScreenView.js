@@ -126,36 +126,36 @@ define( function( require ) {
 
         // level selection screen is coming in, which is a left-to-right motion
         incomingViewNode = self.levelSelectionNode;
-        incomingNodeStartX = self.layoutBounds.centerX - slideDistance;
-        outgoingNodeDestinationX = self.layoutBounds.centerX + slideDistance;
+        incomingNodeStartX = self.layoutBounds.minX - slideDistance;
+        outgoingNodeDestinationX = self.layoutBounds.minX + slideDistance;
       }
       else {
 
         // a game level node is coming in, which is a right-to-left motion
         incomingViewNode = self.gameLevelViews[ newLevel ];
-        incomingNodeStartX = self.layoutBounds.centerX + slideDistance;
-        outgoingNodeDestinationX = self.layoutBounds.centerX - slideDistance;
+        incomingNodeStartX = self.layoutBounds.minX + slideDistance;
+        outgoingNodeDestinationX = self.layoutBounds.minX - slideDistance;
       }
 
       // move out the old node
-      new TWEEN.Tween( { x: nodeInViewport.centerX } )
+      new TWEEN.Tween( { x: nodeInViewport.x } )
         .to( { x: outgoingNodeDestinationX }, SCREEN_CHANGE_TIME )
         .easing( TWEEN.Easing.Cubic.InOut )
         .start( phet.joist.elapsedTime )
-        .onUpdate( function() { nodeInViewport.centerX = this.x; } )
+        .onUpdate( function() { nodeInViewport.x = this.x; } )
         .onComplete( function() {
           nodeInViewport.visible = false;
           nodeInViewport = null;
         } );
 
       // move in the new node
-      incomingViewNode.centerX = incomingNodeStartX;
+      incomingViewNode.x = incomingNodeStartX;
       incomingViewNode.visible = true;
-      new TWEEN.Tween( { x: incomingViewNode.centerX } )
-        .to( { x: self.layoutBounds.centerX }, SCREEN_CHANGE_TIME )
+      new TWEEN.Tween( { x: incomingViewNode.x } )
+        .to( { x: self.layoutBounds.minX }, SCREEN_CHANGE_TIME )
         .easing( TWEEN.Easing.Cubic.InOut )
         .start( phet.joist.elapsedTime )
-        .onUpdate( function() { incomingViewNode.centerX = this.x; } )
+        .onUpdate( function() { incomingViewNode.x = this.x; } )
         .onComplete( function() {
           nodeInViewport = incomingViewNode;
         } );
