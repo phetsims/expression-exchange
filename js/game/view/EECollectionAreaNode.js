@@ -103,7 +103,8 @@ define( function( require ) {
           dottedCirclesRootNode.addChild( circle );
           nextCircleXPos += circle.width + INTER_CIRCLE_SPACING;
         } );
-        dottedCirclesRootNode.center = collectionAreaRectangle.center;
+        dottedCirclesRootNode.centerX = collectionArea.bounds.width / 2;
+        dottedCirclesRootNode.centerY = collectionArea.bounds.height / 2;
       }
     } );
 
