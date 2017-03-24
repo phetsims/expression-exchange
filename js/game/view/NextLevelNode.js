@@ -48,7 +48,7 @@ define( function( require ) {
     if ( options.hideWhenButtonPressed ) {
 
       // add an additional listener to the button that hides this node so that the button can't be repeatedly pressed
-      button.addListener( function() { self.visible = false } );
+      button.addListener( function() { self.visible = false; } );
     }
 
     // add the push button
