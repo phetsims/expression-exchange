@@ -23,20 +23,26 @@ define( function( require ) {
    * @constructor
    */
   function NextLevelNode( listener, options ) {
+    var self = this;
     Node.call( this );
 
     // add the smiley face
     var faceNode = new FaceNode( FACE_DIAMETER );
     this.addChild( faceNode );
 
-    // add the push button
-    this.addChild( new RectangularPushButton( {
+    var button = new RectangularPushButton( {
       content: new Text( nextString, { font: new PhetFont( 30 ) } ),
       centerX: faceNode.centerX,
       top: faceNode.bottom + 10,
       listener: listener,
       baseColor: 'yellow'
-    } ) );
+    } );
+
+    // add an additional listener to the button that hides this node so that the button can't be repeatedly pressed
+    button.addListener( function() { self.visible = false } );
+
+    // add the push button
+    this.addChild( button );
 
     this.mutate( options );
   }
