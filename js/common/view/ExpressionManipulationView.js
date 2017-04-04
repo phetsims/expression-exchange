@@ -26,11 +26,11 @@ define( function( require ) {
 
   /**
    * @param {ExpressionManipulationModel} model
-   * @param {Bounds2} coinTermCreatorBoxBounds - used to determine when coin terms are being put away by the user
    * @param {Property.<Bounds2>} visibleBoundsProperty
+   * @param {Object} options
    * @constructor
    */
-  function ExpressionManipulationView( model, coinTermCreatorBoxBounds, visibleBoundsProperty, options ) {
+  function ExpressionManipulationView( model, visibleBoundsProperty, options ) {
 
     var self = this;
     options = _.extend( {
@@ -194,20 +194,6 @@ define( function( require ) {
 
       coinLayer.addChild( coinTermNode );
 
-      // Add a listener to the coin to detect when it overlaps with the carousel, at which point it will be removed
-      // from the model.
-      addedCoinTerm.userControlledProperty.onValue( false, function() {
-
-        // remove the coin term if it was released over the carousel, but check first to make sure that this event
-        // didn't already cause the coin term to join up with an expression or another coin term
-        if ( coinTermNode.bounds.intersectsBounds( coinTermCreatorBoxBounds ) &&
-             model.coinTerms.contains( addedCoinTerm ) &&
-             addedCoinTerm.inProgressAnimationProperty.get() === ( null ) && !model.isCoinTermInExpression( addedCoinTerm ) ) {
-          model.removeCoinTerm( addedCoinTerm, true );
-        }
-
-      } );
-
       // add the coin halo
       var coinTermHaloNode = new CoinTermHaloNode( addedCoinTerm, model.viewModeProperty );
       coinHaloLayer.addChild( coinTermHaloNode );
@@ -222,7 +208,6 @@ define( function( require ) {
           model.coinTerms.removeItemRemovedListener( removalListener );
         }
       } );
-
     } );
 
     // add and remove expressions and expression overlays as they come and go
@@ -242,14 +227,6 @@ define( function( require ) {
           expressionOverlayLayer.removeChild( expressionOverlayNode );
           expressionOverlayNode.dispose();
           model.expressions.removeItemRemovedListener( removalListener );
-        }
-      } );
-
-      // Add a listener to the expression to detect when it overlaps with the panel or carousel, at which point it will
-      // be removed from the model.
-      addedExpression.userControlledProperty.onValue( false, function() {
-        if ( addedExpression.getBounds().intersectsBounds( coinTermCreatorBoxBounds ) && !addedExpression.collectedProperty.get() ) {
-          model.removeExpression( addedExpression );
         }
       } );
     } );

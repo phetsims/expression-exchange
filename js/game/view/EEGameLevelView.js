@@ -89,6 +89,9 @@ define( function( require ) {
       );
       self.addChild( coinTermCreatorBox );
       coinTermCreatorBox.moveToBack(); // needs to be behind coin term and other layers
+
+      // let the model know where the creator box is so that it knows when the user returns coin terms
+      levelModel.creatorBoxBounds = coinTermCreatorBox.bounds;
     } );
 
     // add the check box that allows expressions with negative values to be simplified
@@ -130,7 +133,6 @@ define( function( require ) {
     // add the view area where the user will interact with coin terms and expressions
     this.addChild( new ExpressionManipulationView(
       levelModel,
-      coinTermCreatorBox.bounds,
       visibleBoundsProperty,
       { coinTermBreakApartButtonMode: 'inverted' }
     ) );
