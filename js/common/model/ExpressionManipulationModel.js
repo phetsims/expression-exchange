@@ -521,11 +521,9 @@ define( function( require ) {
       var userControlledCoinTerms;
       var coinTermsWithHalos = [];
 
-      // TODO: Part of the state control for expressions, hints, halos, etc, is done where while part of it is done
-      // with event handlers on the userControlled property for the coin terms and expressions.  At some point, when the
-      // functionality is fairly mature, I (jbphet) should look at consolidating these in order to make the code more
-      // understandable and maintainable.
-
+      // Update the state of the hints and halos.  This has to be done in the step function rather than in the
+      // listeners, where much of the other action occurs, because the code needs to figure out which hints and halos
+      // should be activated and deactivated based on the positions of all coin terms and expressions.
       if ( !this.expressionBeingEditedProperty.get() ) {
 
         // get a list of user controlled expressions, max of one on mouse based systems, any number on touch devices
