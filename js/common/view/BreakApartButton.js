@@ -10,13 +10,9 @@ define( function( require ) {
   // modules
   var Color = require( 'SCENERY/util/Color' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var Image = require( 'SCENERY/nodes/Image' );
+  var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var inherit = require( 'PHET_CORE/inherit' );
   var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
-
-  // images
-  var breakApartIconBlackImage = require( 'image!EXPRESSION_EXCHANGE/break-apart-icon-black.png' );
-  var breakApartIconYellowImage = require( 'image!EXPRESSION_EXCHANGE/break-apart-icon-yellow.png' );
 
   // constants
   var MARGIN = 3.5;
@@ -44,12 +40,13 @@ define( function( require ) {
     options.cursor = 'pointer';
 
     // set up the content node
-    if ( options.mode === 'normal' ) {
-      options.content = new Image( breakApartIconBlackImage, { scale: ICON_SCALE } );
-    }
-    else if ( options.mode === 'inverted' ) {
-      options.content = new Image( breakApartIconYellowImage, { scale: ICON_SCALE } );
-    }
+    var iconColor = options.mode === 'normal' ? BLACK : YELLOW;
+    options.content = new FontAwesomeNode( 'cut', {
+      scale: ICON_SCALE,
+      rotation: -Math.PI / 2, // scissors point up
+      fill: iconColor,
+      stroke: iconColor
+    } );
 
     RectangularPushButton.call( this, options );
   }
