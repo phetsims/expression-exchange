@@ -231,15 +231,27 @@ define( function( require ) {
      */
     travelToDestination: function( destination ) {
       var self = this;
-      this.destinationProperty.set( destination );
-      var movementTime = self.positionProperty.get().distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
       if ( this.inProgressAnimationProperty.get() ) {
-        // an animation was in progress - cancel it and start a new one
+
+        // an animation was already in progress, so cancel it
         this.inProgressAnimationProperty.get().stop();
         this.inProgressAnimationProperty.set( null );
       }
+      this.destinationProperty.set( destination );
       var currentPosition = this.positionProperty.get();
-      if ( !currentPosition.equals( destination ) ) {
+      if ( currentPosition.equals( destination ) ) {
+
+        // The coin terms is already at the destination, no animation is required, but emit a notification in case the
+        // the client needs it.
+        self.destinationReachedEmitter.emit();
+      }
+      else {
+
+        // calculate the time needed to get to the destination
+        var movementTime = self.positionProperty.get().distance( destination ) /
+                           EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
+
+        // create the animation that will move this coin term to its destination
         this.inProgressAnimationProperty.set( new TWEEN.Tween( { x: currentPosition.x, y: currentPosition.y } )
           .to( { x: destination.x, y: destination.y }, movementTime )
           .easing( TWEEN.Easing.Cubic.InOut )
@@ -396,19 +408,6 @@ define( function( require ) {
         position.x + relativeViewBounds.maxX,
         position.y + relativeViewBounds.maxY
       );
-    },
-
-    /**
-     * returns true if this coin term is composed of more than one coin term and all constituent coin terms have a
-     * minimum decomposition of 1
-     * @returns {boolean}
-     * @public
-     */
-    isFullyDecomposable: function() {
-      if ( this.composition.length <= 1 ) {
-        return false;
-      }
-      return _.every( this.composition, function( minDecomposition ) { return Math.abs( minDecomposition ) === 1; } );
     }
   } );
 } );

@@ -152,8 +152,8 @@ define( function( require ) {
     // when a coin term is added, add listeners to handle the things about it that are dynamic and can affect the model
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
       // TODO: Once this is pretty much fully functional, revisit this and verify that it doesn't leak memory, making
-      // TODO: sure that all added listeners are removed.  Also, work through this and see if it can be made more
-      // TODO: compact and readable (it's evolving a lot as it's being written)
+      // sure that all added listeners are removed.  Also, work through this and see if it can be made more compact and
+      // readable (it's evolving a lot as it's being written).
 
       // Add a listener that will potentially combine this coin term with expressions or other coin terms based on
       // where it is released.
@@ -224,7 +224,6 @@ define( function( require ) {
 
             // The coin term was released over a coin term of the same type, so combine the two coin terms into a single
             // one with a higher count value.
-            addedCoinTerm.travelToDestination( mostOverlappingLikeCoinTerm.positionProperty.get() );
             addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
               mostOverlappingLikeCoinTerm.absorb( addedCoinTerm, options.partialCancellationEnabled );
               expressionExchange.log && expressionExchange.log(
@@ -234,6 +233,7 @@ define( function( require ) {
               self.removeCoinTerm( addedCoinTerm, false );
               addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
             } );
+            addedCoinTerm.travelToDestination( mostOverlappingLikeCoinTerm.positionProperty.get() );
           }
           else if ( joinableFreeCoinTerm ) {
 
