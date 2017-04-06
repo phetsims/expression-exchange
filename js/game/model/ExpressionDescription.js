@@ -247,7 +247,7 @@ define( function( require ) {
       /**
        * compares the content of a user-created expression with this description, returns true if they are equivalent
        * @param {Expression} expression
-       * @return {boolean}
+       * @returns {boolean}
        * @public
        */
       expressionMatches: function( expression ) {
@@ -293,7 +293,7 @@ define( function( require ) {
       /**
        * compares a coin term with this description, returns true if they are equivalent
        * @param {CoinTerm} coinTerm
-       * @return {boolean}
+       * @returns {boolean}
        * @public
        */
       coinTermMatches: function( coinTerm ) {

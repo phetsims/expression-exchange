@@ -856,7 +856,7 @@ define( function( require ) {
      * get the free coin term (i.e. one that is not in an expression) that overlaps the most with the provided
      * expression, null if no overlapping coin terms exist
      * @param {Expression} expression
-     * @return {CoinTerm}
+     * @returns {CoinTerm}
      * @private
      */
     getFreeCoinTermMostOverlappingWithExpression: function( expression ) {
