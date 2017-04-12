@@ -68,7 +68,7 @@ define( function( require ) {
         perfectScore: EEGameModel.MAX_SCORE_PER_LEVEL,
         numLevels: EEGameModel.NUMBER_OF_LEVELS,
         numButtonRows: 2,
-        controlsInset: 20,
+        controlsInset: 10,
         size: this.layoutBounds,
         centerX: this.layoutBounds.centerX
       }

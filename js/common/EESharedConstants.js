@@ -44,7 +44,10 @@ define( function( require ) {
     MAX_NON_DECOMPOSABLE_AMOUNT: 8,
 
     // size of the collection areas in the game, in view coordinates, empirically determined
-    COLLECTION_AREA_SIZE: new Dimension2( 220, 90 )
+    COLLECTION_AREA_SIZE: new Dimension2( 220, 90 ),
+
+    // misc
+    RESET_BUTTON_RADIUS: 24
   };
 
   expressionExchange.register( 'EESharedConstants', EESharedConstants );

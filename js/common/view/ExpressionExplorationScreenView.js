@@ -294,7 +294,8 @@ define( function( require ) {
       },
       right: this.layoutBounds.maxX - 10,
       bottom: this.layoutBounds.maxY - 10,
-      touchAreaDilation: 10
+      touchAreaDilation: 10,
+      radius: EESharedConstants.RESET_BUTTON_RADIUS
     } );
     this.addChild( resetAllButton );
 
