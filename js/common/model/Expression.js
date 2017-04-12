@@ -13,6 +13,7 @@ define( function( require ) {
   var Bounds2 = require( 'DOT/Bounds2' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  var Easing = require( 'TWIXT/Easing' );
   var Emitter = require( 'AXON/Emitter' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -215,6 +216,29 @@ define( function( require ) {
     step: function( dt ) {
 
       var self = this;
+
+      // do any motion animation
+      var animation = this.inProgressAnimationProperty.get();
+      if ( animation ) {
+        animation.timeSoFar += dt;
+        if ( animation.timeSoFar < animation.totalDuration ) {
+
+          // not there yet - take a step towards the destination
+          var easingProportion = Easing.CUBIC_IN_OUT.value( animation.timeSoFar / animation.totalDuration );
+          var nextPosition = animation.startPosition.plus(
+            animation.travelVector.withMagnitude( animation.travelVector.magnitude() * easingProportion )
+          );
+          var deltaPosition = nextPosition.minus( this.upperLeftCornerProperty.get() );
+          this.translate( deltaPosition );
+        }
+        else {
+
+          // destination reached, end the animation
+          this.upperLeftCornerProperty.set( animation.startPosition.plus( animation.travelVector ) );
+          this.inProgressAnimationProperty.set( null );
+          this.destinationReachedEmitter.emit();
+        }
+      }
 
       // If needed, adjust the size of the expression and the positions of the contained coin terms.  This is done here
       // in the step function so that it is only done a max of once per animation frame rather than redoing it for each
@@ -577,18 +601,18 @@ define( function( require ) {
     },
 
     /**
-     * move, a.k.a. translate, by the specified amounts
-     * @public
+     * move, a.k.a. translate, by the specified amount and move the coin terms too
+     * @private
      */
-    translate: function( deltaX, deltaY ) {
+    translate: function( deltaPosition ) {
 
       // move the coin terms
       this.coinTerms.forEach( function( coinTerm ) {
-        coinTerm.setPositionAndDestination( coinTerm.positionProperty.get().plusXY( deltaX, deltaY ) );
+        coinTerm.setPositionAndDestination( coinTerm.positionProperty.get().plus( deltaPosition ) );
       } );
 
       // move the outline shape
-      this.upperLeftCornerProperty.set( this.upperLeftCornerProperty.get().plusXY( deltaX, deltaY ) );
+      this.upperLeftCornerProperty.set( this.upperLeftCornerProperty.get().plus( deltaPosition ) );
     },
 
     /**
@@ -598,22 +622,22 @@ define( function( require ) {
      */
     travelToDestination: function( upperLeftCornerDestination ) {
       var self = this;
-      var prevX = this.upperLeftCornerProperty.get().x;
-      var prevY = this.upperLeftCornerProperty.get().y;
-      var movementTime = self.upperLeftCornerProperty.get().distance( upperLeftCornerDestination ) / ANIMATION_SPEED * 1000;
-      this.inProgressAnimationProperty.set( new TWEEN.Tween( { x: prevX, y: prevY } )
-        .to( { x: upperLeftCornerDestination.x, y: upperLeftCornerDestination.y }, movementTime )
-        .easing( TWEEN.Easing.Cubic.InOut )
-        .onUpdate( function() {
-          self.translate( this.x - prevX, this.y - prevY );
-          prevX = this.x;
-          prevY = this.y;
-        } )
-        .onComplete( function() {
-          self.inProgressAnimationProperty.set( null );
-          self.destinationReachedEmitter.emit();
-        } )
-        .start( phet.joist.elapsedTime ) );
+      var animationDuration = self.upperLeftCornerProperty.get().distance( upperLeftCornerDestination ) / ANIMATION_SPEED;
+      if ( animationDuration === 0 ) {
+
+        // already there, so emit a notification and call it good
+        self.destinationReachedEmitter.emit();
+      }
+      else {
+
+        // set up the animation to get to the destination
+        this.inProgressAnimationProperty.set( {
+          startPosition: this.upperLeftCornerProperty.get().copy(),
+          travelVector: upperLeftCornerDestination.minus( this.upperLeftCornerProperty.get() ),
+          totalDuration: animationDuration,
+          timeSoFar: 0
+        } );
+      }
     },
 
     /**
@@ -622,10 +646,7 @@ define( function( require ) {
      * @public
      */
     setPositionAndDestination: function( upperLeftCornerDestination ) {
-      this.translate(
-        upperLeftCornerDestination.x - this.upperLeftCornerProperty.get().x,
-        upperLeftCornerDestination.y - this.upperLeftCornerProperty.get().y
-      );
+      this.translate( upperLeftCornerDestination.minus( this.upperLeftCornerProperty.get() ) );
     },
 
     /**

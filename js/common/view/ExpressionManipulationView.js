@@ -250,10 +250,5 @@ define( function( require ) {
 
   expressionExchange.register( 'ExpressionManipulationView', ExpressionManipulationView );
 
-  return inherit( Node, ExpressionManipulationView, {
-
-    step: function( dt ) {
-      //TODO Handle view animation here.  Will replace TWEEN animations.
-    }
-  } );
+  return inherit( Node, ExpressionManipulationView );
 } );

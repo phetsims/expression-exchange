@@ -14,6 +14,7 @@ define( function( require ) {
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  var Easing = require( 'TWIXT/Easing' );
   var Emitter = require( 'AXON/Emitter' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -225,18 +226,43 @@ define( function( require ) {
   return inherit( Object, CoinTerm, {
 
     /**
+     * step function, used for animations
+     * @param {number} dt - delta time, in seconds
+     */
+    step: function( dt ) {
+
+      // if there is an animation in progress, step it
+      var animation = this.inProgressAnimationProperty.get();
+      if ( animation ) {
+        animation.timeSoFar += dt;
+        if ( animation.timeSoFar < animation.totalDuration ) {
+
+          // not there yet - take a step towards the destination
+          var proportionCompleted = animation.timeSoFar / animation.totalDuration;
+          var easingProportion = Easing.CUBIC_IN_OUT.value( proportionCompleted );
+          this.positionProperty.set(
+            animation.startPosition.plus(
+              animation.travelVector.withMagnitude( animation.travelVector.magnitude() * easingProportion )
+            )
+          );
+        }
+        else {
+
+          // destination reached, end the animation
+          this.positionProperty.set( this.destinationProperty.get() );
+          this.inProgressAnimationProperty.set( null );
+          this.destinationReachedEmitter.emit();
+        }
+      }
+    },
+
+    /**
      * move to the specified destination, but do so a step at a time rather than all at once
      * @param {Vector2} destination
      * @public
      */
     travelToDestination: function( destination ) {
       var self = this;
-      if ( this.inProgressAnimationProperty.get() ) {
-
-        // an animation was already in progress, so cancel it
-        this.inProgressAnimationProperty.get().stop();
-        this.inProgressAnimationProperty.set( null );
-      }
       this.destinationProperty.set( destination );
       var currentPosition = this.positionProperty.get();
       if ( currentPosition.equals( destination ) ) {
@@ -248,21 +274,15 @@ define( function( require ) {
       else {
 
         // calculate the time needed to get to the destination
-        var movementTime = self.positionProperty.get().distance( destination ) /
-                           EESharedConstants.COIN_TERM_MOVEMENT_SPEED * 1000;
+        var animationDuration = self.positionProperty.get().distance( destination ) /
+                                EESharedConstants.COIN_TERM_MOVEMENT_SPEED;
 
-        // create the animation that will move this coin term to its destination
-        this.inProgressAnimationProperty.set( new TWEEN.Tween( { x: currentPosition.x, y: currentPosition.y } )
-          .to( { x: destination.x, y: destination.y }, movementTime )
-          .easing( TWEEN.Easing.Cubic.InOut )
-          .onUpdate( function() {
-            self.positionProperty.set( new Vector2( this.x, this.y ) );
-          } )
-          .onComplete( function() {
-            self.destinationReachedEmitter.emit();
-            self.inProgressAnimationProperty.set( null );
-          } )
-          .start( phet.joist.elapsedTime ) );
+        this.inProgressAnimationProperty.set( {
+          startPosition: this.positionProperty.get().copy(),
+          travelVector: destination.minus( this.positionProperty.get() ),
+          totalDuration: animationDuration,
+          timeSoFar: 0
+        } );
       }
     },
 
@@ -286,8 +306,6 @@ define( function( require ) {
      */
     goImmediatelyToDestination: function() {
       if ( this.inProgressAnimationProperty.get() ) {
-        // TODO: replace .stop with .cancel once TWEEN is upgraded
-        this.inProgressAnimationProperty.get().stop();
         this.inProgressAnimationProperty.set( null );
         this.positionProperty.set( this.destinationProperty.get() );
       }

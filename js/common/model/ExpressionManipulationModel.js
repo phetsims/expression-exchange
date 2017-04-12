@@ -518,6 +518,9 @@ define( function( require ) {
       var userControlledCoinTerms;
       var coinTermsWithHalos = [];
 
+      // step all the coin terms
+      this.coinTerms.forEach( function( coinTerm ) { coinTerm.step( dt ); } );
+
       // Update the state of the hints and halos.  This has to be done in the step function rather than in the
       // event listeners, where much of the other action occurs, because the code needs to figure out which hints and
       // halos should be activated and deactivated based on the positions of all coin terms and expressions.
