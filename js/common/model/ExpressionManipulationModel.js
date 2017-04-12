@@ -49,8 +49,8 @@ define( function( require ) {
     options = _.extend( {
 
       // TODO: As I write this on 4/15/2016, it occurs to me that maybe the view, rather than the model, is where these
-      // TODO: options need to be, and there would be a single model type and variations of the view type.  Revisit this
-      // TODO: once the screen behaviors are fully established and refactor if it makes sense to do so.
+      // options need to be, and there would be a single model type and variations of the view type.  Revisit this once
+      // the screen behaviors are fully established and refactor if it makes sense to do so.
 
       // defines whether to present just coins, just variables, or both to the user
       allowedRepresentations: AllowedRepresentationsEnum.COINS_AND_VARIABLES,
@@ -725,8 +725,8 @@ define( function( require ) {
     // @public
     removeCoinTerm: function( coinTerm, animate ) {
 
-      // TODO:   It is kind of weird that the animation flag prevents removal from expressions.  Maybe this should be
-      // TODO:   broken into two methods, or maybe the expression removal should be checked every time.
+      // TODO: It is kind of weird that the animation flag prevents removal from expressions.  Maybe this should be
+      // broken into two methods, or maybe the expression removal should be checked every time.
       if ( animate ) {
         coinTerm.returnToOrigin();
       }

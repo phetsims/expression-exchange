@@ -69,8 +69,8 @@ define( function( require ) {
     // Add the button that will allow composite coins to be decomposed.  This is done outside of the root node so that
     // it doesn't affect the bounds used in the model.
     // TODO: There's a lot of code in here for the break apart button.  Can this be consolidated into a class that
-    // TODO: encapsulates a lot of this behavior, such as hiding automatically after a given time, managing the timers,
-    // TODO: handling hover?  Seems like a good idea.
+    // encapsulates a lot of this behavior, such as hiding automatically after a given time, managing the timers,
+    // handling hover?  Seems like a good idea.
     var breakApartButton = new BreakApartButton( { visible: false, mode: options.breakApartButtonMode } );
     this.addChild( breakApartButton );
 

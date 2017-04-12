@@ -409,8 +409,8 @@ define( function( require ) {
 
       if ( this.coinTerms.contains( coinTerm ) ) {
         // TODO:   There is a race condition that only occurs during fuzz testing where somehow a coin term that is
-        // TODO:   inside an expression becomes user controlled and then is added back to the expression.  This is a
-        // TODO:   workaround.  This should be fully investigated before publication.
+        // inside an expression becomes user controlled and then is added back to the expression.  This is a workaround.
+        // This should be fully investigated before publication.
         expressionExchange.log && expressionExchange.log( 'warning: an attempt was made to re-add a coin term that is already in the expression' );
         return;
       }
@@ -760,15 +760,6 @@ define( function( require ) {
         this.hoveringCoinTerms.splice( index, 1 );
         coinTerm.breakApartAllowedProperty.set( true );
       }
-    },
-
-    /**
-     * TODO: doc once finalized
-     * @param coinTerm
-     * @returns {boolean}
-     */
-    isHoveringCoinTerm: function( coinTerm ) {
-      return this.hoveringCoinTerms.indexOf( coinTerm ) > -1;
     },
 
     clearHoveringCoinTerms: function() {

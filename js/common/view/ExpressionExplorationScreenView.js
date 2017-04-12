@@ -201,7 +201,7 @@ define( function( require ) {
     }
 
     // TODO: The setting of the width for the "My Collection" element was empirically determined.  When the sim is
-    // TODO: further along, I (jbphet) should revisit and see if there is a better way to do this.
+    // further along, I (jbphet) should revisit and see if there is a better way to do this.
     var collectionDisplayWidth = 150;
     if ( coinTermCreatorSetID === CoinTermCreatorSetID.EXPLORE ) {
       collectionDisplayWidth = 180;

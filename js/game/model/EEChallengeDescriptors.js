@@ -420,7 +420,7 @@ define( function( require ) {
       {
         expressionsToCollect: [
           new ExpressionDescription( '2(x - 1)' ),
-          new ExpressionDescription( '1(2x - 2)' ), // TODO: Ask Amanda if we really want it written like this.
+          new ExpressionDescription( '1(2x - 2)' ),
           new ExpressionDescription( '2(x + 3)' )
         ],
         carouselContents: [
