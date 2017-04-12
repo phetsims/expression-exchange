@@ -26,7 +26,7 @@ define( function( require ) {
 
   // constants
   var MIN_EXPRESSION_IN_BOUNDS_WIDTH = 70; // in screen coords, min horizontal amount of expression that must stay in bounds
-  var BUTTON_SPACING = 15; // in screen coordinates
+  var BUTTON_SPACING = 11; // in screen coordinates
 
   /**
    * @param {Expression} expression - model of an expression
