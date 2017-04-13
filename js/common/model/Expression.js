@@ -217,29 +217,6 @@ define( function( require ) {
 
       var self = this;
 
-      // do any motion animation
-      var animation = this.inProgressAnimationProperty.get();
-      if ( animation ) {
-        animation.timeSoFar += dt;
-        if ( animation.timeSoFar < animation.totalDuration ) {
-
-          // not there yet - take a step towards the destination
-          var easingProportion = Easing.CUBIC_IN_OUT.value( animation.timeSoFar / animation.totalDuration );
-          var nextPosition = animation.startPosition.plus(
-            animation.travelVector.withMagnitude( animation.travelVector.magnitude() * easingProportion )
-          );
-          var deltaPosition = nextPosition.minus( this.upperLeftCornerProperty.get() );
-          this.translate( deltaPosition );
-        }
-        else {
-
-          // destination reached, end the animation
-          this.upperLeftCornerProperty.set( animation.startPosition.plus( animation.travelVector ) );
-          this.inProgressAnimationProperty.set( null );
-          this.destinationReachedEmitter.emit();
-        }
-      }
-
       // If needed, adjust the size of the expression and the positions of the contained coin terms.  This is done here
       // in the step function so that it is only done a max of once per animation frame rather than redoing it for each
       // coin term whose bounds change.
@@ -298,6 +275,30 @@ define( function( require ) {
         ) );
         this.heightProperty.set( tallestCoinTermHeight + 2 * INSET );
         this.layoutChangedEmitter.emit();
+      }
+
+      // Do any motion animation.  This is done last because the animation can sometimes cause the expression to be
+      // removed from the model (such as when it joins another expression), and this can cause the prior steps to fail.
+      var animation = this.inProgressAnimationProperty.get();
+      if ( animation ) {
+        animation.timeSoFar += dt;
+        if ( animation.timeSoFar < animation.totalDuration ) {
+
+          // not there yet - take a step towards the destination
+          var easingProportion = Easing.CUBIC_IN_OUT.value( animation.timeSoFar / animation.totalDuration );
+          var nextPosition = animation.startPosition.plus(
+            animation.travelVector.withMagnitude( animation.travelVector.magnitude() * easingProportion )
+          );
+          var deltaPosition = nextPosition.minus( this.upperLeftCornerProperty.get() );
+          this.translate( deltaPosition );
+        }
+        else {
+
+          // destination reached, end the animation
+          this.upperLeftCornerProperty.set( animation.startPosition.plus( animation.travelVector ) );
+          this.inProgressAnimationProperty.set( null );
+          this.destinationReachedEmitter.emit();
+        }
       }
     },
 
