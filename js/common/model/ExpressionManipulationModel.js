@@ -170,12 +170,7 @@ define( function( require ) {
           var mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( addedCoinTerm );
           var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
 
-          if ( releasedOverCreatorBox ) {
-
-            // the user has put this coin term back in the creator box, so remove it
-            self.removeCoinTerm( addedCoinTerm, true );
-          }
-          else if ( expressionBeingEdited ) {
+          if ( expressionBeingEdited ) {
 
             // An expression is being edited, so a released coin term could be either moved to a new location within an
             // expression or combined with another coin term in the expression.
@@ -206,6 +201,11 @@ define( function( require ) {
               // the coin term has been dropped at some potentially new location withing the expression
               expressionBeingEdited.reintegrateCoinTerm( addedCoinTerm );
             }
+          }
+          else if ( releasedOverCreatorBox ) {
+
+            // the user has put this coin term back in the creator box, so remove it
+            self.removeCoinTerm( addedCoinTerm, true );
           }
           else if ( mostOverlappingCollectionArea ) {
 
