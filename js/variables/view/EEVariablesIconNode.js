@@ -17,7 +17,7 @@ define( function( require ) {
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var Screen = require( 'JOIST/Screen' );
-  var SubSupText = require( 'SCENERY_PHET/SubSupText' );
+  var RichText = require( 'SCENERY_PHET/RichText' );
   var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
@@ -38,13 +38,13 @@ define( function( require ) {
     // create and add the equation node
     var equationNode = new Node();
     equationNode.addChild( new Text( '3', { font: TEXT_FONT } ) );
-    equationNode.addChild( new SubSupText( 'x<sup>2</sup>', {
+    equationNode.addChild( new RichText( 'x<sup>2</sup>', {
       font: MATH_FONT,
       supScale: 0.5,
       left: equationNode.width
     } ) );
     equationNode.addChild( new Text( ' \u2212 ', { font: TEXT_FONT, left: equationNode.width } ) );
-    equationNode.addChild( new SubSupText( 'x<sup>2</sup>', {
+    equationNode.addChild( new RichText( 'x<sup>2</sup>', {
       font: MATH_FONT,
       supScale: 0.5,
       left: equationNode.width

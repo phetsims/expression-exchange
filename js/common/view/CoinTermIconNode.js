@@ -16,7 +16,7 @@ define( function( require ) {
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var SubSupText = require( 'SCENERY_PHET/SubSupText' );
+  var RichText = require( 'SCENERY_PHET/RichText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
@@ -67,7 +67,7 @@ define( function( require ) {
     var maxTextWidth = coinIconNode.width * MAX_TERM_WIDTH_PROPORTION;
 
     // add the 'term' text, e.g. xy
-    var termText = new SubSupText( coinTerm.termText, {
+    var termText = new RichText( coinTerm.termText, {
       font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
       maxWidth: maxTextWidth
     } );
@@ -87,7 +87,7 @@ define( function( require ) {
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
 
     // Add the text that includes the variable values.  This can change, so it starts off blank.
-    var termWithVariableValuesText = new SubSupText( ' ', {
+    var termWithVariableValuesText = new RichText( ' ', {
       font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
       maxWidth: maxTextWidth
     } );

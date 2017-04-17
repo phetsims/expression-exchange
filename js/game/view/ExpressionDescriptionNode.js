@@ -15,7 +15,7 @@ define( function( require ) {
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var SubSupText = require( 'SCENERY_PHET/SubSupText' );
+  var RichText = require( 'SCENERY_PHET/RichText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
@@ -91,11 +91,11 @@ define( function( require ) {
 
     // identify the expression to be created based on a finite set of those supported
     if ( expressionString.indexOf( 'x^2', startIndex ) === startIndex ) {
-      nodeInfo.node = new SubSupText( EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>', SUB_SUP_OPTIONS );
+      nodeInfo.node = new RichText( EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>', SUB_SUP_OPTIONS );
       nodeInfo.charsUsed = 3;
     }
     else if ( expressionString.indexOf( 'y^2', startIndex ) === startIndex ) {
-      nodeInfo.node = new SubSupText( EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>', SUB_SUP_OPTIONS );
+      nodeInfo.node = new RichText( EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>', SUB_SUP_OPTIONS );
       nodeInfo.charsUsed = 3;
     }
     else if ( expressionString.indexOf( 'xy', startIndex ) === startIndex ) {

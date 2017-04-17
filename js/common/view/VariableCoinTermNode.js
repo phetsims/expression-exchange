@@ -17,7 +17,7 @@ define( function( require ) {
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
-  var SubSupText = require( 'SCENERY_PHET/SubSupText' );
+  var RichText = require( 'SCENERY_PHET/RichText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var Vector2 = require( 'DOT/Vector2' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
@@ -67,11 +67,11 @@ define( function( require ) {
     this.coinAndTextRootNode.addChild( coinValueText );
 
     // add the 'term' text, e.g. xy
-    var termText = new SubSupText( 'temp', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
+    var termText = new RichText( 'temp', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
     this.coinAndTextRootNode.addChild( termText );
 
     // Add the text that includes the variable values.  This can change, so it starts off blank.
-    var termWithVariableValuesText = new SubSupText( ' ', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
+    var termWithVariableValuesText = new RichText( ' ', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
     this.coinAndTextRootNode.addChild( termWithVariableValuesText );
 
     // add the coefficient value
