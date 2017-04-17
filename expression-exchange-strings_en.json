@@ -14,8 +14,8 @@
   "basics": {
     "value": "Basics"
   },
-  "variables": {
-    "value": "Variables"
+  "negatives": {
+    "value": "Negatives"
   },
   "game": {
     "value": "Game"

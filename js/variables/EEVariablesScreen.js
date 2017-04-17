@@ -21,7 +21,7 @@ define( function( require ) {
   var Property = require( 'AXON/Property' );
 
   // strings
-  var variablesString = require( 'string!EXPRESSION_EXCHANGE/variables' );
+  var negativesString = require( 'string!EXPRESSION_EXCHANGE/negatives' );
 
   /**
    * @constructor
@@ -29,7 +29,7 @@ define( function( require ) {
   function EEVariablesScreen() {
 
     var options = {
-      name: variablesString,
+      name: negativesString,
       backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
       homeScreenIcon: new EEVariablesIconNode()
     };
