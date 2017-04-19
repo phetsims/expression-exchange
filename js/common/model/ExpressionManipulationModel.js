@@ -388,26 +388,25 @@ define( function( require ) {
             mostOverlappingExpression.removeHoveringExpression( addedExpression );
 
             // send the combining expression to the right side of receiving expression
-            addedExpression.travelToDestination( mostOverlappingExpression.upperLeftCornerProperty.get().plusXY(
-              mostOverlappingExpression.widthProperty.get(),
-              0
-            ) );
+            var destinationForCombine = mostOverlappingExpression.getUpperRightCorner();
+            addedExpression.travelToDestination( destinationForCombine );
 
             // Listen for when the expression is in place and, when it is, transfer its coin terms to the receiving
             // expression.
             addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener() {
-              var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
-              self.expressions.remove( addedExpression );
-              coinTermsToBeMoved.forEach( function( coinTerm ) {
-                expressionExchange.log && expressionExchange.log( 'moving ' + coinTerm.id + ' from ' +
-                                                                  addedExpression.id + ' to ' +
-                                                                  mostOverlappingExpression.id );
-                mostOverlappingExpression.addCoinTerm( coinTerm );
-              } );
-              addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
-              // TODO: I haven't thought through and added handling for the case where a reset occurs during the course
-              // of this animation.  How does the listener get removed in that case, or does it even have to?  I'll need
-              // to do that at some point.
+
+              // destination reached, combine with other expression, but ONLY if it hasn't moved
+              if ( mostOverlappingExpression.getUpperRightCorner().equals( destinationForCombine ) ) {
+                var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
+                self.expressions.remove( addedExpression );
+                coinTermsToBeMoved.forEach( function( coinTerm ) {
+                  expressionExchange.log && expressionExchange.log( 'moving ' + coinTerm.id + ' from ' +
+                                                                    addedExpression.id + ' to ' +
+                                                                    mostOverlappingExpression.id );
+                  mostOverlappingExpression.addCoinTerm( coinTerm );
+                } );
+                addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
+              }
             } );
           }
           else if ( numOverlappingCoinTerms === 1 ) {
@@ -559,6 +558,12 @@ define( function( require ) {
 
           // update hover info for each of the other expressions with respect to this one
           self.expressions.forEach( function( expression ) {
+
+            if ( expression === userControlledExpression ) {
+              // skip self
+              return;
+            }
+
             if ( expression === expressionOverWhichThisExpressionIsHovering ) {
               expression.addHoveringExpression( userControlledExpression );
             }

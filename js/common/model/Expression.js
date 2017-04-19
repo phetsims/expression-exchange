@@ -139,7 +139,8 @@ define( function( require ) {
     this.addCoinTerm( anchorCoinTerm );
 
     // update the join zone as the size and/or location of the expression changes
-    Property.multilink( [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
+    Property.multilink(
+      [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
       function( upperLeftCorner, width, height ) {
         self.joinZone.setMinMax(
           upperLeftCorner.x - height,
@@ -734,6 +735,10 @@ define( function( require ) {
         Math.min( otherExpressionBounds.maxY, thisExpressionBounds.maxY ) - Math.max( otherExpressionBounds.minY, thisExpressionBounds.minY )
       );
       return xOverlap * yOverlap;
+    },
+
+    getUpperRightCorner: function() {
+      return this.upperLeftCornerProperty.get().plusXY( this.widthProperty.get(), 0 );
     },
 
     /**
