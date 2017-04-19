@@ -74,9 +74,11 @@ define( function( require ) {
         // collect this expression - the collection state must be set first in case it causes an update of the bounds
         expression.collectedProperty.set( true );
         expressionBounds = expression.getBounds();
+
+        // move the expression into the container, a little below center so there's no overlap with eject button
         expression.travelToDestination( new Vector2(
           this.bounds.getCenterX() - expressionBounds.width / 2,
-          this.bounds.getCenterY() - expressionBounds.height / 2
+          this.bounds.getCenterY() - expressionBounds.height * 0.4
         ) );
         this.collectedItemProperty.set( expression );
       }
