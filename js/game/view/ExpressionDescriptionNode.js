@@ -20,7 +20,10 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var COIN_TO_COIN_SPACING = 10; // empirically determined
+  var COIN_EXPRESSION_COEFFICIENT_FONT = new PhetFont( 22 );
+  var COIN_EXPRESSION_PLUS_SIGN_FONT = new PhetFont( 26 );
+  var COEFFICIENT_TO_COIN_SPACING = 1;
+  var COIN_TO_PLUS_SIGN_SPACING = 5;
   var EXPRESSION_FONT_FOR_NON_VARIABLE = new PhetFont( 22 );
   var EXPRESSION_FONT_FOR_VARIABLES = new MathSymbolFont( 24 );
   var ADDITIONAL_EXPRESSION_FRAGMENT_SPACING = 2; // empirically determined to look good on the most platforms
@@ -40,15 +43,35 @@ define( function( require ) {
     var nextXPos = 0;
 
     if ( viewMode === ViewMode.COINS ) {
-      expressionDescription.termsArray.forEach( function( expressionTerm ) {
+      expressionDescription.termsArray.forEach( function( expressionTerm, index ) {
 
-        // add the coin icons for this term
-        _.times( expressionTerm.coefficient, function() {
-          // TODO: Use real, scaled radii
-          var coinIconNode = CoinNodeFactory.createIconNode( expressionTerm.coinTermTypeID, 10, { left: nextXPos } );
-          self.addChild( coinIconNode );
-          nextXPos += coinIconNode.width + COIN_TO_COIN_SPACING;
-        } );
+        // add coefficient if needed
+        if ( expressionTerm.coefficient > 1 ) {
+          var coefficientNode = new Text( expressionTerm.coefficient, {
+            font: COIN_EXPRESSION_COEFFICIENT_FONT,
+            left: nextXPos,
+            centerY: 0
+          } );
+          self.addChild( coefficientNode );
+          nextXPos += coefficientNode.width + COEFFICIENT_TO_COIN_SPACING;
+        }
+
+        // add coin icon
+        var coinIconNode = CoinNodeFactory.createIconNode( expressionTerm.coinTermTypeID, 10, { left: nextXPos } );
+        self.addChild( coinIconNode );
+        nextXPos += coinIconNode.width + COIN_TO_PLUS_SIGN_SPACING;
+
+        // add plus symbol if not at end of expression
+        if ( index < expressionDescription.termsArray.length - 1 ) {
+          var plusSign = new Text( '+', {
+            font: COIN_EXPRESSION_PLUS_SIGN_FONT,
+            left: nextXPos,
+            centerY: 0
+          } );
+          self.addChild( plusSign );
+          nextXPos += plusSign.width + COIN_TO_PLUS_SIGN_SPACING;
+        }
+
       } );
     }
     else if ( viewMode === ViewMode.VARIABLES ) {
