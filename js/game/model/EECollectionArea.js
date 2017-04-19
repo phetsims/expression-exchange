@@ -16,7 +16,6 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
   var Vector2 = require( 'DOT/Vector2' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var REJECTED_ITEM_DISTANCE = 20; // empirically determined
@@ -66,17 +65,11 @@ define( function( require ) {
       // test that this collection area is in the correct state
       assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
 
-      // If in coin mode, the expression must be reduced, but in variable mode it doesn't.  This was just a design
-      // decision, not some fundamental axiom of coin expressions.
-      var reductionStateCorrect = this.viewMode === ViewMode.VARIABLES ? true : expression.isReduced();
-
       // bounds used for positioning of the expression
       var expressionBounds;
 
       // test whether the provided expression matches the expression spec for this collection area
-      if ( this.isEmpty() &&
-           reductionStateCorrect &&
-           this.expressionDescriptionProperty.get().expressionMatches( expression ) ) {
+      if ( this.isEmpty() && this.expressionDescriptionProperty.get().expressionMatches( expression ) ) {
 
         // collect this expression - the collection state must be set first in case it causes an update of the bounds
         expression.collectedProperty.set( true );
