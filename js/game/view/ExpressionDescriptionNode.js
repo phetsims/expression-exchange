@@ -70,7 +70,7 @@ define( function( require ) {
           var plusSign = new Text( '+', {
             font: COIN_EXPRESSION_FONT,
             left: nextXPos,
-            centerY: COIN_ICON_RADIUS'
+            centerY: COIN_ICON_RADIUS
           } );
           self.addChild( plusSign );
           nextXPos += plusSign.width + COIN_TO_PLUS_SIGN_SPACING;
