@@ -23,7 +23,6 @@ define( function( require ) {
    * @constructor
    */
   function NextLevelNode( listener, options ) {
-    var self = this;
     Node.call( this );
 
     // add the smiley face
