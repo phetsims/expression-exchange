@@ -71,7 +71,7 @@ define( function( require ) {
         expressionDescriptionNode = new ExpressionDescriptionNode(
           expressionDescription,
           collectionArea.viewMode,
-          { left: collectionAreaRectangle.left, bottom: collectionAreaRectangle.top - 4 }
+          { left: collectionAreaRectangle.left, bottom: collectionAreaRectangle.top - 2 }
         );
         self.addChild( expressionDescriptionNode );
       }

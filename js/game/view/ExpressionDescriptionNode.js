@@ -20,8 +20,8 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var COIN_EXPRESSION_COEFFICIENT_FONT = new PhetFont( 22 );
-  var COIN_EXPRESSION_PLUS_SIGN_FONT = new PhetFont( 26 );
+  var COIN_ICON_RADIUS = 10;
+  var COIN_EXPRESSION_FONT = new PhetFont( 22 );
   var COEFFICIENT_TO_COIN_SPACING = 1;
   var COIN_TO_PLUS_SIGN_SPACING = 5;
   var EXPRESSION_FONT_FOR_NON_VARIABLE = new PhetFont( 22 );
@@ -48,25 +48,29 @@ define( function( require ) {
         // add coefficient if needed
         if ( expressionTerm.coefficient > 1 ) {
           var coefficientNode = new Text( expressionTerm.coefficient, {
-            font: COIN_EXPRESSION_COEFFICIENT_FONT,
+            font: COIN_EXPRESSION_FONT,
             left: nextXPos,
-            centerY: 0
+            centerY: COIN_ICON_RADIUS
           } );
           self.addChild( coefficientNode );
           nextXPos += coefficientNode.width + COEFFICIENT_TO_COIN_SPACING;
         }
 
         // add coin icon
-        var coinIconNode = CoinNodeFactory.createIconNode( expressionTerm.coinTermTypeID, 10, { left: nextXPos } );
+        var coinIconNode = CoinNodeFactory.createIconNode(
+          expressionTerm.coinTermTypeID,
+          COIN_ICON_RADIUS,
+          { left: nextXPos, centerY: COIN_ICON_RADIUS }
+        );
         self.addChild( coinIconNode );
         nextXPos += coinIconNode.width + COIN_TO_PLUS_SIGN_SPACING;
 
         // add plus symbol if not at end of expression
         if ( index < expressionDescription.termsArray.length - 1 ) {
           var plusSign = new Text( '+', {
-            font: COIN_EXPRESSION_PLUS_SIGN_FONT,
+            font: COIN_EXPRESSION_FONT,
             left: nextXPos,
-            centerY: 0
+            centerY: COIN_ICON_RADIUS'
           } );
           self.addChild( plusSign );
           nextXPos += plusSign.width + COIN_TO_PLUS_SIGN_SPACING;
