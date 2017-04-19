@@ -7,17 +7,13 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var Circle = require( 'SCENERY/nodes/Circle' );
   var ExpressionDescriptionNode = require( 'EXPRESSION_EXCHANGE/game/view/ExpressionDescriptionNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var DOTTED_CIRCLE_RADIUS = 20; // empirically determined to be close to coin term radii in expressions
-  var INTER_CIRCLE_SPACING = 30; // empirically determined to roughly match up with expression spacing
   var CORNER_RADIUS = 4;
 
   /**
@@ -61,15 +57,6 @@ define( function( require ) {
     );
     this.addChild( collectionAreaRectangle );
 
-    // add a node that will contain the dotted line circles (only used in coin view mode)
-    var dottedCirclesRootNode = new Node();
-    collectionAreaRectangle.addChild( dottedCirclesRootNode );
-
-    // monitor the collected expression and update the state when it changes
-    collectionArea.collectedItemProperty.link( function( collectedExpression ) {
-      dottedCirclesRootNode.visible = collectedExpression === null;
-    } );
-
     // add the expression description representation, which will update if the expression description changes
     var expressionDescriptionNode = null;
     collectionArea.expressionDescriptionProperty.link( function( expressionDescription ) {
@@ -87,24 +74,6 @@ define( function( require ) {
           { left: collectionAreaRectangle.left, bottom: collectionAreaRectangle.top - 4 }
         );
         self.addChild( expressionDescriptionNode );
-      }
-
-      // set up the dotted line circles if in coin view mode
-      if ( collectionArea.viewMode === ViewMode.COINS ) {
-        dottedCirclesRootNode.removeAllChildren();
-        var nextCircleXPos = 0;
-        _.times( expressionDescription.termsArray.length, function() {
-          var circle = new Circle( DOTTED_CIRCLE_RADIUS, {
-            stroke: '#999999',
-            lineDash: [ 4, 3 ],
-            left: nextCircleXPos,
-            y: collectionAreaRectangle.height / 2
-          } );
-          dottedCirclesRootNode.addChild( circle );
-          nextCircleXPos += circle.width + INTER_CIRCLE_SPACING;
-        } );
-        dottedCirclesRootNode.centerX = collectionArea.bounds.width / 2;
-        dottedCirclesRootNode.centerY = collectionArea.bounds.height / 2;
       }
     } );
 
