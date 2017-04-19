@@ -26,13 +26,6 @@ define( function( require ) {
     var self = this;
     Node.call( this );
 
-    options = _.extend( {
-
-      // option used to make the node become invisible as soon as its button is pressed, generally used to avoid issues
-      // with multiple fast button presses, like those that can occur during fuzz testing
-      hideWhenButtonPressed: true
-    }, options );
-
     // add the smiley face
     var faceNode = new FaceNode( FACE_DIAMETER );
     this.addChild( faceNode );
@@ -44,12 +37,6 @@ define( function( require ) {
       listener: listener,
       baseColor: 'yellow'
     } );
-
-    if ( options.hideWhenButtonPressed ) {
-
-      // add an additional listener to the button that hides this node so that the button can't be repeatedly pressed
-      button.addListener( function() { self.visible = false; } );
-    }
 
     // add the push button
     this.addChild( button );

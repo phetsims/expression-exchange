@@ -108,13 +108,13 @@ define( function( require ) {
     this.addChild( showSubtractionCheckbox );
 
     // add the node for moving to the next level, only shown when all challenges on this level have been answered
-    var nextLevelNode = new NextLevelNode( nextLevelFunction, {
+    this.nextLevelNode = new NextLevelNode( nextLevelFunction, {
       centerX: title.centerX,
       centerY: screenLayoutBounds.height * 0.33 // empirically determined
     } );
-    this.addChild( nextLevelNode );
+    this.addChild( this.nextLevelNode );
     levelModel.scoreProperty.link( function( score ) {
-      nextLevelNode.visible = score === EEGameModel.MAX_SCORE_PER_LEVEL;
+      self.nextLevelNode.visible = score === EEGameModel.MAX_SCORE_PER_LEVEL;
     } );
 
     // only show the checkbox for simplifying expressions with negative values if some are present in the challenge
@@ -148,5 +148,15 @@ define( function( require ) {
 
   expressionExchange.register( 'EEGameLevelView', EEGameLevelView );
 
-  return inherit( Node, EEGameLevelView );
+  return inherit( Node, EEGameLevelView, {
+
+    /**
+     * set the pickability (i.e. whether or not the user can interact with it) of the 'next level' dialog node
+     * @param {Boolean} pickable
+     * @public
+     */
+    setNextLevelNodePickable: function( pickable ) {
+      this.nextLevelNode.pickable = pickable;
+    }
+  } );
 } );

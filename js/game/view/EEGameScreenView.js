@@ -137,6 +137,11 @@ define( function( require ) {
         outgoingNodeDestinationX = self.layoutBounds.minX - slideDistance;
       }
 
+      // prevent any interaction with the 'next level' dialogs while the animations are in progress
+      self.gameLevelViews.forEach( function( gameLevelView ) {
+        gameLevelView.setNextLevelNodePickable( false );
+      } );
+
       // move out the old node
       new TWEEN.Tween( { x: nodeInViewport.x } )
         .to( { x: outgoingNodeDestinationX }, SCREEN_CHANGE_TIME )
@@ -158,6 +163,9 @@ define( function( require ) {
         .onUpdate( function() { incomingViewNode.x = this.x; } )
         .onComplete( function() {
           nodeInViewport = incomingViewNode;
+          if ( newLevel !== null ) {
+            self.gameLevelViews[ newLevel ].setNextLevelNodePickable( true );
+          }
         } );
     } );
   }
