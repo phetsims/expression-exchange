@@ -27,10 +27,10 @@ define( function( require ) {
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
   var COEFFICIENT_X_SPACING = 3; // in screen coords
   var SUPERSCRIPT_SCALE = 0.65;
-  var VALUE_FONT = new PhetFont( { size: 34 } );
+  var VALUE_FONT = new PhetFont( { size: 30 } );
   var VARIABLE_FONT = new MathSymbolFont( 36 );
   var COIN_FLIP_TIME = 0.5; // in seconds
-  var MIN_SCALE_FOR_FLIP = 0.05;
+  var MIN_SCALE_FOR_FLIP = 0.15;
 
   // The following constants control how the pointer areas (mouse and touch) are set up for the textual representation
   // of the coin term.  These are empirically determined such that they are easy for users to grab but the don't
@@ -58,8 +58,8 @@ define( function( require ) {
     var self = this;
     AbstractCoinTermNode.call( this, coinTerm, options );
 
-    // a view-specific property and target value for controlling the coin flip animation, 0 = heads, 1 = tails, values
-    // in between are part way between the two and are used to animate the coin flip
+    // view-specific property for controlling the coin flip animation, 0 = heads, 1 = tails, values in between are used
+    // to scale the coin term and thus make it look like it's flipping
     var flipStateProperty = new Property( showCoinValuesProperty.get() ? 1 : 0 );
 
     // add the images for the front and back of the coin
