@@ -17,6 +17,7 @@ define( function( require ) {
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
+  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var RichText = require( 'SCENERY_PHET/RichText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var Vector2 = require( 'DOT/Vector2' );
@@ -28,6 +29,8 @@ define( function( require ) {
   var SUPERSCRIPT_SCALE = 0.65;
   var VALUE_FONT = new PhetFont( { size: 34 } );
   var VARIABLE_FONT = new MathSymbolFont( 36 );
+  var COIN_FLIP_TIME = 0.5; // in seconds
+  var MIN_SCALE_FOR_FLIP = 0.05;
 
   // The following constants control how the pointer areas (mouse and touch) are set up for the textual representation
   // of the coin term.  These are empirically determined such that they are easy for users to grab but the don't
@@ -55,16 +58,29 @@ define( function( require ) {
     var self = this;
     AbstractCoinTermNode.call( this, coinTerm, options );
 
-    // add the image that represents the front of the coin
-    var coinImageNode = CoinNodeFactory.createFrontImageNode( coinTerm.typeID, coinTerm.coinRadius );
-    this.coinAndTextRootNode.addChild( coinImageNode );
+    // a view-specific property and target value for controlling the coin flip animation, 0 = heads, 1 = tails, values
+    // in between are part way between the two and are used to animate the coin flip
+    var flipStateProperty = new Property( showCoinValuesProperty.get() ? 1 : 0 );
+
+    // add the images for the front and back of the coin
+    var coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, 'front' );
+    var coinBackImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, 'back' );
+
+    // add a parent node that contains the two coin images, and also maintains consistent bounds
+    var coinImagesNode = new Rectangle( 0, 0, coinTerm.coinRadius * 2, coinTerm.coinRadius * 2, {
+      fill: 'rgba( 0, 0, 0, 0.01 )', // invisible
+      children: [ coinFrontImageNode, coinBackImageNode ],
+      x: -coinTerm.coinRadius,
+      y: -coinTerm.coinRadius
+    } );
+    this.coinAndTextRootNode.addChild( coinImagesNode );
 
     // convenience var
     var textBaseline = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET;
 
     // add the coin value text
     var coinValueText = new Text( '', { font: VALUE_FONT } );
-    this.coinAndTextRootNode.addChild( coinValueText );
+    coinImagesNode.addChild( coinValueText );
 
     // add the 'term' text, e.g. xy
     var termText = new RichText( 'temp', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
@@ -92,7 +108,7 @@ define( function( require ) {
       // https://github.com/phetsims/expression-exchange/issues/10
       if ( !EEQueryParameters.adjustExpressionWidth ) {
 
-        var width = Math.max( coinImageNode.width, termText.width, termWithVariableValuesText.width );
+        var width = Math.max( coinImagesNode.width, termText.width, termWithVariableValuesText.width );
 
         if ( coefficientText.visible || Math.abs( coinTerm.totalCountProperty.get() ) > 1 ) {
           width += coefficientText.width + COEFFICIENT_X_SPACING;
@@ -117,18 +133,17 @@ define( function( require ) {
 
       // control front coin image visibility
       var desiredCoinImageWidth = coinTerm.coinRadius * 2 * coinTerm.scaleProperty.get();
-      if ( coinImageNode.width !== desiredCoinImageWidth ) {
-        coinImageNode.setScaleMagnitude( 1 );
-        coinImageNode.setScaleMagnitude( desiredCoinImageWidth / coinImageNode.width );
-        coinImageNode.center = Vector2.ZERO;
+      if ( coinImagesNode.width !== desiredCoinImageWidth ) {
+        coinImagesNode.setScaleMagnitude( 1 );
+        coinImagesNode.setScaleMagnitude( desiredCoinImageWidth / coinImagesNode.width );
+        coinImagesNode.center = Vector2.ZERO;
       }
-      coinImageNode.visible = viewModeProperty.value === ViewMode.COINS;
+      coinImagesNode.visible = viewModeProperty.value === ViewMode.COINS;
 
       // update coin value text
       coinValueText.text = coinTerm.valueProperty.value;
-      coinValueText.setScaleMagnitude( scale );
-      coinValueText.center = Vector2.ZERO;
-      coinValueText.visible = viewModeProperty.value === ViewMode.COINS && showCoinValuesProperty.value;
+      coinValueText.centerX = coinTerm.coinRadius;
+      coinValueText.centerY = coinTerm.coinRadius;
 
       // determine if the coefficient is visible, since this will be used several times below
       var coefficientVisible = Math.abs( coinTerm.totalCountProperty.get() ) !== 1 ||
@@ -182,8 +197,8 @@ define( function( require ) {
 
       // position the coefficient
       if ( viewModeProperty.value === ViewMode.COINS ) {
-        coefficientText.right = coinImageNode.left - COEFFICIENT_X_SPACING;
-        coefficientText.centerY = coinImageNode.centerY;
+        coefficientText.right = coinImagesNode.left - COEFFICIENT_X_SPACING;
+        coefficientText.centerY = coinImagesNode.centerY;
       }
       else if ( termText.visible ) {
         coefficientText.right = termText.left - COEFFICIENT_X_SPACING;
@@ -226,8 +241,72 @@ define( function( require ) {
       updateRepresentation
     );
 
+    // hook up the code for initiating flip animations
+    var activeFlipAnimation = null;
+
+    function updateCoinFlipAnimations( showCoinValues ) {
+
+      if ( viewModeProperty.get() === ViewMode.COINS ) {
+        if ( activeFlipAnimation ) {
+          activeFlipAnimation.stop();
+        }
+
+        var targetFlipState = showCoinValues ? 1 : 0;
+
+        // use an tween to change the flip state over time
+        activeFlipAnimation = new TWEEN.Tween( { flipState: flipStateProperty.get() } )
+          .to( { flipState: targetFlipState }, COIN_FLIP_TIME * 1000 )
+          .easing( TWEEN.Easing.Cubic.InOut )
+          .start( phet.joist.elapsedTime )
+          .onUpdate( function() { flipStateProperty.set( this.flipState ); } )
+          .onComplete( function() {
+            activeFlipAnimation = null;
+          } );
+      }
+      else {
+
+        // do the change immediately, heads if NOT showing coin values, tails if we are
+        flipStateProperty.set( showCoinValues ? 1 : 0 );
+      }
+    }
+
+    showCoinValuesProperty.link( updateCoinFlipAnimations );
+
+    // adjust the coin images when the flipped state changes
+    flipStateProperty.link( function( flipState ) {
+
+      // Use the y scale as the 'full scale' value.  This assumes that the two images are the same size, that they are
+      // equal in width and height when unscaled, and that the Y dimension is not being scaled.
+      var fullScale = coinFrontImageNode.getScaleVector().y;
+
+      // set the width of the front image
+      coinFrontImageNode.setScaleMagnitude(
+        Math.max( ( 1 - 2 * flipState ) * fullScale, MIN_SCALE_FOR_FLIP ),
+        fullScale
+      );
+      coinFrontImageNode.centerX = coinImagesNode.width / 2;
+
+      // set the width of the back image
+      coinBackImageNode.setScaleMagnitude(
+        Math.max( 2 * ( flipState - 0.5 ) * fullScale, MIN_SCALE_FOR_FLIP ),
+        fullScale
+      );
+      coinBackImageNode.centerX = coinImagesNode.width / 2;
+      coinBackImageNode.centerX = coinImagesNode.width / 2;
+
+      // set the width of the coin value text
+      coinValueText.setScaleMagnitude( Math.max( 2 * ( flipState - 0.5 ), MIN_SCALE_FOR_FLIP ), 1 );
+      coinValueText.centerX = coinTerm.coinRadius;
+
+      // set visibility of both images and the value text
+      coinFrontImageNode.visible = flipState <= 0.5;
+      coinBackImageNode.visible = flipState >= 0.5;
+      coinValueText.visible = coinBackImageNode.visible;
+    } );
+
     this.disposeVariableCoinTermNode = function() {
       updateRepresentationMultilink.dispose();
+      showCoinValuesProperty.unlink( updateCoinFlipAnimations );
     };
   }
 

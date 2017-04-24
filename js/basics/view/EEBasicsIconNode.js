@@ -33,7 +33,7 @@ define( function( require ) {
     Rectangle.call( this, 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
 
     // add the nodes
-    var coin1 = CoinNodeFactory.createFrontImageNode( CoinTermTypeID.X, ICON_SIZE.height * 0.15 );
+    var coin1 = CoinNodeFactory.createImageNode( CoinTermTypeID.X, ICON_SIZE.height * 0.15, 'front' );
     coin1.centerX = ICON_SIZE.width * 0.35;
     coin1.centerY = ICON_SIZE.height / 2;
     this.addChild( coin1 );
@@ -44,7 +44,7 @@ define( function( require ) {
       centerY: coin1.centerY
     } ) );
 
-    var coin2 = CoinNodeFactory.createFrontImageNode( CoinTermTypeID.Y, ICON_SIZE.height * 0.15 );
+    var coin2 = CoinNodeFactory.createImageNode( CoinTermTypeID.Y, ICON_SIZE.height * 0.15, 'front' );
     coin2.centerX = ICON_SIZE.width * 0.75;
     coin2.centerY = ICON_SIZE.height / 2;
     this.addChild( coin2 );

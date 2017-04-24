@@ -20,12 +20,19 @@ define( function( require ) {
 
   // images
   var coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
+  var coinXBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-back.png' );
   var coinXSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared.png' );
+  var coinXSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-back.png' );
   var coinXSquaredYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
+  var coinXSquaredYSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared-back.png' );
   var coinXYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy.png' );
+  var coinXYBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy-back.png' );
   var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
+  var coinYBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-back.png' );
   var coinYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
+  var coinYSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared-back.png' );
   var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
+  var coinZBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z-back.png' );
 
   // convenience function for drawing round coin shapes
   function createRoundCoinIcon( outerCircleRadius, outerCircleColor, innerCircleRadius, innerCircleColor ) {
@@ -87,42 +94,44 @@ define( function( require ) {
 
     /**
      * function to create a node that can be used to represents the front of the provided coin type
-     * @param {CoinTermTypeID) coinTermTypeID
-     * @param {number) radius
+     * @param {CoinTermTypeID} coinTermTypeID
+     * @param {number} radius
+     * @param {string} backOrFront - param that controls whether it is the back or front of the coin, 'front' or 'back'
      * @returns {Node}
+     * @public
      */
-    createFrontImageNode: function( coinTermTypeID, radius ) {
+    createImageNode: function( coinTermTypeID, radius, backOrFront ) {
 
       var coinNode = null;
 
       switch( coinTermTypeID ) {
 
         case CoinTermTypeID.X:
-          coinNode = new Image( coinXFrontImage );
+          coinNode = new Image( backOrFront === 'front' ? coinXFrontImage : coinXBackImage );
           break;
 
         case CoinTermTypeID.Y:
-          coinNode = new Image( coinYFrontImage );
+          coinNode = new Image( backOrFront === 'front' ? coinYFrontImage : coinYBackImage );
           break;
 
         case CoinTermTypeID.Z:
-          coinNode = new Image( coinZFrontImage );
+          coinNode = new Image( backOrFront === 'front' ? coinZFrontImage : coinZBackImage );
           break;
 
         case CoinTermTypeID.X_TIMES_Y:
-          coinNode = new Image( coinXYFrontImage );
+          coinNode = new Image( backOrFront === 'front' ? coinXYFrontImage : coinXYBackImage );
           break;
 
         case CoinTermTypeID.X_SQUARED:
-          coinNode = new Image( coinXSquaredFrontImage );
+          coinNode = new Image( backOrFront === 'front' ? coinXSquaredFrontImage : coinXSquaredBackImage );
           break;
 
         case CoinTermTypeID.Y_SQUARED:
-          coinNode = new Image( coinYSquaredFrontImage );
+          coinNode = new Image( backOrFront === 'front' ? coinYSquaredFrontImage : coinYSquaredBackImage );
           break;
 
         case CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED:
-          coinNode = new Image( coinXSquaredYSquaredFrontImage );
+          coinNode = new Image( backOrFront === 'front' ? coinXSquaredYSquaredFrontImage : coinXSquaredYSquaredBackImage );
           break;
 
         case CoinTermTypeID.CONSTANT:
@@ -143,8 +152,6 @@ define( function( require ) {
 
       // scale so that the coin image has the specified radius
       coinNode.scale( radius * 2 / coinNode.width );
-      coinNode.x = -radius;
-      coinNode.y = -radius;
 
       return coinNode;
     },
