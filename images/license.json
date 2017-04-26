@@ -1,21 +1,13 @@
 {
-  "break-apart-icon-black.png": {
-    "text": [
-      "Copyright 20016 University of Colorado Boulder"
-    ],
-    "projectURL": "http://phet.colorado.edu",
-    "license": "contact phethelp@colorado.edu",
-    "notes": ""
-  },
-  "break-apart-icon-yellow.png": {
-    "text": [
-      "Copyright 20016 University of Colorado Boulder"
-    ],
-    "projectURL": "http://phet.colorado.edu",
-    "license": "contact phethelp@colorado.edu",
-    "notes": ""
-  },
   "coin-x.png": {
+    "text": [
+      "Copyright 20016 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": ""
+  },
+  "coin-x-back.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],
@@ -31,7 +23,23 @@
     "license": "contact phethelp@colorado.edu",
     "notes": ""
   },
+  "coin-x-squared-back.png": {
+    "text": [
+      "Copyright 20016 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": ""
+  },
   "coin-x-squared-y-squared.png": {
+    "text": [
+      "Copyright 20016 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": ""
+  },
+  "coin-x-squared-y-squared-back.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],
@@ -47,7 +55,23 @@
     "license": "contact phethelp@colorado.edu",
     "notes": ""
   },
+  "coin-xy-back.png": {
+    "text": [
+      "Copyright 20016 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": ""
+  },
   "coin-y.png": {
+    "text": [
+      "Copyright 20016 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": ""
+  },
+  "coin-y-back.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],
@@ -63,6 +87,14 @@
     "license": "contact phethelp@colorado.edu",
     "notes": ""
   },
+  "coin-y-squared-back.png": {
+    "text": [
+      "Copyright 20016 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": ""
+  },
   "coin-z.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
@@ -71,7 +103,7 @@
     "license": "contact phethelp@colorado.edu",
     "notes": ""
   },
-  "edit-icon.png": {
+  "coin-z-back.png": {
     "text": [
       "Copyright 20016 University of Colorado Boulder"
     ],
