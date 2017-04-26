@@ -172,5 +172,14 @@ define( function( require ) {
 
   expressionExchange.register( 'EEGameScreenView', EEGameScreenView );
 
-  return inherit( ScreenView, EEGameScreenView );
+  return inherit( ScreenView, EEGameScreenView, {
+
+    // @public
+    step: function( dt ) {
+      this.gameLevelViews.forEach( function( gameLevelView ) {
+        gameLevelView.step( dt );
+      } );
+    }
+
+  } );
 } );

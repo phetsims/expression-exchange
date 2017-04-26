@@ -14,6 +14,7 @@ define( function( require ) {
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
   var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  var EERewardNode = require( 'EXPRESSION_EXCHANGE/game/view/EERewardNode' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
@@ -39,14 +40,20 @@ define( function( require ) {
    * @param {function} returnToLevelSelectionFunction
    * @constructor
    */
-  function EEGameLevelView( levelModel, screenLayoutBounds, visibleBoundsProperty, nextLevelFunction, returnToLevelSelectionFunction ) {
+  function EEGameLevelView( levelModel,
+                            screenLayoutBounds,
+                            visibleBoundsProperty,
+                            nextLevelFunction,
+                            returnToLevelSelectionFunction ) {
+
     var self = this;
     Node.call( this );
 
     // add an invisible background rectangle so that bounds are correct
-    this.addChild( new Rectangle( screenLayoutBounds, {
+    var background = new Rectangle( screenLayoutBounds, {
       stroke: 'rgba( 0, 0, 200, 0.01 )' // increase opacity to make the outline visible if desired (for debugging)
-    } ) );
+    } );
+    this.addChild( background );
 
     // add the level label
     var title = new Text( StringUtils.format( levelNString, ( levelModel.level + 1 ) ), {
@@ -88,7 +95,8 @@ define( function( require ) {
         { centerX: title.centerX, bottom: screenLayoutBounds.bottom - 40 }
       );
       self.addChild( coinTermCreatorBox );
-      coinTermCreatorBox.moveToBack(); // needs to be behind coin term and other layers
+      coinTermCreatorBox.moveToBack(); // needs to be behind coin term and other layers...
+      background.moveToBack(); // ...except for the background
 
       // let the model know where the creator box is so that it knows when the user returns coin terms
       levelModel.creatorBoxBounds = coinTermCreatorBox.bounds;
@@ -140,8 +148,19 @@ define( function( require ) {
     // hook up the audio player to the sound settings
     var gameAudioPlayer = new GameAudioPlayer( levelModel.soundEnabledProperty );
     levelModel.scoreProperty.link( function( newScore, oldScore ) {
+
+      // play a feedback sound
       if ( newScore > oldScore ) {
         gameAudioPlayer.correctAnswer();
+      }
+
+      if ( newScore === EEGameModel.MAX_SCORE_PER_LEVEL ) {
+        self.rewardNode = new EERewardNode();
+        background.addChild( self.rewardNode );
+        self.rewardNode.moveToBack();
+      }
+      else if ( self.rewardNode ) {
+        background.removeChild( self.rewardNode );
       }
     } );
   }
@@ -157,6 +176,11 @@ define( function( require ) {
      */
     setNextLevelNodePickable: function( pickable ) {
       this.nextLevelNode.pickable = pickable;
+    },
+
+    // @public
+    step: function( dt ) {
+      this.rewardNode && this.rewardNode.step( dt );
     }
   } );
 } );
