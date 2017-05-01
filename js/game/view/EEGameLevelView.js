@@ -180,7 +180,7 @@ define( function( require ) {
 
     // @public
     step: function( dt ) {
-      this.rewardNode && this.rewardNode.step( dt );
+      this.rewardNode && this.rewardNode.step( Math.min( dt, 1 ) );
     }
   } );
 } );
