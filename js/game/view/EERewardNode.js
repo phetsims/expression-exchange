@@ -14,15 +14,18 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var FaceNode = require( 'SCENERY_PHET/FaceNode' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var RewardNode = require( 'VEGAS/RewardNode' );
   var StarNode = require( 'SCENERY_PHET/StarNode' );
+  var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
   var NUMBER_OF_NODES = 75;
   var FACE_DIAMETER = 50;
-  var COIN_RADIUS = 30;
+  var COIN_RADIUS = 22;
   var STAR_OUTER_RADIUS = 20;
-  var STAR_INNER_RAIDUS = STAR_OUTER_RADIUS / 2;
+  var STAR_INNER_RADIUS = STAR_OUTER_RADIUS / 2;
+  var VARIABLE_FONT = new MathSymbolFont( 36 );
 
   /**
    * @constructor
@@ -30,7 +33,10 @@ define( function( require ) {
   function EERewardNode() {
     var nodes = [];
     nodes.push( new FaceNode( FACE_DIAMETER ) );
-    nodes.push( new StarNode( { outerRadius: STAR_OUTER_RADIUS, innerRadius: STAR_INNER_RAIDUS } ) );
+    nodes.push( new StarNode( { outerRadius: STAR_OUTER_RADIUS, innerRadius: STAR_INNER_RADIUS } ) );
+    nodes.push( new Text( 'x', { font: VARIABLE_FONT } ) );
+    nodes.push( new Text( 'y', { font: VARIABLE_FONT } ) );
+    nodes.push( new Text( 'z', { font: VARIABLE_FONT } ) );
     _.values( CoinTermTypeID ).forEach( function( coinTermTypeId ) {
       if ( coinTermTypeId !== CoinTermTypeID.CONSTANT ) {
         nodes.push( CoinNodeFactory.createImageNode( coinTermTypeId, COIN_RADIUS, 'front' ) );
