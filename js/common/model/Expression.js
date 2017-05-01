@@ -296,7 +296,7 @@ define( function( require ) {
         else {
 
           // destination reached, end the animation
-          this.upperLeftCornerProperty.set( animation.startPosition.plus( animation.travelVector ) );
+          this.setPositionAndDestination( animation.startPosition.plus( animation.travelVector ) );
           this.inProgressAnimationProperty.set( null );
           this.destinationReachedEmitter.emit();
         }
