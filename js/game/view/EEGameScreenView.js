@@ -42,6 +42,7 @@ define( function( require ) {
   function EEGameScreenView( gameModel ) {
 
     var self = this;
+    this.gameModel = gameModel;
     ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
 
     // hook up the audio player to the sound settings
@@ -176,9 +177,10 @@ define( function( require ) {
 
     // @public
     step: function( dt ) {
-      this.gameLevelViews.forEach( function( gameLevelView ) {
-        gameLevelView.step( dt );
-      } );
+      var currentLevelNumber = this.gameModel.currentLevelProperty.get();
+      if ( currentLevelNumber !== null ) {
+        this.gameLevelViews[ currentLevelNumber ].step( dt );
+      }
     }
 
   } );
