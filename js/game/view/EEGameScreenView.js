@@ -124,23 +124,22 @@ define( function( require ) {
     gameModel.setCoinTermRetrievalBounds( this.layoutBounds );
 
     // hook up the animations for moving between level selection and game play
-    gameModel.currentLevelProperty.lazyLink( function( newLevel ) {
+    gameModel.currentLevelProperty.lazyLink( function( newLevel, oldLevel ) {
 
-      var incomingViewNode;
+      var incomingViewNode = newLevel === null ? self.levelSelectionNode : self.gameLevelViews[ newLevel ];
+      var outgoingViewNode = oldLevel === null ? self.levelSelectionNode : self.gameLevelViews[ oldLevel ];
       var outgoingNodeDestinationX;
       var incomingNodeStartX;
 
       if ( newLevel === null ) {
 
         // level selection screen is coming in, which is a left-to-right motion
-        incomingViewNode = self.levelSelectionNode;
         incomingNodeStartX = self.layoutBounds.minX - slideDistance;
         outgoingNodeDestinationX = self.layoutBounds.minX + slideDistance;
       }
       else {
 
         // a game level node is coming in, which is a right-to-left motion
-        incomingViewNode = self.gameLevelViews[ newLevel ];
         incomingNodeStartX = self.layoutBounds.minX + slideDistance;
         outgoingNodeDestinationX = self.layoutBounds.minX - slideDistance;
       }
@@ -155,6 +154,9 @@ define( function( require ) {
         .to( { x: outgoingNodeDestinationX }, SCREEN_CHANGE_TIME )
         .easing( TWEEN.Easing.Cubic.InOut )
         .start( phet.joist.elapsedTime )
+        .onStart( function() {
+          outgoingViewNode.inViewportProperty && outgoingViewNode.inViewportProperty.set( false );
+        } )
         .onUpdate( function() { nodeInViewport.x = this.x; } )
         .onComplete( function() {
           nodeInViewport.visible = false;
@@ -171,9 +173,8 @@ define( function( require ) {
         .onUpdate( function() { incomingViewNode.x = this.x; } )
         .onComplete( function() {
           nodeInViewport = incomingViewNode;
-          if ( newLevel !== null ) {
-            self.gameLevelViews[ newLevel ].setNextLevelNodePickable( true );
-          }
+          nodeInViewport.setNextLevelNodePickable && nodeInViewport.setNextLevelNodePickable( true );
+          nodeInViewport.inViewportProperty && nodeInViewport.inViewportProperty.set( true );
         } );
     } );
   }

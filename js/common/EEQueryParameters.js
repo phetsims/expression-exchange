@@ -17,7 +17,10 @@ define( function( require ) {
     enableLogging: { type: 'flag' },
 
     // control whether expression width is always adjusted or whether it sometimes remains constant
-    adjustExpressionWidth: { type: 'flag' }
+    adjustExpressionWidth: { type: 'flag' },
+
+    // show the reward screen every time a level is completed instead of when ALL levels are completed
+    showRewardNodeEveryLevel: { type: 'flag' }
   } );
 
 

@@ -13,6 +13,7 @@ define( function( require ) {
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
   var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
+  var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var EERewardNode = require( 'EXPRESSION_EXCHANGE/game/view/EERewardNode' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
@@ -23,6 +24,7 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetColorScheme = require( 'SCENERY_PHET/PhetColorScheme' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var Property = require( 'AXON/Property' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
   var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
@@ -37,7 +39,8 @@ define( function( require ) {
    * @param {Bounds2} screenLayoutBounds
    * @param {Property.<Bounds2>} visibleBoundsProperty
    * @param {function} nextLevelFunction - function called when user hits 'next' button
-   * @param {Property.<boolean>} showRewardNodeProperty - property that will control when the reward node is shown
+   * @param {Property.<boolean>} allLevelsCompletedProperty - property that indicates when all levels are successfully
+   * completed
    * @param {function} returnToLevelSelectionFunction
    * @constructor
    */
@@ -45,11 +48,17 @@ define( function( require ) {
                             screenLayoutBounds,
                             visibleBoundsProperty,
                             nextLevelFunction,
-                            showRewardNodeProperty,
+                            allLevelsCompletedProperty,
                             returnToLevelSelectionFunction ) {
 
     var self = this;
     Node.call( this );
+
+    // @public {boolean} - a property that is externally set to true when this node is in the view port and available
+    // for interaction with the user.  This is done in the view rather than in the model because the model has no
+    // awareness of the slide in/out animations, and clocking the reward node during those animations caused
+    // performance issues, and this property can be used to only clock when this is in the viewport.
+    this.inViewportProperty = new Property( false );
 
     // add an invisible background rectangle so that bounds are correct
     var background = new Rectangle( screenLayoutBounds, {
@@ -147,7 +156,7 @@ define( function( require ) {
       { coinTermBreakApartButtonMode: 'inverted' }
     ) );
 
-    // hook up the audio player to the sound settings
+    // hook up the audio player for playing a correct answer
     var gameAudioPlayer = new GameAudioPlayer( levelModel.soundEnabledProperty );
     levelModel.scoreProperty.link( function( newScore, oldScore ) {
 
@@ -157,29 +166,54 @@ define( function( require ) {
       }
     } );
 
-    showRewardNodeProperty.link( function( showRewardNode ) {
-      if ( showRewardNode ) {
-
-        // create and show the reward node
+    // control the visibility of the reward node
+    function createRewardNode() {
+      if ( !self.rewardNode ) {
         self.rewardNode = new EERewardNode();
         background.addChild( self.rewardNode );
         self.rewardNode.moveToBack();
-
-        // play the sound for all levels completed
-        gameAudioPlayer.gameOverPerfectScore();
       }
-      else if ( self.rewardNode ) {
+    }
 
-        // get rid of the reward node
-        background.removeChild( self.rewardNode );
-        self.rewardNode = null;
-      }
-    } );
+    if ( !EEQueryParameters.showRewardNodeEveryLevel ) {
+
+      Property.multilink(
+        [ allLevelsCompletedProperty, this.inViewportProperty ],
+        function( allLevelsCompleted, inViewport ) {
+          if ( allLevelsCompleted && inViewport && !self.rewardNode ) {
+            createRewardNode();
+          }
+          if ( self.rewardNode ) {
+            self.rewardNode.visible = allLevelsCompleted;
+          }
+        }
+      );
+    }
+    else {
+
+      // a query parameter is present that indicates that the reward node should be shown at the completion of each level
+      levelModel.scoreProperty.link( function( score ) {
+        if ( score === EEGameModel.MAX_SCORE_PER_LEVEL && !self.rewardNode ) {
+          createRewardNode();
+        }
+        if ( self.rewardNode ) {
+          self.rewardNode.visible = ( score === EEGameModel.MAX_SCORE_PER_LEVEL );
+        }
+      } );
+    }
   }
 
   expressionExchange.register( 'EEGameLevelView', EEGameLevelView );
 
   return inherit( Node, EEGameLevelView, {
+
+
+    // @public
+    step: function( dt ) {
+      if ( this.inViewportProperty.get() && this.rewardNode && this.rewardNode.visible ) {
+        this.rewardNode.step( Math.min( dt, 1 ) );
+      }
+    },
 
     /**
      * set the pickability (i.e. whether or not the user can interact with it) of the 'next level' dialog node
@@ -190,9 +224,18 @@ define( function( require ) {
       this.nextLevelNode.pickable = pickable;
     },
 
-    // @public
-    step: function( dt ) {
-      this.rewardNode && this.rewardNode.step( Math.min( dt, 1 ) );
+    showRewardNode: function() {
+      console.log( 'showRewardNode called' );
+    },
+
+    hideRewardNode: function() {
+      console.log( 'hideRewardNode called' );
+    },
+
+    isRewardNodeShown: function() {
+      return true;
+      //return ( this.rewardNode !== null ) && this.rewardNode.visible;
     }
+
   } );
 } );
