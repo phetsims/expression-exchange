@@ -36,7 +36,8 @@ define( function( require ) {
    * @param {EEGameLevelModel} levelModel
    * @param {Bounds2} screenLayoutBounds
    * @param {Property.<Bounds2>} visibleBoundsProperty
-   * @param {function} nextLevelFunction
+   * @param {function} nextLevelFunction - function called when user hits 'next' button
+   * @param {Property.<boolean>} showRewardNodeProperty - property that will control when the reward node is shown
    * @param {function} returnToLevelSelectionFunction
    * @constructor
    */
@@ -44,6 +45,7 @@ define( function( require ) {
                             screenLayoutBounds,
                             visibleBoundsProperty,
                             nextLevelFunction,
+                            showRewardNodeProperty,
                             returnToLevelSelectionFunction ) {
 
     var self = this;
@@ -153,8 +155,10 @@ define( function( require ) {
       if ( newScore > oldScore ) {
         gameAudioPlayer.correctAnswer();
       }
+    } );
 
-      if ( newScore === EEGameModel.MAX_SCORE_PER_LEVEL ) {
+    showRewardNodeProperty.link( function( showRewardNode ) {
+      if ( showRewardNode ) {
         self.rewardNode = new EERewardNode();
         background.addChild( self.rewardNode );
         self.rewardNode.moveToBack();

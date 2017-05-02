@@ -48,6 +48,12 @@ define( function( require ) {
     // hook up the audio player to the sound settings
     this.gameAudioPlayer = new GameAudioPlayer( gameModel.soundEnabledProperty );
 
+    // consolidate the level scores into an array for the level selection node
+    var levelScoreProperties = [];
+    gameModel.gameLevelModels.forEach( function( gameLevelModel ) {
+      levelScoreProperties.push( gameLevelModel.scoreProperty );
+    } );
+
     // add the node that allows the user to choose a game level to play
     this.levelSelectionNode = new StartGameLevelNode(
       function( level ) { gameModel.selectLevel( level ); },
@@ -63,7 +69,7 @@ define( function( require ) {
         createIcon( '#cd5c5c', 7 ),
         createIcon( '#dda0dd', 8 )
       ],
-      gameModel.levelScoreProperties,
+      levelScoreProperties,
       {
         numStarsOnButtons: EEGameModel.CHALLENGES_PER_LEVEL,
         perfectScore: EEGameModel.MAX_SCORE_PER_LEVEL,
@@ -106,6 +112,7 @@ define( function( require ) {
         self.layoutBounds,
         self.visibleBoundsProperty,
         goToNextLevel,
+        gameModel.allLevelsCompletedProperty,
         returnToLevelSelection
       );
       gameLevelView.visible = false; // will be made visible when the corresponding level is activated
