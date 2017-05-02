@@ -159,12 +159,20 @@ define( function( require ) {
 
     showRewardNodeProperty.link( function( showRewardNode ) {
       if ( showRewardNode ) {
+
+        // create and show the reward node
         self.rewardNode = new EERewardNode();
         background.addChild( self.rewardNode );
         self.rewardNode.moveToBack();
+
+        // play the sound for all levels completed
+        gameAudioPlayer.gameOverPerfectScore();
       }
       else if ( self.rewardNode ) {
+
+        // get rid of the reward node
         background.removeChild( self.rewardNode );
+        self.rewardNode = null;
       }
     } );
   }
