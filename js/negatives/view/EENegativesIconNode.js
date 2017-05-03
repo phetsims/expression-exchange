@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * icon node for 'Variables' screen
+ * icon node for 'Negatives' screen
  *
  * @author John Blanco
  */
@@ -30,7 +30,7 @@ define( function( require ) {
   /**
    * @constructor
    */
-  function EEVariablesIconNode() {
+  function EENegativesIconNode() {
 
     // create the background
     Rectangle.call( this, 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
@@ -54,7 +54,7 @@ define( function( require ) {
     this.addChild( equationNode );
   }
 
-  expressionExchange.register( 'EEVariablesIconNode', EEVariablesIconNode );
+  expressionExchange.register( 'EENegativesIconNode', EENegativesIconNode );
 
-  return inherit( Rectangle, EEVariablesIconNode );
+  return inherit( Rectangle, EENegativesIconNode );
 } );

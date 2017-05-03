@@ -12,7 +12,7 @@ define( function( require ) {
   var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
   var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var EEVariablesIconNode = require( 'EXPRESSION_EXCHANGE/variables/view/EEVariablesIconNode' );
+  var EENegativesIconNode = require( 'EXPRESSION_EXCHANGE/negatives/view/EENegativesIconNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionExplorationScreenView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionExplorationScreenView' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
@@ -26,12 +26,12 @@ define( function( require ) {
   /**
    * @constructor
    */
-  function EEVariablesScreen() {
+  function EENegativesScreen() {
 
     var options = {
       name: negativesString,
       backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
-      homeScreenIcon: new EEVariablesIconNode()
+      homeScreenIcon: new EENegativesIconNode()
     };
 
     Screen.call(
@@ -46,7 +46,7 @@ define( function( require ) {
     );
   }
 
-  expressionExchange.register( 'EEVariablesScreen', EEVariablesScreen );
+  expressionExchange.register( 'EENegativesScreen', EENegativesScreen );
 
-  return inherit( Screen, EEVariablesScreen );
+  return inherit( Screen, EENegativesScreen );
 } );

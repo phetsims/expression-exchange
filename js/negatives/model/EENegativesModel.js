@@ -18,7 +18,7 @@ define( function( require ) {
   /**
    * @constructor
    */
-  function EEVariablesModel() {
+  function EENegativesModel() {
 
     ExpressionManipulationModel.call( this, {
       coinTermCollection: CoinTermCreatorSetID.VARIABLES,
@@ -27,7 +27,7 @@ define( function( require ) {
 
   }
 
-  expressionExchange.register( 'EEVariablesModel', EEVariablesModel );
+  expressionExchange.register( 'EENegativesModel', EENegativesModel );
 
-  return inherit( ExpressionManipulationModel, EEVariablesModel );
+  return inherit( ExpressionManipulationModel, EENegativesModel );
 } );

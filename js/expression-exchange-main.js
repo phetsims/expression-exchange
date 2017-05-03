@@ -12,7 +12,7 @@ define( function( require ) {
   var EEBasicsScreen = require( 'EXPRESSION_EXCHANGE/basics/EEBasicsScreen' );
   var EEExploreScreen = require( 'EXPRESSION_EXCHANGE/explore/EEExploreScreen' );
   var EEGameScreen = require( 'EXPRESSION_EXCHANGE/game/EEGameScreen' );
-  var EEVariablesScreen = require( 'EXPRESSION_EXCHANGE/variables/EEVariablesScreen' );
+  var EENegativesScreen = require( 'EXPRESSION_EXCHANGE/negatives/EENegativesScreen' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Sim = require( 'JOIST/Sim' );
@@ -46,7 +46,7 @@ define( function( require ) {
       [
         new EEBasicsScreen(),
         new EEExploreScreen(),
-        new EEVariablesScreen(),
+        new EENegativesScreen(),
         new EEGameScreen()
       ],
       simOptions );
