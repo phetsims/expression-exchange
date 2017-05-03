@@ -9,31 +9,18 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var EEGameLevelIconFactory = require( 'EXPRESSION_EXCHANGE/game/view/EEGameLevelIconFactory' );
   var EEGameLevelView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameLevelView' );
   var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var ScreenView = require( 'JOIST/ScreenView' );
   var StartGameLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/StartGameLevelNode' );
-  var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
   var SCREEN_CHANGE_TIME = 1000; // milliseconds
-
-  // TODO: Temporary, remove when real icons are available
-  function createIcon( color, label ) {
-    var background = new Rectangle( 0, 0, 40, 40, 0, 0, { fill: color, lineWidth: 1, stroke: '#555555' } );
-    var labelNode = new Text( label, {
-      font: new PhetFont( 22 ),
-      center: background.center
-    } );
-    background.addChild( labelNode );
-    return background;
-  }
 
   /**
    * @param {EEGameLevelModel} gameModel
@@ -54,21 +41,18 @@ define( function( require ) {
       levelScoreProperties.push( gameLevelModel.scoreProperty );
     } );
 
+    // create the icons used on the level selection buttons
+    var levelSelectionButtonIcons = [];
+    _.times( EEGameModel.NUMBER_OF_LEVELS, function( level ) {
+      levelSelectionButtonIcons.push( EEGameLevelIconFactory.createIcon( level ) );
+    } );
+
     // add the node that allows the user to choose a game level to play
     this.levelSelectionNode = new StartGameLevelNode(
       function( level ) { gameModel.selectLevel( level ); },
       function() { gameModel.reset(); },
       gameModel.soundEnabledProperty,
-      [
-        createIcon( '#CB99C9', 1 ),
-        createIcon( '#9acd32', 2 ),
-        createIcon( '#FFB347', 3 ),
-        createIcon( '#FDFD96', 4 ),
-        createIcon( '#800000', 5 ),
-        createIcon( '#eed5b7', 6 ),
-        createIcon( '#cd5c5c', 7 ),
-        createIcon( '#dda0dd', 8 )
-      ],
+      levelSelectionButtonIcons,
       levelScoreProperties,
       {
         numStarsOnButtons: EEGameModel.CHALLENGES_PER_LEVEL,

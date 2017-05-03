@@ -28,6 +28,7 @@ define( function( require ) {
     GAME_SCREEN_BACKGROUND_COLOR: '#CCE7FF',
     EXPRESSION_BACKGROUND_COLOR: 'rgba( 255, 255, 255, 0.5 )',
     CONTROL_PANEL_BACKGROUND_COLOR: new Color( 'rgb( 235, 235, 235 )' ),
+    CARD_BACKGROUND_COLOR: '#FFFFEE',
 
     // characters used for the variables depicted in the sim
     X_VARIABLE_CHAR: 'x',
