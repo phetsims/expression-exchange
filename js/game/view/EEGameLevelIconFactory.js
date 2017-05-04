@@ -80,8 +80,8 @@ define( function( require ) {
         fill: EESharedConstants.CARD_BACKGROUND_COLOR,
         stroke: 'black',
         lineWidth: 0.5,
-        left: cardNumber * CARD_STAGGER_OFFSET,
-        top: cardNumber * CARD_STAGGER_OFFSET
+        left: ( numberOfAdditionalCards - cardNumber ) * CARD_STAGGER_OFFSET,
+        top: ( numberOfAdditionalCards - cardNumber ) * CARD_STAGGER_OFFSET
       } ) );
     } );
 
