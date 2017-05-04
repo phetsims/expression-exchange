@@ -8,6 +8,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Image = require( 'SCENERY/nodes/Image' );
@@ -23,15 +24,53 @@ define( function( require ) {
 
   // constants
   var CARD_CORNER_ROUNDING = 4;
-  var CARD_NUMBER_FONT = new PhetFont( 30 ); // size empirically determined
+  var NUMBER_LABEL_FONT = new PhetFont( 30 ); // size empirically determined
   var CARD_STAGGER_OFFSET = 1.5; // empirically determined, same in x and y directions
-  var CARD_ICON_WIDTH = 40;
+  var ICON_WIDTH = 40;
   var CARD_ICON_HEIGHT = 40;
 
-  // define a helper function for creating the icons that look like stacks of cards
+  // helper function for creating coin-image-based icons
+  function createCoinIcon( coinTermTypeID, value ) {
+
+    var rootNode = new Node();
+    var imageNode;
+
+    // create the coin image node
+    switch( coinTermTypeID ) {
+      case CoinTermTypeID.X:
+        imageNode = new Image( coinXFrontImage );
+        break;
+
+      case CoinTermTypeID.Y:
+        imageNode = new Image( coinYFrontImage );
+        break;
+
+      case CoinTermTypeID.Z:
+        imageNode = new Image( coinZFrontImage );
+        break;
+
+      default:
+        assert && assert( false, 'handling does not exist for coin term type: ' + coinTermTypeID );
+        break;
+    }
+
+    imageNode.setScaleMagnitude( ICON_WIDTH / imageNode.width );
+    rootNode.addChild( imageNode );
+
+    // add the label
+    rootNode.addChild( new Text( value, {
+      font: NUMBER_LABEL_FONT,
+      centerX: imageNode.width / 2,
+      centerY: imageNode.height / 2
+    } ) );
+
+    return rootNode;
+  }
+
+  // helper function for creating the icons that look like stacks of cards
   function createCardStackIcon( numberOnStack, numberOfAdditionalCards ) {
     var rootNode = new Node();
-    var cardWidth = CARD_ICON_WIDTH - numberOfAdditionalCards * CARD_STAGGER_OFFSET;
+    var cardWidth = ICON_WIDTH - numberOfAdditionalCards * CARD_STAGGER_OFFSET;
     var cardHeight = CARD_ICON_HEIGHT - numberOfAdditionalCards * CARD_STAGGER_OFFSET;
     var cards = [];
 
@@ -48,7 +87,7 @@ define( function( require ) {
 
     // add the text to the top card
     cards[ 0 ].addChild( new Text( numberOnStack, {
-      font: CARD_NUMBER_FONT,
+      font: NUMBER_LABEL_FONT,
       centerX: cardWidth / 2,
       centerY: cardHeight / 2
     } ) );
@@ -61,20 +100,6 @@ define( function( require ) {
 
     return rootNode;
   }
-
-  // helper function for coin icons
-
-  // initialize the icon nodes in an array
-  var iconNodes = [
-    new Image( coinXFrontImage ),
-    new Image( coinYFrontImage ),
-    new Image( coinZFrontImage ),
-    createCardStackIcon( 4, 0 ),
-    createCardStackIcon( 5, 1 ),
-    createCardStackIcon( 6, 2 ),
-    createCardStackIcon( 7, 3 ),
-    createCardStackIcon( 8, 4 )
-  ];
 
   /**
    * static factory object used to create nodes that represent coins
@@ -89,8 +114,49 @@ define( function( require ) {
      * @public
      */
     createIcon: function( gameLevel ) {
-      assert && assert( gameLevel < iconNodes.length, 'no icon available for requested level' );
-      return iconNodes[ gameLevel ];
+
+      var icon;
+
+      switch( gameLevel ) {
+
+        case 0:
+          icon = createCoinIcon( CoinTermTypeID.X, 1 );
+          break;
+
+        case 1:
+          icon = createCoinIcon( CoinTermTypeID.Y, 2 );
+          break;
+
+        case 2:
+          icon = createCoinIcon( CoinTermTypeID.Z, 3 );
+          break;
+
+        case 3:
+          icon = createCardStackIcon( 4, 0 );
+          break;
+
+        case 4:
+          icon = createCardStackIcon( 5, 1 );
+          break;
+
+        case 5:
+          icon = createCardStackIcon( 6, 2 );
+          break;
+
+        case 6:
+          icon = createCardStackIcon( 7, 3 );
+          break;
+
+        case 7:
+          icon = createCardStackIcon( 8, 4 );
+          break;
+
+        default:
+          assert && assert( false, 'no icon available for game level ' + gameLevel );
+          break;
+      }
+
+      return icon;
     }
   };
 
