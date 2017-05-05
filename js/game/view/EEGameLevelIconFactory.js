@@ -18,13 +18,13 @@ define( function( require ) {
   var Text = require( 'SCENERY/nodes/Text' );
 
   // images
-  var coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
-  var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
-  var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
+  var coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-back.png' );
+  var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-back.png' );
+  var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared-back.png' );
 
   // constants
   var CARD_CORNER_ROUNDING = 4;
-  var NUMBER_LABEL_FONT = new PhetFont( 30 ); // size empirically determined
+  var NUMBER_LABEL_FONT = new PhetFont( 26 ); // size empirically determined
   var CARD_STAGGER_OFFSET = 1.5; // empirically determined, same in x and y directions
   var ICON_WIDTH = 40;
   var CARD_ICON_HEIGHT = 40;
