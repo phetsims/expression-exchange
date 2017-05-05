@@ -49,7 +49,7 @@ define( function( require ) {
       maxTitleWidth: 500,
       numStarsOnButtons: 5,
       perfectScore: 10,
-      buttonBackgroundColor: '#EDA891',
+      buttonBackgroundColor: 'rgb( 103, 169, 116 )',
       numButtonRows: 1, // For layout
       controlsInset: 12,
       size: EESharedConstants.LAYOUT_BOUNDS
