@@ -18,9 +18,9 @@ define( function( require ) {
   var Text = require( 'SCENERY/nodes/Text' );
 
   // images
-  var coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-back.png' );
-  var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-back.png' );
-  var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared-back.png' );
+  var coinXTimesYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy-back.png' );
+  var coinYBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-back.png' );
+  var coinYSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared-back.png' );
 
   // constants
   var CARD_CORNER_ROUNDING = 4;
@@ -38,15 +38,15 @@ define( function( require ) {
     // create the coin image node
     switch( coinTermTypeID ) {
       case CoinTermTypeID.X:
-        imageNode = new Image( coinXFrontImage );
+        imageNode = new Image( coinXTimesYFrontImage );
         break;
 
       case CoinTermTypeID.Y:
-        imageNode = new Image( coinYFrontImage );
+        imageNode = new Image( coinYBackImage );
         break;
 
       case CoinTermTypeID.Z:
-        imageNode = new Image( coinZFrontImage );
+        imageNode = new Image( coinYSquaredBackImage );
         break;
 
       default:

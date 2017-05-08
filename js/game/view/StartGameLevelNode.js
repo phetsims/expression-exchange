@@ -43,13 +43,14 @@ define( function( require ) {
     Node.call( this );
 
     options = _.extend( {
-      // Defaults
+
+      // defaults
       numLevels: 4,
       titleString: chooseYourLevelString,
       maxTitleWidth: 500,
       numStarsOnButtons: 5,
       perfectScore: 10,
-      buttonBackgroundColor: 'rgb( 103, 169, 116 )',
+      buttonBackgroundColor: '#EDA891',
       numButtonRows: 1, // For layout
       controlsInset: 12,
       size: EESharedConstants.LAYOUT_BOUNDS
