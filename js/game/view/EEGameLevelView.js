@@ -120,7 +120,7 @@ define( function( require ) {
       levelModel.simplifyNegativesProperty,
       {
         left: boundsOfLowestCollectionArea.minX,
-        top: boundsOfLowestCollectionArea.maxY + 10,
+        top: boundsOfLowestCollectionArea.maxY + 20,
         maxWidth: boundsOfLowestCollectionArea.minX
       }
     );

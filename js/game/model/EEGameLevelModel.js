@@ -20,8 +20,8 @@ define( function( require ) {
 
   // constants
   var EXPRESSION_COLLECTION_AREA_X_OFFSET = 750;
-  var EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET = 100;
-  var EXPRESSION_COLLECTION_AREA_Y_SPACING = 130;
+  var EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET = 50;
+  var EXPRESSION_COLLECTION_AREA_Y_SPACING = 60;
   var NUM_EXPRESSION_COLLECTION_AREAS = 3;
 
   /**
@@ -67,14 +67,16 @@ define( function( require ) {
     }
 
     // initialize the collection areas
-    _.times( NUM_EXPRESSION_COLLECTION_AREAS, function( index ) {
+    var collectionAreaYPos = EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET;
+    _.times( NUM_EXPRESSION_COLLECTION_AREAS, function() {
       var collectionArea = new EECollectionArea(
         EXPRESSION_COLLECTION_AREA_X_OFFSET,
-        EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET + index * EXPRESSION_COLLECTION_AREA_Y_SPACING,
+        collectionAreaYPos,
         allowedRepresentations === AllowedRepresentationsEnum.COINS_ONLY ? ViewMode.COINS : ViewMode.VARIABLES
       );
       collectionArea.collectedItemProperty.link( updateScore );
       self.collectionAreas.push( collectionArea );
+      collectionAreaYPos += collectionArea.bounds.height + EXPRESSION_COLLECTION_AREA_Y_SPACING;
     } );
 
     // update the expression description associated with the expression collection areas each time a new challenge is set
