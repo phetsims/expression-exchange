@@ -29,7 +29,7 @@ define( function( require ) {
 
   /**
    * @param {ExpressionManipulationModel} expressionManipulationModel - model where coin terms are to be added
-   * @param {ExpressionManipulationView} expressionManipulationView - view where coin terms will be shown
+   * @param {ExpressionManipulationView} expressionManipulationView - view where coin term nodes will be shown
    * @param {CoinTermTypeID} typeID - type of coin term to create
    * @param {function} coinTermCreatorFunction - the function that will be invoked in order to create the coin term
    * model element.  This will be used for creating the elements that are added to the model, and also for creating
@@ -83,7 +83,11 @@ define( function( require ) {
         initiallyOnCard: options.onCard
       } );
       if ( typeID === CoinTermTypeID.CONSTANT ) {
-        coinTermNode = new ConstantCoinTermNode( dummyCoinTerm, expressionManipulationModel.viewModeProperty, coinTermNodeOptions );
+        coinTermNode = new ConstantCoinTermNode(
+          dummyCoinTerm,
+          expressionManipulationModel.viewModeProperty,
+          coinTermNodeOptions
+        );
       }
       else {
         coinTermNode = new VariableCoinTermNode(
@@ -122,8 +126,8 @@ define( function( require ) {
     // variables used by the input listener
     var createdCoinTermView = null;
 
-    // Add the listener that will allow the user to click on this node and create a new coin, then position it in the
-    // model.  This works by forwarding the events it receives to the node that gets created in the model.
+    // Add the listener that will allow the user to click on this node and create a new coin term, and then position it
+    // in the model.  This works by forwarding the events it receives to the node that gets created in the view.
     this.addInputListener( new SimpleDragHandler( {
 
       // allow moving a finger (on a touchscreen) dragged across this node to interact with it
@@ -132,15 +136,15 @@ define( function( require ) {
       start: function( event, trail ) {
 
         // Determine the origin position of the new element based on where the creator node is.  This is done so that
-        // the position to which this element will return when sent to the origin will match the position of this
-        // creator node.
+        // the position to which this element will return when it is "put away" will match the position of this creator
+        // node.
         var originPosition = expressionManipulationView.globalToLocalPoint( self.localToGlobalPoint( Vector2.ZERO ) );
 
-        // Now determine the initial position where this element should move to after it's created, which corresponds
-        // to the location of the mouse or touch event.
+        // Determine the initial position where this element should move to after it's created based on the location of
+        // the pointer event.
         var initialPosition = expressionManipulationView.globalToLocalPoint( event.pointer.point );
 
-        // create and add the new coin term
+        // create and add the new coin term to the model, which result in a node being created in the view
         var createdCoinTerm = coinTermCreatorFunction( typeID, {
           initialPosition: originPosition,
           initialCount: options.createdCoinTermInitialCount,
@@ -148,8 +152,9 @@ define( function( require ) {
           initiallyOnCard: options.onCard
         } );
         createdCoinTerm.setPositionAndDestination( initialPosition );
-        //createdCoinTerm.userControlledProperty.set( true );
         expressionManipulationModel.addCoinTerm( createdCoinTerm );
+
+        // get the view node that should have appeared in the view so that events can be forwarded to its drag handler
         createdCoinTermView = expressionManipulationView.getViewForCoinTerm( createdCoinTerm );
         assert && assert( createdCoinTermView, 'unable to find coin term view' );
 
