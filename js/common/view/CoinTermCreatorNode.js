@@ -20,7 +20,6 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Property = require( 'AXON/Property' );
-  var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
   var Vector2 = require( 'DOT/Vector2' );
 
@@ -128,12 +127,13 @@ define( function( require ) {
 
     // Add the listener that will allow the user to click on this node and create a new coin term, and then position it
     // in the model.  This works by forwarding the events it receives to the node that gets created in the view.
-    this.addInputListener( new SimpleDragHandler( {
+    this.addInputListener( {
+      down: function( event ) {
 
-      // allow moving a finger (on a touchscreen) dragged across this node to interact with it
-      allowTouchSnag: true,
-
-      start: function( event, trail ) {
+        // Ignore non-left-mouse-button
+        if ( event.pointer.isMouse && event.domEvent.button !== 0 ) {
+          return;
+        }
 
         // Determine the origin position of the new element based on where the creator node is.  This is done so that
         // the position to which this element will return when it is "put away" will match the position of this creator
@@ -159,21 +159,9 @@ define( function( require ) {
         assert && assert( createdCoinTermView, 'unable to find coin term view' );
 
         // forward the event to the view node's drag handler
-        createdCoinTermView.dragHandler.movableDragHandlerStart( event, trail );
-      },
-
-      drag: function( event, trail ) {
-
-        // forward this event to the view node's drag handler
-        createdCoinTermView.dragHandler.movableDragHandlerDrag( event, trail );
-      },
-
-      end: function( event, trail ) {
-
-        // forward this event to the view node's drag handler
-        createdCoinTermView.dragHandler.movableDragHandlerEnd( event, trail );
+        createdCoinTermView.dragHandler.startDrag( event );
       }
-    } ) );
+    } );
   }
 
   expressionExchange.register( 'CoinTermCreatorNode', CoinTermCreatorNode );
