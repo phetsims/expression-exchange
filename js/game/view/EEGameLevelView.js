@@ -226,19 +226,6 @@ define( function( require ) {
      */
     setNextLevelNodePickable: function( pickable ) {
       this.nextLevelNode.pickable = pickable;
-    },
-
-    showRewardNode: function() {
-      console.log( 'showRewardNode called' );
-    },
-
-    hideRewardNode: function() {
-      console.log( 'hideRewardNode called' );
-    },
-
-    isRewardNodeShown: function() {
-      return true;
-      //return ( this.rewardNode !== null ) && this.rewardNode.visible;
     }
 
   } );
