@@ -14,11 +14,11 @@ define( function( require ) {
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var MovableDragHandler = require( 'SCENERY_PHET/input/MovableDragHandler' );
   var Node = require( 'SCENERY/nodes/Node' );
+  var Property = require( 'AXON/Property' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   var Timer = require( 'PHET_CORE/Timer' );
-  var Util = require( 'DOT/Util' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
@@ -39,6 +39,9 @@ define( function( require ) {
 
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
+
+    // @public (read only)
+    this.coinTerm = coinTerm;
 
     // Add a root node so that the bounds can be easily monitored for changes in size without getting triggered by
     // changes in position.
@@ -177,42 +180,38 @@ define( function( require ) {
 
     if ( options.addDragHandler ) {
 
-      // vector for calculations, allocated here to avoid an allocation on every drag event
-      var unboundedPosition = new Vector2();
+      // create a position property and link it to the coin term, necessary because coin term has both position and
+      // destination properties, both of which must be set when dragging occurs
+      var coinTermPositionAndDestination = new Property( coinTerm.positionProperty.get() );
+      coinTermPositionAndDestination.lazyLink( function( positionAndDestination ) {
+        coinTerm.setPositionAndDestination( positionAndDestination );
+      } );
+
+      // @public - drag handler, public in support of even forwarding from creator nodes
+      this.dragHandler = new MovableDragHandler( coinTermPositionAndDestination, {
+
+        // allow moving a finger (touch) across a node to pick it up
+        allowTouchSnag: true,
+
+        // bound the area where the coin terms can go
+        dragBounds: options.dragBounds,
+
+        // TODO: This is necessary to prevent weird jumpy behavior, but I'm not sure why.  Should document.
+        targetNode: this,
+
+        startDrag: function() {
+          coinTermPositionAndDestination.set( coinTerm.positionProperty.get() );
+          coinTerm.userControlledProperty.set( true );
+        },
+
+        endDrag: function() {
+          coinTerm.userControlledProperty.set( false );
+        }
+      } );
 
       // Add the listener that will allow the user to drag the coin around.  This is added only to the node that
       // contains the term elements, not the button, so that the button won't affect userControlled or be draggable.
-      this.coinAndTextRootNode.addInputListener( new SimpleDragHandler( {
-
-          // allow moving a finger (touch) across a node to pick it up
-          allowTouchSnag: true,
-
-          start: function( event, trail ) {
-            coinTerm.userControlledProperty.set( true );
-            unboundedPosition.set( coinTerm.positionProperty.get() );
-          },
-
-          // handler that moves the shape in model space
-          translate: function( translationParams ) {
-
-            unboundedPosition.setXY(
-              unboundedPosition.x + translationParams.delta.x,
-              unboundedPosition.y + translationParams.delta.y
-            );
-
-            coinTerm.setPositionAndDestination( new Vector2(
-              Util.clamp( unboundedPosition.x, options.dragBounds.minX, options.dragBounds.maxX ),
-              Util.clamp( unboundedPosition.y, options.dragBounds.minY, options.dragBounds.maxY )
-            ) );
-
-            return translationParams.position;
-          },
-
-          end: function( event, trail ) {
-            coinTerm.userControlledProperty.set( false );
-          }
-        }
-      ) );
+      this.coinAndTextRootNode.addInputListener( this.dragHandler );
     }
 
     // add a listener that will pop this node to the front when selected by the user

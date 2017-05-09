@@ -71,20 +71,20 @@ define( function( require ) {
     // set the bounds used to decide when coin terms need to be "pulled back"
     model.setCoinTermRetrievalBounds( this.layoutBounds );
 
+    // create the view element where coin terms and expressions will be manipulated, but don't add it yet
+    var expressionManipulationView = new ExpressionManipulationView( model, this.visibleBoundsProperty );
+
     // create the box with the coin term creator nodes
     var coinTermCreatorBox = CoinTermCreatorBoxFactory.createExploreScreenCreatorBox(
       coinTermCreatorSetID,
       model,
+      expressionManipulationView,
       { centerX: this.layoutBounds.centerX, bottom: this.layoutBounds.bottom - 50 }
     );
     this.addChild( coinTermCreatorBox );
 
     // let the model know the bounds of the creator box so that it can know when the user is returning coin terms
     model.creatorBoxBounds = coinTermCreatorBox.bounds;
-
-    // create the view element where coin terms and expressions will be manipulated, but don't add it yet
-    // TODO: This can probably be moved to where it is added once refactoring for game is complete
-    var expressionManipulationView = new ExpressionManipulationView( model, this.visibleBoundsProperty );
 
     // create the readout that will display the total accumulated value, use max length string initially
     var totalValueText = new Text( StringUtils.format( numberCentsString, 9999 ), { font: new PhetFont( { size: 14 } ) } );

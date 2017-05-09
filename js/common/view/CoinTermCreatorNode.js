@@ -20,9 +20,7 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Property = require( 'AXON/Property' );
-  var ScreenView = require( 'JOIST/ScreenView' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
-  var Util = require( 'DOT/Util' );
   var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
   var Vector2 = require( 'DOT/Vector2' );
 
@@ -30,7 +28,8 @@ define( function( require ) {
   var STAGGER_OFFSET = 3; // in screen coordinates, empirically determined for optimal look
 
   /**
-   * @param {ExpressionManipulationModel} exploreModel - model where coins are to be added
+   * @param {ExpressionManipulationModel} expressionManipulationModel - model where coin terms are to be added
+   * @param {ExpressionManipulationView} expressionManipulationView - view where coin terms will be shown
    * @param {CoinTermTypeID} typeID - type of coin term to create
    * @param {function} coinTermCreatorFunction - the function that will be invoked in order to create the coin term
    * model element.  This will be used for creating the elements that are added to the model, and also for creating
@@ -38,7 +37,11 @@ define( function( require ) {
    * @param {Object} options
    * @constructor
    */
-  function CoinTermCreatorNode( exploreModel, typeID, coinTermCreatorFunction, options ) {
+  function CoinTermCreatorNode( expressionManipulationModel,
+                                expressionManipulationView,
+                                typeID,
+                                coinTermCreatorFunction,
+                                options ) {
 
     options = _.extend( {
 
@@ -80,15 +83,15 @@ define( function( require ) {
         initiallyOnCard: options.onCard
       } );
       if ( typeID === CoinTermTypeID.CONSTANT ) {
-        coinTermNode = new ConstantCoinTermNode( dummyCoinTerm, exploreModel.viewModeProperty, coinTermNodeOptions );
+        coinTermNode = new ConstantCoinTermNode( dummyCoinTerm, expressionManipulationModel.viewModeProperty, coinTermNodeOptions );
       }
       else {
         coinTermNode = new VariableCoinTermNode(
           dummyCoinTerm,
-          exploreModel.viewModeProperty,
-          exploreModel.showCoinValuesProperty,
-          exploreModel.showVariableValuesProperty,
-          exploreModel.showAllCoefficientsProperty,
+          expressionManipulationModel.viewModeProperty,
+          expressionManipulationModel.showCoinValuesProperty,
+          expressionManipulationModel.showVariableValuesProperty,
+          expressionManipulationModel.showAllCoefficientsProperty,
           coinTermNodeOptions
         );
       }
@@ -117,12 +120,10 @@ define( function( require ) {
     } );
 
     // variables used by the input listener
-    var parentScreenView = null; // needed for coordinate transforms
-    var createdCoinTerm;
-    var unboundedPosition = new Vector2();
+    var createdCoinTermView = null;
 
-    // add the listener that will allow the user to click on this node and create a new coin, then position it in the model
-    // TODO: Look at applying the "event forwarding" approach to send events to view object instead of having a separate handler
+    // Add the listener that will allow the user to click on this node and create a new coin, then position it in the
+    // model.  This works by forwarding the events it receives to the node that gets created in the model.
     this.addInputListener( new SimpleDragHandler( {
 
       // allow moving a finger (on a touchscreen) dragged across this node to interact with it
@@ -130,55 +131,42 @@ define( function( require ) {
 
       start: function( event, trail ) {
 
-        // find the parent screen if not already found by moving up the scene graph
-        if ( !parentScreenView ) {
-          var testNode = self;
-          while ( testNode !== null ) {
-            if ( testNode instanceof ScreenView ) {
-              parentScreenView = testNode;
-              break;
-            }
-            testNode = testNode.parents[ 0 ]; // move up the scene graph by one level
-          }
-          assert && assert( parentScreenView, 'unable to find parent screen view' );
-        }
-
         // Determine the origin position of the new element based on where the creator node is.  This is done so that
         // the position to which this element will return when sent to the origin will match the position of this
         // creator node.
-        var originPosition = parentScreenView.globalToLocalPoint( self.localToGlobalPoint( Vector2.ZERO ) );
+        var originPosition = expressionManipulationView.globalToLocalPoint( self.localToGlobalPoint( Vector2.ZERO ) );
 
         // Now determine the initial position where this element should move to after it's created, which corresponds
         // to the location of the mouse or touch event.
-        var initialPosition = parentScreenView.globalToLocalPoint( event.pointer.point );
+        var initialPosition = expressionManipulationView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new coin term
-        createdCoinTerm = coinTermCreatorFunction( typeID, {
+        var createdCoinTerm = coinTermCreatorFunction( typeID, {
           initialPosition: originPosition,
           initialCount: options.createdCoinTermInitialCount,
           decomposable: options.createdCoinTermDecomposable,
           initiallyOnCard: options.onCard
         } );
         createdCoinTerm.setPositionAndDestination( initialPosition );
-        createdCoinTerm.userControlledProperty.set( true );
-        exploreModel.addCoinTerm( createdCoinTerm );
-        unboundedPosition.set( initialPosition );
+        //createdCoinTerm.userControlledProperty.set( true );
+        expressionManipulationModel.addCoinTerm( createdCoinTerm );
+        createdCoinTermView = expressionManipulationView.getViewForCoinTerm( createdCoinTerm );
+        assert && assert( createdCoinTermView, 'unable to find coin term view' );
+
+        // forward the event to the view node's drag handler
+        createdCoinTermView.dragHandler.movableDragHandlerStart( event, trail );
       },
 
-      translate: function( translationParams ) {
-        unboundedPosition.setXY(
-          unboundedPosition.x + translationParams.delta.x,
-          unboundedPosition.y + translationParams.delta.y
-        );
-        createdCoinTerm.setPositionAndDestination( new Vector2(
-          Util.clamp( unboundedPosition.x, options.dragBounds.minX, options.dragBounds.maxX ),
-          Util.clamp( unboundedPosition.y, options.dragBounds.minY, options.dragBounds.maxY )
-        ) );
+      drag: function( event, trail ) {
+
+        // forward this event to the view node's drag handler
+        createdCoinTermView.dragHandler.movableDragHandlerDrag( event, trail );
       },
 
       end: function( event, trail ) {
-        createdCoinTerm.userControlledProperty.set( false );
-        createdCoinTerm = null;
+
+        // forward this event to the view node's drag handler
+        createdCoinTermView.dragHandler.movableDragHandlerEnd( event, trail );
       }
     } ) );
   }

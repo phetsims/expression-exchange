@@ -94,6 +94,13 @@ define( function( require ) {
     } );
     this.addChild( refreshButton );
 
+    // create the expression manipulation view, added later for correct layering
+    var expressionManipulationView = new ExpressionManipulationView(
+      levelModel,
+      visibleBoundsProperty,
+      { coinTermBreakApartButtonMode: 'inverted' }
+    );
+
     // add the coin term creator box
     var coinTermCreatorBox = null;
     levelModel.currentChallengeProperty.link( function( currentChallenge ) {
@@ -103,6 +110,7 @@ define( function( require ) {
       coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
         currentChallenge,
         levelModel,
+        expressionManipulationView,
         { centerX: title.centerX, bottom: screenLayoutBounds.bottom - 40 }
       );
       self.addChild( coinTermCreatorBox );
@@ -150,11 +158,7 @@ define( function( require ) {
     } );
 
     // add the view area where the user will interact with coin terms and expressions
-    this.addChild( new ExpressionManipulationView(
-      levelModel,
-      visibleBoundsProperty,
-      { coinTermBreakApartButtonMode: 'inverted' }
-    ) );
+    this.addChild( expressionManipulationView );
 
     // hook up the audio player for playing a correct answer
     var gameAudioPlayer = new GameAudioPlayer( levelModel.soundEnabledProperty );

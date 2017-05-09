@@ -54,7 +54,7 @@ define( function( require ) {
   ];
 
   // helper function for making coin term creator nodes for the explore screens, which use a non-staggered format
-  function makeExploreScreenCreatorNode( typeID, createdCoinTermInitialCount, model ) {
+  function makeExploreScreenCreatorNode( typeID, createdCoinTermInitialCount, model, view ) {
 
     // Create a property that will control number of coin terms shown in this creator node.  For the explore screens,
     // only one is even shown, and the property goes to zero when the max number of this type have been added to the
@@ -72,6 +72,7 @@ define( function( require ) {
     // create the "creator node" for the specified coin term type
     return new CoinTermCreatorNode(
       model,
+      view,
       typeID,
       model.coinTermFactory.createCoinTerm.bind( model.coinTermFactory ),
       {
@@ -84,7 +85,7 @@ define( function( require ) {
   }
 
   // helper function for making creator nodes for the game screen, which uses a staggered format
-  function makeGameScreenCreatorNode( typeID, createdCoinTermInitialCount, numInstancesAllowed, model ) {
+  function makeGameScreenCreatorNode( typeID, createdCoinTermInitialCount, numInstancesAllowed, model, view ) {
 
     // Create a property that will control number of coin terms shown in this creator node.  For the game screen,
     // multiple creator nodes are shown and a staggered arrangement.
@@ -97,6 +98,7 @@ define( function( require ) {
     // create the "creator node" for the specified coin term type
     return new CoinTermCreatorNode(
       model,
+      view,
       typeID,
       model.coinTermFactory.createCoinTerm.bind( model.coinTermFactory ),
       {
@@ -126,7 +128,7 @@ define( function( require ) {
      * @returns {CoinTermCreatorBox}
      * @public
      */
-    createExploreScreenCreatorBox: function( creatorSetID, model, options ) {
+    createExploreScreenCreatorBox: function( creatorSetID, model, view, options ) {
 
       options = _.extend( {
         itemsPerCarouselPage: creatorSetID === CoinTermCreatorSetID.VARIABLES ? 4 : 3,
@@ -139,7 +141,8 @@ define( function( require ) {
         creatorNodes.push( makeExploreScreenCreatorNode(
           descriptor.typeID,
           descriptor.initialCount,
-          model
+          model,
+          view
         ) );
       } );
 
@@ -154,7 +157,7 @@ define( function( require ) {
      * @returns {CoinTermCreatorBox}
      * @public
      */
-    createGameScreenCreatorBox: function( challengeDescriptor, model, options ) {
+    createGameScreenCreatorBox: function( challengeDescriptor, model, view, options ) {
       options = _.extend( {
         itemSpacing: 30
       }, options );
@@ -166,7 +169,8 @@ define( function( require ) {
           descriptor.typeID,
           descriptor.minimumDecomposition,
           descriptor.creationLimit,
-          model
+          model,
+          view
         ) );
       } );
 

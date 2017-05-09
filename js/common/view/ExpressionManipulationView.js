@@ -48,13 +48,14 @@ define( function( require ) {
     var expressionLayer = new Node();
     this.addChild( expressionLayer );
 
-    // add the node that will act as the layer where the coin halos will come and go
+    // add the node that will act as the layer where the coin term halos will come and go
     var coinHaloLayer = new Node();
     this.addChild( coinHaloLayer );
 
-    // add the node that will act as the layer where the coins will come and go
-    var coinLayer = new Node();
-    this.addChild( coinLayer );
+    // add the node that will act as the layer where the coin terms will come and go
+    var coinTermLayer = new Node();
+    this.coinTermLayer = coinTermLayer; // @private, used by a method
+    this.addChild( coinTermLayer );
 
     // add the node that will act as the layer where the expression overlays will come and go
     var expressionOverlayLayer = new Node();
@@ -192,7 +193,7 @@ define( function( require ) {
         );
       }
 
-      coinLayer.addChild( coinTermNode );
+      coinTermLayer.addChild( coinTermNode );
 
       // add the coin halo
       var coinTermHaloNode = new CoinTermHaloNode( addedCoinTerm, model.viewModeProperty );
@@ -201,7 +202,7 @@ define( function( require ) {
       // set up a listener to remove the nodes when the corresponding coin is removed from the model
       model.coinTerms.addItemRemovedListener( function removalListener( removedCoin ) {
         if ( removedCoin === addedCoinTerm ) {
-          coinLayer.removeChild( coinTermNode );
+          coinTermLayer.removeChild( coinTermNode );
           coinTermNode.dispose();
           coinHaloLayer.removeChild( coinTermHaloNode );
           coinTermHaloNode.dispose();
@@ -250,5 +251,22 @@ define( function( require ) {
 
   expressionExchange.register( 'ExpressionManipulationView', ExpressionManipulationView );
 
-  return inherit( Node, ExpressionManipulationView );
+  return inherit( Node, ExpressionManipulationView, {
+
+    /**
+     * get the view node for the provided coin term model element
+     * @param {CoinTerm} coinTerm
+     * @returns {AbstractCoinTermNode}
+     */
+    getViewForCoinTerm: function( coinTerm ) {
+      var coinTermView = null;
+      this.coinTermLayer.getChildren().forEach( function( coinTermNode ) {
+        if ( coinTermNode.coinTerm && coinTermNode.coinTerm === coinTerm ) {
+          coinTermView = coinTermNode;
+        }
+      } );
+      return coinTermView;
+    }
+
+  } );
 } );
