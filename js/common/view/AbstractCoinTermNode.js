@@ -43,19 +43,20 @@ define( function( require ) {
     // @public (read only)
     this.coinTerm = coinTerm;
 
-    // Add a root node so that the bounds can be easily monitored for changes in size without getting triggered by
-    // changes in position.
-    this.coinAndTextRootNode = new Node();
-    this.addChild( this.coinAndTextRootNode );
-
-    // add the card-like background, initially tiny, will be set in subclasses by function that updates the representation
+    // Add the card-like background, initially tiny, will be set in subclasses by function that updates the
+    // representation.
     this.cardLikeBackground = new Rectangle( -1, -1, 2, 2, BACKGROUND_CORNER_ROUNDING, BACKGROUND_CORNER_ROUNDING, {
       fill: EESharedConstants.CARD_BACKGROUND_COLOR,
       stroke: 'black',
       lineWidth: 1,
       visible: false
     } );
-    this.coinAndTextRootNode.addChild( this.cardLikeBackground );
+    this.addChild( this.cardLikeBackground );
+
+    // Add a root node so that the bounds can be easily monitored for changes in size without getting triggered by
+    // changes in position.
+    this.coinAndTextRootNode = new Node();
+    this.addChild( this.coinAndTextRootNode );
 
     // add a listener that will update the opacity based on the coin term's existence strength
     function handleExistenceStrengthChanged( existenceStrength ) {
