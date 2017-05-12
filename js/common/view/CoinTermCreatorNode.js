@@ -122,9 +122,6 @@ define( function( require ) {
       }
     } );
 
-    // variables used by the input listener
-    var createdCoinTermView = null;
-
     // Add the listener that will allow the user to click on this node and create a new coin term, and then position it
     // in the model.  This works by forwarding the events it receives to the node that gets created in the view.
     this.addInputListener( {
@@ -155,11 +152,14 @@ define( function( require ) {
         expressionManipulationModel.addCoinTerm( createdCoinTerm );
 
         // get the view node that should have appeared in the view so that events can be forwarded to its drag handler
-        createdCoinTermView = expressionManipulationView.getViewForCoinTerm( createdCoinTerm );
+        var createdCoinTermView = expressionManipulationView.getViewForCoinTerm( createdCoinTerm );
         assert && assert( createdCoinTermView, 'unable to find coin term view' );
 
-        // forward the event to the view node's drag handler
-        createdCoinTermView.dragHandler.startDrag( event );
+        if ( createdCoinTermView ) {
+
+          // forward the event to the view node's drag handler
+          createdCoinTermView.dragHandler.startDrag( event );
+        }
       }
     } );
   }
