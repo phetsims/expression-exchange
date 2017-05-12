@@ -13,7 +13,8 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
 
   /**
-   * TODO: document parameters thoroughly once finalized.
+   * @param {CoinTerm} anchorCoinTerm - the coin term that is staying put as this expression is being formed
+   * @param {CoinTerm} movingCoinTerm - the coin term that is being moved by the user to join this expression
    * @constructor
    */
   function ExpressionHint( anchorCoinTerm, movingCoinTerm ) {
