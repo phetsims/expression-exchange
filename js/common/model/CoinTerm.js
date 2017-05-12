@@ -34,7 +34,12 @@ define( function( require ) {
   var creationCount = 0;
 
   /**
-   * TODO: document parameters thoroughly once finalized.  Make sure to note requirement for subSupText format of some of the string values.
+   * @param {Property.<number>} valueProperty - value of the coin term wrapped in a property
+   * @param {number} coinRadius - radius of the coin portion of the coin term, in view coordinates
+   * @param {string} termText - textual representation, e.g. 'x', must be compatible with SubSupText
+   * @param {Property.<string>} termValueTextProperty
+   * @param {CoinTermTypeID} typeID - type identifier for this coin term
+   * @param {Object} options
    * @constructor
    */
   function CoinTerm( valueProperty, coinRadius, termText, termValueTextProperty, typeID, options ) {

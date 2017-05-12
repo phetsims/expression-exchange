@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * factory class for generating coin term instance
+ * factory class for generating coin term instances
  *
  * Coin terms have a fairly complex constructor, and this type makes it easier to create them.  This factory must be
  * constructed with all of the properties and other values used by coin terms.
