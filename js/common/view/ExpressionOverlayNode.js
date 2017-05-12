@@ -232,7 +232,7 @@ define( function( require ) {
     } );
 
     // create a dispose function
-    this.disposeExpressionNode = function(){
+    this.disposeExpressionOverlayNode = function() {
       expression.upperLeftCornerProperty.unlink( updatePosition );
       expression.inProgressAnimationProperty.unlink( updateDragHandlerAttachmentState );
       expression.inEditModeProperty.unlink( updateVisibility );
@@ -247,7 +247,7 @@ define( function( require ) {
 
     // @public
     dispose: function(){
-      this.disposeExpressionNode();
+      this.disposeExpressionOverlayNode();
       Node.prototype.dispose.call( this );
     }
   } );
