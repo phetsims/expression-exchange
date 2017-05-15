@@ -412,7 +412,8 @@ define( function( require ) {
       if ( this.coinTerms.contains( coinTerm ) ) {
         // TODO:   There is a race condition that only occurs during fuzz testing where somehow a coin term that is
         // inside an expression becomes user controlled and then is added back to the expression.  This is a workaround.
-        // This should be fully investigated before publication.
+        // This should be fully investigated before publication.  See
+        // https://github.com/phetsims/expression-exchange/issues/31
         expressionExchange.log && expressionExchange.log( 'warning: an attempt was made to re-add a coin term that is already in the expression' );
         return;
       }
