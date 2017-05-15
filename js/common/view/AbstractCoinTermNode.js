@@ -194,7 +194,8 @@ define( function( require ) {
         // bound the area where the coin terms can go
         dragBounds: options.dragBounds,
 
-        // TODO: This is necessary to prevent weird jumpy behavior, but I'm not sure why.  Should document.
+        // set the target node so that MovableDragHandler knows where to get the coordinate transform, supports event
+        // forwarding
         targetNode: this,
 
         startDrag: function() {
