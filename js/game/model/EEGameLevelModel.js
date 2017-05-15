@@ -25,7 +25,9 @@ define( function( require ) {
   var NUM_EXPRESSION_COLLECTION_AREAS = 3;
 
   /**
-   * TODO: Document parameters when finalized
+   * @param {number} level
+   * @param {AllowedRepresentationsEnum} allowedRepresentations
+   * @param {Property.<boolean>} soundEnabledProperty
    * @constructor
    */
   function EEGameLevelModel( level, allowedRepresentations, soundEnabledProperty ) {

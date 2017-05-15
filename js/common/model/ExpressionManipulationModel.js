@@ -748,10 +748,11 @@ define( function( require ) {
     },
 
     /**
-     * TODO: finish documenting if retained
-     * @param coinTermTypeID
-     * @param minimumDecomposition
-     * @param createIfUndefined
+     * get a property that represents the count in the model of coin terms of the given type and min decomposition
+     * @param {CoinTermTypeID} coinTermTypeID
+     * @param {number} minimumDecomposition - miniumum amount into which the coin term can be decomposed
+     * @param {boolean} createIfUndefined
+     * @public
      */
     getCoinTermCountProperty: function( coinTermTypeID, minimumDecomposition, createIfUndefined ) {
       assert && assert( this.coinTermCounts.hasOwnProperty( coinTermTypeID ), 'unrecognized coin term type ID' );
