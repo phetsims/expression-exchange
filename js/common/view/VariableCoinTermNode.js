@@ -102,10 +102,9 @@ define( function( require ) {
       // make the bounds relative to the coin term's position, which corresponds to the center of the coin
       var relativeVisibleBounds = self.coinAndTextRootNode.visibleLocalBounds;
 
-      // TODO: The following is some potentially temporary code to try out making the overall bounds remain the same
-      // for the two different view modes so that the expressions don't expand/collapse as the modes change. This will
-      // need to be moved out or kept based on the feedback we get.  See
-      // https://github.com/phetsims/expression-exchange/issues/10
+      // Expressions are kept the same width whether the view mode is set to coins or variables, but it is possible to
+      // override this behavior using a query parameter.  This behavior is being retained in case we ever want to
+      // experiment with it in the future.  See https://github.com/phetsims/expression-exchange/issues/10
       if ( !EEQueryParameters.adjustExpressionWidth ) {
 
         var width = Math.max( coinImagesNode.width, termText.width, termWithVariableValuesText.width );
