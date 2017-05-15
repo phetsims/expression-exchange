@@ -35,7 +35,6 @@ define( function( require ) {
   var RIGHT_HINT_TRANSLATION = Matrix3.translation( HINT_OFFSET, 0 );
   var OPERATOR_FONT = new PhetFont( 32 );
 
-  // TODO: Need to consolidate this with duplicated function in ExpressionHintNode if that node is retained
   // utility function for drawing a vertical zig zag line on a shape between two endpoints
   function addVerticalZigZagLine( shape, x1, y1, x2, y2, zigRightFirst ) {
     assert && assert( x1 === x2, 'this function is not general enough to handle non-vertical zig-zag lines' );
@@ -240,12 +239,19 @@ define( function( require ) {
 
   expressionExchange.register( 'ExpressionNode', ExpressionNode );
 
-  return inherit( Node, ExpressionNode, {
+  return inherit(
+    Node,
+    ExpressionNode,
+    {
 
-    // @public
-    dispose: function() {
-      this.disposeExpressionNode();
-      Node.prototype.dispose.call( this );
-    }
-  } );
+      // @public
+      dispose: function() {
+        this.disposeExpressionNode();
+        Node.prototype.dispose.call( this );
+      }
+    },
+    {
+      // statics
+      addVerticalZigZagLine: addVerticalZigZagLine
+    } );
 } );

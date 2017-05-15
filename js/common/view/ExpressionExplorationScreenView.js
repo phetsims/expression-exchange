@@ -49,6 +49,7 @@ define( function( require ) {
   // images
   var switchCoinImage = require( 'mipmap!EXPRESSION_EXCHANGE/switch-coin.png' );
 
+
   // constants
   var ACCORDION_BOX_TITLE_FONT = new PhetFont( { size: 16, weight: 'bold' } );
   var ACCORDION_BOX_BUTTON_X_MARGIN = 8;
@@ -58,6 +59,9 @@ define( function( require ) {
   var CHECK_BOX_VERTICAL_SPACING = 6;
   var INSET = 10; // inset from edges of layout bounds, in screen coords
   var FLOATING_PANEL_INSET = 10;
+  var SWITCH_COIN_WIDTH = 30; // in view coordinates, empirically determined
+  var NARROW_COLLECTION_DISPLAY_WIDTH = 150;
+  var WIDE_COLLECTION_DISPLAY_WIDTH = 180;
 
   /**
    * @param {ExpressionManipulationModel} model
@@ -167,8 +171,7 @@ define( function( require ) {
     // if both representations are allowed, add the switch for switching between coin and term view
     if ( model.allowedRepresentations === AllowedRepresentationsEnum.COINS_AND_VARIABLES ) {
 
-      // TODO: This should be a width, not a scale, so that the image size can be updated without affecting the look
-      var coinImageNode = new Image( switchCoinImage, { scale: 0.6 } ); // scale empirically determined
+      var coinImageNode = new Image( switchCoinImage, { minWidth: SWITCH_COIN_WIDTH, maxWidth: SWITCH_COIN_WIDTH } );
 
       // enclose the variable text in a node so that its vertical position can be accurately set
       var variableIconNode = new Node( {
@@ -200,12 +203,9 @@ define( function( require ) {
       ) );
     }
 
-    // TODO: The setting of the width for the "My Collection" element was empirically determined.  When the sim is
-    // further along, I (jbphet) should revisit and see if there is a better way to do this.
-    var collectionDisplayWidth = 150;
-    if ( coinTermCreatorSetID === CoinTermCreatorSetID.EXPLORE ) {
-      collectionDisplayWidth = 180;
-    }
+    var collectionDisplayWidth = coinTermCreatorSetID === CoinTermCreatorSetID.EXPLORE ?
+                                 WIDE_COLLECTION_DISPLAY_WIDTH :
+                                 NARROW_COLLECTION_DISPLAY_WIDTH;
 
     // create the "My Collection" display element
     var myCollectionDisplay = new CollectionDisplayNode( model, coinTermCreatorBox.coinTermTypeList, {

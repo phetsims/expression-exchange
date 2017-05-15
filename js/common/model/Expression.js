@@ -699,7 +699,6 @@ define( function( require ) {
      * @param {Expression||EECollectionArea} otherEntity - must provide a 'getBounds' method
      */
     getOverlap: function( otherEntity ) {
-      // TODO: Test and see if having pre-allocated bounds helps performance (right now getBounds does an allocation)
       var otherExpressionBounds = otherEntity.getBounds();
       var thisExpressionBounds = this.getBounds();
       var xOverlap = Math.max(

@@ -76,7 +76,6 @@ define( function( require ) {
       } );
     } );
 
-    // TODO: Consider putting the barrier rectangle into its own class for modularity
     // add the node that will act as the barrier to interaction with other expressions when editing an expression
     var barrierRectangleBounds = null;
     var barrierRectangleShape = new Shape();

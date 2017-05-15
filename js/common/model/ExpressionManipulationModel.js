@@ -6,12 +6,6 @@
  * explore screens and for each of the game challenges.  Options are used to support the different restrictions for
  * each screen.
  *
- * TODO: There are a number of methods in this type that are named things like 'getMostOverlappingX' where X is a
- * coin term or expression.  The name was reasonable when these were first written, but they evolved to do a lot more
- * thing, mostly making sure that the expression, coin term, or whatever is eligible to combine with another thing.
- * In the end, these methods should be renamed to something that better states what they actually do, such as
- * 'getMostEligibleCoinTermToBeAddedToExpression'.
- *
  * @author John Blanco
  */
 define( function( require ) {
@@ -47,10 +41,6 @@ define( function( require ) {
   function ExpressionManipulationModel( options ) {
 
     options = _.extend( {
-
-      // TODO: As I write this on 4/15/2016, it occurs to me that maybe the view, rather than the model, is where these
-      // options need to be, and there would be a single model type and variations of the view type.  Revisit this once
-      // the screen behaviors are fully established and refactor if it makes sense to do so.
 
       // defines whether to present just coins, just variables, or both to the user
       allowedRepresentations: AllowedRepresentationsEnum.COINS_AND_VARIABLES,
@@ -151,9 +141,6 @@ define( function( require ) {
 
     // when a coin term is added, add listeners to handle the things about it that are dynamic and can affect the model
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
-      // TODO: Once this is pretty much fully functional, revisit this and verify that it doesn't leak memory, making
-      // sure that all added listeners are removed.  Also, work through this and see if it can be made more compact and
-      // readable (it's evolving a lot as it's being written).
 
       // Add a listener that will potentially combine this coin term with expressions or other coin terms based on
       // where it is released.
@@ -349,7 +336,6 @@ define( function( require ) {
     } );
 
     this.expressions.addItemAddedListener( function( addedExpression ) {
-      // TODO: Revisit this and verify that this doesn't leak memory
 
       // add a listener for when the expression is released, which may cause it to be combined with another expression
       function expressionUserControlledListener( userControlled ) {
@@ -730,19 +716,21 @@ define( function( require ) {
     // @public
     removeCoinTerm: function( coinTerm, animate ) {
 
-      // TODO: It is kind of weird that the animation flag prevents removal from expressions.  Maybe this should be
-      // broken into two methods, or maybe the expression removal should be checked every time.
+      // remove the coin term from any expressions
+      this.expressions.forEach( function( expression ) {
+        if ( expression.containsCoinTerm( coinTerm ) ) {
+          expression.removeCoinTerm( coinTerm );
+        }
+      } );
+
       if ( animate ) {
+        // send the coin term back to its origin - the final steps of its removal will take place when it gets there
         coinTerm.returnToOrigin();
       }
       else {
+
         expressionExchange.log && expressionExchange.log( 'removed ' + coinTerm.id );
         this.coinTerms.remove( coinTerm );
-        this.expressions.forEach( function( expression ) {
-          if ( expression.containsCoinTerm( coinTerm ) ) {
-            expression.removeCoinTerm( coinTerm );
-          }
-        } );
         this.updateCoinTermCounts( coinTerm.typeID );
       }
     },
@@ -999,7 +987,6 @@ define( function( require ) {
         collectionArea.reset();
       } );
 
-      // TODO: Probably need to reset expressions here so that they can cancel any in-progress animations.
       this.expressions.clear();
       this.coinTerms.clear();
       this.viewModeProperty.reset();

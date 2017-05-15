@@ -40,7 +40,7 @@ define( function( require ) {
 
     // shape and path
     var shape = new Shape.rect( 0, 0, 0.1, 0.1 ); // tiny rect, will be set in update function
-    var expressionShapeNode = new Path( shape, { fill: 'rgba( 255, 255, 255, 0.01 )' } ); // TODO: this works great, but review with JO to see if there is a better way;
+    var expressionShapeNode = new Path( shape, { fill: 'rgba( 255, 255, 255, 0.01 )' } ); // essentially invisible
     this.addChild( expressionShapeNode );
 
     // define a function that will create or update the shape based on the width and height
