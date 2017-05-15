@@ -28,7 +28,6 @@ define( function( require ) {
   var CLOSE_ENOUGH_TO_HOME = 1E-6; // distance at which a coin term is considered to have returned to origin
   var CARD_PRE_FADE_TIME = 0.25; // time before card starts to fade after user grabs it, in seconds
   var CARD_FADE_TIME = 0.5; // time for a card to fade out
-  var NUM_FADE_STEPS = 10; // number of steps for fade out to occur for the coin term and the card
 
   // class var for creating unique IDs
   var creationCount = 0;
@@ -130,6 +129,10 @@ define( function( require ) {
       this.composition.push( options.initialCount );
     }
 
+    // @private - countdown timers for fading out the card background
+    this.cardPreFadeCountdown = null;
+    this.cardFadeCountdown = null;
+
     //------------------------------------------------------------------------
     // emitters
     //------------------------------------------------------------------------
@@ -157,20 +160,12 @@ define( function( require ) {
       }
     } );
 
-    // TODO: Consider moving the fadeout and card fade code (below) into a step function when animations are moved there.
-
     // monitor the total count, start fading the existence strength if it goes to zero
     this.totalCountProperty.lazyLink( function( totalCount ) {
       if ( totalCount === 0 ) {
 
-        // start the periodic timer that will fade the existence strength to zero
-        var timerInterval = Timer.setInterval( function() {
-          self.existenceStrengthProperty.set( Math.max( self.existenceStrengthProperty.get() - 1 / NUM_FADE_STEPS, 0 ) );
-          if ( self.existenceStrengthProperty.get() === 0 ) {
-            // fading complete, stop the timer
-            Timer.clearInterval( timerInterval );
-          }
-        }, Math.max( COIN_TERM_FADE_TIME / NUM_FADE_STEPS * 1000, 1 / 60 * 1000 ) ); // interval should be at least one animation frame
+        // initiate the fade out by setting the existence strength to a value just less than 1
+        self.existenceStrengthProperty.set( 0.9999 );
       }
     } );
 
@@ -180,47 +175,25 @@ define( function( require ) {
       self.breakApartAllowedProperty.set( !collected );
     } );
 
-    // function to fade the card out, used below
-    var cardFadeIntervalTimerID = null;
-    var cardPreFadeTimeoutID = null;
-
-    function fadeCard() {
-      self.cardOpacityProperty.set( Math.max( self.cardOpacityProperty.get() - 1 / NUM_FADE_STEPS, 0 ) );
-      if ( self.cardOpacityProperty.get() === 0 ) {
-        Timer.clearInterval( cardFadeIntervalTimerID );
-        cardFadeIntervalTimerID = null;
-      }
-    }
-
     // update the appearance of the background card as the user interacts with this coin term
     this.userControlledProperty.lazyLink( function( userControlled ) {
 
       if ( options.initiallyOnCard ) {
 
-        // cancel any timers involved in the card fading process that might be running
-        if ( cardPreFadeTimeoutID ) {
-          Timer.clearTimeout( cardPreFadeTimeoutID );
-          cardPreFadeTimeoutID = null;
-        }
-        if ( cardFadeIntervalTimerID ) {
-          Timer.clearInterval( cardFadeIntervalTimerID );
-          cardFadeIntervalTimerID = null;
-        }
-
         if ( userControlled ) {
 
-          // If this card is decomposed as far as it can go, show the card when the user grabs it, but fade it out
-          // after a little while.
+          // If this coin term is decomposed as far as it can go, show the background card when the user grabs it, but
+          // fade it out after a little while.
           if ( self.composition.length === 1 ) {
             self.cardOpacityProperty.set( 1.0 );
-            cardPreFadeTimeoutID = Timer.setTimeout( function() {
-              cardPreFadeTimeoutID = null;
-              cardFadeIntervalTimerID = Timer.setInterval( fadeCard, CARD_FADE_TIME / NUM_FADE_STEPS * 1000 );
-            }, CARD_PRE_FADE_TIME * 1000 );
+            self.cardPreFadeCountdown = CARD_PRE_FADE_TIME;
+            self.cardFadeCountdown = null;
           }
         }
         else if ( self.cardOpacityProperty.get() !== 0 ) {
           self.cardOpacityProperty.set( 0 ); // the card is not visible if not controlled by the user
+          self.cardPreFadeCountdown = null;
+          self.cardFadeCountdown = null;
         }
       }
     } );
@@ -257,6 +230,34 @@ define( function( require ) {
           this.positionProperty.set( this.destinationProperty.get() );
           this.inProgressAnimationProperty.set( null );
           this.destinationReachedEmitter.emit();
+        }
+      }
+
+      // if this coin term is fading out, continue the fade
+      if ( this.existenceStrengthProperty.get() < 1 ) {
+        this.existenceStrengthProperty.set( Math.max(
+          this.existenceStrengthProperty.get() - ( 1 / COIN_TERM_FADE_TIME ) * dt,
+          0
+        ) );
+      }
+
+      // if the card is visible, step its fade sequence
+      if ( this.cardPreFadeCountdown !== null ) {
+        this.cardPreFadeCountdown = Math.max( this.cardPreFadeCountdown - dt, 0 );
+        if ( this.cardPreFadeCountdown === 0 ) {
+
+          // pre-fade complete, start fade
+          this.cardPreFadeCountdown = null;
+          this.cardFadeCountdown = CARD_FADE_TIME;
+        }
+      }
+      else if ( this.cardFadeCountdown !== null ) {
+        this.cardFadeCountdown = Math.max( this.cardFadeCountdown - dt, 0 );
+        this.cardOpacityProperty.set( this.cardFadeCountdown / CARD_FADE_TIME );
+        if ( this.cardFadeCountdown === 0 ) {
+
+          // fade complete
+          this.cardFadeCountdown = null;
         }
       }
     },
