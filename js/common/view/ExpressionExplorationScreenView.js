@@ -49,10 +49,9 @@ define( function( require ) {
   // images
   var switchCoinImage = require( 'mipmap!EXPRESSION_EXCHANGE/switch-coin.png' );
 
-
   // constants
   var ACCORDION_BOX_TITLE_FONT = new PhetFont( { size: 16, weight: 'bold' } );
-  var ACCORDION_BOX_BUTTON_X_MARGIN = 8;
+  var ACCORDION_BOX_BUTTON_X_MARGIN = 6;
   var ACCORDION_BOX_BUTTON_Y_MARGIN = 4;
   var ACCORDION_BOX_CORNER_RADIUS = 7;
   var CHECK_BOX_FONT = new PhetFont( { size: 16 } );
@@ -60,8 +59,8 @@ define( function( require ) {
   var INSET = 10; // inset from edges of layout bounds, in screen coords
   var FLOATING_PANEL_INSET = 10;
   var SWITCH_COIN_WIDTH = 30; // in view coordinates, empirically determined
-  var NARROW_COLLECTION_DISPLAY_WIDTH = 150;
-  var WIDE_COLLECTION_DISPLAY_WIDTH = 180;
+  var NARROW_COLLECTION_DISPLAY_WIDTH = 150; // in view coordinates, empirically determined
+  var WIDE_COLLECTION_DISPLAY_WIDTH = 180; // in view coordinates, empirically determined
 
   /**
    * @param {ExpressionManipulationModel} model
@@ -114,6 +113,8 @@ define( function( require ) {
       }
     );
 
+    var leftSideBoxWidth = this.layoutBounds.width * 0.15; // multiplier empirically determined
+
     // add accordion box that will contain the total value readout
     var totalValueAccordionBox = new AccordionBox( totalValueReadout, {
       titleNode: new Text( totalString, { font: ACCORDION_BOX_TITLE_FONT } ),
@@ -123,7 +124,9 @@ define( function( require ) {
       cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
       buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
       buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
-      minWidth: totalValueReadout.width * 1.8 // multiplier empirically determined
+      contentXMargin: 30, // empirically determined
+      minWidth: leftSideBoxWidth,
+      maxWidth: leftSideBoxWidth
     } );
     this.addChild( totalValueAccordionBox );
 
@@ -158,7 +161,9 @@ define( function( require ) {
       top: totalValueAccordionBox.bottom + 10,
       cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
       buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
-      buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN
+      buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
+      minWidth: leftSideBoxWidth,
+      maxWidth: leftSideBoxWidth
     } );
     variableValuesAccordionBox.expandedProperty.value = false; // initially closed
     this.addChild( variableValuesAccordionBox );
@@ -221,7 +226,8 @@ define( function( require ) {
       top: INSET,
       cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
       buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
-      buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN
+      buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
+      maxWidth: collectionDisplayWidth + 2 * 30 // display width plus twice the default margin
     } );
     this.addChild( myCollectionAccordionBox );
 
