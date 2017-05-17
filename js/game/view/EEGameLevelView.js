@@ -32,7 +32,7 @@ define( function( require ) {
   var Text = require( 'SCENERY/nodes/Text' );
 
   // strings
-  var levelNString = require( 'string!EXPRESSION_EXCHANGE/levelN' );
+  var levelNumberPatternString = require( 'string!EXPRESSION_EXCHANGE/levelNumberPattern' );
 
   /**
    * @param {EEGameLevelModel} levelModel
@@ -67,7 +67,7 @@ define( function( require ) {
     this.addChild( background );
 
     // add the level label
-    var title = new Text( StringUtils.format( levelNString, ( levelModel.level + 1 ) ), {
+    var title = new Text( StringUtils.format( levelNumberPatternString, ( levelModel.level + 1 ) ), {
       font: new PhetFont( 20 ),
       centerX: screenLayoutBounds.width * 0.4,
       top: 20

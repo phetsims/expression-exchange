@@ -41,7 +41,7 @@ define( function( require ) {
   var allCoefficientsString = require( 'string!EXPRESSION_EXCHANGE/allCoefficients' );
   var coinValuesString = require( 'string!EXPRESSION_EXCHANGE/coinValues' );
   var myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
-  var numberCentsString = require( 'string!EXPRESSION_EXCHANGE/numberCents' );
+  var numberCentsPatternString = require( 'string!EXPRESSION_EXCHANGE/numberCentsPattern' );
   var totalString = require( 'string!EXPRESSION_EXCHANGE/total' );
   var valuesString = require( 'string!EXPRESSION_EXCHANGE/values' );
   var variableValuesString = require( 'string!EXPRESSION_EXCHANGE/variableValues' );
@@ -54,6 +54,7 @@ define( function( require ) {
   var ACCORDION_BOX_BUTTON_X_MARGIN = 6;
   var ACCORDION_BOX_BUTTON_Y_MARGIN = 4;
   var ACCORDION_BOX_CORNER_RADIUS = 7;
+  var ACCORDION_BOX_CONTENT_X_MARGIN = 15;
   var CHECK_BOX_FONT = new PhetFont( { size: 16 } );
   var CHECK_BOX_VERTICAL_SPACING = 6;
   var INSET = 10; // inset from edges of layout bounds, in screen coords
@@ -90,7 +91,7 @@ define( function( require ) {
     model.creatorBoxBounds = coinTermCreatorBox.bounds;
 
     // create the readout that will display the total accumulated value, use max length string initially
-    var totalValueText = new Text( StringUtils.format( numberCentsString, 9999 ), { font: new PhetFont( { size: 14 } ) } );
+    var totalValueText = new Text( StringUtils.format( numberCentsPatternString, 9999 ), { font: new PhetFont( { size: 14 } ) } );
     var totalValueReadoutWidth = totalValueText.width + 20;
     var totalValueReadout = new Panel( totalValueText, {
       fill: 'white',
@@ -105,7 +106,7 @@ define( function( require ) {
       [ model.totalValueProperty, model.viewModeProperty ],
       function( totalValue ) {
         if ( model.viewModeProperty.get() === ViewMode.COINS ) {
-          totalValueText.text = StringUtils.format( numberCentsString, totalValue );
+          totalValueText.text = StringUtils.format( numberCentsPatternString, totalValue );
         }
         else {
           totalValueText.text = totalValue;
@@ -227,7 +228,9 @@ define( function( require ) {
       cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
       buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
       buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
-      maxWidth: collectionDisplayWidth + 2 * 30 // display width plus twice the default margin
+      contentXMargin: ACCORDION_BOX_CONTENT_X_MARGIN,
+      minWidth: collectionDisplayWidth + 2 * ACCORDION_BOX_BUTTON_X_MARGIN,
+      maxWidth: collectionDisplayWidth + 2 * ACCORDION_BOX_BUTTON_X_MARGIN
     } );
     this.addChild( myCollectionAccordionBox );
 

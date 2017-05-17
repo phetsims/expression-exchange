@@ -2,7 +2,7 @@
   "coinValues": {
     "value": "coin values"
   },
-  "numberCents": {
+  "numberCentsPattern": {
     "value": "{0} cents"
   },
   "expression-exchange.title": {
@@ -38,7 +38,7 @@
   "chooseYourLevel": {
     "value": "Choose Your Level!"
   },
-  "levelN": {
+  "levelNumberPattern": {
     "value": "Level {0}"
   },
   "next": {
