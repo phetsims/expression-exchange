@@ -9,12 +9,10 @@ define( function( require ) {
   // modules
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ResetButton = require( 'SCENERY_PHET/buttons/ResetButton' );
   var LeftRightNumberSpinner = require( 'EXPRESSION_EXCHANGE/common/view/LeftRightNumberSpinner' );
   var VBox = require( 'SCENERY/nodes/VBox' );
-  var PhetColorScheme = require( 'SCENERY_PHET/PhetColorScheme' );
 
   /**
    * @param {Object} options
