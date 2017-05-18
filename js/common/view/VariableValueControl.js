@@ -11,7 +11,7 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
+  var ResetButton = require( 'SCENERY_PHET/buttons/ResetButton' );
   var LeftRightNumberSpinner = require( 'EXPRESSION_EXCHANGE/common/view/LeftRightNumberSpinner' );
   var VBox = require( 'SCENERY/nodes/VBox' );
   var PhetColorScheme = require( 'SCENERY_PHET/PhetColorScheme' );
@@ -36,11 +36,11 @@ define( function( require ) {
     var zValueProperty = options.zTermValueProperty;
 
     //  button that will be used to restore the default values
-    var restoreDefaultsButton = new RectangularPushButton( {
-      content: new FontAwesomeNode( 'refresh', { scale: 0.6 } ),
-      baseColor: PhetColorScheme.PHET_LOGO_YELLOW,
-      xMargin: 8,
-      yMargin: 6,
+    var restoreDefaultsButton = new ResetButton( {
+      baseColor: '#f5f5f5',
+      arrowColor: 'black',
+      radius: 16,
+      touchAreaDilation: 5,
       listener: function() {
         xValueProperty && xValueProperty.reset();
         yValueProperty && yValueProperty.reset();
