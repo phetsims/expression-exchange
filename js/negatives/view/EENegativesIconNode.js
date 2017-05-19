@@ -36,6 +36,7 @@ define( function( require ) {
     Rectangle.call( this, 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
 
     // create and add the equation node
+    //REVIEW: Relies on Text.left being 0. Seems like we can just use HBox here to simplify logic?
     var equationNode = new Node();
     equationNode.addChild( new Text( '3', { font: TEXT_FONT } ) );
     equationNode.addChild( new RichText( 'x<sup>2</sup>', {

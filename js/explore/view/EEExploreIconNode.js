@@ -35,6 +35,7 @@ define( function( require ) {
     Rectangle.call( this, 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
 
     // add the nodes
+    //REVIEW: HBox with new AlignBox( plusText, { xMargin: 25 } ) for the plus might be more convenient?
     var equationNode = new Node();
     equationNode.addChild( new Text( '2', { font: NORMAL_FONT } ) );
     equationNode.addChild( new Text( '(4)', { font: ITALIC_FONT, left: equationNode.width } ) );

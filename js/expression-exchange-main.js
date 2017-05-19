@@ -31,6 +31,8 @@ define( function( require ) {
     }
   };
 
+  //REVIEW: For logging, ideally we'd want to enable it ASAP before all of the startup code executes?
+  //REVIEW: Chicken-and-egg issue with putting this code in the namespace, since EEQueryParameters relies on the namespace?
   // add support for logging
   if ( EEQueryParameters.enableLogging ) {
     console.log( 'enabling log' );
