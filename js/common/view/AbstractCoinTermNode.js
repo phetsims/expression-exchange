@@ -23,6 +23,7 @@ define( function( require ) {
 
   // constants
   var BACKGROUND_CORNER_ROUNDING = 5;
+  var TOUCH_DRAG_Y_OFFSET = -35; // empirically determined
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin term
@@ -198,8 +199,16 @@ define( function( require ) {
         // forwarding
         targetNode: this,
 
-        startDrag: function() {
-          coinTermPositionAndDestination.set( coinTerm.positionProperty.get() );
+        startDrag: function( event ) {
+
+          // offset things a little in touch mode for better visibility while dragging
+          if ( event.pointer.isTouch ) {
+            var position = self.globalToParentPoint( event.pointer.point );
+            coinTermPositionAndDestination.set( position.plusXY( 0, TOUCH_DRAG_Y_OFFSET ) );
+          }
+          else {
+            coinTermPositionAndDestination.set( coinTerm.positionProperty.get() );
+          }
           coinTerm.userControlledProperty.set( true );
         },
 
