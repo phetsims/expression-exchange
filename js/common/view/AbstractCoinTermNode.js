@@ -23,7 +23,7 @@ define( function( require ) {
 
   // constants
   var BACKGROUND_CORNER_ROUNDING = 5;
-  var TOUCH_DRAG_Y_OFFSET = -35; // empirically determined
+  var TOUCH_DRAG_Y_OFFSET = -30; // empirically determined
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin term
