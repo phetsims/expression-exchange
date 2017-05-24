@@ -63,6 +63,7 @@ define( function( require ) {
     var flipStateProperty = new Property( showCoinValuesProperty.get() ? 1 : 0 );
 
     // add the images for the front and back of the coin
+    //REVIEW: It looks like this is creating Image nodes for every instance of this. Sharing Image nodes may reduce memory usage (and be faster?)
     var coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, 'front' );
     var coinBackImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, 'back' );
 

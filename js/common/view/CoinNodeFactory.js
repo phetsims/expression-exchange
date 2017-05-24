@@ -101,9 +101,17 @@ define( function( require ) {
      * @public
      */
     createImageNode: function( coinTermTypeID, radius, backOrFront ) {
+      //REVIEW: backOrFront with enumeration constants should either be refactored to a 'Side' enumeration, or a boolean
+      // like isFront or isBack.
 
       var coinNode = null;
 
+      /*
+      REVIEW: recommend a top-level map for most of the switch statement, e.g.:
+      var imageMap = {};
+      imageMap[ Side.FRONT ][ CoinTermTypeID.X ] = coinXFrontImage;
+      imageMap[ Side.BACK ][ CoinTermTypeID.X ] = coinXBackImage;
+       */
       switch( coinTermTypeID ) {
 
         case CoinTermTypeID.X:
@@ -136,6 +144,7 @@ define( function( require ) {
 
         case CoinTermTypeID.CONSTANT:
           // this should never be depicted as a coin, so add something garish so that we'll notice if it is
+          // REVIEW: Why does this exist instead of an assertion failure? Sounds like it should never be viewed?
           coinNode = new Circle( radius, {
             fill: 'pink',
             stroke: 'red',
