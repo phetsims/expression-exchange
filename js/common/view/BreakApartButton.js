@@ -22,7 +22,7 @@ define( function( require ) {
 
   /**
    * @constructor
-   * {Object} options
+   * @param {Object} [options]
    */
   function BreakApartButton( options ) {
 
@@ -34,6 +34,8 @@ define( function( require ) {
     assert && assert( options.mode === 'normal' || options.mode === 'inverted', 'invalid mode option' );
 
     // the following options can't be overridden
+    //REVIEW: If they can't be overridden, do _.extend( options, { ... these ... } ) so the declaration is cleaner.
+    // It will mutate the options object, overriding as necessary. Presumably include the content one below also.
     options.xMargin = MARGIN;
     options.yMargin = MARGIN;
     options.baseColor = options.mode === 'normal' ? YELLOW : BLACK;

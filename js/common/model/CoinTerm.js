@@ -59,25 +59,26 @@ define( function( require ) {
     // properties
     //------------------------------------------------------------------------
 
-    // @public (read only), set using methods below
+    // @public {Property.<Vector2>} (read only), set using methods below
     this.positionProperty = new Property( options.initialPosition );
 
-    // @public (read only), set using methods below
+    // @public {Property.<Vector2>} (read only), set using methods below
     this.destinationProperty = new Property( options.initialPosition );
 
-    // @public, indicate whether user is currently dragging this coin
+    // @public {Property.<boolean>}, indicate whether user is currently dragging this coin
     this.userControlledProperty = new Property( false );
 
-    // @public
+    // @public {Property.<boolean>}
     this.combineHaloActiveProperty = new Property( false );
 
-    // @public, supports showing subtraction in expressions
+    // @public {Property.<boolean>}, supports showing subtraction in expressions
     this.showMinusSignWhenNegativeProperty = new Property( true );
 
-    // @public, indicates whether this is in a collection box (for game)
+    // @public {Property.<boolean>, indicates whether this is in a collection box (for game)
     this.collectedProperty = new Property( false );
 
-    // @public (read only), tracks the current in-progress animation, if any
+    // @public {Property.<????|null>} (read only), tracks the current in-progress animation, if any
+    //REVIEW: Here's an example where type documentation really helps. No idea (in initial read through) what type it can hold.
     this.inProgressAnimationProperty = new Property( null );
 
     // @public (read-only) - total number of coins/terms combined into this one, can be negative
@@ -118,6 +119,7 @@ define( function( require ) {
     this.termValueTextProperty = termValueTextProperty;
 
     // @public, read only, tracks what this coin term is composed of and what it can be broken down into
+    //REVIEW: Type documentation would definitely help here also.
     this.composition = [];
     if ( Math.abs( options.initialCount ) > 1 && options.decomposable ) {
       _.times( Math.abs( options.initialCount ), function() {
@@ -291,6 +293,7 @@ define( function( require ) {
       }
     },
 
+    //REVIEW: doc
     returnToOrigin: function() {
       this.travelToDestination( this.initialPosition );
     },
@@ -298,6 +301,7 @@ define( function( require ) {
     /**
      * set both the position and destination in such a way that no animation is initiated
      * @param position
+     * REVIEW: @param type?
      * @public
      */
     setPositionAndDestination: function( position ) {
@@ -425,6 +429,7 @@ define( function( require ) {
     getViewBounds: function() {
       var position = this.positionProperty.get();
       var relativeViewBounds = this.relativeViewBoundsProperty.get();
+      //REVIEW: relativeViewBounds.shifted( position.x, position.y )
       return new Bounds2(
         position.x + relativeViewBounds.minX,
         position.y + relativeViewBounds.minY,

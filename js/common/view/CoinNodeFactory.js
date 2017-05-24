@@ -39,10 +39,12 @@ define( function( require ) {
 
     var outerCircle = new Circle( outerCircleRadius, {
       fill: outerCircleColor,
+      //REVIEW: at least 4 places with the same lineWidth and 0.25-darker color. Possibility for refactoring?
       stroke: outerCircleColor.colorUtilsDarker( 0.25 ),
       lineWidth: 0.5
     } );
 
+    //REVIEW: Type documentation may help make clear that this is optional?
     if ( innerCircleRadius ) {
       outerCircle.addChild( new Circle( innerCircleRadius, {
         fill: innerCircleColor,
@@ -60,9 +62,14 @@ define( function( require ) {
     var outerShape = new Shape();
     var vector = new Vector2( 0, outerMaxRadius );
     vector.rotate( -Math.PI * 0.055 );
+    //REVIEW: outerShape.moveToPoint( Vector2.createPolar( outerMaxRadius, Math.PI * 0.445 ) )
+    // or if minimizing GC, outerShape.moveToPoint( vector );
     outerShape.moveTo( vector.x, vector.y );
 
+    //REVIEW: only 5 times is necessary?
     _.times( 6, function() {
+      //REVIEW: for(i): outerShape.moveToPoint( Vector2.createPolar( outerMaxRadius, Math.PI * 0.445 + i * Math.PI / 3 ) )
+      // or if minimizing GC, remove the closure (bad for GC) and outerShape.lineToPoint( vector )
       vector.rotate( Math.PI / 3 );
       outerShape.lineTo( vector.x, vector.y );
     } );
@@ -111,6 +118,9 @@ define( function( require ) {
       var imageMap = {};
       imageMap[ Side.FRONT ][ CoinTermTypeID.X ] = coinXFrontImage;
       imageMap[ Side.BACK ][ CoinTermTypeID.X ] = coinXBackImage;
+
+      This has the advantage of also returning shared nodes, so that they are reused instead of being recreated for each
+      instance of a coin.
        */
       switch( coinTermTypeID ) {
 
@@ -170,12 +180,13 @@ define( function( require ) {
      * @returns {Node}
      * @param {CoinTermTypeID} coinTermTypeID
      * @param {number} radius
-     * @param {Object} options
+     * @param {Object} options REVIEW: never used? Can be removed?
      */
     createIconNode: function( coinTermTypeID, radius, options ) {
 
       var iconNode = null;
 
+      //REVIEW: See recommended pattern above instead of a switch? And sharing instances may be helpful for memory.
       switch( coinTermTypeID ) {
 
         case CoinTermTypeID.X:
@@ -218,7 +229,7 @@ define( function( require ) {
             radius,
             new Color( 221, 219, 219 ),
             radius * 0.7,
-            new Color( 206, 180, 44 )
+            new Color( 206, 180, 44 ) //REVIEW: duplicated color. Should that be refactored out?
           );
           break;
 

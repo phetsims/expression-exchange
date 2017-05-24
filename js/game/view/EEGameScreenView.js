@@ -55,6 +55,7 @@ define( function( require ) {
       levelSelectionButtonIcons,
       levelScoreProperties,
       {
+        //REVIEW: Almost all of these should be inlined in StartGameLevelNode, and not specified here.
         numStarsOnButtons: EEGameModel.CHALLENGES_PER_LEVEL,
         perfectScore: EEGameModel.MAX_SCORE_PER_LEVEL,
         numLevels: EEGameModel.NUMBER_OF_LEVELS,

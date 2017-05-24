@@ -25,6 +25,7 @@ define( function( require ) {
   var CONSTANT_ONE_TEXT_VALUE_PROPERTY = new Property( '1' );
 
   /**
+   * REVIEW: Needs @param
    * {number} xValueProperty
    * {number} yValueProperty
    * {number} zValueProperty
@@ -40,6 +41,7 @@ define( function( require ) {
     this.zValueProperty = zValueProperty;
 
     // @private - string representations of the variables
+    //REVIEW: Property doesn't allow missing parameter?
     this.xValueStringProperty = new Property();
     this.yValueStringProperty = new Property();
     this.zValueStringProperty = new Property();

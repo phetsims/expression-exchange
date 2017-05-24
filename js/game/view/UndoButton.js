@@ -22,20 +22,17 @@ define( function( require ) {
 
   /**
    * @constructor
-   * {Object} options
+   * @param {Object} options
    */
   function UndoButton( options ) {
 
-    options = _.extend(
-      {
-        xMargin: MARGIN,
-        yMargin: MARGIN,
-        baseColor: new Color( 'yellow' ),
-        cursor: 'pointer',
-        arrowFill: 'black'
-      },
-      options
-    );
+    options = _.extend( {
+      xMargin: MARGIN,
+      yMargin: MARGIN,
+      baseColor: new Color( 'yellow' ),
+      cursor: 'pointer',
+      arrowFill: 'black'
+    }, options );
 
     // create the shape for the undo arrow
     var undoArrowShape = new Shape()
@@ -43,14 +40,15 @@ define( function( require ) {
       .lineTo( 0, ICON_HEIGHT )
       .lineTo( ICON_HEIGHT, ICON_HEIGHT )
       .lineTo( ICON_HEIGHT * 0.7, ICON_HEIGHT * 0.7 )
-      //.lineTo( ICON_HEIGHT * 2, ICON_HEIGHT * 0.5 )
+      //.lineTo( ICON_HEIGHT * 2, ICON_HEIGHT * 0.5 ) // REVIEW: can these commented out lines be removed or tagged with an issue?
       .quadraticCurveTo( ICON_HEIGHT * 1.25, -ICON_HEIGHT * 0.1, ICON_HEIGHT * 2, ICON_HEIGHT * 0.75 )
       //.lineTo( ICON_HEIGHT * 0.25, ICON_HEIGHT * 0.25 )
       .quadraticCurveTo( ICON_HEIGHT * 1.25, -ICON_HEIGHT * 0.5, ICON_HEIGHT * 0.3, ICON_HEIGHT * 0.3 )
-      .lineTo( 0, 0 )
+      .lineTo( 0, 0 ) // REVIEW: this was the starting point, so the extra lineTo isn't necessary before the close.
       .close();
 
     // set up the content node
+    //REVIEW: CM would prefer an assertion to make sure this wasn't already specified in the options.
     options.content = new Path( undoArrowShape, {
       fill: options.arrowFill
     } );

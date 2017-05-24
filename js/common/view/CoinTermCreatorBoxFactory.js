@@ -54,6 +54,7 @@ define( function( require ) {
   ];
 
   // helper function for making coin term creator nodes for the explore screens, which use a non-staggered format
+  //REVIEW: recommend normal function docs
   function makeExploreScreenCreatorNode( typeID, createdCoinTermInitialCount, model, view ) {
 
     // Create a property that will control number of coin terms shown in this creator node.  For the explore screens,
@@ -85,12 +86,15 @@ define( function( require ) {
   }
 
   // helper function for making creator nodes for the game screen, which uses a staggered format
+  //REVIEW: recommend normal function docs
   function makeGameScreenCreatorNode( typeID, createdCoinTermInitialCount, numInstancesAllowed, model, view ) {
 
     // Create a property that will control number of coin terms shown in this creator node.  For the game screen,
     // multiple creator nodes are shown and a staggered arrangement.
     var numberToShowProperty = new Property( numInstancesAllowed );
     var instanceCount = model.getCoinTermCountProperty( typeID, createdCoinTermInitialCount, true );
+
+    //REVIEW: Potential memory leak here, since it seems like this is called whenever there is a new challenge?
     instanceCount.link( function( count ) {
       numberToShowProperty.set( numInstancesAllowed - count );
     } );

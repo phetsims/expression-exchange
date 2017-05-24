@@ -35,13 +35,14 @@ define( function( require ) {
       staggeredCreatorNodes: false
     }, options );
 
-    // @public, read only - a flag that indicates if creator nodes that create coin terms with negative initial values
-    // are present
+    // @public {boolean}, read only - a flag that indicates if creator nodes that create coin terms with negative
+    // initial values are present
     this.negativeTermsPresent = _.some( creatorNodes, function( creatorNode ) {
       return ( creatorNode.createdCoinTermInitialCount < 0 );
     } );
 
-    // @public, read only - list of the coin term types present in this creator box
+    // @public {Array.<CoinTermTypeID>}, read only - list of the coin term types present in this creator box
+    //REVIEW: _.uniq( _.map( creatorNodes, 'typeID' ) )
     this.coinTermTypeList = _.uniq( _.map(
       creatorNodes,
       function( creatorNode ) { return creatorNode.typeID; }
@@ -49,6 +50,7 @@ define( function( require ) {
 
     // add the panel or carousel that will contain the various coin terms that the user can create
     if ( creatorNodes.length > options.itemsPerCarouselPage ) {
+      // @private {Node}
       this.coinTermCreatorBox = new Carousel( creatorNodes, {
         itemsPerPage: options.itemsPerCarouselPage,
         spacing: options.itemSpacing,
@@ -62,6 +64,7 @@ define( function( require ) {
         spacing: options.itemSpacing,
         resize: false
       } );
+      // @private {Node}
       this.coinTermCreatorBox = new Panel( coinTermCreatorHBox, {
         cornerRadius: options.cornerRadius,
         xMargin: 65, // empirically determined to be similar in appearance to carousels

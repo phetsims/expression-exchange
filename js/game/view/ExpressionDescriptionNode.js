@@ -57,6 +57,7 @@ define( function( require ) {
         }
 
         // add coin icon
+        //REVIEW: for memory usage, consider not creating fresh coins here, but instead use DAG?
         var coinIconNode = CoinNodeFactory.createIconNode(
           expressionTerm.coinTermTypeID,
           COIN_ICON_RADIUS,

@@ -31,7 +31,10 @@ define( function( require ) {
    * @constructor
    */
   function AbstractCoinTermNode( coinTerm, options ) {
+    //REVIEW: Would highly recommend changing this to set more properties on the object and used methods.
+    // A 240+ line constructor with 12 functions that would be methods typically would be cleaner if broken up.
 
+    //REVIEW: Why the extra empty object in the extend?
     options = _.extend( {}, {
       addDragHandler: true,
       dragBounds: Bounds2.EVERYTHING,
@@ -41,19 +44,23 @@ define( function( require ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
-    // @public (read only)
+    // @public {CoinTerm} (read only)
     this.coinTerm = coinTerm;
 
+    // @protected {Rectangle}
     // Add the card-like background, initially tiny, will be set in subclasses by function that updates the
     // representation.
+    //REVIEW: It's a personal preference, but I prefer radius, in the options when available, e.g.:
+    // { cornerRadius: BACKGROUND_CORNER_ROUNDING }
     this.cardLikeBackground = new Rectangle( -1, -1, 2, 2, BACKGROUND_CORNER_ROUNDING, BACKGROUND_CORNER_ROUNDING, {
       fill: EESharedConstants.CARD_BACKGROUND_COLOR,
       stroke: 'black',
-      lineWidth: 1,
+      lineWidth: 1, //REVIEW: lineWidth 1 is the default, should not be specified
       visible: false
     } );
     this.addChild( this.cardLikeBackground );
 
+    // @protected {Node}
     // Add a root node so that the bounds can be easily monitored for changes in size without getting triggered by
     // changes in position.
     this.coinAndTextRootNode = new Node();
@@ -77,6 +84,8 @@ define( function( require ) {
     this.addChild( breakApartButton );
 
     // adjust the touch area of the break apart button to make it easier to use on touch devices
+    //REVIEW: breakApartButton.localBounds.dilatedX( breakApartButton.width / 2 )
+    //                                    .withOffsets( 0, breakApartButton.height, 0, 0 );
     var breakApartButtonTouchArea = breakApartButton.localBounds.copy();
     breakApartButtonTouchArea.minX = breakApartButtonTouchArea.minX - breakApartButton.width / 2;
     breakApartButtonTouchArea.maxX = breakApartButtonTouchArea.maxX + breakApartButton.width / 2;
@@ -112,6 +121,7 @@ define( function( require ) {
 
     // keep the button showing if the user is over it
     function handleOverBreakApartButtonChanged( overButton ) {
+      //REVIEW: Invert if statements to check for whether it is user controlled first (deduplicates)
       if ( overButton ) {
         if ( !coinTerm.userControlledProperty.get() ) {
           assert && assert( !!hideButtonTimer, 'should not be over button without hide timer running' );
@@ -143,6 +153,7 @@ define( function( require ) {
     // move this node as the model representation moves
     function handlePositionChanged( position ) {
       // the intent here is to position the center of the coin at the position, NOT the center of the node
+      //REVIEW: self.translation = position;
       self.x = position.x;
       self.y = position.y;
     }

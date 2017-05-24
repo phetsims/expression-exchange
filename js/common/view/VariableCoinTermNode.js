@@ -129,6 +129,7 @@ define( function( require ) {
 
       // TODO: this was written with no thought given to performance, may need to optimize
 
+      //REVIEW: How is this different than scaling the entire node? This variable is used a lot to scale multiple things.
       var scale = coinTerm.scaleProperty.get(); // for convenience
 
       // control front coin image visibility

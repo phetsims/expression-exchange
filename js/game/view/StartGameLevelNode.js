@@ -2,6 +2,8 @@
 
 /**
  * A node that fills most of the screen and allows the user to select the game level that they wish to play.
+ * REVIEW: Lots of duplicated code here with other files of the same name. Should be consolidated into vegas, or
+ * simplified in each use case.
  *
  * @author John Blanco
  */
@@ -27,14 +29,15 @@ define( function( require ) {
   var CONTROL_BUTTON_TOUCH_AREA_DILATION = 4;
 
   /**
-   * @param {Function} startLevelFunction - Function used to initiate a game
-   * level, will be called with a zero-based index value.
+   * @param {Function} startLevelFunction - Function used to initiate a game level, will be called with a zero-based
+   *                                        index value.
    * @param {Function} resetFunction - Function to reset game and scores.
-   * @param {Property} soundEnabledProperty
-   * @param {Array} iconNodes - Set of iconNodes to use on the buttons, sizes
-   * should be the same, length of array must match number of levels.
-   * @param {Array} scores - Current scores, used to decide which stars to
-   * illuminate on the level start buttons, length must match number of levels.
+   * @param {Property.<boolean>} soundEnabledProperty
+   * @param {Array.<Node>} iconNodes - Set of iconNodes to use on the buttons, sizes should be the same, length of array
+   *                                   must match number of levels.
+   * @param {Array.<Property.<number>>} scores - Current scores, used to decide which stars to illuminate on the level
+   *                                             start buttons, length must match number of levels.
+   *                                             REVIEW: added type doc here, but can you verify it's correct?
    * @param {Object} [options] - See code below for options and default values.
    * @constructor
    */
@@ -42,21 +45,23 @@ define( function( require ) {
 
     Node.call( this );
 
+    //REVIEW: Options not really ever needed, should just be inlined (there is only one constructor call!)
     options = _.extend( {
 
       // defaults
-      numLevels: 4,
+      numLevels: 4, // REVIEW: Move actual value (EEGameModel.NUMBER_OF_LEVELS) from EEGameScreenView to here.
       titleString: chooseYourLevelString,
       maxTitleWidth: 500,
-      numStarsOnButtons: 5,
-      perfectScore: 10,
+      numStarsOnButtons: 5, // REVIEW: Move actual value (EEGameModel.CHALLENGES_PER_LEVEL) from EEGameScreenView to here.
+      perfectScore: 10, // REVIEW: Move actual value (EEGameModel.MAX_SCORE_PER_LEVEL) from EEGameScreenView to here.
       buttonBackgroundColor: '#EDA891',
-      numButtonRows: 1, // For layout
-      controlsInset: 12,
-      size: EESharedConstants.LAYOUT_BOUNDS
+      numButtonRows: 1, // For layout REVIEW: Move actual value (2) from EEGameScreenView to here. Confusing to have two values when only one is ever used
+      controlsInset: 12, // REVIEW: move from EEGameScreenView, actual value 10
+      size: EESharedConstants.LAYOUT_BOUNDS // REVIEW: Don't specify default here, only usage uses layoutBounds
     }, options );
 
     // Verify parameters
+    //REVIEW: Looks like this should be an assertion instead?
     if ( iconNodes.length !== options.numLevels || scores.length !== options.numLevels ) {
       throw new Error( 'Number of game levels doesn\'t match length of provided arrays' );
     }
@@ -70,6 +75,7 @@ define( function( require ) {
       return function() { startLevelFunction( level ); };
     }
 
+    //REVIEW: Using a game Level object should help clean this code up?
     var buttons = new Array( options.numLevels );
     for ( var i = 0; i < options.numLevels; i++ ) {
       buttons[ i ] = new LevelSelectionButton(
@@ -82,6 +88,7 @@ define( function( require ) {
           baseColor: options.buttonBackgroundColor
         }
       );
+      //REVIEW: Why is this scale done here, instead of { scale: 0.8 } in the above options? (and 0.8 instead of 0.80)
       buttons[ i ].scale( 0.80 );
       this.addChild( buttons[ i ] );
     }
@@ -102,6 +109,7 @@ define( function( require ) {
     this.addChild( resetButton );
 
     // Layout
+    //REVIEW: Lots of copy-pasted code from other StartGameLevelNodes? Clean up, use layout boxes if possible
     var numColumns = options.numLevels / options.numButtonRows;
     var buttonSpacingX = buttons[ 0 ].width * 1.2; // Note: Assumes all buttons are the same size.
     var buttonSpacingY = buttons[ 0 ].height * 1.2;  // Note: Assumes all buttons are the same size.
@@ -124,6 +132,5 @@ define( function( require ) {
 
   expressionExchange.register( 'StartGameLevelNode', StartGameLevelNode );
 
-  // Inherit from Node.
   return inherit( Node, StartGameLevelNode );
 } );
