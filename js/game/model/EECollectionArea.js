@@ -98,7 +98,7 @@ define( function( require ) {
     /**
      * Test the provided coin term and, if it matches the spec, capture it by moving it into the center of this
      * collection area and, if it doesn't match, push it away.
-     * @param {Expression} coinTerm
+     * @param {CoinTerm} coinTerm
      * @public
      */
     collectOrRejectCoinTerm: function( coinTerm ) {
@@ -113,6 +113,7 @@ define( function( require ) {
       if ( this.isEmpty() && this.expressionDescriptionProperty.get().coinTermMatches( coinTerm ) ) {
 
         // collect this coin term
+        //REVIEW: use this.bounds.center instead?
         coinTerm.travelToDestination( new Vector2( this.bounds.getCenterX(), this.bounds.getCenterY() ) );
         coinTerm.collectedProperty.set( true );
         this.collectedItemProperty.set( coinTerm );
@@ -150,6 +151,7 @@ define( function( require ) {
       // figure out the destination, which is slightly different for coin terms versus expressions
       if ( collectedItem instanceof Expression ) {
         collectedItemBounds = collectedItem.getBounds();
+        //REVIEW: xDestination is the same for both branches of the if. Consolidate?
         xDestination = this.bounds.minX - collectedItemBounds.width - REJECTED_ITEM_DISTANCE;
         yDestination = this.bounds.getCenterY() - collectedItemBounds.height / 2;
       }

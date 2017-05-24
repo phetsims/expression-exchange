@@ -22,7 +22,7 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var EXPRESSION_COLLECTION_AREA_X_OFFSET = 750;
+  var EXPRESSION_COLLECTION_AREA_X_OFFSET = 750; //REVIEW: THe only use of this is in EECollectionArea. Move to there?
   var EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET = 50;
   var EXPRESSION_COLLECTION_AREA_Y_SPACING = 60;
   var NUM_EXPRESSION_COLLECTION_AREAS = 3;
@@ -49,18 +49,20 @@ define( function( require ) {
     var self = this;
 
     this.level = level; // {number} @public, read only
-    this.soundEnabledProperty = soundEnabledProperty; // @public (listen-only), used by view to enable/disable sounds
-    this.currentChallengeNumber = 0;
+    this.soundEnabledProperty = soundEnabledProperty; // @public {Property.<boolean>} (listen-only), used by view to enable/disable sounds
+    this.currentChallengeNumber = 0; //REVIEW: docs/visibility?
 
     // @public - property that refers to the current challenge
+    //REVIEW: type doc?
     this.currentChallengeProperty = new Property(
       EEChallengeDescriptors.getChallengeDescriptor( level, this.currentChallengeNumber )
     );
 
-    // @public (read only) - current score for this level
+    // @public {Property.<number>} (read only) - current score for this level
     this.scoreProperty = new Property( 0 );
 
     // helper function to update the score when items are collected or un-collected
+    //REVIEW: Lots of self references, maybe easier to specify as a method?
     function updateScore() {
       var score = 0;
       self.collectionAreas.forEach( function( collectionArea ) {
@@ -118,6 +120,7 @@ define( function( require ) {
       this.loadNextChallenge();
     },
 
+    //REVIEW: visibility/other doc?
     loadNextChallenge: function() {
       this.currentChallengeNumber = ( this.currentChallengeNumber + 1 ) % EEChallengeDescriptors.CHALLENGES_PER_LEVEL;
       this.currentChallengeProperty.set( EEChallengeDescriptors.getChallengeDescriptor(
