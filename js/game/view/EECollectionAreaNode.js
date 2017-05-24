@@ -17,7 +17,7 @@ define( function( require ) {
   var CORNER_RADIUS = 4;
 
   /**
-   * @param collectionArea
+   * @param {EECollectionArea} collectionArea
    * @constructor
    */
   function EECollectionAreaNode( collectionArea ) {
@@ -25,6 +25,7 @@ define( function( require ) {
     Node.call( this );
 
     // create the 'halo' that will turn on as a hint that the user can drop something into the collection area
+    //REVIEW: Rectangle.bounds( collectionArea.bounds, { cornerRadius: CORNER_RADIUS, ... } ) if we don't translate by the bounds minX/minY
     var halo = new Rectangle(
       0,
       0,
@@ -43,6 +44,7 @@ define( function( require ) {
     collectionArea.haloActiveProperty.linkAttribute( halo, 'visible' );
 
     // create the basic rectangular background
+    //REVIEW: Rectangle.bounds( collectionArea.bounds, { cornerRadius: CORNER_RADIUS, ... } ) if we don't translate by the bounds minX/minY
     var collectionAreaRectangle = new Rectangle(
       0,
       0,
@@ -64,10 +66,13 @@ define( function( require ) {
       // remove the previous expression description node, if present
       if ( expressionDescriptionNode ) {
         self.removeChild( expressionDescriptionNode );
+        //REVIEW: Usually with this pattern, the expressionDescriptionNode would be set to null? Otherwise if the
+        // description goes to null and back, things error?
       }
 
       // add the description node for the new expression
       if ( expressionDescription ) {
+        //REVIEW: If we don't translate by the bounds minX/minY (as suggested above), just use things relative to the bounds instead
         expressionDescriptionNode = new ExpressionDescriptionNode(
           expressionDescription,
           collectionArea.viewMode,
@@ -77,6 +82,7 @@ define( function( require ) {
       }
     } );
 
+    //REVIEW: Recommend removing this, as it makes the Rectangle constructors a lot more verbose (and is an extra line)
     this.setTranslation( collectionArea.bounds.minX, collectionArea.bounds.minY );
   }
 

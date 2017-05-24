@@ -30,12 +30,15 @@ define( function( require ) {
   var CARD_ICON_HEIGHT = 40;
 
   // helper function for creating coin-image-based icons
+  //REVIEW Type docs generally helpful when reading this type of function
   function createCoinIcon( coinTermTypeID, value ) {
 
     var rootNode = new Node();
     var imageNode;
 
     // create the coin image node
+    //REVIEW: These images are also used in similar switch statements in CoinNodeFactory. This could be potentially
+    // factored out into CoinNodeFactory?
     switch( coinTermTypeID ) {
       case CoinTermTypeID.X:
         imageNode = new Image( coinXTimesYFrontImage );
@@ -64,10 +67,14 @@ define( function( require ) {
       centerY: imageNode.height / 2
     } ) );
 
+    //REVIEW: Easier to
+    // return new Node( { children: [ imageNode, the_text_thing ] } ) rather than having an additional declaration and return.
+
     return rootNode;
   }
 
   // helper function for creating the icons that look like stacks of cards
+  //REVIEW Type docs generally helpful when reading this type of function
   function createCardStackIcon( numberOnStack, numberOfAdditionalCards ) {
     var rootNode = new Node();
     var cardWidth = ICON_WIDTH - numberOfAdditionalCards * CARD_STAGGER_OFFSET;
@@ -93,6 +100,7 @@ define( function( require ) {
     } ) );
 
     // add the cards to the root node
+    //REVIEW: cards.reverse() returns the reversed array, so that can be chained with the forEach directly
     cards.reverse();
     cards.forEach( function( card ) {
       rootNode.addChild( card );
@@ -117,6 +125,8 @@ define( function( require ) {
 
       var icon;
 
+      //REVIEW: If helpful, I've found it nice to have different objects for each level that handle creation of icons.
+      //REVIEW: No problem to leave as-is if this is the most convenient.
       switch( gameLevel ) {
 
         case 0:

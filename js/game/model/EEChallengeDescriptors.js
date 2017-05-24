@@ -562,7 +562,7 @@ define( function( require ) {
      * get a challenge descriptor for the specified level
      * @param {number} level
      * @param {number} challengeNumber
-     * @returns {Object}
+     * @returns {Object} REVIEW: Definitely need documentation on this. Why not create an EEChallengeDescriptor type?
      * @public
      */
     getChallengeDescriptor: function( level, challengeNumber ) {
@@ -571,6 +571,7 @@ define( function( require ) {
 
     /**
      * randomize the challenge sets
+     * @public
      */
     shuffleChallenges: function() {
       for ( var i = 0; i < challengeSets.length; i++ ) {
@@ -578,6 +579,7 @@ define( function( require ) {
       }
     },
 
+    //REVIEW: Usually type doc/visibility?
     CHALLENGES_PER_LEVEL: 5
   };
 

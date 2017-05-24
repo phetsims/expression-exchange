@@ -33,9 +33,11 @@ define( function( require ) {
   function EEGameIconNode() {
 
     // create the background
+    //REVIEW: Rectangle.dimension( ICON_SIZE, { fill: BACKGROUND_COLOR } )
     Rectangle.call( this, 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
 
     // created a rounded rectangle that looks like a card
+    //REVIEW: Recommend cornerRadius (duplicated) specified once in options object
     var cardBackground = new Rectangle( 0, 0, ICON_SIZE.width / 2, ICON_SIZE.height / 2, 20, 20, {
       x: ICON_SIZE.width * 0.1,
       y: ICON_SIZE.height * 0.1,
@@ -50,6 +52,7 @@ define( function( require ) {
     var coinEquation = new Node();
     coinEquation.addChild( new Text( '2', { font: TEXT_FONT } ) );
     var coinRadius = ICON_SIZE.width * 0.04; // empirically determined
+    //REVIEW: Can an HBox be used here? looks like anti-pattern with incrementing left based on extisting width.
     coinEquation.addChild( CoinNodeFactory.createIconNode( CoinTermTypeID.X, coinRadius, {
       left: coinEquation.width,
       centerY: coinEquation.centerY
@@ -68,11 +71,13 @@ define( function( require ) {
     } ) );
 
     // add the coin equation to the card
+    //REVIEW: coinEquation.center = cardBackground.localBounds.center?
     coinEquation.centerX = cardBackground.width / 2;
     coinEquation.centerY = cardBackground.height / 2;
     cardBackground.addChild( coinEquation );
 
     // create and add coins next to the card
+    //REVIEW: Has some values that could be factored out (and named for improved readability)
     this.addChild( CoinNodeFactory.createIconNode( CoinTermTypeID.X, coinRadius, {
       left: cardBackground.right + COIN_SPACING,
       centerY: cardBackground.top + cardBackground.height * 0.3

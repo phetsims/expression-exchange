@@ -28,13 +28,15 @@ define( function( require ) {
    */
   function EECollectionArea( x, y, viewMode ) {
 
-    // @public, read-only {Expression||CoinTerm} - expression or coin term that has been collected, null if nothing
+    // @public, read-only {Expression|CoinTerm} - expression or coin term that has been collected, null if nothing
     this.collectedItemProperty = new Property( null );
 
     // @public, read-write - description of the expression that this capture area can hold
+    //REVIEW: Is this {Property.<ExpressionDescription}?
     this.expressionDescriptionProperty = new Property( null );
 
-    // @public, read-only - bounds in model space of this capture area
+    // @public {Bounds2}, read-only - bounds in model space of this capture area
+    //REVIEW: EESharedConstants.COLLECTION_AREA_SIZE.toBounds( x, y )
     this.bounds = new Bounds2(
       x,
       y,
@@ -42,11 +44,11 @@ define( function( require ) {
       y + EESharedConstants.COLLECTION_AREA_SIZE.height
     );
 
-    // @public (read-only) - view mode (coins or variables)
+    // @public {ViewMode} (read-only) - view mode (coins or variables)
     this.viewMode = viewMode;
 
-    // @public - used by the view to turn on/off a "halo" for the collection area, generally used when the user holds
-    // something over the collection area
+    // @public {Property.<boolean>} - used by the view to turn on/off a "halo" for the collection area, generally used
+    // when the user holds something over the collection area
     this.haloActiveProperty = new Property( false );
   }
 
@@ -169,6 +171,7 @@ define( function( require ) {
      * get a reference to this collection area's model bounds, the results should not be changed
      * @returns {Bounds2}
      * @public
+     * REVIEW: this.bounds is public, what's the purpose of this extra method? Is it overridden anywhere?
      */
     getBounds: function() {
       return this.bounds;
