@@ -81,7 +81,7 @@ define( function( require ) {
     //REVIEW: Here's an example where type documentation really helps. No idea (in initial read through) what type it can hold.
     this.inProgressAnimationProperty = new Property( null );
 
-    // @public (read-only) - total number of coins/terms combined into this one, can be negative
+    // @public {Property.<number>} (read-only) - total number of coins/terms combined into this one, can be negative
     this.totalCountProperty = new Property( options.initialCount );
 
     // @public (read-write) - flag that controls whether breaking apart is allowed
@@ -92,13 +92,15 @@ define( function( require ) {
     // having it available on the model element after being set by the view worked out to be the best approach.
     this.relativeViewBoundsProperty = new Property( null );
 
-    // @public (read only) - ranges from 1 to 0, used primarily for fading out of a coin term when cancellation occurs
+    // @public {Property.<number>} (read only) - ranges from 1 to 0, used primarily for fading out of a coin term when
+    //                                           cancellation occurs
     this.existenceStrengthProperty = new Property( 1 );
 
-    // @public, determines the opacity of the card on which the coin term can reside
-    this.cardOpacityProperty = new Property( options.initiallyOnCard ? 1.0 : 0 );
+    // @public {Property.<number>}, determines the opacity of the card on which the coin term can reside
+    this.cardOpacityProperty = new Property( options.initiallyOnCard ? 1 : 0 );
 
-    // @public, used by view to make the coin terms appear smaller if necessary when put in collection areas (game only)
+    // @public {Property.<number>}, used by view to make the coin terms appear smaller if necessary when put in
+    //                              collection areas (game only)
     this.scaleProperty = new Property( 1 );
 
     //------------------------------------------------------------------------
@@ -131,6 +133,7 @@ define( function( require ) {
     }
 
     // @private - countdown timers for fading out the card background
+    //REVIEW: What type? Maybe {number|null}
     this.cardPreFadeCountdown = null;
     this.cardFadeCountdown = null;
 
@@ -138,16 +141,16 @@ define( function( require ) {
     // emitters
     //------------------------------------------------------------------------
 
-    // @public, listen only, emits an event when an animation finishes and the destination is reached
+    // @public {Emitter}, listen only, emits an event when an animation finishes and the destination is reached
     this.destinationReachedEmitter = new Emitter();
 
-    // @public, listen only, emits an event when coin terms returns to original position and is not user controlled
+    // @public {Emitter}, listen only, emits an event when coin terms returns to original position and is not user controlled
     this.returnedToOriginEmitter = new Emitter();
 
-    // @public, listen only, emits an event when this coin term should be broken apart
+    // @public {Emitter}, listen only, emits an event when this coin term should be broken apart
     this.breakApartEmitter = new Emitter();
 
-    // @private, used when animating back to original position
+    // @private {Vector2}, used when animating back to original position
     this.initialPosition = options.initialPosition;
 
     //------------------------------------------------------------------------
@@ -269,21 +272,21 @@ define( function( require ) {
      * @public
      */
     travelToDestination: function( destination ) {
-      var self = this;
       this.destinationProperty.set( destination );
       var currentPosition = this.positionProperty.get();
       if ( currentPosition.equals( destination ) ) {
 
         // The coin terms is already at the destination, no animation is required, but emit a notification in case the
         // the client needs it.
-        self.destinationReachedEmitter.emit();
+        this.destinationReachedEmitter.emit();
       }
       else {
 
         // calculate the time needed to get to the destination
-        var animationDuration = self.positionProperty.get().distance( destination ) /
+        var animationDuration = this.positionProperty.get().distance( destination ) /
                                 EESharedConstants.COIN_TERM_MOVEMENT_SPEED;
 
+        //REVIEW: Should this be a separate type, since it's available as a public Property?
         this.inProgressAnimationProperty.set( {
           startPosition: this.positionProperty.get().copy(),
           travelVector: destination.minus( this.positionProperty.get() ),

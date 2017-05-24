@@ -22,9 +22,9 @@ define( function( require ) {
   var DIFFERENT_TYPE_VERTICAL_SPACING = 8;
 
   /**
-   * {ExpressionManipulationModel} model
-   * {Array.<CoinTermTypeID>} displayList - a list of the coin terms types to display in the desired order
-   * {Object} options
+   * @param {ExpressionManipulationModel} model
+   * @param {Array.<CoinTermTypeID>} displayList - a list of the coin terms types to display in the desired order
+   * @param {Object} options
    * @constructor
    */
   function CollectionDisplayNode( model, displayList, options ) {

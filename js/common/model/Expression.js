@@ -44,17 +44,18 @@ define( function( require ) {
     // properties
     //------------------------------------------------------------------------
 
-    this.upperLeftCornerProperty = new Property( Vector2.ZERO ); // @public (read only)
-    this.widthProperty = new Property( 0 ); // @public (read only)
-    this.heightProperty = new Property( 0 ); // @public (read only)
-    this.userControlledProperty = new Property( false ); // @public (read-write)
-    this.inEditModeProperty = new Property( false ); // @public, indicates whether this expression is being edited
-    this.collectedProperty = new Property( false ); // @public, indicates whether this is in a collection box (for game)
+    this.upperLeftCornerProperty = new Property( Vector2.ZERO ); // @public {Property.<Vector2>} (read only)
+    this.widthProperty = new Property( 0 ); // @public {Property.<number>} (read only)
+    this.heightProperty = new Property( 0 ); // @public {Property.<number>} (read only)
+    this.userControlledProperty = new Property( false ); // @public {Property.<boolean>} (read-write)
+    this.inEditModeProperty = new Property( false ); // @public {Property.<boolean>}, indicates whether this expression is being edited
+    this.collectedProperty = new Property( false ); // @public {Property.<boolean>}, indicates whether this is in a collection box (for game)
 
     // @public (read only), tracks the current in-progress animation, if any
+    //REVIEW: Type docs especially important here. No clue what type it takes besides null
     this.inProgressAnimationProperty = new Property( null );
 
-    // @public (read only) indicates whether the 'combine halo' should be visible
+    // @public {Property.<boolean>} (read only) indicates whether the 'combine halo' should be visible
     this.combineHaloActiveProperty = new Property( false );
 
     // @public (read only) - size and state of the hints that can appear at left and right of the expression
@@ -77,34 +78,34 @@ define( function( require ) {
     // observable arrays
     //------------------------------------------------------------------------
 
-    // @public, read and listen only, items should be added and removed via methods
+    // @public {ObservableArray.<CoinTerm>}, read and listen only, items should be added and removed via methods
     this.coinTerms = new ObservableArray();
 
     //------------------------------------------------------------------------
     // emitters
     //------------------------------------------------------------------------
 
-    // @public, listen only, emits an event when an animation finishes and the destination is reached
+    // @public {Emitter}, listen only, emits an event when an animation finishes and the destination is reached
     this.destinationReachedEmitter = new Emitter();
 
-    // @public, listen only, emits an event when this expression has been selected by the user to be edited
+    // @public {Emitter}, listen only, emits an event when this expression has been selected by the user to be edited
     this.selectedForEditEmitter = new Emitter();
 
-    // @public, listen only, emits an event when the size of the expression or the relative positions of the coins
+    // @public {Emitter}, listen only, emits an event when the size of the expression or the relative positions of the coins
     // change, generally used by the view so that it knows when to update, does NOT fire for position-only changes
     // or for activation/deactivation of hints
     this.layoutChangedEmitter = new Emitter();
 
-    // @public, listen only, emits an event when this expression should be broken apart
+    // @public {Emitter}, listen only, emits an event when this expression should be broken apart
     this.breakApartEmitter = new Emitter();
 
     //------------------------------------------------------------------------
     // non-observable attributes
     //------------------------------------------------------------------------
 
-    // @private, tracks coin terms that are hovering over this expression but are being controlled by the user so are
-    // not yet part of the expression.  This is used to activate and size the hints.  Coin terms should be added and
-    // removed via methods.
+    // @private {Array.<CoinTerm>}, tracks coin terms that are hovering over this expression but are being controlled by
+    // the user so are not yet part of the expression.  This is used to activate and size the hints.  Coin terms should
+    // be added and removed via methods.
     this.hoveringCoinTerms = [];
 
     // @private, tracks expressions that are hovering over this expression and would be combined with this one if
@@ -303,6 +304,7 @@ define( function( require ) {
       }
     },
 
+    // TODO: doc
     dispose: function() {
       this.disposeExpression();
     },
@@ -337,7 +339,7 @@ define( function( require ) {
      * Size the expression and, if necessary, move the contained coin terms so that all coin terms are appropriately
      * positioned.  This is generally done when something affects the view bounds of the coin terms, such as turning
      * on coefficients or switching from coin view to variable view.
-     * {boolean} animate
+     * @param {boolean} animate
      * @private
      */
     updateSizeAndCoinTermPositions: function( animate ) {
@@ -410,6 +412,7 @@ define( function( require ) {
     addCoinTerm: function( coinTerm ) {
 
       if ( this.coinTerms.contains( coinTerm ) ) {
+        //REVIEW: This.
         // TODO:   There is a race condition that only occurs during fuzz testing where somehow a coin term that is
         // inside an expression becomes user controlled and then is added back to the expression.  This is a workaround.
         // This should be fully investigated before publication.  See

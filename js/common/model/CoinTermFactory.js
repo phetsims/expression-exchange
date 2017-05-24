@@ -26,9 +26,9 @@ define( function( require ) {
 
   /**
    * REVIEW: Needs @param
-   * {number} xValueProperty
-   * {number} yValueProperty
-   * {number} zValueProperty
+   * @param {number} xValueProperty
+   * @param {number} yValueProperty
+   * @param {number} zValueProperty
    * @constructor
    */
   function CoinTermFactory( xValueProperty, yValueProperty, zValueProperty ) {

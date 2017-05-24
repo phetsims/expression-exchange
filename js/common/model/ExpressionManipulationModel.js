@@ -36,7 +36,7 @@ define( function( require ) {
 
   /**
    * @constructor
-   * {Object} options
+   * @param {Object} [options]
    */
   function ExpressionManipulationModel( options ) {
 
@@ -56,38 +56,52 @@ define( function( require ) {
     var initialViewMode = options.allowedRepresentations === AllowedRepresentationsEnum.VARIABLES_ONLY ?
                           ViewMode.VARIABLES : ViewMode.COINS;
 
-    this.viewModeProperty = new Property( initialViewMode ); // @public
-    this.showCoinValuesProperty = new Property( false ); // @public
-    this.showVariableValuesProperty = new Property( false ); // @public
-    this.showAllCoefficientsProperty = new Property( false ); // @public
-    this.xTermValueProperty = new Property( 2 ); // @public
-    this.yTermValueProperty = new Property( 5 ); // @public
-    this.zTermValueProperty = new Property( 10 ); // @public
-    this.totalValueProperty = new Property( 0 ); // @public, read-only
-    this.expressionBeingEditedProperty = new Property( null ); // @public, read-only, null when no expression is in edit mode
-    this.simplifyNegativesProperty = new Property( options.simplifyNegativesDefault ); // @public
+    // @public {Property.<ViewMode>}
+    this.viewModeProperty = new Property( initialViewMode );
+
+    // @public {Property.<boolean>}
+    this.showCoinValuesProperty = new Property( false );
+    this.showVariableValuesProperty = new Property( false );
+    this.showAllCoefficientsProperty = new Property( false );
+
+    // @public {Property.<number>}
+    this.xTermValueProperty = new Property( 2 );
+    this.yTermValueProperty = new Property( 5 );
+    this.zTermValueProperty = new Property( 10 );
+
+    // @public {Property.<number>} (read-only)
+    this.totalValueProperty = new Property( 0 );
+
+    // @public {???}, read-only, null when no expression is in edit mode
+    //REVIEW: type docs?
+    this.expressionBeingEditedProperty = new Property( null );
+
+    // @public {Property.<boolean>}
+    this.simplifyNegativesProperty = new Property( options.simplifyNegativesDefault );
 
     var self = this;
 
-    // @public, read only, factory used to create coin terms
+    // @public {CoinTermFactory}, read only, factory used to create coin terms
     this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
 
-    // @public, read only, options that control what is available to the user to manipulate
+    // @public {AllowedRepresentationsEnum}, read only, options that control what is available to the user to manipulate
     this.allowedRepresentations = options.allowedRepresentations;
 
-    // @public, read and listen only, list of all coin terms in the model
+    // @public {ObservableArray.<CoinTerm>}, read and listen only, list of all coin terms in the model
     this.coinTerms = new ObservableArray();
 
-    // @public, read and listen only, list of expressions in the model
+    // @public {ObservableArray.<Expression>}, read and listen only, list of expressions in the model
     this.expressions = new ObservableArray();
 
-    // @public, read and listen only, list of expression hints in the model
+    // @public {ObservableArray.<ExpressionHint}, read and listen only, list of expression hints in the model
     this.expressionHints = new ObservableArray();
 
-    // @public (read-only) - coin terms that end up outside these bounds are moved back inside the bounds
+    // @public {Bounds2} (read-only) - coin terms that end up outside these bounds are moved back inside the bounds
     this.coinTermRetrievalBounds = Bounds2.EVERYTHING;
 
-    // @public, read only - areas where expressions or coin terms can be collected, used only in game
+    // @public {Array.<EECollectionArea>}, read only - areas where expressions or coin terms can be collected, used
+    //                                                 only in game
+    //REVIEW: Type docs are correct? Added but was hard to find
     this.collectionAreas = [];
 
     /*
@@ -980,6 +994,7 @@ define( function( require ) {
     },
 
     // @public
+    //REVIEW: more docs
     reset: function() {
 
       // reset any collection areas that have been created
@@ -1008,6 +1023,7 @@ define( function( require ) {
     },
 
     // @private - test if coinTermB is in the "expression combine zone" of coinTermA
+    //REVIEW: more docs
     isCoinTermInExpressionCombineZone: function( coinTermA, coinTermB ) {
 
       // TODO: This could end up being a fair amount of allocations and may need some pre-allocated bounds for good performance
@@ -1024,6 +1040,7 @@ define( function( require ) {
     /**
      * returns true if coin term is currently part of an expression
      * @param {CoinTerm} coinTerm
+     * @returns {boolean}
      * @public
      */
     isCoinTermInExpression: function( coinTerm ) {
@@ -1039,7 +1056,8 @@ define( function( require ) {
      * Check for coin terms that are not already in expressions that are positioned such that they could combine with
      * the provided coin into a new expression.  If more than one possibility exists, the closest is returned.  If none
      * are found, null is returned.
-     * @param thisCoinTerm
+     * @param {CoinTerm} thisCoinTerm
+     * @returns {CoinTerm|null}
      * @private
      */
     checkForJoinableFreeCoinTerm: function( thisCoinTerm ) {
@@ -1126,9 +1144,9 @@ define( function( require ) {
       return mostOverlappingLikeCoinTerm;
     },
 
+    //REVIEW: docs
     getOverlappingLikeCoinTermWithinExpression: function( coinTerm, expression ) {
 
-      var self = this;
       var overlappingCoinTerm = null;
 
       for ( var i = 0; i < expression.coinTerms.length; i++ ) {
@@ -1137,11 +1155,11 @@ define( function( require ) {
              potentiallyOverlappingCoinTerm.existenceStrengthProperty.get() === 1 &&
              potentiallyOverlappingCoinTerm.canCombineWith( coinTerm ) ) {
           var overlapAmount = 0;
-          if ( self.viewModeProperty.get() === ViewMode.COINS ) {
-            overlapAmount = self.getCoinOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
+          if ( this.viewModeProperty.get() === ViewMode.COINS ) {
+            overlapAmount = this.getCoinOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
           }
           else {
-            overlapAmount = self.getViewBoundsOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
+            overlapAmount = this.getViewBoundsOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
           }
           if ( overlapAmount > 0 ) {
             overlappingCoinTerm = potentiallyOverlappingCoinTerm;

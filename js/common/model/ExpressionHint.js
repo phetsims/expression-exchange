@@ -19,9 +19,11 @@ define( function( require ) {
    */
   function ExpressionHint( anchorCoinTerm, movingCoinTerm ) {
 
-    // @public, read only
+    // @public {CoinTerm}, read only
     this.anchorCoinTerm = anchorCoinTerm;
     this.movingCoinTerm = movingCoinTerm;
+
+    // @public {boolean}
     this.anchorOnLeft = anchorCoinTerm.positionProperty.get().x < movingCoinTerm.positionProperty.get().x;
 
     // set the flag indicating that breaking apart is suppressed
@@ -36,6 +38,7 @@ define( function( require ) {
     /**
      * returns true if this expression hint includes the provided coin term
      * @param {CoinTerm} coinTerm
+     * @returns {boolean}
      * @public
      */
     containsCoinTerm: function( coinTerm ) {
@@ -43,6 +46,7 @@ define( function( require ) {
     },
 
     // @public
+    //REVIEW: doc
     equals: function( otherExpressionHint ) {
       return ( otherExpressionHint.anchorCoinTerm === this.anchorCoinTerm &&
                otherExpressionHint.movingCoinTerm === this.movingCoinTerm &&
@@ -50,6 +54,7 @@ define( function( require ) {
       );
     },
 
+    //REVIEW: doc
     clear: function() {
       this.anchorCoinTerm.breakApartAllowedProperty.set( true );
       this.movingCoinTerm.breakApartAllowedProperty.set( true );

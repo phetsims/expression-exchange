@@ -3,6 +3,8 @@
 /**
  * a Scenery node that represents a visual description of an expression, used in the game to describe what the user
  * should attempt to construct
+ *
+ * REVIEW: This should use the ExpressionDescription's terms / termArray instead of re-parsing the string?
  */
 define( function( require ) {
   'use strict';
@@ -40,6 +42,7 @@ define( function( require ) {
     var self = this;
     Node.call( this );
 
+    //REVIEW: Using HBoxes would potentially be cleaner (not specifying lefts/centerYs everywhere)?
     var nextXPos = 0;
 
     if ( viewMode === ViewMode.COINS ) {
@@ -84,6 +87,7 @@ define( function( require ) {
       // go through the expression string, turning the various pieces into nodes
       var expressionStringIndex = 0;
       while ( expressionStringIndex < expressionDescription.expressionString.length ) {
+        //REVIEW: Why are we parsing this string, instead of relying on the terms array?
         var expressionFragmentInfo = createExpressionFragment(
           expressionDescription.expressionString,
           expressionStringIndex
@@ -105,6 +109,7 @@ define( function( require ) {
    * helper function that creates an object that consists of a node that represents a variable and the number of
    * characters from the expression string that the node represents
    */
+  //REVIEW: Why parsing strings, and not using a logical (object) format with equivalent toString methods?
   function createVariableExpressionFragment( expressionString, startIndex ) {
 
     // error checking
@@ -112,11 +117,17 @@ define( function( require ) {
     assert && assert( firstChar === 'x' || firstChar === 'y' || firstChar === 'z', 'unexpected first char of string' );
 
     // create the object that will be populated and returned
+    //REVIEW: Usually simpler to return inline new objects, e.g.
+    // return {
+    //   node: ...,
+    //   charsUsed: ...
+    // }
     var nodeInfo = {
       node: null,
       charsUsed: 0
     };
 
+    //REVIEW: Just use the parsed ExpressionDescription instead of this?
     // identify the expression to be created based on a finite set of those supported
     if ( expressionString.indexOf( 'x^2', startIndex ) === startIndex ) {
       nodeInfo.node = new RichText( EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>', SUB_SUP_OPTIONS );
@@ -157,6 +168,7 @@ define( function( require ) {
     return nodeInfo;
   }
 
+  //REVIEW: Why parsing strings, and not using a logical (object) format with equivalent toString methods?
   function createNonVariableExpressionFragment( expressionString, startIndex ) {
     var fragmentString = '';
     var index = startIndex;
@@ -185,6 +197,7 @@ define( function( require ) {
    */
   function createExpressionFragment( expressionString, index ) {
 
+    //REVIEW: Why are we parsing strings? Presumably there is an improved logical representation of this that would be easier?
     var expressionFragment;
     var nextChar = expressionString.charAt( index );
     if ( nextChar === 'x' || nextChar === 'y' || nextChar === 'z' ) {

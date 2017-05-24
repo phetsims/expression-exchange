@@ -16,19 +16,22 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
 
   /**
-   * @param {String} expressionString
+   * @param {string} expressionString
    * @constructor
    */
   function ExpressionDescription( expressionString ) {
 
-    // @public, read-only - the string that describes this expression
+    // @public {string}, read-only - the string that describes this expression
     this.expressionString = expressionString;
 
     // remove all spaces from the expression
     var noWhitespaceExpressionString = expressionString.replace( /\s/g, '' );
 
-    // @public, read-only - description of the expression as an ordered set of objects that contain the coefficient and
+    // @public {Array.<{ coefficient: {number}, coinTermTypeID: {CoinTermTypeID} }>}, read-only
+    // Description of the expression as an ordered set of objects that contain the coefficient and
     // the coin term ID, e.g. { coefficient: 2, coinTermTypeID: CoinTermTypeID.X }
+    //REVIEW: Why are these not Term objects? Separate type for this would be appriopriate
+    //REVIEW: Usually 'terms' as a property name would imply the array?
     this.termsArray = interpretExpression( noWhitespaceExpressionString, 0 ).termsArray;
   }
 
@@ -38,7 +41,10 @@ define( function( require ) {
   }
 
   // helper function to multiply two terms together
+  //REVIEW: doc? are these CoinTerms or the custom duck-typed object input? describe result? Maybe both are allowed?
+  //REVIEW: Ideally this would be a method on a Term object?
   function multiplyTerms( term1, term2 ) {
+    //REVIEW: Why wouldn't the multiplication of terms be a term itself? Can we separate out a Term object?
     var result = {
       coefficient: term1.coefficient * term2.coefficient,
       coinTermTypeID: null
@@ -64,6 +70,7 @@ define( function( require ) {
       result.coinTermTypeID = CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED;
     }
     else {
+      //REVIEW: throw preferred instead of assert( false )
       assert && assert( false, 'unhandled term type combination for multiplication operation' );
     }
 
@@ -74,8 +81,10 @@ define( function( require ) {
    * helper function that takes an expression string and an index and returns the terms, used recursively to handle
    * parentheses
    * @param {String} expressionString - description of string with no white space or multiplication symbols, e.g.
-   * 2x-1 or x(y+2)
+   *                                    2x-1 or x(y+2)
    * @param {number}currentIndex
+   * REVIEW: returns???
+   * REVIEW: Doesn't seem to handle '(x+2)' (first test). Does it need to be that general?
    */
   function interpretExpression( expressionString, currentIndex ) {
     var termsArray = [];
@@ -166,6 +175,7 @@ define( function( require ) {
   }
 
   // helper function to extract a term from the equation string and interpret it as a coin term and quantity
+  //REVIEW: doesn't doc return type (pages of code below)
   function extractTerm( expressionString, index ) {
 
     // handle the sign in front of the coefficient, if present
@@ -204,6 +214,13 @@ define( function( require ) {
     // extract the string that represents the term
     var termString = expressionString.substring( index, termEndIndex ).toLowerCase();
 
+    //REVIEW: Could simplify this with a lookup table, e.g.
+    // var termStringMap = {
+    //   '': CoinTermTypeID.CONSTANT,
+    //   'x^2*y^2': CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED,
+    //   'x^2': CoinTermTypeID.X_SQUARED,
+    //   ...
+    // }
     var coinTermTypeID = null;
     if ( termString.length === 0 ) {
       coinTermTypeID = CoinTermTypeID.CONSTANT;
@@ -253,6 +270,7 @@ define( function( require ) {
       expressionMatches: function( expression ) {
 
         // count the totals of the coin term types in the provided expression
+        //REVIEW: noting the key and value types of this would help ({CoinTermTypeID} => {number})?
         var expressionCoinTermCounts = {};
         expression.coinTerms.forEach( function( coinTerm ) {
           if ( expressionCoinTermCounts[ coinTerm.typeID ] ) {
@@ -303,6 +321,7 @@ define( function( require ) {
           return false;
         }
 
+        //REVIEW: why not have whatever Term type have equality?
         return this.termsArray[ 0 ].coinTermTypeID === coinTerm.typeID &&
                this.termsArray[ 0 ].coefficient === coinTerm.totalCountProperty.get();
       }

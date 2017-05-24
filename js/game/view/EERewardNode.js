@@ -37,6 +37,9 @@ define( function( require ) {
     nodes.push( new Text( 'x', { font: VARIABLE_FONT } ) );
     nodes.push( new Text( 'y', { font: VARIABLE_FONT } ) );
     nodes.push( new Text( 'z', { font: VARIABLE_FONT } ) );
+
+    //REVIEW: Don't like this pattern, what if you add a function to the enumeration type?
+    //REVIEW: Recommend instead adding CoinTermTypeID.VALUES as an array with all of the enumeration values.
     _.values( CoinTermTypeID ).forEach( function( coinTermTypeId ) {
       if ( coinTermTypeId !== CoinTermTypeID.CONSTANT ) {
         nodes.push( CoinNodeFactory.createImageNode( coinTermTypeId, COIN_RADIUS, 'front' ) );
