@@ -60,11 +60,12 @@ define( function( require ) {
           leftHalfWidth = anchorCTBounds.width + 2 * INSET;
           rightHalfWidth = movingCTBounds.width + 2 * INSET;
           leftHalfCenterX = expressionHint.anchorCoinTerm.positionProperty.get().x +
-                            ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2;
+                            ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2; //REVIEW: bounds.centerX?
         }
         else { // anchor coin term is on the right
           leftHalfWidth = movingCTBounds.width + 2 * INSET;
           rightHalfWidth = anchorCTBounds.width + 2 * INSET;
+          //REVIEW: use bounds.centerX
           leftHalfCenterX = expressionHint.anchorCoinTerm.positionProperty.get().x + ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2 - anchorCTBounds.width / 2 - INSET - movingCTBounds.width / 2 - INSET;
         }
 

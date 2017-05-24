@@ -5,6 +5,8 @@
  * REVIEW: Lots of duplicated code here with other files of the same name. Should be consolidated into vegas, or
  * simplified in each use case.
  *
+ * REVIEW: Created as a 'levelSelectionNode' variable, can we change name to LevelSelectionNode?
+ *
  * @author John Blanco
  */
 define( function( require ) {

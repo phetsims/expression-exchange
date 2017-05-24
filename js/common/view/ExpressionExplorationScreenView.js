@@ -312,6 +312,7 @@ define( function( require ) {
     this.visibleBoundsProperty.link( function( visibleBounds ) {
 
       // update the positions of the floating controls
+      // REVIEW: use bounds.left/bounds.right
       totalValueAccordionBox.left = visibleBounds.minX + FLOATING_PANEL_INSET;
       variableValuesAccordionBox.left = visibleBounds.minX + FLOATING_PANEL_INSET;
       myCollectionAccordionBox.right = visibleBounds.maxX - FLOATING_PANEL_INSET;
@@ -321,6 +322,7 @@ define( function( require ) {
       if ( showSubtractionCheckbox ) {
         showSubtractionCheckbox.left = myCollectionAccordionBox.left;
       }
+      //REVIEW: bounds.right
       resetAllButton.right = visibleBounds.maxX - FLOATING_PANEL_INSET;
     } );
 

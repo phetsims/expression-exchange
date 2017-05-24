@@ -38,10 +38,10 @@ define( function( require ) {
    * @param {EEGameLevelModel} levelModel
    * @param {Bounds2} screenLayoutBounds
    * @param {Property.<Bounds2>} visibleBoundsProperty
-   * @param {function} nextLevelFunction - function called when user hits 'next' button
+   * @param {Function} nextLevelFunction - function called when user hits 'next' button REVIEW callback param docs
    * @param {Property.<boolean>} allLevelsCompletedProperty - property that indicates when all levels are successfully
-   * completed
-   * @param {function} returnToLevelSelectionFunction
+   *                                                          completed
+   * @param {Function} returnToLevelSelectionFunction REVIEW: callback param docs
    * @constructor
    */
   function EEGameLevelView( levelModel,
@@ -52,16 +52,19 @@ define( function( require ) {
                             returnToLevelSelectionFunction ) {
 
     var self = this;
+
     Node.call( this );
 
-    // @public {boolean} - a property that is externally set to true when this node is in the view port and available
-    // for interaction with the user.  This is done in the view rather than in the model because the model has no
-    // awareness of the slide in/out animations, and clocking the reward node during those animations caused
+    // @public {Property.<boolean>} - a property that is externally set to true when this node is in the view port and
+    // available for interaction with the user.  This is done in the view rather than in the model because the model has
+    // no awareness of the slide in/out animations, and clocking the reward node during those animations caused
     // performance issues, and this property can be used to only clock when this is in the viewport.
     this.inViewportProperty = new Property( false );
 
     // add an invisible background rectangle so that bounds are correct
+    //REVIEW: Shouldn't need a reference to this with proper layering?
     var background = new Rectangle( screenLayoutBounds, {
+      //REVIEW: if for debugging, why still here?
       stroke: 'rgba( 0, 0, 200, 0.01 )' // increase opacity to make the outline visible if desired (for debugging)
     } );
     this.addChild( background );
@@ -76,6 +79,8 @@ define( function( require ) {
 
     // add the back button
     var backButton = new BackButton( {
+      //REVIEW: easier to read with screenLayoutBounds.left and screenLayoutBounds.top
+      //REVIEW: Or leftTop: screenLayoutBounds.eroded( 30 ).leftTop
       left: screenLayoutBounds.minX + 30,
       top: screenLayoutBounds.minY + 30,
       listener: returnToLevelSelectionFunction
@@ -114,6 +119,7 @@ define( function( require ) {
         { centerX: title.centerX, bottom: screenLayoutBounds.bottom - 40 }
       );
       self.addChild( coinTermCreatorBox );
+      //REVIEW: Seems like an anti-pattern to moveToBack here. Use layers instead?
       coinTermCreatorBox.moveToBack(); // needs to be behind coin term and other layers...
       background.moveToBack(); // ...except for the background
 
@@ -122,11 +128,13 @@ define( function( require ) {
     } );
 
     // add the check box that allows expressions with negative values to be simplified
+    //REVIEW: Third collection area seems easy to break in future refactoring. Pick last collection area instead?
     var boundsOfLowestCollectionArea = levelModel.collectionAreas[ 2 ].bounds;
     var showSubtractionCheckbox = new CheckBox(
       new ShowSubtractionIcon(),
       levelModel.simplifyNegativesProperty,
       {
+        //REVIEW: for readability, use bounds.left and bounds.bottom?
         left: boundsOfLowestCollectionArea.minX,
         top: boundsOfLowestCollectionArea.maxY + 20,
         maxWidth: boundsOfLowestCollectionArea.minX
@@ -161,6 +169,7 @@ define( function( require ) {
     this.addChild( expressionManipulationView );
 
     // hook up the audio player for playing a correct answer
+    //REVIEW: Presumably this one is used, the one in EEGameScreenView is not?
     var gameAudioPlayer = new GameAudioPlayer( levelModel.soundEnabledProperty );
     levelModel.scoreProperty.link( function( newScore, oldScore ) {
 
@@ -171,11 +180,12 @@ define( function( require ) {
     } );
 
     // control the visibility of the reward node
+    //REVIEW: Can we create this on startup, so the extra logic isn't needed?
     function createRewardNode() {
       if ( !self.rewardNode ) {
         self.rewardNode = new EERewardNode();
         background.addChild( self.rewardNode );
-        self.rewardNode.moveToBack();
+        self.rewardNode.moveToBack(); //REVIEW: Why immediately move to back? why not insert it at the correct place?
       }
     }
 
@@ -211,10 +221,11 @@ define( function( require ) {
 
   return inherit( Node, EEGameLevelView, {
 
-
     // @public
+    //REVIEW: docs?
     step: function( dt ) {
       if ( this.inViewportProperty.get() && this.rewardNode && this.rewardNode.visible ) {
+        //REVIEW: Generally preferred to cap DT at the top level. Is the cap only needed for RewardNode?
         this.rewardNode.step( Math.min( dt, 1 ) );
       }
     },

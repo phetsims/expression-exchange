@@ -3,6 +3,9 @@
 /**
  * model for a single level of the Expression Exchange game
  *
+ * REVIEW: Why the 'Model' suffix? Usually would just be EEGameLevel
+ * (thought this was the main model for the screen).
+ *
  * @author John Blanco
  */
 define( function( require ) {
@@ -25,7 +28,7 @@ define( function( require ) {
   var NUM_EXPRESSION_COLLECTION_AREAS = 3;
 
   /**
-   * @param {number} level
+   * @param {number} level REVIEW: levelNumber? This object is the level!
    * @param {AllowedRepresentationsEnum} allowedRepresentations
    * @param {Property.<boolean>} soundEnabledProperty
    * @constructor

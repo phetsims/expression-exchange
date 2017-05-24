@@ -11,6 +11,7 @@ define( function( require ) {
   // modules
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
+  //REVIEW: Rename to AllowedRepresentation? Other enumerations are not named
   var AllowedRepresentationsEnum = {
     COINS_ONLY: 'COINS_ONLY',
     VARIABLES_ONLY: 'VARIABLES_ONLY',

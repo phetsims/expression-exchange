@@ -41,6 +41,7 @@ define( function( require ) {
 
     // @public, currently selected level, null indicates no level selected which means that the level selection screen
     // should be shown in the view
+    //REVIEW: Why is this not just a property of the EEGameLevelModel objects? Should simplify a lot of code
     this.currentLevelProperty = new Property( null );
 
     //------------------------------------------------------------------------
@@ -50,7 +51,7 @@ define( function( require ) {
     // shuffle the challenge descriptors before creating the levels
     EEChallengeDescriptors.shuffleChallenges();
 
-    // @public (read-only) - models for each of the game levels
+    // @public (read-only) - models for each of the game levels REVIEW: gameLevels is a better name?
     this.gameLevelModels = [];
     _.times( NUMBER_OF_LEVELS, function( level ) {
       self.gameLevelModels.push( new EEGameLevelModel(
@@ -100,6 +101,9 @@ define( function( require ) {
       },
 
       // @public
+      //REVIEW: docs?
+      //REVIEW: This is done right after creating the views for each level. Can we just pass it as part of the view
+      // construction?
       setCoinTermRetrievalBounds: function( bounds ) {
         this.gameLevelModels.forEach( function( gameLevelModel ) {
           gameLevelModel.setCoinTermRetrievalBounds( bounds );
