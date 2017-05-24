@@ -91,7 +91,10 @@ define( function( require ) {
     model.creatorBoxBounds = coinTermCreatorBox.bounds;
 
     // create the readout that will display the total accumulated value, use max length string initially
-    var totalValueText = new Text( StringUtils.format( numberCentsPatternString, 9999 ), { font: new PhetFont( { size: 14 } ) } );
+    var totalValueText = new Text(
+      StringUtils.fillIn( numberCentsPatternString, { number: 9999 } ),
+      { font: new PhetFont( { size: 14 } ) }
+    );
     var totalValueReadoutWidth = totalValueText.width + 20;
     var totalValueReadout = new Panel( totalValueText, {
       fill: 'white',
@@ -106,7 +109,7 @@ define( function( require ) {
       [ model.totalValueProperty, model.viewModeProperty ],
       function( totalValue ) {
         if ( model.viewModeProperty.get() === ViewMode.COINS ) {
-          totalValueText.text = StringUtils.format( numberCentsPatternString, totalValue );
+          totalValueText.text = StringUtils.fillIn( numberCentsPatternString, { number: totalValue } );
         }
         else {
           totalValueText.text = totalValue;

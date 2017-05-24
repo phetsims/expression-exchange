@@ -70,7 +70,7 @@ define( function( require ) {
     this.addChild( background );
 
     // add the level label
-    var title = new Text( StringUtils.format( levelNumberPatternString, ( levelModel.level + 1 ) ), {
+    var title = new Text( StringUtils.fillIn( levelNumberPatternString, { levelNumber: ( levelModel.level + 1 ) } ), {
       font: new PhetFont( 20 ),
       centerX: screenLayoutBounds.width * 0.4,
       top: 20
