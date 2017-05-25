@@ -34,7 +34,7 @@ define( function( require ) {
     // properties
     //------------------------------------------------------------------------
 
-    // @public
+    // @public {Property.<boolean>}
     this.soundEnabledProperty = new Property( true );
     this.timerEnabledProperty = new Property( true );
     this.allLevelsCompletedProperty = new Property( false );
@@ -51,7 +51,8 @@ define( function( require ) {
     // shuffle the challenge descriptors before creating the levels
     EEChallengeDescriptors.shuffleChallenges();
 
-    // @public (read-only) - models for each of the game levels REVIEW: gameLevels is a better name?
+    // @public {Array.<EEGameLevelModel>} (read-only) - models for each of the game levels REVIEW: gameLevels is a
+    //                                                  better name?
     this.gameLevelModels = [];
     _.times( NUMBER_OF_LEVELS, function( level ) {
       self.gameLevelModels.push( new EEGameLevelModel(
@@ -62,6 +63,7 @@ define( function( require ) {
     } );
 
     // function to total up the score and update the property that tracks whether all levels are completed
+    //REVIEW: only one usage in a lazyLink. Inline?
     function updateAllLevelsCompleted() {
       var totalScore = 0;
       self.gameLevelModels.forEach( function( gameLevelModel ) {
@@ -77,6 +79,8 @@ define( function( require ) {
     } );
 
     // @public - score properties for each level
+    //REVIEW: visibility, type?
+    //REVIEW: Why is this necessary? Just access the gameLevelModels?
     this.levelScoreProperties = []; // @public, read only
     _.times( NUMBER_OF_LEVELS, function( index ) {
       self.levelScoreProperties.push( self.gameLevelModels[ index ].scoreProperty );
@@ -87,6 +91,7 @@ define( function( require ) {
 
   return inherit( Object, EEGameModel, {
 
+      //REVIEW: doc
       step: function( dt ) {
 
         // step the currently active level model (if there is one)
@@ -96,6 +101,7 @@ define( function( require ) {
       },
 
       // @public
+      //REVIEW: doc, any why is this necessary? currentLevelProperty is public.
       selectLevel: function( levelNumber ) {
         this.currentLevelProperty.set( levelNumber );
       },
