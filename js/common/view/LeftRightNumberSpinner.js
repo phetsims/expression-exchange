@@ -29,6 +29,7 @@ define( function( require ) {
 
   /**
    * @constructor
+   * REVIEW: docs?
    */
   function LeftRightNumberSpinner( variableValueProperty, variableString, options ) {
     Node.call( this );

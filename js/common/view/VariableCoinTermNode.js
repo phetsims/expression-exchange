@@ -3,6 +3,9 @@
 /**
  * a Scenery node that represents a coin term whose underlying value can vary in the view
  *
+ * REVIEW: Lots of inner functions in a very long constructor. Would highly recommend that this be broken into methods
+ * with properties, to reduce complexity.
+ *
  * @author John Blanco
  */
 define( function( require ) {
@@ -69,6 +72,7 @@ define( function( require ) {
 
     // add a parent node that contains the two coin images, and also maintains consistent bounds
     var coinImagesNode = new Rectangle( 0, 0, coinTerm.coinRadius * 2, coinTerm.coinRadius * 2, {
+      //REVIEW: Why is this 'invisible'? If actually required, 'transparent' or null would be better?
       fill: 'rgba( 0, 0, 0, 0.01 )', // invisible
       children: [ coinFrontImageNode, coinBackImageNode ],
       x: -coinTerm.coinRadius,
@@ -135,6 +139,7 @@ define( function( require ) {
       // control front coin image visibility
       var desiredCoinImageWidth = coinTerm.coinRadius * 2 * coinTerm.scaleProperty.get();
       if ( coinImagesNode.width !== desiredCoinImageWidth ) {
+        //REVIEW: Usually setting this to 1 first doesn't do anything?
         coinImagesNode.setScaleMagnitude( 1 );
         coinImagesNode.setScaleMagnitude( desiredCoinImageWidth / coinImagesNode.width );
         coinImagesNode.center = Vector2.ZERO;
@@ -163,6 +168,7 @@ define( function( require ) {
       termText.centerX = 0;
       termText.y = textBaseline * scale;
       termText.mouseArea = termText.localBounds
+        //REVIEW: dilatedXY does both together
         .dilatedX( POINTER_AREA_X_DILATION_AMOUNT )
         .dilatedY( POINTER_AREA_Y_DILATION_AMOUNT )
         .shiftedY( POINTER_AREA_DOWN_SHIFT );
@@ -305,6 +311,7 @@ define( function( require ) {
       coinValueText.visible = coinBackImageNode.visible;
     } );
 
+    //REVIEW: visibility/doc? Recommend just moving this to dispose() though
     this.disposeVariableCoinTermNode = function() {
       updateRepresentationMultilink.dispose();
       showCoinValuesProperty.unlink( updateCoinFlipAnimations );

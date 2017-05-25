@@ -162,6 +162,7 @@ define( function( require ) {
 
     // make the background invisible whenever this expression is in a collection area
     expression.collectedProperty.link( function( collected ) {
+      //REVIEW: 'transparent' is the preferred transparent color (if a color is required). Usually null would be preferred?
       backgroundPath.fill = collected ? 'rgba( 0, 0, 0, 0 )' : BACKGROUND_COLOR;
     } );
 

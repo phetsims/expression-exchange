@@ -37,10 +37,12 @@ define( function( require ) {
       0,
       firstTextPortion.width * 1.4,
       firstTextPortion.height * 1.05,
+      //REVIEW: recommend { cornerRadius: RECT_CORNER_RADIUS }
       RECT_CORNER_RADIUS,
       RECT_CORNER_RADIUS,
       { fill: RECTANGLE_BACKGROUND_COLOR }
     );
+    //REVIEW: Is this equivalent to firstTextPortion.center = firstTextBackground.center?
     firstTextPortion.centerX = firstTextBackground.width / 2;
     firstTextPortion.centerY = firstTextBackground.height / 2;
     firstTextBackground.addChild( firstTextPortion );
@@ -56,7 +58,8 @@ define( function( require ) {
       headHeight: 7
     } );
     this.addChild( arrow );
-    
+
+    //REVIEW: This second* looks somewhat copied from above. Refactor so it's one code path?
     // add a rectangle containing the 2nd text portion
     var secondTextPortion = new Text( '\u2212 x', { font: MATH_FONT } );
     var secondTextBackground = new Rectangle(

@@ -65,6 +65,7 @@ define( function( require ) {
     //REVIEW: Shouldn't need a reference to this with proper layering?
     var background = new Rectangle( screenLayoutBounds, {
       //REVIEW: if for debugging, why still here?
+      //REVIEW: Why have something that's "essentially invisible" instead of a null or 'transparent' fill?
       stroke: 'rgba( 0, 0, 200, 0.01 )' // increase opacity to make the outline visible if desired (for debugging)
     } );
     this.addChild( background );

@@ -4,6 +4,9 @@
  * a node that is placed on the top layer of an expression to allow it to be dragged and to prevent input events from
  * getting to the constituents of the expression
  *
+ * REVIEW: Lots of helper functions in a very large constructor that seems appropiate to break into methods assigned on
+ * the object.
+ *
  * @author John Blanco
  */
 define( function( require ) {
@@ -40,10 +43,14 @@ define( function( require ) {
 
     // shape and path
     var shape = new Shape.rect( 0, 0, 0.1, 0.1 ); // tiny rect, will be set in update function
+    //REVIEW: Why have something that's "essentially invisible" instead of a null or 'transparent' fill?
     var expressionShapeNode = new Path( shape, { fill: 'rgba( 255, 255, 255, 0.01 )' } ); // essentially invisible
     this.addChild( expressionShapeNode );
 
     // define a function that will create or update the shape based on the width and height
+    //REVIEW: The pattern where a single-use link/multilink function is separated out into a named function in the
+    // current scope is throwing me off. Usually means it's something that's getting called from multiple call sites,
+    // whereas link/multilink functions are usually inlined and anonymous.
     function updateShape() {
       shape = new Shape.rect( 0, 0, expression.widthProperty.get(), expression.heightProperty.get() );
       expressionShapeNode.shape = shape;
@@ -53,6 +60,10 @@ define( function( require ) {
     var updateShapeMultilink = Property.multilink( [ expression.widthProperty, expression.heightProperty ], updateShape );
 
     // update the position as the expression moves
+    /*
+    REVIEW:
+    expression.upperLeftCornerProperty.linkAttribute( this, 'translation' );
+     */
     function updatePosition( upperLeftCorner ) {
       self.x = upperLeftCorner.x;
       self.y = upperLeftCorner.y;
@@ -173,6 +184,7 @@ define( function( require ) {
       translate: function( translationParams ) {
 
         // figure out where the expression would go if unbounded
+        //REVIEW: Is this the same as unboundedUpperLeftCornerPosition.add( translationParams.delta )?
         unboundedUpperLeftCornerPosition.setXY(
           unboundedUpperLeftCornerPosition.x + translationParams.delta.x,
           unboundedUpperLeftCornerPosition.y + translationParams.delta.y
