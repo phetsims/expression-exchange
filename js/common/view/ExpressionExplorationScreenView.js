@@ -43,7 +43,7 @@ define( function( require ) {
   var myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
   var numberCentsPatternString = require( 'string!EXPRESSION_EXCHANGE/numberCentsPattern' );
   var totalString = require( 'string!EXPRESSION_EXCHANGE/total' );
-  var valuesString = require( 'string!EXPRESSION_EXCHANGE/values' );
+  var variablesString = require( 'string!EXPRESSION_EXCHANGE/variables' );
   var variableValuesString = require( 'string!EXPRESSION_EXCHANGE/variableValues' );
 
   // images
@@ -158,7 +158,7 @@ define( function( require ) {
 
     // add the variable value control to an accordion box, and add the accordion box to the view
     var variableValuesAccordionBox = new AccordionBox( variableValueControl, {
-      titleNode: new Text( valuesString, { font: ACCORDION_BOX_TITLE_FONT } ),
+      titleNode: new Text( variablesString, { font: ACCORDION_BOX_TITLE_FONT } ),
       fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
       contentYMargin: 20,
       left: INSET,
