@@ -21,7 +21,6 @@ define( function( require ) {
   var CHALLENGES_PER_LEVEL = 3;
   var POINTS_PER_CHALLENGE = 1;
   var MAX_SCORE_PER_LEVEL = CHALLENGES_PER_LEVEL * POINTS_PER_CHALLENGE;
-  var MAX_TOTAL_SCORE = NUMBER_OF_LEVELS * MAX_SCORE_PER_LEVEL;
 
   /**
    * @constructor
@@ -37,7 +36,6 @@ define( function( require ) {
     // @public {Property.<boolean>}
     this.soundEnabledProperty = new Property( true );
     this.timerEnabledProperty = new Property( true );
-    this.allLevelsCompletedProperty = new Property( false );
 
     // @public, currently selected level, null indicates no level selected which means that the level selection screen
     // should be shown in the view
@@ -60,22 +58,6 @@ define( function( require ) {
         level < 3 ? AllowedRepresentationsEnum.COINS_ONLY : AllowedRepresentationsEnum.VARIABLES_ONLY,
         self.soundEnabledProperty
       ) );
-    } );
-
-    // function to total up the score and update the property that tracks whether all levels are completed
-    //REVIEW: only one usage in a lazyLink. Inline?
-    function updateAllLevelsCompleted() {
-      var totalScore = 0;
-      self.gameLevelModels.forEach( function( gameLevelModel ) {
-        totalScore += gameLevelModel.scoreProperty.get();
-      } );
-      self.allLevelsCompletedProperty.set( totalScore === MAX_TOTAL_SCORE );
-    }
-
-    // Hook up a listener to the score property of each level that will keep track of whether all levels have been
-    // successfully completed.
-    this.gameLevelModels.forEach( function( gameLevelModel ) {
-      gameLevelModel.scoreProperty.lazyLink( updateAllLevelsCompleted );
     } );
 
     // @public - score properties for each level
@@ -106,6 +88,10 @@ define( function( require ) {
         this.currentLevelProperty.set( levelNumber );
       },
 
+      nextLevel: function() {
+        this.currentLevelProperty.set( ( this.currentLevelProperty.get() + 1  ) % NUMBER_OF_LEVELS );
+      },
+
       // @public
       //REVIEW: docs?
       //REVIEW: This is done right after creating the views for each level. Can we just pass it as part of the view
@@ -119,6 +105,15 @@ define( function( require ) {
       // @public
       returnToLevelSelection: function() {
         this.currentLevelProperty.reset();
+      },
+
+      // @public
+      getAllLevelsCompleted: function() {
+        return _.every( this.gameLevelModels, function( gameLevelModel ) { return gameLevelModel.getLevelCompleted(); } );
+      },
+
+      clearAllLevelsCompleted: function() {
+        this.gameLevelModels.forEach( function( gameLevelModel ) { gameLevelModel.clearLevelCompleted(); } );
       },
 
       // reset
@@ -143,6 +138,7 @@ define( function( require ) {
       // statics
       CHALLENGES_PER_LEVEL: CHALLENGES_PER_LEVEL,
       MAX_SCORE_PER_LEVEL: MAX_SCORE_PER_LEVEL,
-      NUMBER_OF_LEVELS: NUMBER_OF_LEVELS
+      NUMBER_OF_LEVELS: NUMBER_OF_LEVELS,
+      POINTS_PER_CHALLENGE: POINTS_PER_CHALLENGE
     } );
 } );

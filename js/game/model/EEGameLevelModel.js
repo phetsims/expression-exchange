@@ -61,6 +61,25 @@ define( function( require ) {
     // @public {Property.<number>} (read only) - current score for this level
     this.scoreProperty = new Property( 0 );
 
+    // @private {boolean} - a flag used to track whether this level has been completed.  In order to be set to true, the
+    // user must have started from a score of zero and reached the max score since the last time this flag was cleared.
+    this.levelCompleted = false;
+
+    // @private {boolean} - a flag that tracks whether the score has been set to zero since the last time this level
+    // was completed.  This is used to make sure that the user has fully completed the level after clearing the level
+    // complete flag.  It is accessed through methods defined below.
+    this.scorePassedThroughZero = false;
+
+    // update the flags that track level completion
+    this.scoreProperty.link( function( score ) {
+      if ( !self.scorePassedThroughZero && score === 0 ) {
+        self.scorePassedThroughZero = true;
+      }
+      if ( self.scorePassedThroughZero && score === NUM_EXPRESSION_COLLECTION_AREAS ) {
+        self.levelCompleted = true;
+      }
+    } );
+
     // helper function to update the score when items are collected or un-collected
     //REVIEW: Lots of self references, maybe easier to specify as a method?
     function updateScore() {
@@ -103,6 +122,8 @@ define( function( require ) {
      */
     reset: function() {
       ExpressionManipulationModel.prototype.reset.call( this );
+      this.clearLevelCompleted();
+      this.scoreProperty.reset();
       this.currentChallengeNumber = 0;
       this.currentChallengeProperty.set(
         EEChallengeDescriptors.getChallengeDescriptor( this.level, this.currentChallengeNumber )
@@ -118,6 +139,25 @@ define( function( require ) {
       } );
       ExpressionManipulationModel.prototype.reset.call( this );
       this.loadNextChallenge();
+    },
+
+    /**
+     * get a boolean value indicating whether this level has been fully completed, meaning that it was fully unsolved
+     * and is now fully solved, since the sim was launched or since the last time the flag was reset
+     * @returns {boolean}
+     * @public
+     */
+    getLevelCompleted: function() {
+      return this.levelCompleted;
+    },
+
+    /**
+     * clear the indicators that track whether this level has been fully completed
+     * @public
+     */
+    clearLevelCompleted: function() {
+      this.levelCompleted = false;
+      this.scorePassedThroughZero = false;
     },
 
     //REVIEW: visibility/other doc?

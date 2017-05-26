@@ -83,34 +83,15 @@ define( function( require ) {
     // define the value used to define how far the screens slide when moving in and out of view
     var slideDistance = this.layoutBounds.width * 1.25;
 
-    // helper function for moving to next game level
-    //REVIEW: This looks like a function that should belong on the game model itself?
-    function goToNextLevel() {
-      if ( gameModel.currentLevelProperty.get() < EEGameModel.NUMBER_OF_LEVELS - 1 ) {
-        gameModel.currentLevelProperty.set( gameModel.currentLevelProperty.get() + 1 );
-      }
-      else {
-        gameModel.returnToLevelSelection();
-      }
-    }
-
-    // helper function for returning to level selection mode
-    //REVIEW: Just use gameModel.returnToLevelSelection.bind( gameModel )
-    function returnToLevelSelection() {
-      gameModel.returnToLevelSelection();
-    }
-
     // create the game level views and add them to the main game play node
     this.gameLevelViews = [];
     //REVIEW: a map() would work better instead of having to push? Just addChild inside it?
     gameModel.gameLevelModels.forEach( function( levelModel ) {
       var gameLevelView = new EEGameLevelView(
+        gameModel,
         levelModel,
         self.layoutBounds,
-        self.visibleBoundsProperty,
-        goToNextLevel,
-        gameModel.allLevelsCompletedProperty,
-        returnToLevelSelection
+        self.visibleBoundsProperty
       );
       gameLevelView.visible = false; // will be made visible when the corresponding level is activated
       self.gameLevelViews.push( gameLevelView );

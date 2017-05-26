@@ -9,6 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var AllLevelsCompletedDialog = require( 'EXPRESSION_EXCHANGE/game/view/AllLevelsCompletedDialog' );
   var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
@@ -35,21 +36,13 @@ define( function( require ) {
   var levelNumberPatternString = require( 'string!EXPRESSION_EXCHANGE/levelNumberPattern' );
 
   /**
-   * @param {EEGameLevelModel} levelModel
+   * @param {EEGameModel} gameModel - main model for the game
+   * @param {EEGameLevelModel} levelModel - model for the level depicted by this view object
    * @param {Bounds2} screenLayoutBounds
    * @param {Property.<Bounds2>} visibleBoundsProperty
-   * @param {Function} nextLevelFunction - function called when user hits 'next' button REVIEW callback param docs
-   * @param {Property.<boolean>} allLevelsCompletedProperty - property that indicates when all levels are successfully
-   *                                                          completed
-   * @param {Function} returnToLevelSelectionFunction REVIEW: callback param docs
    * @constructor
    */
-  function EEGameLevelView( levelModel,
-                            screenLayoutBounds,
-                            visibleBoundsProperty,
-                            nextLevelFunction,
-                            allLevelsCompletedProperty,
-                            returnToLevelSelectionFunction ) {
+  function EEGameLevelView( gameModel, levelModel, screenLayoutBounds, visibleBoundsProperty ) {
 
     var self = this;
 
@@ -84,7 +77,7 @@ define( function( require ) {
       //REVIEW: Or leftTop: screenLayoutBounds.eroded( 30 ).leftTop
       left: screenLayoutBounds.minX + 30,
       top: screenLayoutBounds.minY + 30,
-      listener: returnToLevelSelectionFunction
+      listener: gameModel.returnToLevelSelection.bind( gameModel )
     } );
     this.addChild( backButton );
 
@@ -144,14 +137,17 @@ define( function( require ) {
     this.addChild( showSubtractionCheckbox );
 
     // add the node for moving to the next level, only shown when all challenges on this level have been answered
-    this.nextLevelNode = new NextLevelNode( nextLevelFunction, {
+    this.nextLevelNode = new NextLevelNode( gameModel.nextLevel.bind( gameModel ), {
       centerX: title.centerX,
       centerY: screenLayoutBounds.height * 0.33 // empirically determined
     } );
     this.addChild( this.nextLevelNode );
-    levelModel.scoreProperty.link( function( score ) {
-      self.nextLevelNode.visible = score === EEGameModel.MAX_SCORE_PER_LEVEL;
+
+    this.allLevelsCompletedDialog = new AllLevelsCompletedDialog( gameModel.returnToLevelSelection.bind( gameModel ), {
+      centerX: title.centerX,
+      centerY: screenLayoutBounds.height * 0.4 // empirically determined
     } );
+    this.addChild( this.allLevelsCompletedDialog );
 
     // only show the checkbox for simplifying expressions with negative values if some are present in the challenge
     levelModel.currentChallengeProperty.link( function( currentChallenge ) {
@@ -169,53 +165,54 @@ define( function( require ) {
     // add the view area where the user will interact with coin terms and expressions
     this.addChild( expressionManipulationView );
 
-    // hook up the audio player for playing a correct answer
+    // create the audio player
     //REVIEW: Presumably this one is used, the one in EEGameScreenView is not?
+    // TODO: consider passing this in to save memory
     var gameAudioPlayer = new GameAudioPlayer( levelModel.soundEnabledProperty );
-    levelModel.scoreProperty.link( function( newScore, oldScore ) {
 
-      // play a feedback sound
-      if ( newScore > oldScore ) {
+    // show the appropriate dialog and reward node based on the score
+    levelModel.scoreProperty.link( function( score, previousScore ) {
+
+      // play the appropriate sound
+      if ( score > previousScore ) {
         gameAudioPlayer.correctAnswer();
       }
-    } );
 
-    // control the visibility of the reward node
-    //REVIEW: Can we create this on startup, so the extra logic isn't needed?
-    function createRewardNode() {
-      if ( !self.rewardNode ) {
-        self.rewardNode = new EERewardNode();
-        background.addChild( self.rewardNode );
-        self.rewardNode.moveToBack(); //REVIEW: Why immediately move to back? why not insert it at the correct place?
+      if ( score === EEGameModel.MAX_SCORE_PER_LEVEL ) {
+
+        var allLevelsCompleted = gameModel.getAllLevelsCompleted();
+
+        // show the appropriate dialog
+        if ( allLevelsCompleted ) {
+          self.allLevelsCompletedDialog.visible = true;
+
+          // clear the flags for all levels completed so that the user will have to complete them again in order to
+          // see this dialog
+          gameModel.clearAllLevelsCompleted();
+        }
+        else {
+          self.nextLevelNode.visible = true;
+        }
+
+        // show the reward node if warranted
+        if ( allLevelsCompleted || EEQueryParameters.showRewardNodeEveryLevel ) {
+          if ( !self.rewardNode ) {
+            //REVIEW: Can we create this on startup, so the extra logic isn't needed?
+            self.rewardNode = new EERewardNode();
+            background.addChild( self.rewardNode );
+            self.rewardNode.moveToBack(); //REVIEW: Why immediately move to back? why not insert it at the correct place?
+          }
+          self.rewardNode.visible = true;
+        }
       }
-    }
-
-    if ( !EEQueryParameters.showRewardNodeEveryLevel ) {
-
-      Property.multilink(
-        [ allLevelsCompletedProperty, this.inViewportProperty ],
-        function( allLevelsCompleted, inViewport ) {
-          if ( allLevelsCompleted && inViewport && !self.rewardNode ) {
-            createRewardNode();
-          }
-          if ( self.rewardNode ) {
-            self.rewardNode.visible = allLevelsCompleted;
-          }
-        }
-      );
-    }
-    else {
-
-      // a query parameter is present that indicates that the reward node should be shown at the completion of each level
-      levelModel.scoreProperty.link( function( score ) {
-        if ( score === EEGameModel.MAX_SCORE_PER_LEVEL && !self.rewardNode ) {
-          createRewardNode();
-        }
+      else {
+        self.nextLevelNode.visible = false;
+        self.allLevelsCompletedDialog.visible = false;
         if ( self.rewardNode ) {
-          self.rewardNode.visible = ( score === EEGameModel.MAX_SCORE_PER_LEVEL );
+          self.rewardNode.visible = false;
         }
-      } );
-    }
+      }
+    } );
   }
 
   expressionExchange.register( 'EEGameLevelView', EEGameLevelView );
@@ -232,7 +229,8 @@ define( function( require ) {
     },
 
     /**
-     * set the pickability (i.e. whether or not the user can interact with it) of the 'next level' dialog node
+     * set the pickability (i.e. whether or not the user can interact with it) of the 'next level' dialog node, useful
+     * for preventing interaction when moving the game level view around
      * @param {Boolean} pickable
      * @public
      */

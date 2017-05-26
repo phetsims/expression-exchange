@@ -2,6 +2,9 @@
   "coinValues": {
     "value": "coin values"
   },
+  "done": {
+    "value": "Done"
+  },
   "numberCentsPattern": {
     "value": "{{number}} cents"
   },
@@ -43,5 +46,8 @@
   },
   "next": {
     "value": "Next"
+  },
+  "youCompletedAllLevels": {
+    "value": "You completed\nall levels!"
   }
 }
