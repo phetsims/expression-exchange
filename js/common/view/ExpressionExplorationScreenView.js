@@ -189,6 +189,7 @@ define( function( require ) {
           new Text( EESharedConstants.X_VARIABLE_CHAR, {
             font: new MathSymbolFont( 36 ),
             boundsMethod: 'accurate',
+            //REVIEW: center: coinImageNode.leftCenter
             centerX: 0,
             centerY: coinImageNode.height / 2
           } )
@@ -297,6 +298,8 @@ define( function( require ) {
     var resetAllButton = new ResetAllButton( {
       listener: function() {
         model.reset();
+        //REVIEW: Nice to usually have reset functions on view types themselves if they need reset, so we don't need to
+        // reach into their properties.
         myCollectionAccordionBox.expandedProperty.reset();
         totalValueAccordionBox.expandedProperty.reset();
         if ( coinTermCreatorBox.pageNumberProperty ) {

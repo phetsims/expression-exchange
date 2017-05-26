@@ -69,6 +69,7 @@ define( function( require ) {
     }
 
     // function that updates the text and repositions it
+    //REVIEW: only one use. Ideally inline?
     function updateRepresentation() {
 
       // update value text
@@ -88,6 +89,7 @@ define( function( require ) {
       self.cardLikeBackground.visible = false; // make sure card is invisible so it doesn't affect visible bounds
       self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilated( 10 ) );
       if ( constantCoinTerm.cardOpacityProperty.get() === 0 ) {
+        //REVIEW: This was just set to false above?
         self.cardLikeBackground.visible = false;
       }
       else {

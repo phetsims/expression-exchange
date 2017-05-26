@@ -69,6 +69,7 @@ define( function( require ) {
           leftHalfCenterX = expressionHint.anchorCoinTerm.positionProperty.get().x + ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2 - anchorCTBounds.width / 2 - INSET - movingCTBounds.width / 2 - INSET;
         }
 
+        //REVIEW: Looks like a rectangle. Any reason why we can't use the shortcuts?
         var leftHalfShape = new Shape()
           .moveTo( leftHalfWidth, 0 )
           .lineTo( 0, 0 )
@@ -85,6 +86,7 @@ define( function( require ) {
         self.addChild( leftHalf );
 
         // add right half
+        //REVIEW: Looks like a rectangle. Any reason why we can't use the shortcuts?
         var rightHalfShape = new Shape()
           .moveTo( 0, 0 )
           .lineTo( rightHalfWidth, 0 )

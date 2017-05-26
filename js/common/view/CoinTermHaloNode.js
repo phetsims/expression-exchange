@@ -59,6 +59,7 @@ define( function( require ) {
     this.addChild( termHalo );
 
     // control term halo visibility
+    //REVIEW: Only one usage with a link. Preferred to turn this into a multilink
     var termHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
       function( viewMode, combineHaloActive ) {
         return ( viewMode === ViewMode.VARIABLES ) && combineHaloActive;

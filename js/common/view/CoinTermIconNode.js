@@ -32,7 +32,7 @@ define( function( require ) {
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
    * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
    * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
-   * @param {Object} options
+   * @param {Object} options //REVIEW: single usage doesn't use this, shouldn't be marked as required
    * @constructor
    */
   function CoinTermIconNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty, options ) {
@@ -56,6 +56,7 @@ define( function( require ) {
     this.addChild( coinValueText );
 
     // control the coin value text visibility
+    //REVIEW: One use, presumably inline
     var coinValueVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showCoinValuesProperty ],
       function( viewMode, showCoinValues ) {
@@ -72,6 +73,7 @@ define( function( require ) {
       font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
       maxWidth: maxTextWidth
     } );
+    //REVIEW: Curious why this isn't included in the coinTerm.termText?
     if ( coinTerm.totalCountProperty.get() < 0 ) {
       termText.text = '-' + termText.text;
     }
@@ -95,6 +97,7 @@ define( function( require ) {
     this.addChild( termWithVariableValuesText );
 
     // create a helper function to update the term value text
+    //REVIEW: single use, presumably inline?
     function updateTermValueText() {
       var termValueText = coinTerm.termValueTextProperty.value;
       var sign = coinTerm.totalCountProperty.get() > 0 ? '' : '-';
@@ -106,6 +109,7 @@ define( function( require ) {
     coinTerm.termValueTextProperty.link( updateTermValueText );
 
     // control the visibility of the value text
+    //REVIEW Single use, but with a link. Presumably multilink instead of creating a derived property?
     var variableTextVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showVariableValuesProperty ],
       function( viewMode, showVariableValues ) {

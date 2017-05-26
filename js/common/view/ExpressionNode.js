@@ -27,6 +27,7 @@ define( function( require ) {
 
   // constants
   var BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;
+  //REVIEW: Don't use arbitrary shapes, just use null
   var DEFAULT_SHAPE = Shape.rect( 0, 0, 1, 1 ); // arbitrary initial shape
   var NUM_ZIG_ZAGS = 10;
   var ZIG_ZAG_X_SIZE = 4; // in screen coordinates, empirically determined
@@ -66,14 +67,18 @@ define( function( require ) {
     var self = this;
 
     // shape and path used to define and display the background
+    //REVIEW: Why create the shape variable here and initialize? Initializing as null instead of an actual shape is highly preferred
     var backgroundShape = DEFAULT_SHAPE;
     var backgroundPath = new Path( backgroundShape, { fill: BACKGROUND_COLOR, lineWidth: 5 } );
     this.addChild( backgroundPath );
 
     // left and right 'hints' that are used to indicate to the user that a coin term can be added
+    //REVIEW: Why create the shape variable here and initialize? Initializing as null instead of an actual shape is highly preferred
     var leftHintShape = DEFAULT_SHAPE;
     var leftHintNode = new Path( leftHintShape, { fill: BACKGROUND_COLOR } );
     this.addChild( leftHintNode );
+
+    //REVIEW: Why create the shape variable here and initialize? Initializing as null instead of an actual shape is highly preferred
     var rightHintShape = DEFAULT_SHAPE;
     var rightHintNode = new Path( rightHintShape, { fill: BACKGROUND_COLOR } );
     this.addChild( rightHintNode );
@@ -118,9 +123,11 @@ define( function( require ) {
         }
 
         backgroundShape.close();
+        //REVIEW: ... backgroundPath.visible = true?
         if ( !backgroundPath.visible ) {
           backgroundPath.visible = true;
         }
+        //REVIEW: A new shaped is used above. What purpose does assigning to null have?
         backgroundPath.shape = null;
         backgroundPath.shape = backgroundShape;
 
@@ -161,6 +168,8 @@ define( function( require ) {
     expression.layoutChangedEmitter.addListener( updateBackgroundAndSymbols );
 
     // make the background invisible whenever this expression is in a collection area
+    //REVIEW: Sometimes helpful to know that you can make a DerivedProperty and pass it to the fill. May help if it was
+    // inlined, but not necessary here.
     expression.collectedProperty.link( function( collected ) {
       //REVIEW: 'transparent' is the preferred transparent color (if a color is required). Usually null would be preferred?
       backgroundPath.fill = collected ? 'rgba( 0, 0, 0, 0 )' : BACKGROUND_COLOR;
@@ -174,6 +183,7 @@ define( function( require ) {
 
     // update the position when the expression moves
     function updatePosition( upperLeftCorner ) {
+      //REVIEW: self.translation = upperLeftCorner;
       self.x = upperLeftCorner.x;
       self.y = upperLeftCorner.y;
     }
@@ -195,6 +205,8 @@ define( function( require ) {
     var leftHintMultilink = Property.multilink(
       [ expression.heightProperty, expression.widthProperty, expression.leftHintWidthProperty ],
       function( expressionHeight, expressionWidth, hintWidth ) {
+        //REVIEW: Usually easier to read if shape calls are chained? (Except can't chain the zigzag).
+        //REVIEW: Use local variable here instead of current scope declaration
         leftHintShape = new Shape();
         leftHintShape.moveTo( -hintWidth, 0 );
         leftHintShape.lineTo( 0, 0 );
@@ -210,6 +222,8 @@ define( function( require ) {
     var rightHintMultilink = Property.multilink(
       [ expression.heightProperty, expression.widthProperty, expression.rightHintWidthProperty ],
       function( expressionHeight, expressionWidth, hintWidth ) {
+        //REVIEW: Usually easier to read if shape calls are chained? (Except can't chain the zigzag).
+        //REVIEW: Use local variable here instead of current scope declaration
         rightHintShape = new Shape();
         rightHintShape.moveTo( expressionWidth, 0 );
         addVerticalZigZagLine( rightHintShape, expressionWidth, 0, expressionWidth, expressionHeight, true );
@@ -231,6 +245,7 @@ define( function( require ) {
       expression.combineHaloActiveProperty.unlink( activateCombineHint );
       leftHintMultilink.dispose();
       rightHintMultilink.dispose();
+      //REVIEW: Why call dispose twice, once here and once in dispose?
       Node.prototype.dispose.call( this );
     };
 
@@ -240,19 +255,17 @@ define( function( require ) {
 
   expressionExchange.register( 'ExpressionNode', ExpressionNode );
 
-  return inherit(
-    Node,
-    ExpressionNode,
-    {
-
-      // @public
-      dispose: function() {
-        this.disposeExpressionNode();
-        Node.prototype.dispose.call( this );
-      }
-    },
-    {
-      // statics
-      addVerticalZigZagLine: addVerticalZigZagLine
-    } );
+  return inherit( Node, ExpressionNode, {
+    // @public
+    dispose: function() {
+      this.disposeExpressionNode();
+      //REVIEW: Why call dispose twice, once here and once in disposeExpressionNode?
+      //REVIEW: This should fail, is it not being called at all?
+      Node.prototype.dispose.call( this );
+    }
+  }, {
+    // statics
+    //REVIEW: at least type/visibility docs on this so it's clear what this is
+    addVerticalZigZagLine: addVerticalZigZagLine
+  } );
 } );

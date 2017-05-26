@@ -17,6 +17,7 @@ define( function( require ) {
    */
   function EditExpressionButton( options ) {
 
+    //REVIEW: Why not _.extend( options, { ... } ) here like usual, with all of the values above?
     options = options || {};
 
     // the following options can't be overridden

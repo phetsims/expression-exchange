@@ -79,7 +79,7 @@ define( function( require ) {
 
     // add the node that will act as the barrier to interaction with other expressions when editing an expression
     var barrierRectangleBounds = null;
-    var barrierRectangleShape = new Shape();
+    var barrierRectangleShape = new Shape(); //REVIEW: This assigned value is never used, as the shape value is re-set?
     var barrierRectanglePath = new Path( barrierRectangleShape, {
       fill: 'rgba( 100, 100, 100, 0.5 )',
       visible: false, // initially invisible, will become visible when editing an expression
@@ -261,6 +261,7 @@ define( function( require ) {
      * @returns {AbstractCoinTermNode}
      */
     getViewForCoinTerm: function( coinTerm ) {
+      //REVIEW: _.find( this.coinTermLayer.children, function( coinTermNode ) { return coinTermNode.coinTerm === coinTerm; } );
       var coinTermView = null;
       this.coinTermLayer.getChildren().forEach( function( coinTermNode ) {
         if ( coinTermNode.coinTerm && coinTermNode.coinTerm === coinTerm ) {

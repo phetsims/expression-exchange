@@ -30,9 +30,10 @@ define( function( require ) {
    * @param {ExpressionManipulationModel} expressionManipulationModel - model where coin terms are to be added
    * @param {ExpressionManipulationView} expressionManipulationView - view where coin term nodes will be shown
    * @param {CoinTermTypeID} typeID - type of coin term to create
-   * @param {function} coinTermCreatorFunction - the function that will be invoked in order to create the coin term
+   * @param {Function} coinTermCreatorFunction - the function that will be invoked in order to create the coin term
    * model element.  This will be used for creating the elements that are added to the model, and also for creating
    * "dummy" instances to associate with the view nodes that collectively comprise the constructed creator node.
+   * REVIEW: doc the function's type signature?
    * @param {Object} options
    * @constructor
    */
@@ -62,8 +63,11 @@ define( function( require ) {
       onCard: false
     }, options );
 
+    //REVIEW: pickable:true is specified, but there's always an input listener. So pickable:true is doing nothing?
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
+
+    //REVIEW: type docs?
     this.createdCoinTermInitialCount = options.createdCoinTermInitialCount; // @public, read only
     this.typeID = typeID; // @public, read only
 
@@ -126,7 +130,7 @@ define( function( require ) {
     // in the model.  This works by forwarding the events it receives to the node that gets created in the view.
     this.addInputListener( {
       down: function( event ) {
-
+        //REVIEW: event.canStartPress() should be used instead here
         // Ignore non-left-mouse-button
         if ( event.pointer.isMouse && event.domEvent.button !== 0 ) {
           return;
