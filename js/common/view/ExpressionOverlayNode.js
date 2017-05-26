@@ -42,6 +42,7 @@ define( function( require ) {
     var self = this;
 
     // shape and path
+    //REVIEW: null initial value would presumably be better?
     var shape = new Shape.rect( 0, 0, 0.1, 0.1 ); // tiny rect, will be set in update function
     //REVIEW: Why have something that's "essentially invisible" instead of a null or 'transparent' fill?
     var expressionShapeNode = new Path( shape, { fill: 'rgba( 255, 255, 255, 0.01 )' } ); // essentially invisible
@@ -112,11 +113,13 @@ define( function( require ) {
       popUpButtonsNode.visible = false;
 
       // put the pop up buttons in a place where they don't affect the overall bounds
+      //REVIEW: popUpButtonsNode.translation = Vector2.ZERO
       popUpButtonsNode.x = 0;
       popUpButtonsNode.y = 0;
     }
 
     // timer used to hide the button
+    //REVIEW: This isn't a reference to the timer, but a reference to the callback/thing to pass to clearTimeout. Name change?
     var hideButtonsTimer = null;
 
     // define helper functions for managing the button timer
