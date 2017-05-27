@@ -160,6 +160,7 @@ define( function( require ) {
       }
       else {
         // no terms in this expression, so no background should be shown
+        //REVIEW: Didn't run across this in my code coverage test. Is it possible to have an expression node without terms?
         backgroundPath.visible = false;
       }
     }

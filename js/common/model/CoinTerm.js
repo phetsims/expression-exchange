@@ -82,6 +82,7 @@ define( function( require ) {
     this.inProgressAnimationProperty = new Property( null );
 
     // @public {Property.<number>} (read-only) - total number of coins/terms combined into this one, can be negative
+    //REVIEW: Is this the coefficient?
     this.totalCountProperty = new Property( options.initialCount );
 
     // @public (read-write) - flag that controls whether breaking apart is allowed
@@ -90,6 +91,8 @@ define( function( require ) {
     // @public (read only) - The bounds of this model element's view representation relative to the element's current
     // position. This admittedly breaks the usual model-view rules, but many things in the view need to know this, so
     // having it available on the model element after being set by the view worked out to be the best approach.
+    //REVIEW: 'local' has been used as a word for this in Scenery (localViewBoundsProperty seems like a more obvious
+      // name to me, but may not to others)
     this.relativeViewBoundsProperty = new Property( null );
 
     // @public {Property.<number>} (read only) - ranges from 1 to 0, used primarily for fading out of a coin term when
@@ -189,7 +192,7 @@ define( function( require ) {
           // If this coin term is decomposed as far as it can go, show the background card when the user grabs it, but
           // fade it out after a little while.
           if ( self.composition.length === 1 ) {
-            self.cardOpacityProperty.set( 1.0 );
+            self.cardOpacityProperty.set( 1 );
             self.cardPreFadeCountdown = CARD_PRE_FADE_TIME;
             self.cardFadeCountdown = null;
           }
