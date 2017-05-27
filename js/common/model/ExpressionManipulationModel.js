@@ -6,6 +6,8 @@
  * explore screens and for each of the game challenges.  Options are used to support the different restrictions for
  * each screen.
  *
+ * REVIEW: Large constructor, recommend extracting listeners if possible.
+ *
  * @author John Blanco
  */
 define( function( require ) {
@@ -108,6 +110,7 @@ define( function( require ) {
      * @private, with some elements accessible via methods define below - This is a populated data structure that
      * contains counts for the various possible combinations of coin term types and minimum decomposition.  For
      * instance, it keeps track of the number of 2X values that can't be further decomposed.
+     * {CoinTermTypeID} => {Array.<{ count: {number}, countProperty: {Property.<number>|null} }>}
      *
      * This is structured as an object with each of the possible coin term types as the keys.  Each of the values is
      * an array that is indexed by the minimum decomposibility, but is offset to account for the fact that the values
@@ -125,7 +128,8 @@ define( function( require ) {
       } );
     } );
 
-    // @private mostly - should be set by view, generally just once.  Used to determine when to remove a coin term
+    //REVIEW: "@private mostly" is usually "@public"?
+    // @private mostly {@Bounds2} - should be set by view, generally just once.  Used to determine when to remove a coin term
     // because the user has essentially put it away
     this.creatorBoxBounds = Bounds2.NOTHING;
 
@@ -148,13 +152,16 @@ define( function( require ) {
     }
 
     // add a listener that updates the total whenever one of the term value properties change
+    //REVIEW: Add coinTerms.lengthProperty to this multilink?
     Property.multilink( [ this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty ], updateTotal );
 
     // add a listener that updates the total whenever a coin term is added or removed
+    //REVIEW: Add to the multilink above and remove?
     this.coinTerms.lengthProperty.link( updateTotal );
 
     // when a coin term is added, add listeners to handle the things about it that are dynamic and can affect the model
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
+      //REVIEW ~200 line item-added-listener is a lot. Can things be broken up into functions?
 
       // Add a listener that will potentially combine this coin term with expressions or other coin terms based on
       // where it is released.
@@ -325,6 +332,7 @@ define( function( require ) {
           // the existence strength has gone to zero, remove this from the model
           self.removeCoinTerm( addedCoinTerm, false );
 
+          //REVIEW: What happens if a user cancels out terms, but quickly switches to editing another expression?
           if ( self.expressionBeingEditedProperty.get() ) {
             if ( self.expressionBeingEditedProperty.get().coinTerms.length === 0 ) {
 
@@ -350,6 +358,7 @@ define( function( require ) {
     } );
 
     this.expressions.addItemAddedListener( function( addedExpression ) {
+      //REVIEW: Also a very large listener, can this be broken up into more manageable pieces?
 
       // add a listener for when the expression is released, which may cause it to be combined with another expression
       function expressionUserControlledListener( userControlled ) {
@@ -1044,6 +1053,7 @@ define( function( require ) {
      * @public
      */
     isCoinTermInExpression: function( coinTerm ) {
+      //REVIEW: return _.some( this.expressions.getArray(), function( expression ) { return expression.containsCoinTerm( coinTerm ) } );
       for ( var i = 0; i < this.expressions.length; i++ ) {
         if ( this.expressions.get( i ).containsCoinTerm( coinTerm ) ) {
           return true;
@@ -1072,6 +1082,7 @@ define( function( require ) {
              !thatCoinTerm.collectedProperty.get() && // exclude coin terms that are in a collection
              !thatCoinTerm.inProgressAnimationProperty.get() /* exclude coin terms that are moving */ ) {
 
+          //REVIEW: Continue to just chain things like above, but group with parenthesis?
           // test if the provided coin term is in one of the compare coin term's "expression combine zones"
           if ( self.isCoinTermInExpressionCombineZone( thatCoinTerm, thisCoinTerm ) ) {
             if ( !joinableFreeCoinTerm ||
@@ -1087,12 +1098,14 @@ define( function( require ) {
     },
 
     // @private, get the amount of overlap given two coin terms by comparing position and coin radius
+    //REVIEW: doc types with usual JSDoc? @returns?
     getCoinOverlapAmount: function( coinTermA, coinTermB ) {
       var distanceBetweenCenters = coinTermA.positionProperty.get().distance( coinTermB.positionProperty.get() );
       return Math.max( ( coinTermA.coinRadius + coinTermB.coinRadius ) - distanceBetweenCenters, 0 );
     },
 
     // @private, get the amount of overlap between the view bounds for two coin terms
+    //REVIEW: doc types with usual JSDoc? @returns?
     getViewBoundsOverlapAmount: function( coinTermA, coinTermB ) {
       var overlap = 0;
 
@@ -1119,6 +1132,7 @@ define( function( require ) {
       this.coinTerms.forEach( function( thatCoinTerm ) {
 
         // test that the coin term is eligible for consideration first
+        //REVIEW: Could this be a comparison function of some type in CoinTerm itself?
         if ( thisCoinTerm !== thatCoinTerm &&
              thisCoinTerm.canCombineWith( thatCoinTerm ) && // test that coin terms are of the same type and can be combined
              !thatCoinTerm.userControlledProperty.get() && // exclude user controlled coin terms
@@ -1144,7 +1158,7 @@ define( function( require ) {
       return mostOverlappingLikeCoinTerm;
     },
 
-    //REVIEW: docs
+    //REVIEW: docs. returns {CoinTerm|null}?
     getOverlappingLikeCoinTermWithinExpression: function( coinTerm, expression ) {
 
       var overlappingCoinTerm = null;

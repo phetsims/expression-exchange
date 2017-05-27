@@ -97,6 +97,8 @@ define( function( require ) {
 
     // @public {Property.<number>} (read only) - ranges from 1 to 0, used primarily for fading out of a coin term when
     //                                           cancellation occurs
+    //REVIEW: Important to note that <1 values begin/continue fading, but =1 doesn't fade.
+    //REVIEW: Consider a helper function to determine whether it is fading out, as ===1 is checked a lot (also usually along-side userControlled?)
     this.existenceStrengthProperty = new Property( 1 );
 
     // @public {Property.<number>}, determines the opacity of the card on which the coin term can reside
@@ -123,8 +125,7 @@ define( function( require ) {
     // @public, listen only, a property with contains the text that should be shown when displaying term value
     this.termValueTextProperty = termValueTextProperty;
 
-    // @public, read only, tracks what this coin term is composed of and what it can be broken down into
-    //REVIEW: Type documentation would definitely help here also.
+    // @public {Array.<number>}, read only, tracks what this coin term is composed of and what it can be broken down into
     this.composition = [];
     if ( Math.abs( options.initialCount ) > 1 && options.decomposable ) {
       _.times( Math.abs( options.initialCount ), function() {
@@ -243,7 +244,7 @@ define( function( require ) {
       // if this coin term is fading out, continue the fade
       if ( this.existenceStrengthProperty.get() < 1 ) {
         this.existenceStrengthProperty.set( Math.max(
-          this.existenceStrengthProperty.get() - ( 1 / COIN_TERM_FADE_TIME ) * dt,
+          this.existenceStrengthProperty.get() - ( 1 / COIN_TERM_FADE_TIME ) * dt, //REVIEW: dt / COIN_TERM_FADE_TIME, no need for the 1
           0
         ) );
       }
@@ -320,6 +321,7 @@ define( function( require ) {
      * @public
      */
     goImmediatelyToDestination: function() {
+      //REVIEW: Doesn't move to the destination if there is no animation?
       if ( this.inProgressAnimationProperty.get() ) {
         this.inProgressAnimationProperty.set( null );
         this.positionProperty.set( this.destinationProperty.get() );
@@ -351,6 +353,7 @@ define( function( require ) {
     absorb: function( coinTermToAbsorb, doPartialCancellation ) {
       assert && assert( this.typeID === coinTermToAbsorb.typeID, 'can\'t combine coin terms of different types' );
       var self = this;
+      //REVIEW: this.totalCountProperty.value += coinTermToAbsorb.totalCountProperty.value;
       this.totalCountProperty.set( this.totalCountProperty.get() + coinTermToAbsorb.totalCountProperty.get() );
 
       if ( doPartialCancellation ) {

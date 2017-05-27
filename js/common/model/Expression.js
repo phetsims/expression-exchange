@@ -68,6 +68,7 @@ define( function( require ) {
     this.simplifyNegativesProperty = simplifyNegativesProperty;
 
     // @public (read-only) - scale, used to shrink the expression when it is collected or uncollected
+    //REVIEW: Does widthProperty need to be added as a dependency, since it is used in the value computation?
     this.scaleProperty = new DerivedProperty( [ this.collectedProperty ], function( collected ) {
       return collected ?
              Math.min( EESharedConstants.COLLECTION_AREA_SIZE.width / self.widthProperty.get(), 1 ) * 0.9 :
@@ -108,14 +109,16 @@ define( function( require ) {
     // be added and removed via methods.
     this.hoveringCoinTerms = [];
 
-    // @private, tracks expressions that are hovering over this expression and would be combined with this one if
-    // released by the user.  This is used to activate the 'halo' that indicates that potential combination.
+    // @private {Array.<Expression>}, tracks expressions that are hovering over this expression and would be combined
+    // with this one if released by the user.  This is used to activate the 'halo' that indicates that potential
+    // combination.
     this.hoveringExpressions = [];
 
-    // @private, tracks whether the expression should be resized on the next step
+    // @private {boolean}, tracks whether the expression should be resized on the next step
     this.resizeNeeded = false;
 
-    // @private, map used to track user controlled listeners that are added to coin terms that join this expression
+    // @private {CoinTerm.id} => {Function}, map used to track user controlled listeners that are added to coin terms
+    // that join this expression
     this.mapCoinTermsToUCListeners = {};
 
     // create the bounds that will be used to decide if coin terms or other expressions are in a position to join this one
@@ -134,12 +137,14 @@ define( function( require ) {
 
     // Define a listener that is bound to this object that will set the resize needed flag when fired.  This is done
     // in this way so that the listener can be found and removed when the coin term is removed from this expression.
+    //REVIEW: This should be a method? It isn't used in the constructor directly, and isn't a closure over any in-scope variables.
     this.setResizeFlagFunction = function() { self.resizeNeeded = true; }; // @private
 
     // add the initial coin term
     this.addCoinTerm( anchorCoinTerm );
 
     // update the join zone as the size and/or location of the expression changes
+    //REVIEW: Somewhat duplicates the initialization above. Can we just make it a DerivedProperty?
     Property.multilink(
       [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
       function( upperLeftCorner, width, height ) {
@@ -406,7 +411,8 @@ define( function( require ) {
     },
 
     /**
-     * add the specified coin term to this expression, moving it to the correct location @param {CoinTerm} coinTerm
+     * add the specified coin term to this expression, moving it to the correct location
+     * @param {CoinTerm} coinTerm
      * @public
      */
     addCoinTerm: function( coinTerm ) {
@@ -504,6 +510,7 @@ define( function( require ) {
     },
 
     // @public
+    //REVIEW: doc
     removeCoinTerm: function( coinTerm ) {
       coinTerm.breakApartAllowedProperty.set( true );
       coinTerm.showMinusSignWhenNegativeProperty.set( true );
@@ -530,7 +537,7 @@ define( function( require ) {
 
     /**
      * remove all coin terms
-     * @return a simple array with all coin terms, sorted in left-to-right order
+     * @returns {Array.<CoinTerm>} a simple array with all coin terms, sorted in left-to-right order
      * @public
      */
     removeAllCoinTerms: function() {
@@ -608,6 +615,7 @@ define( function( require ) {
 
     /**
      * move, a.k.a. translate, by the specified amount and move the coin terms too
+     * REVIEW: doc params
      * @private
      */
     translate: function( deltaPosition ) {
@@ -683,6 +691,7 @@ define( function( require ) {
     /**
      * get the amount of overlap between the provided coin term's bounds and this expression's "join zone"
      * @param {CoinTerm} coinTerm
+     * REVIEW: returns {number}?
      * @public
      */
     getCoinTermJoinZoneOverlap: function( coinTerm ) {
@@ -701,6 +710,7 @@ define( function( require ) {
     /**
      * get the amount of overlap between the provided expression and this expression
      * @param {Expression||EECollectionArea} otherEntity - must provide a 'getBounds' method
+     * REVIEW: returns {number}?
      */
     getOverlap: function( otherEntity ) {
       var otherExpressionBounds = otherEntity.getBounds();
@@ -716,6 +726,7 @@ define( function( require ) {
       return xOverlap * yOverlap;
     },
 
+    //REVIEW: doc
     getUpperRightCorner: function() {
       return this.upperLeftCornerProperty.get().plusXY( this.widthProperty.get(), 0 );
     },
@@ -747,6 +758,7 @@ define( function( require ) {
       }
     },
 
+    //REVIEW: doc
     clearHoveringCoinTerms: function() {
       this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
         hoveringCoinTerm.breakApartAllowedProperty.set( true );

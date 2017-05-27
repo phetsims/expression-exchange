@@ -25,7 +25,6 @@ define( function( require ) {
   var CONSTANT_ONE_TEXT_VALUE_PROPERTY = new Property( '1' );
 
   /**
-   * REVIEW: Needs @param
    * @param {number} xValueProperty
    * @param {number} yValueProperty
    * @param {number} zValueProperty
@@ -41,12 +40,13 @@ define( function( require ) {
     this.zValueProperty = zValueProperty;
 
     // @private - string representations of the variables
-    //REVIEW: Property doesn't allow missing parameter?
+    //REVIEW: Property doesn't allow missing parameter? Maybe doc it as {Property.<string|null>} and initialize as null>
     this.xValueStringProperty = new Property();
     this.yValueStringProperty = new Property();
     this.zValueStringProperty = new Property();
 
     // update the strings as the variable values change
+    //REVIEW: If this is the only thing setting the properties, can they be replaced with DerivedProperties instead?
     this.xValueProperty.link( function( xValue ) {
       self.xValueStringProperty.value =  '(' + xValue.toString() + ')';
     } );
