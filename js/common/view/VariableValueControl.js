@@ -7,7 +7,6 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ResetButton = require( 'SCENERY_PHET/buttons/ResetButton' );

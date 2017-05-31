@@ -62,9 +62,8 @@ define( function( require ) {
       }
 
       // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
-      if ( !constantCoinTerm.relativeViewBoundsProperty.get() ||
-           !constantCoinTerm.relativeViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
-        constantCoinTerm.relativeViewBoundsProperty.set( relativeVisibleBounds );
+      if ( !constantCoinTerm.localViewBoundsProperty.get() || !constantCoinTerm.localViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
+        constantCoinTerm.localViewBoundsProperty.set( relativeVisibleBounds );
       }
     }
 

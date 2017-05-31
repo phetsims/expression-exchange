@@ -15,7 +15,6 @@ define( function( require ) {
   var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );

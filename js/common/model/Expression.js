@@ -10,6 +10,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var AnimationSpec = require( 'EXPRESSION_EXCHANGE/common/model/AnimationSpec' );
   var Bounds2 = require( 'DOT/Bounds2' );
   var DerivedProperty = require( 'AXON/DerivedProperty' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
@@ -51,8 +52,7 @@ define( function( require ) {
     this.inEditModeProperty = new Property( false ); // @public {Property.<boolean>}, indicates whether this expression is being edited
     this.collectedProperty = new Property( false ); // @public {Property.<boolean>}, indicates whether this is in a collection box (for game)
 
-    // @public (read only), tracks the current in-progress animation, if any
-    //REVIEW: Type docs especially important here. No clue what type it takes besides null
+    // @public {Property.<AnimationSpec>} (read only), tracks the current in-progress animation, if any
     this.inProgressAnimationProperty = new Property( null );
 
     // @public {Property.<boolean>} (read only) indicates whether the 'combine halo' should be visible
@@ -235,14 +235,14 @@ define( function( require ) {
       // determine the needed height and which hints should be active
       var tallestCoinTermHeight = 0;
       this.coinTerms.forEach( function( residentCoinTerm ) {
-        tallestCoinTermHeight = Math.max( tallestCoinTermHeight, residentCoinTerm.relativeViewBoundsProperty.get().height );
+        tallestCoinTermHeight = Math.max( tallestCoinTermHeight, residentCoinTerm.localViewBoundsProperty.get().height );
       } );
       var rightHintActive = false;
       var rightHintMaxCoinWidth = 0;
       var leftHintActive = false;
       var leftHintMaxCoinWidth = 0;
       this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
-        var hctRelativeViewBounds = hoveringCoinTerm.relativeViewBoundsProperty.get();
+        var hctRelativeViewBounds = hoveringCoinTerm.localViewBoundsProperty.get();
         tallestCoinTermHeight = Math.max( tallestCoinTermHeight, hctRelativeViewBounds.height );
         if ( hoveringCoinTerm.positionProperty.get().x > self.upperLeftCornerProperty.get().x + self.widthProperty.get() / 2 ) {
 
@@ -367,8 +367,8 @@ define( function( require ) {
 
         // adjust the position of this coin term to be the correct distance from its neighbor to the left
         var leftNeighbor = coinTermsLeftToRight[ i - 1 ];
-        xPos = leftNeighbor.destinationProperty.get().x + leftNeighbor.relativeViewBoundsProperty.get().maxX +
-               scaledCoinTermSpacing - coinTermsLeftToRight[ i ].relativeViewBoundsProperty.get().minX;
+        xPos = leftNeighbor.destinationProperty.get().x + leftNeighbor.localViewBoundsProperty.get().maxX +
+               scaledCoinTermSpacing - coinTermsLeftToRight[ i ].localViewBoundsProperty.get().minX;
         if ( coinTermsLeftToRight[ i ].destinationProperty.get().x !== xPos ) {
           coinTermsLeftToRight[ i ].goToPosition( new Vector2( xPos, yPos ), animate );
           coinTermsMoved = true;
@@ -379,8 +379,8 @@ define( function( require ) {
       for ( i = middleCoinTermIndex - 1; i >= 0; i-- ) {
         // adjust the position of this coin term to be the correct distance from its neighbor to the right
         var rightNeighbor = coinTermsLeftToRight[ i + 1 ];
-        xPos = rightNeighbor.destinationProperty.get().x + rightNeighbor.relativeViewBoundsProperty.get().minX -
-               scaledCoinTermSpacing - coinTermsLeftToRight[ i ].relativeViewBoundsProperty.get().maxX;
+        xPos = rightNeighbor.destinationProperty.get().x + rightNeighbor.localViewBoundsProperty.get().minX -
+               scaledCoinTermSpacing - coinTermsLeftToRight[ i ].localViewBoundsProperty.get().maxX;
         if ( coinTermsLeftToRight[ i ].positionProperty.get().x !== xPos ) {
           coinTermsLeftToRight[ i ].goToPosition( new Vector2( xPos, yPos ), animate );
           coinTermsMoved = true;
@@ -391,14 +391,14 @@ define( function( require ) {
       var maxHeight = 0;
       var totalWidth = 0;
       coinTermsLeftToRight.forEach( function( coinTerm ) {
-        var relativeViewBounds = coinTerm.relativeViewBoundsProperty.get();
+        var relativeViewBounds = coinTerm.localViewBoundsProperty.get();
         maxHeight = relativeViewBounds.height > maxHeight ? relativeViewBounds.height : maxHeight;
         totalWidth += relativeViewBounds.width;
       } );
       var scaledInset = INSET * this.scaleProperty.get();
       this.upperLeftCornerProperty.set( new Vector2(
         coinTermsLeftToRight[ 0 ].destinationProperty.get().x +
-        coinTermsLeftToRight[ 0 ].relativeViewBoundsProperty.get().minX - scaledInset,
+        coinTermsLeftToRight[ 0 ].localViewBoundsProperty.get().minX - scaledInset,
         yPos - maxHeight / 2 - scaledInset
       ) );
       this.heightProperty.set( maxHeight + 2 * scaledInset );
@@ -429,7 +429,7 @@ define( function( require ) {
 
       this.coinTerms.push( coinTerm );
 
-      var coinTermRelativeViewBounds = coinTerm.relativeViewBoundsProperty.get();
+      var coinTermRelativeViewBounds = coinTerm.localViewBoundsProperty.get();
       var coinTermPosition = coinTerm.positionProperty.get();
 
       if ( this.coinTerms.length === 1 ) {
@@ -494,7 +494,7 @@ define( function( require ) {
       coinTerm.breakApartAllowedProperty.set( false );
 
       // add a listener to resize the expression if the bounds of this coin term change
-      coinTerm.relativeViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
+      coinTerm.localViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
 
       // add a listener to update whether minus sign is shown when negative when the user moves this coin term
       var userControlledListener = this.updateCoinTermShowMinusSignFlag.bind( this );
@@ -515,7 +515,7 @@ define( function( require ) {
       coinTerm.breakApartAllowedProperty.set( true );
       coinTerm.showMinusSignWhenNegativeProperty.set( true );
       this.coinTerms.remove( coinTerm );
-      coinTerm.relativeViewBoundsProperty.unlink( this.setResizeFlagFunction );
+      coinTerm.localViewBoundsProperty.unlink( this.setResizeFlagFunction );
       coinTerm.userControlledProperty.unlink( this.mapCoinTermsToUCListeners[ coinTerm.id ] );
       delete this.mapCoinTermsToUCListeners[ coinTerm.id ];
 
@@ -577,10 +577,10 @@ define( function( require ) {
       var centerY = this.upperLeftCornerProperty.get().y + this.heightProperty.get() / 2;
       coinTermsLeftToRight.forEach( function( orderedCoinTerm ) {
         orderedCoinTerm.travelToDestination( new Vector2(
-          leftEdge - orderedCoinTerm.relativeViewBoundsProperty.get().minX,
+          leftEdge - orderedCoinTerm.localViewBoundsProperty.get().minX,
           centerY
         ) );
-        leftEdge += orderedCoinTerm.relativeViewBoundsProperty.get().width + INTER_COIN_TERM_SPACING;
+        leftEdge += orderedCoinTerm.localViewBoundsProperty.get().width + INTER_COIN_TERM_SPACING;
       } );
 
       // trigger an event so that the view is sure to be updated
@@ -645,12 +645,11 @@ define( function( require ) {
       else {
 
         // set up the animation to get to the destination
-        this.inProgressAnimationProperty.set( {
-          startPosition: this.upperLeftCornerProperty.get().copy(),
-          travelVector: upperLeftCornerDestination.minus( this.upperLeftCornerProperty.get() ),
-          totalDuration: animationDuration,
-          timeSoFar: 0
-        } );
+        this.inProgressAnimationProperty.set( new AnimationSpec(
+          this.upperLeftCornerProperty.get().copy(),
+          upperLeftCornerDestination.minus( this.upperLeftCornerProperty.get() ),
+          animationDuration
+        ) );
       }
     },
 
@@ -661,7 +660,8 @@ define( function( require ) {
      */
     setPositionAndDestination: function( upperLeftCornerDestination ) {
       this.translate( upperLeftCornerDestination.minus( this.upperLeftCornerProperty.get() ) );
-    },
+    }
+    ,
 
     /**
      * initiate a break apart, which just emits an event and counts on parent model to handle
@@ -669,7 +669,8 @@ define( function( require ) {
      */
     breakApart: function() {
       this.breakApartEmitter.emit();
-    },
+    }
+    ,
 
     /**
      * emit an event that signifies that this expression has been selected for editing
@@ -678,7 +679,8 @@ define( function( require ) {
     enterEditMode: function() {
       this.inEditModeProperty.set( true );
       this.selectedForEditEmitter.emit();
-    },
+    }
+    ,
 
     /**
      * clear the edit mode, provided essentially for API symmetry
@@ -686,7 +688,8 @@ define( function( require ) {
      */
     exitEditMode: function() {
       this.inEditModeProperty.set( false );
-    },
+    }
+    ,
 
     /**
      * get the amount of overlap between the provided coin term's bounds and this expression's "join zone"
@@ -705,7 +708,8 @@ define( function( require ) {
         Math.min( coinTermBounds.maxY, this.joinZone.maxY ) - Math.max( coinTermBounds.minY, this.joinZone.minY )
       );
       return xOverlap * yOverlap;
-    },
+    }
+    ,
 
     /**
      * get the amount of overlap between the provided expression and this expression
@@ -724,12 +728,14 @@ define( function( require ) {
         Math.min( otherExpressionBounds.maxY, thisExpressionBounds.maxY ) - Math.max( otherExpressionBounds.minY, thisExpressionBounds.minY )
       );
       return xOverlap * yOverlap;
-    },
+    }
+    ,
 
     //REVIEW: doc
     getUpperRightCorner: function() {
       return this.upperLeftCornerProperty.get().plusXY( this.widthProperty.get(), 0 );
-    },
+    }
+    ,
 
     /**
      * Add a coin term to the list of those that are hovering over this expression.  This is a no-op if the coin term is
@@ -742,7 +748,8 @@ define( function( require ) {
         this.hoveringCoinTerms.push( coinTerm );
         coinTerm.breakApartAllowedProperty.set( false );
       }
-    },
+    }
+    ,
 
     /**
      * Remove a coin term from the list of those that are hovering over this expression.  This is a no-op if the coin
@@ -756,7 +763,8 @@ define( function( require ) {
         this.hoveringCoinTerms.splice( index, 1 );
         coinTerm.breakApartAllowedProperty.set( true );
       }
-    },
+    }
+    ,
 
     //REVIEW: doc
     clearHoveringCoinTerms: function() {
@@ -764,7 +772,8 @@ define( function( require ) {
         hoveringCoinTerm.breakApartAllowedProperty.set( true );
       } );
       this.hoveringCoinTerms.length = 0;
-    },
+    }
+    ,
 
     /**
      * Add an expression to the list of those that are hovering over this expression.  This is a no-op if the expression
@@ -776,7 +785,8 @@ define( function( require ) {
       if ( this.hoveringExpressions.indexOf( expression ) === -1 ) {
         this.hoveringExpressions.push( expression );
       }
-    },
+    }
+    ,
 
     /**
      * Remove an expression from the list of those that are hovering over this expression.  This is a no-op if the
@@ -789,7 +799,8 @@ define( function( require ) {
       if ( index !== -1 ) {
         this.hoveringExpressions.splice( index, 1 );
       }
-    },
+    }
+    ,
 
     /**
      * returns true if the given coin term is on the list of those hovering over the expression

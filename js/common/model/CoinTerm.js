@@ -12,6 +12,7 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var AnimationSpec = require( 'EXPRESSION_EXCHANGE/common/model/AnimationSpec' );
   var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var Easing = require( 'TWIXT/Easing' );
@@ -77,12 +78,10 @@ define( function( require ) {
     // @public {Property.<boolean>, indicates whether this is in a collection box (for game)
     this.collectedProperty = new Property( false );
 
-    // @public {Property.<????|null>} (read only), tracks the current in-progress animation, if any
-    //REVIEW: Here's an example where type documentation really helps. No idea (in initial read through) what type it can hold.
+    // @public {Property.<AnimationSpec|null>} (read only), tracks the current in-progress animation, null if none
     this.inProgressAnimationProperty = new Property( null );
 
     // @public {Property.<number>} (read-only) - total number of coins/terms combined into this one, can be negative
-    //REVIEW: Is this the coefficient?
     this.totalCountProperty = new Property( options.initialCount );
 
     // @public (read-write) - flag that controls whether breaking apart is allowed
@@ -91,9 +90,7 @@ define( function( require ) {
     // @public (read only) - The bounds of this model element's view representation relative to the element's current
     // position. This admittedly breaks the usual model-view rules, but many things in the view need to know this, so
     // having it available on the model element after being set by the view worked out to be the best approach.
-    //REVIEW: 'local' has been used as a word for this in Scenery (localViewBoundsProperty seems like a more obvious
-      // name to me, but may not to others)
-    this.relativeViewBoundsProperty = new Property( null );
+    this.localViewBoundsProperty = new Property( null );
 
     // @public {Property.<number>} (read only) - ranges from 1 to 0, used primarily for fading out of a coin term when
     //                                           cancellation occurs
@@ -291,12 +288,11 @@ define( function( require ) {
                                 EESharedConstants.COIN_TERM_MOVEMENT_SPEED;
 
         //REVIEW: Should this be a separate type, since it's available as a public Property?
-        this.inProgressAnimationProperty.set( {
-          startPosition: this.positionProperty.get().copy(),
-          travelVector: destination.minus( this.positionProperty.get() ),
-          totalDuration: animationDuration,
-          timeSoFar: 0
-        } );
+        this.inProgressAnimationProperty.set( new AnimationSpec(
+          this.positionProperty.get().copy(),
+          destination.minus( this.positionProperty.get() ),
+          animationDuration
+        ) );
       }
     },
 
@@ -437,7 +433,7 @@ define( function( require ) {
      */
     getViewBounds: function() {
       var position = this.positionProperty.get();
-      var relativeViewBounds = this.relativeViewBoundsProperty.get();
+      var relativeViewBounds = this.localViewBoundsProperty.get();
       //REVIEW: relativeViewBounds.shifted( position.x, position.y )
       return new Bounds2(
         position.x + relativeViewBounds.minX,

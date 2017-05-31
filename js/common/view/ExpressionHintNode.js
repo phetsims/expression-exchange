@@ -34,14 +34,14 @@ define( function( require ) {
 
     var boundsUpdateMultilink = Property.multilink(
       [
-        expressionHint.anchorCoinTerm.relativeViewBoundsProperty,
-        expressionHint.movingCoinTerm.relativeViewBoundsProperty
+        expressionHint.anchorCoinTerm.localViewBoundsProperty,
+        expressionHint.movingCoinTerm.localViewBoundsProperty
       ],
       function() {
 
         // convenience vars
-        var anchorCTBounds = expressionHint.anchorCoinTerm.relativeViewBoundsProperty.get();
-        var movingCTBounds = expressionHint.movingCoinTerm.relativeViewBoundsProperty.get();
+        var anchorCTBounds = expressionHint.anchorCoinTerm.localViewBoundsProperty.get();
+        var movingCTBounds = expressionHint.movingCoinTerm.localViewBoundsProperty.get();
 
         // clear out any previous hint
         self.removeAllChildren();

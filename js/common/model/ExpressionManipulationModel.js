@@ -276,7 +276,7 @@ define( function( require ) {
           return;
         }
         var extractedCoinTerms = addedCoinTerm.extractConstituentCoinTerms();
-        var relativeViewBounds = addedCoinTerm.relativeViewBoundsProperty.get();
+        var relativeViewBounds = addedCoinTerm.localViewBoundsProperty.get();
 
         // If the total combined coin count was even, shift the 'parent coin' a bit so that the coins end up being
         // distributed around the centerX position.
@@ -1039,8 +1039,8 @@ define( function( require ) {
       // Make the combine zone wider, but vertically shorter, than the actual bounds, as this gives the most desirable
       // behavior.  The multiplier for the height was empirically determined.
       var extendedTargetCoinTermBounds = coinTermA.getViewBounds().dilatedXY(
-        coinTermA.relativeViewBoundsProperty.get().width,
-        -coinTermA.relativeViewBoundsProperty.get().height * 0.25
+        coinTermA.localViewBoundsProperty.get().width,
+        -coinTermA.localViewBoundsProperty.get().height * 0.25
       );
 
       return extendedTargetCoinTermBounds.intersectsBounds( coinTermB.getViewBounds() );

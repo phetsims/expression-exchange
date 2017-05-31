@@ -123,8 +123,8 @@ define( function( require ) {
       }
 
       // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
-      if ( !coinTerm.relativeViewBoundsProperty.get() || !coinTerm.relativeViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
-        coinTerm.relativeViewBoundsProperty.set( relativeVisibleBounds );
+      if ( !coinTerm.localViewBoundsProperty.get() || !coinTerm.localViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
+        coinTerm.localViewBoundsProperty.set( relativeVisibleBounds );
       }
     }
 
