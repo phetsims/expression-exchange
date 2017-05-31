@@ -38,22 +38,15 @@ define( function( require ) {
     this.yValueProperty = yValueProperty;
     this.zValueProperty = zValueProperty;
 
-    // @private - string representations of the variables
-    //REVIEW: Property doesn't allow missing parameter? Maybe doc it as {Property.<string|null>} and initialize as null>
-    this.xValueStringProperty = new Property();
-    this.yValueStringProperty = new Property();
-    this.zValueStringProperty = new Property();
-
-    // update the strings as the variable values change
-    //REVIEW: If this is the only thing setting the properties, can they be replaced with DerivedProperties instead?
-    this.xValueProperty.link( function( xValue ) {
-      self.xValueStringProperty.value =  '(' + xValue.toString() + ')';
+    // @private {Property.<string>} - string representations of the variables
+    this.xValueStringProperty = new DerivedProperty( [ xValueProperty ], function( value ) {
+      return '(' + value.toString() + ')';
     } );
-    this.yValueProperty.link( function( yValue ) {
-      self.yValueStringProperty.value = '(' + yValue.toString() + ')';
+    this.yValueStringProperty = new DerivedProperty( [ yValueProperty ], function( value ) {
+      return '(' + value.toString() + ')';
     } );
-    this.zValueProperty.link( function( zValue ) {
-      self.zValueStringProperty.value = '(' + zValue.toString() + ')';
+    this.zValueStringProperty = new DerivedProperty( [ zValueProperty ], function( value ) {
+      return '(' + value.toString() + ')';
     } );
 
     // @private, value property for x times y

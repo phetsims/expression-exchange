@@ -887,8 +887,7 @@ define( function( require ) {
       this.coinTerms.forEach( function( coinTerm ) {
 
         // make sure the coin term is eligible and then compare the amount of overlap to what was previously seen
-        if ( !coinTerm.userControlledProperty.get() && !self.isCoinTermInExpression( coinTerm ) && !coinTerm.collectedProperty.get() &&
-             coinTerm.existenceStrengthProperty.get() === 1 &&
+        if ( !coinTerm.userControlledProperty.get() && !self.isCoinTermInExpression( coinTerm ) && !coinTerm.collectedProperty.get() && !coinTerm.isFadingOut() &&
              expression.getCoinTermJoinZoneOverlap( coinTerm ) > maxOverlap ) {
           maxOverlap = expression.getCoinTermJoinZoneOverlap( coinTerm );
           mostOverlappingFreeCoinTerm = coinTerm;
@@ -1136,7 +1135,7 @@ define( function( require ) {
         if ( thisCoinTerm !== thatCoinTerm &&
              thisCoinTerm.canCombineWith( thatCoinTerm ) && // test that coin terms are of the same type and can be combined
              !thatCoinTerm.userControlledProperty.get() && // exclude user controlled coin terms
-             thatCoinTerm.existenceStrengthProperty.get() === 1 &&  // exclude coin terms that are fading out
+             !thatCoinTerm.isFadingOut() &&  // exclude coin terms that are fading out
              !thatCoinTerm.collectedProperty.get() &&  // exclude coin terms that are in a collection area
              !self.isCoinTermInExpression( thatCoinTerm ) /* exclude coin terms in expressions */ ) {
 
@@ -1165,8 +1164,7 @@ define( function( require ) {
 
       for ( var i = 0; i < expression.coinTerms.length; i++ ) {
         var potentiallyOverlappingCoinTerm = expression.coinTerms.get( i );
-        if ( potentiallyOverlappingCoinTerm !== coinTerm && !potentiallyOverlappingCoinTerm.userControlledProperty.get() &&
-             potentiallyOverlappingCoinTerm.existenceStrengthProperty.get() === 1 &&
+        if ( potentiallyOverlappingCoinTerm !== coinTerm && !potentiallyOverlappingCoinTerm.userControlledProperty.get() && !potentiallyOverlappingCoinTerm.isFadingOut() &&
              potentiallyOverlappingCoinTerm.canCombineWith( coinTerm ) ) {
           var overlapAmount = 0;
           if ( this.viewModeProperty.get() === ViewMode.COINS ) {

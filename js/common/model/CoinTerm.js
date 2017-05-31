@@ -93,9 +93,7 @@ define( function( require ) {
     this.localViewBoundsProperty = new Property( null );
 
     // @public {Property.<number>} (read only) - ranges from 1 to 0, used primarily for fading out of a coin term when
-    //                                           cancellation occurs
-    //REVIEW: Important to note that <1 values begin/continue fading, but =1 doesn't fade.
-    //REVIEW: Consider a helper function to determine whether it is fading out, as ===1 is checked a lot (also usually along-side userControlled?)
+    // cancellation occurs, once set to any value less than 1 it will automatically fade to 0
     this.existenceStrengthProperty = new Property( 1 );
 
     // @public {Property.<number>}, determines the opacity of the card on which the coin term can reside
@@ -133,8 +131,7 @@ define( function( require ) {
       this.composition.push( options.initialCount );
     }
 
-    // @private - countdown timers for fading out the card background
-    //REVIEW: What type? Maybe {number|null}
+    // @private {number|null} - countdown timers for fading out the card background
     this.cardPreFadeCountdown = null;
     this.cardFadeCountdown = null;
 
@@ -239,9 +236,9 @@ define( function( require ) {
       }
 
       // if this coin term is fading out, continue the fade
-      if ( this.existenceStrengthProperty.get() < 1 ) {
+      if ( this.isFadingOut() ) {
         this.existenceStrengthProperty.set( Math.max(
-          this.existenceStrengthProperty.get() - ( 1 / COIN_TERM_FADE_TIME ) * dt, //REVIEW: dt / COIN_TERM_FADE_TIME, no need for the 1
+          this.existenceStrengthProperty.get() - ( dt / COIN_TERM_FADE_TIME ),
           0
         ) );
       }
@@ -287,7 +284,6 @@ define( function( require ) {
         var animationDuration = this.positionProperty.get().distance( destination ) /
                                 EESharedConstants.COIN_TERM_MOVEMENT_SPEED;
 
-        //REVIEW: Should this be a separate type, since it's available as a public Property?
         this.inProgressAnimationProperty.set( new AnimationSpec(
           this.positionProperty.get().copy(),
           destination.minus( this.positionProperty.get() ),
@@ -296,15 +292,17 @@ define( function( require ) {
       }
     },
 
-    //REVIEW: doc
+    /**
+     * send this coin term back to its origin, generally used when putting a coin term back in the 'creator box'
+     * @public
+     */
     returnToOrigin: function() {
       this.travelToDestination( this.initialPosition );
     },
 
     /**
      * set both the position and destination in such a way that no animation is initiated
-     * @param position
-     * REVIEW: @param type?
+     * @param {Vector2} position
      * @public
      */
     setPositionAndDestination: function( position ) {
@@ -317,11 +315,10 @@ define( function( require ) {
      * @public
      */
     goImmediatelyToDestination: function() {
-      //REVIEW: Doesn't move to the destination if there is no animation?
       if ( this.inProgressAnimationProperty.get() ) {
         this.inProgressAnimationProperty.set( null );
-        this.positionProperty.set( this.destinationProperty.get() );
       }
+      this.positionProperty.set( this.destinationProperty.get() );
     },
 
     /**
@@ -349,8 +346,7 @@ define( function( require ) {
     absorb: function( coinTermToAbsorb, doPartialCancellation ) {
       assert && assert( this.typeID === coinTermToAbsorb.typeID, 'can\'t combine coin terms of different types' );
       var self = this;
-      //REVIEW: this.totalCountProperty.value += coinTermToAbsorb.totalCountProperty.value;
-      this.totalCountProperty.set( this.totalCountProperty.get() + coinTermToAbsorb.totalCountProperty.get() );
+      this.totalCountProperty.value += coinTermToAbsorb.totalCountProperty.value;
 
       if ( doPartialCancellation ) {
         coinTermToAbsorb.composition.forEach( function( minDecomposableValue ) {
@@ -433,14 +429,15 @@ define( function( require ) {
      */
     getViewBounds: function() {
       var position = this.positionProperty.get();
-      var relativeViewBounds = this.localViewBoundsProperty.get();
-      //REVIEW: relativeViewBounds.shifted( position.x, position.y )
-      return new Bounds2(
-        position.x + relativeViewBounds.minX,
-        position.y + relativeViewBounds.minY,
-        position.x + relativeViewBounds.maxX,
-        position.y + relativeViewBounds.maxY
-      );
+      return this.localViewBoundsProperty.get().shifted( position.x, position.y );
+    },
+
+    /**
+     * returns true if this coin term is fading out, false otherwise
+     * @returns {boolean}
+     */
+    isFadingOut: function() {
+      return this.existenceStrengthProperty.get() < 1;
     }
   } );
 } );
