@@ -30,14 +30,7 @@ define( function( require ) {
     CONTROL_PANEL_BACKGROUND_COLOR: new Color( 'rgb( 235, 235, 235 )' ),
     CARD_BACKGROUND_COLOR: '#FFFFEE',
 
-    // characters used for the variables depicted in the sim
-    //REVIEW: There are lots of usages of these raw values still in the sim. Should they all use these references?
-    X_VARIABLE_CHAR: 'x',
-    Y_VARIABLE_CHAR: 'y',
-    Z_VARIABLE_CHAR: 'z',
-
     // operator characters
-    //REVIEW: Multiple usages of the raw value in the sim without refering to this. Refactor to use this?
     MINUS_SIGN_UNICODE: '\u2212',
 
     // amount of time that the popup buttons are shown

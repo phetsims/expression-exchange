@@ -14,7 +14,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
+  var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
   var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTermFactory = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermFactory' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
@@ -45,7 +45,7 @@ define( function( require ) {
     options = _.extend( {
 
       // defines whether to present just coins, just variables, or both to the user
-      allowedRepresentations: AllowedRepresentationsEnum.COINS_AND_VARIABLES,
+      allowedRepresentations: AllowedRepresentations.COINS_AND_VARIABLES,
 
       // flag that controls how cancellation is handled in cases where coin terms don't completely cancel each other out
       partialCancellationEnabled: true,
@@ -55,7 +55,7 @@ define( function( require ) {
 
     }, options );
 
-    var initialViewMode = options.allowedRepresentations === AllowedRepresentationsEnum.VARIABLES_ONLY ?
+    var initialViewMode = options.allowedRepresentations === AllowedRepresentations.VARIABLES_ONLY ?
                           ViewMode.VARIABLES : ViewMode.COINS;
 
     // @public {Property.<ViewMode>}
@@ -86,7 +86,7 @@ define( function( require ) {
     // @public {CoinTermFactory}, read only, factory used to create coin terms
     this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
 
-    // @public {AllowedRepresentationsEnum}, read only, options that control what is available to the user to manipulate
+    // @public {AllowedRepresentations}, read only, options that control what is available to the user to manipulate
     this.allowedRepresentations = options.allowedRepresentations;
 
     // @public {ObservableArray.<CoinTerm>}, read and listen only, list of all coin terms in the model

@@ -130,33 +130,33 @@ define( function( require ) {
     //REVIEW: Just use the parsed ExpressionDescription instead of this?
     // identify the expression to be created based on a finite set of those supported
     if ( expressionString.indexOf( 'x^2', startIndex ) === startIndex ) {
-      nodeInfo.node = new RichText( EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>', SUB_SUP_OPTIONS );
+      nodeInfo.node = new RichText( 'x' + '<sup>2</sup>', SUB_SUP_OPTIONS );
       nodeInfo.charsUsed = 3;
     }
     else if ( expressionString.indexOf( 'y^2', startIndex ) === startIndex ) {
-      nodeInfo.node = new RichText( EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>', SUB_SUP_OPTIONS );
+      nodeInfo.node = new RichText( 'y<sup>2</sup>', SUB_SUP_OPTIONS );
       nodeInfo.charsUsed = 3;
     }
     else if ( expressionString.indexOf( 'xy', startIndex ) === startIndex ) {
-      nodeInfo.node = new Text( EESharedConstants.X_VARIABLE_CHAR + EESharedConstants.Y_VARIABLE_CHAR, {
+      nodeInfo.node = new Text( 'xy', {
         font: EXPRESSION_FONT_FOR_VARIABLES
       } );
       nodeInfo.charsUsed = 2;
     }
     else if ( expressionString.indexOf( 'x', startIndex ) === startIndex ) {
-      nodeInfo.node = new Text( EESharedConstants.X_VARIABLE_CHAR, {
+      nodeInfo.node = new Text( 'x', {
         font: EXPRESSION_FONT_FOR_VARIABLES
       } );
       nodeInfo.charsUsed = 1;
     }
     else if ( expressionString.indexOf( 'y', startIndex ) === startIndex ) {
-      nodeInfo.node = new Text( EESharedConstants.Y_VARIABLE_CHAR, {
+      nodeInfo.node = new Text( 'y', {
         font: EXPRESSION_FONT_FOR_VARIABLES
       } );
       nodeInfo.charsUsed = 1;
     }
     else if ( expressionString.indexOf( 'z', startIndex ) === startIndex ) {
-      nodeInfo.node = new Text( EESharedConstants.Z_VARIABLE_CHAR, {
+      nodeInfo.node = new Text( 'z', {
         font: EXPRESSION_FONT_FOR_VARIABLES
       } );
       nodeInfo.charsUsed = 1;

@@ -9,7 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
+  var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
   var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
@@ -22,7 +22,7 @@ define( function( require ) {
 
     ExpressionManipulationModel.call( this, {
       coinTermCollection: CoinTermCreatorSetID.VARIABLES,
-      allowedRepresentations: AllowedRepresentationsEnum.VARIABLES_ONLY
+      allowedRepresentations: AllowedRepresentations.VARIABLES_ONLY
     } );
 
   }

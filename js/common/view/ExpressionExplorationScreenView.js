@@ -12,7 +12,7 @@ define( function( require ) {
   // modules
   var ABSwitch = require( 'SUN/ABSwitch' );
   var AccordionBox = require( 'SUN/AccordionBox' );
-  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
+  var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
   var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
@@ -178,7 +178,7 @@ define( function( require ) {
     } );
 
     // if both representations are allowed, add the switch for switching between coin and term view
-    if ( model.allowedRepresentations === AllowedRepresentationsEnum.COINS_AND_VARIABLES ) {
+    if ( model.allowedRepresentations === AllowedRepresentations.COINS_AND_VARIABLES ) {
 
       var coinImageNode = new Image( switchCoinImage, { minWidth: SWITCH_COIN_WIDTH, maxWidth: SWITCH_COIN_WIDTH } );
 
@@ -186,7 +186,7 @@ define( function( require ) {
       var variableIconNode = new Node( {
         children: [
           new VStrut( coinImageNode.bounds.height ),
-          new Text( EESharedConstants.X_VARIABLE_CHAR, {
+          new Text( 'x', {
             font: new MathSymbolFont( 36 ),
             boundsMethod: 'accurate',
             //REVIEW: center: coinImageNode.leftCenter

@@ -9,7 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
+  var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
   var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
   var EEGameLevelModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameLevelModel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -55,7 +55,7 @@ define( function( require ) {
     _.times( NUMBER_OF_LEVELS, function( level ) {
       self.gameLevelModels.push( new EEGameLevelModel(
         level,
-        level < 3 ? AllowedRepresentationsEnum.COINS_ONLY : AllowedRepresentationsEnum.VARIABLES_ONLY,
+        level < 3 ? AllowedRepresentations.COINS_ONLY : AllowedRepresentations.VARIABLES_ONLY,
         self.soundEnabledProperty
       ) );
     } );

@@ -31,9 +31,8 @@ define( function( require ) {
     }
   };
 
-  //REVIEW: For logging, ideally we'd want to enable it ASAP before all of the startup code executes?
-  //REVIEW: Chicken-and-egg issue with putting this code in the namespace, since EEQueryParameters relies on the namespace?
-  // add support for logging
+  // Add support for logging if specified.  This is intended for debug of things like coin term and expression creation
+  // and removal, so it doesn't need to be enabled before the module loading (RequireJS) phase.
   if ( EEQueryParameters.enableLogging ) {
     console.log( 'enabling log' );
     expressionExchange.log = function( message ) {

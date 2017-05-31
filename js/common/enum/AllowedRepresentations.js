@@ -12,17 +12,17 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
   //REVIEW: Rename to AllowedRepresentation? Other enumerations are not named
-  var AllowedRepresentationsEnum = {
+  var AllowedRepresentations = {
     COINS_ONLY: 'COINS_ONLY',
     VARIABLES_ONLY: 'VARIABLES_ONLY',
     COINS_AND_VARIABLES: 'COINS_AND_VARIABLES'
   };
 
   // verify that enum is immutable, without the runtime penalty in production code
-  if ( assert ) { Object.freeze( AllowedRepresentationsEnum ); }
+  if ( assert ) { Object.freeze( AllowedRepresentations ); }
 
-  expressionExchange.register( 'AllowedRepresentationsEnum', AllowedRepresentationsEnum );
+  expressionExchange.register( 'AllowedRepresentations', AllowedRepresentations );
 
-  return AllowedRepresentationsEnum;
+  return AllowedRepresentations;
 
 } );

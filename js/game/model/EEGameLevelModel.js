@@ -12,7 +12,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var AllowedRepresentationsEnum = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentationsEnum' );
+  var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
   var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
   var EECollectionArea = require( 'EXPRESSION_EXCHANGE/game/model/EECollectionArea' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
@@ -29,14 +29,14 @@ define( function( require ) {
 
   /**
    * @param {number} level REVIEW: levelNumber? This object is the level!
-   * @param {AllowedRepresentationsEnum} allowedRepresentations
+   * @param {AllowedRepresentations} allowedRepresentations
    * @param {Property.<boolean>} soundEnabledProperty
    * @constructor
    */
   function EEGameLevelModel( level, allowedRepresentations, soundEnabledProperty ) {
 
     assert && assert(
-      allowedRepresentations !== AllowedRepresentationsEnum.COINS_AND_VARIABLES,
+      allowedRepresentations !== AllowedRepresentations.COINS_AND_VARIABLES,
       'games do not support switching between coin and variable view'
     );
 
@@ -98,7 +98,7 @@ define( function( require ) {
       var collectionArea = new EECollectionArea(
         EXPRESSION_COLLECTION_AREA_X_OFFSET,
         collectionAreaYPos,
-        allowedRepresentations === AllowedRepresentationsEnum.COINS_ONLY ? ViewMode.COINS : ViewMode.VARIABLES
+        allowedRepresentations === AllowedRepresentations.COINS_ONLY ? ViewMode.COINS : ViewMode.VARIABLES
       );
       collectionArea.collectedItemProperty.link( updateScore );
       self.collectionAreas.push( collectionArea );

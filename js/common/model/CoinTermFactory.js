@@ -146,49 +146,49 @@ define( function( require ) {
         case CoinTermTypeID.X:
           valueProperty = this.xValueProperty;
           coinRadius = 22;
-          termText = EESharedConstants.X_VARIABLE_CHAR;
+          termText = 'x';
           termValueTextProperty = this.xValueStringProperty;
           break;
 
         case CoinTermTypeID.Y:
           valueProperty = this.yValueProperty;
           coinRadius = 22;
-          termText = EESharedConstants.Y_VARIABLE_CHAR;
+          termText = 'y';
           termValueTextProperty = this.yValueStringProperty;
           break;
 
         case CoinTermTypeID.Z:
           valueProperty = this.zValueProperty;
           coinRadius = 25;
-          termText = EESharedConstants.Z_VARIABLE_CHAR;
+          termText = 'z';
           termValueTextProperty = this.zValueStringProperty;
           break;
 
         case CoinTermTypeID.X_TIMES_Y:
           valueProperty = this.xTimesYValueProperty;
           coinRadius = 25;
-          termText = EESharedConstants.X_VARIABLE_CHAR + EESharedConstants.Y_VARIABLE_CHAR;
+          termText = 'xy';
           termValueTextProperty = this.xTimesYValueStringProperty;
           break;
 
         case CoinTermTypeID.X_SQUARED:
           valueProperty = this.xSquaredValueProperty;
           coinRadius = 27;
-          termText = EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>';
+          termText = 'x<sup>2</sup>';
           termValueTextProperty = this.xSquaredValueStringProperty;
           break;
 
         case CoinTermTypeID.Y_SQUARED:
           valueProperty = this.ySquaredValueProperty;
           coinRadius = 27;
-          termText = EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>';
+          termText = 'y<sup>2</sup>';
           termValueTextProperty = this.ySquaredValueStringProperty;
           break;
 
         case CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED:
           valueProperty = this.xSquaredTimesYSquaredValueProperty;
           coinRadius = 28;
-          termText = EESharedConstants.X_VARIABLE_CHAR + '<sup>2</sup>' + EESharedConstants.Y_VARIABLE_CHAR + '<sup>2</sup>';
+          termText = 'x<sup>2</sup>y<sup>2</sup>';
           termValueTextProperty = this.xSquaredTimesYSquaredValueStringProperty;
           break;
 

@@ -64,17 +64,17 @@ define( function( require ) {
     var tweakerOptions = { minValue: options.minValue, maxValue: options.maxValue };
     xValueProperty && controls.push( new LeftRightNumberSpinner(
       xValueProperty,
-      EESharedConstants.X_VARIABLE_CHAR,
+      'x',
       tweakerOptions
     ) );
     yValueProperty && controls.push( new LeftRightNumberSpinner(
       yValueProperty,
-      EESharedConstants.Y_VARIABLE_CHAR,
+      'y',
       tweakerOptions
     ) );
     zValueProperty && controls.push( new LeftRightNumberSpinner(
       zValueProperty,
-      EESharedConstants.Z_VARIABLE_CHAR,
+      'z',
       tweakerOptions
     ) );
 
