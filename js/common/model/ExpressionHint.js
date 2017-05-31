@@ -45,8 +45,11 @@ define( function( require ) {
       return ( coinTerm === this.anchorCoinTerm || coinTerm === this.movingCoinTerm );
     },
 
-    // @public
-    //REVIEW: doc
+    /**
+     * @param {ExpressionHint} otherExpressionHint
+     * @returns {boolean}
+     * @public
+     */
     equals: function( otherExpressionHint ) {
       return ( otherExpressionHint.anchorCoinTerm === this.anchorCoinTerm &&
                otherExpressionHint.movingCoinTerm === this.movingCoinTerm &&
@@ -54,7 +57,11 @@ define( function( require ) {
       );
     },
 
-    //REVIEW: doc
+    /**
+     * Clear this expression hint, generally done just before removing it from the model.  This updated the state of
+     * any coin terms that were affected by the existence of the hint.
+     * @public
+     */
     clear: function() {
       this.anchorCoinTerm.breakApartAllowedProperty.set( true );
       this.movingCoinTerm.breakApartAllowedProperty.set( true );

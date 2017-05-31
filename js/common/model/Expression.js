@@ -68,7 +68,6 @@ define( function( require ) {
     this.simplifyNegativesProperty = simplifyNegativesProperty;
 
     // @public (read-only) - scale, used to shrink the expression when it is collected or uncollected
-    //REVIEW: Does widthProperty need to be added as a dependency, since it is used in the value computation?
     this.scaleProperty = new DerivedProperty( [ this.collectedProperty ], function( collected ) {
       return collected ?
              Math.min( EESharedConstants.COLLECTION_AREA_SIZE.width / self.widthProperty.get(), 1 ) * 0.9 :
@@ -121,30 +120,11 @@ define( function( require ) {
     // that join this expression
     this.mapCoinTermsToUCListeners = {};
 
-    // create the bounds that will be used to decide if coin terms or other expressions are in a position to join this one
-    // @private
-    var upperLeftCorner = this.upperLeftCornerProperty.get();
-    this.joinZone = new Bounds2(
-      upperLeftCorner.x - this.heightProperty.get(),
-      upperLeftCorner.y,
-      upperLeftCorner.x + this.widthProperty.get() + this.heightProperty.get(),
-      upperLeftCorner.y + this.heightProperty.get()
-    );
-
-    //------------------------------------------------------------------------
-    // other initialization
-    //------------------------------------------------------------------------
-
-    // Define a listener that is bound to this object that will set the resize needed flag when fired.  This is done
-    // in this way so that the listener can be found and removed when the coin term is removed from this expression.
-    //REVIEW: This should be a method? It isn't used in the constructor directly, and isn't a closure over any in-scope variables.
-    this.setResizeFlagFunction = function() { self.resizeNeeded = true; }; // @private
-
-    // add the initial coin term
-    this.addCoinTerm( anchorCoinTerm );
+    // @private {Bounds2} - bounds that will be used to decide if coin terms or other expressions are in a position to
+    // join this one
+    this.joinZone = new Bounds2( 0, 0, 0, 0 );
 
     // update the join zone as the size and/or location of the expression changes
-    //REVIEW: Somewhat duplicates the initialization above. Can we just make it a DerivedProperty?
     Property.multilink(
       [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
       function( upperLeftCorner, width, height ) {
@@ -155,6 +135,13 @@ define( function( require ) {
           upperLeftCorner.y + height );
       }
     );
+
+    //------------------------------------------------------------------------
+    // other initialization
+    //------------------------------------------------------------------------
+
+    // add the initial coin term
+    this.addCoinTerm( anchorCoinTerm );
 
     // add the second coin term
     this.addCoinTerm( floatingCoinTerm );
@@ -309,7 +296,9 @@ define( function( require ) {
       }
     },
 
-    // TODO: doc
+    /**
+     * @public
+     */
     dispose: function() {
       this.disposeExpression();
     },
@@ -418,7 +407,6 @@ define( function( require ) {
     addCoinTerm: function( coinTerm ) {
 
       if ( this.coinTerms.contains( coinTerm ) ) {
-        //REVIEW: This.
         // TODO:   There is a race condition that only occurs during fuzz testing where somehow a coin term that is
         // inside an expression becomes user controlled and then is added back to the expression.  This is a workaround.
         // This should be fully investigated before publication.  See
@@ -494,7 +482,7 @@ define( function( require ) {
       coinTerm.breakApartAllowedProperty.set( false );
 
       // add a listener to resize the expression if the bounds of this coin term change
-      coinTerm.localViewBoundsProperty.lazyLink( this.setResizeFlagFunction );
+      coinTerm.localViewBoundsProperty.lazyLink( this.setResizeNeededFlag.bind( this ) );
 
       // add a listener to update whether minus sign is shown when negative when the user moves this coin term
       var userControlledListener = this.updateCoinTermShowMinusSignFlag.bind( this );
@@ -509,13 +497,16 @@ define( function( require ) {
       this.layoutChangedEmitter.emit();
     },
 
-    // @public
-    //REVIEW: doc
+    /**
+     * remove a coin term from this expression
+     * @param {CoinTerm} coinTerm
+     * @public
+     */
     removeCoinTerm: function( coinTerm ) {
       coinTerm.breakApartAllowedProperty.set( true );
       coinTerm.showMinusSignWhenNegativeProperty.set( true );
       this.coinTerms.remove( coinTerm );
-      coinTerm.localViewBoundsProperty.unlink( this.setResizeFlagFunction );
+      coinTerm.localViewBoundsProperty.unlink( this.setResizeNeededFlag.bind( this ) );
       coinTerm.userControlledProperty.unlink( this.mapCoinTermsToUCListeners[ coinTerm.id ] );
       delete this.mapCoinTermsToUCListeners[ coinTerm.id ];
 
@@ -615,7 +606,7 @@ define( function( require ) {
 
     /**
      * move, a.k.a. translate, by the specified amount and move the coin terms too
-     * REVIEW: doc params
+     * @param {Vector2} deltaPosition
      * @private
      */
     translate: function( deltaPosition ) {
@@ -694,7 +685,7 @@ define( function( require ) {
     /**
      * get the amount of overlap between the provided coin term's bounds and this expression's "join zone"
      * @param {CoinTerm} coinTerm
-     * REVIEW: returns {number}?
+     * @returns {number} the area of the overlap
      * @public
      */
     getCoinTermJoinZoneOverlap: function( coinTerm ) {
@@ -714,7 +705,8 @@ define( function( require ) {
     /**
      * get the amount of overlap between the provided expression and this expression
      * @param {Expression||EECollectionArea} otherEntity - must provide a 'getBounds' method
-     * REVIEW: returns {number}?
+     * @returns {number} the area of the overlap
+     * @public
      */
     getOverlap: function( otherEntity ) {
       var otherExpressionBounds = otherEntity.getBounds();
@@ -731,11 +723,14 @@ define( function( require ) {
     }
     ,
 
-    //REVIEW: doc
+    /**
+     * get the upper right corner of this expression
+     * @returns {Vector2}
+     * @public
+     */
     getUpperRightCorner: function() {
       return this.upperLeftCornerProperty.get().plusXY( this.widthProperty.get(), 0 );
-    }
-    ,
+    },
 
     /**
      * Add a coin term to the list of those that are hovering over this expression.  This is a no-op if the coin term is
@@ -748,8 +743,7 @@ define( function( require ) {
         this.hoveringCoinTerms.push( coinTerm );
         coinTerm.breakApartAllowedProperty.set( false );
       }
-    }
-    ,
+    },
 
     /**
      * Remove a coin term from the list of those that are hovering over this expression.  This is a no-op if the coin
@@ -763,17 +757,18 @@ define( function( require ) {
         this.hoveringCoinTerms.splice( index, 1 );
         coinTerm.breakApartAllowedProperty.set( true );
       }
-    }
-    ,
+    },
 
-    //REVIEW: doc
+    /**
+     * clear the list of coin terms that are currently hovering over this expression
+     * @public
+     */
     clearHoveringCoinTerms: function() {
       this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
         hoveringCoinTerm.breakApartAllowedProperty.set( true );
       } );
       this.hoveringCoinTerms.length = 0;
-    }
-    ,
+    },
 
     /**
      * Add an expression to the list of those that are hovering over this expression.  This is a no-op if the expression
@@ -785,8 +780,7 @@ define( function( require ) {
       if ( this.hoveringExpressions.indexOf( expression ) === -1 ) {
         this.hoveringExpressions.push( expression );
       }
-    }
-    ,
+    },
 
     /**
      * Remove an expression from the list of those that are hovering over this expression.  This is a no-op if the
@@ -799,8 +793,7 @@ define( function( require ) {
       if ( index !== -1 ) {
         this.hoveringExpressions.splice( index, 1 );
       }
-    }
-    ,
+    },
 
     /**
      * returns true if the given coin term is on the list of those hovering over the expression
@@ -809,6 +802,14 @@ define( function( require ) {
      */
     isCoinTermHovering: function( coinTerm ) {
       return this.hoveringCoinTerms.indexOf( coinTerm ) > -1;
+    },
+
+    /**
+     * set the resize needed flag, used to hook up listeners
+     * @private
+     */
+    setResizeNeededFlag: function() {
+      this.resizeNeeded = true;
     }
   } );
 } );

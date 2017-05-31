@@ -74,8 +74,7 @@ define( function( require ) {
     // @public {Property.<number>} (read-only)
     this.totalValueProperty = new Property( 0 );
 
-    // @public {???}, read-only, null when no expression is in edit mode
-    //REVIEW: type docs?
+    // @public {Property.<Expression>}, read-only, null when no expression is being edited
     this.expressionBeingEditedProperty = new Property( null );
 
     // @public {Property.<boolean>}
@@ -102,8 +101,7 @@ define( function( require ) {
     this.coinTermRetrievalBounds = Bounds2.EVERYTHING;
 
     // @public {Array.<EECollectionArea>}, read only - areas where expressions or coin terms can be collected, used
-    //                                                 only in game
-    //REVIEW: Type docs are correct? Added but was hard to find
+    // only in game
     this.collectionAreas = [];
 
     /*
@@ -128,9 +126,8 @@ define( function( require ) {
       } );
     } );
 
-    //REVIEW: "@private mostly" is usually "@public"?
-    // @private mostly {@Bounds2} - should be set by view, generally just once.  Used to determine when to remove a coin term
-    // because the user has essentially put it away
+    // @public {@Bounds2} (read-write) - should be set by view, generally just once.  Used to determine when to remove a
+    // coin term because the user has essentially put it away
     this.creatorBoxBounds = Bounds2.NOTHING;
 
     // add a listener that resets the coin term values when the view mode switches from variables to coins
@@ -152,12 +149,10 @@ define( function( require ) {
     }
 
     // add a listener that updates the total whenever one of the term value properties change
-    //REVIEW: Add coinTerms.lengthProperty to this multilink?
-    Property.multilink( [ this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty ], updateTotal );
-
-    // add a listener that updates the total whenever a coin term is added or removed
-    //REVIEW: Add to the multilink above and remove?
-    this.coinTerms.lengthProperty.link( updateTotal );
+    Property.multilink(
+      [ this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty, this.coinTerms.lengthProperty ],
+      updateTotal
+    );
 
     // when a coin term is added, add listeners to handle the things about it that are dynamic and can affect the model
     this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
@@ -332,7 +327,6 @@ define( function( require ) {
           // the existence strength has gone to zero, remove this from the model
           self.removeCoinTerm( addedCoinTerm, false );
 
-          //REVIEW: What happens if a user cancels out terms, but quickly switches to editing another expression?
           if ( self.expressionBeingEditedProperty.get() ) {
             if ( self.expressionBeingEditedProperty.get().coinTerms.length === 0 ) {
 
