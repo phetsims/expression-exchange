@@ -13,7 +13,6 @@ define( function( require ) {
 
   // modules
   var AnimationSpec = require( 'EXPRESSION_EXCHANGE/common/model/AnimationSpec' );
-  var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var Easing = require( 'TWIXT/Easing' );
   var Emitter = require( 'AXON/Emitter' );

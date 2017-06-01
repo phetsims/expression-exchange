@@ -31,8 +31,6 @@ define( function( require ) {
    */
   function CoinTermFactory( xValueProperty, yValueProperty, zValueProperty ) {
 
-    var self = this;
-
     // @private - values of the variables
     this.xValueProperty = xValueProperty;
     this.yValueProperty = yValueProperty;
