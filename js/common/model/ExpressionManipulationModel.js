@@ -1074,12 +1074,11 @@ define( function( require ) {
       var self = this;
 
       this.coinTerms.forEach( function( thatCoinTerm ) {
-        if ( thatCoinTerm !== thisCoinTerm                   && // exclude thisCoinTerm
-             !thatCoinTerm.userControlledProperty.get()      && // exclude coin terms that are user controlled
-             !self.isCoinTermInExpression( thatCoinTerm )    && // exclude coin terms that are already in expressions
-             !thatCoinTerm.collectedProperty.get()           && // exclude coin terms that are in a collection
-             !thatCoinTerm.inProgressAnimationProperty.get() && // exclude coin terms that are moving
-             self.isCoinTermInExpressionCombineZone( thatCoinTerm, thisCoinTerm ) //  ) {
+        if ( thatCoinTerm !== thisCoinTerm && // exclude thisCoinTerm
+             !thatCoinTerm.userControlledProperty.get() && // exclude coin terms that are user controlled
+             !self.isCoinTermInExpression( thatCoinTerm ) && // exclude coin terms that are already in expressions
+             !thatCoinTerm.collectedProperty.get() && // exclude coin terms that are in a collection
+             !thatCoinTerm.inProgressAnimationProperty.get() /* exclude coin terms that are moving */ ) {
 
           //REVIEW: Continue to just chain things like above, but group with parenthesis?
           // test if the provided coin term is in one of the compare coin term's "expression combine zones"
