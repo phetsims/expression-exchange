@@ -995,8 +995,9 @@ define( function( require ) {
       return mostOverlappingCollectionArea;
     },
 
-    // @public
-    //REVIEW: more docs
+    /**
+     * @public
+     */
     reset: function() {
 
       // reset any collection areas that have been created
@@ -1024,8 +1025,13 @@ define( function( require ) {
       } );
     },
 
-    // @private - test if coinTermB is in the "expression combine zone" of coinTermA
-    //REVIEW: more docs
+    /**
+     * test if coinTermB is in the "expression combine zone" of coinTermA
+     * @param {CoinTerm} coinTermA
+     * @param {CoinTerm} coinTermB
+     * @returns {boolean}
+     * @private
+     */
     isCoinTermInExpressionCombineZone: function( coinTermA, coinTermB ) {
 
       // TODO: This could end up being a fair amount of allocations and may need some pre-allocated bounds for good performance
@@ -1046,7 +1052,6 @@ define( function( require ) {
      * @public
      */
     isCoinTermInExpression: function( coinTerm ) {
-      //REVIEW: return _.some( this.expressions.getArray(), function( expression ) { return expression.containsCoinTerm( coinTerm ) } );
       for ( var i = 0; i < this.expressions.length; i++ ) {
         if ( this.expressions.get( i ).containsCoinTerm( coinTerm ) ) {
           return true;
@@ -1069,11 +1074,12 @@ define( function( require ) {
       var self = this;
 
       this.coinTerms.forEach( function( thatCoinTerm ) {
-        if ( thatCoinTerm !== thisCoinTerm && // exclude thisCoinTerm
-             !thatCoinTerm.userControlledProperty.get() && // exclude coin terms that are user controlled
-             !self.isCoinTermInExpression( thatCoinTerm ) && // exclude coin terms that are already in expressions
-             !thatCoinTerm.collectedProperty.get() && // exclude coin terms that are in a collection
-             !thatCoinTerm.inProgressAnimationProperty.get() /* exclude coin terms that are moving */ ) {
+        if ( thatCoinTerm !== thisCoinTerm                   && // exclude thisCoinTerm
+             !thatCoinTerm.userControlledProperty.get()      && // exclude coin terms that are user controlled
+             !self.isCoinTermInExpression( thatCoinTerm )    && // exclude coin terms that are already in expressions
+             !thatCoinTerm.collectedProperty.get()           && // exclude coin terms that are in a collection
+             !thatCoinTerm.inProgressAnimationProperty.get() && // exclude coin terms that are moving
+             self.isCoinTermInExpressionCombineZone( thatCoinTerm, thisCoinTerm ) //  ) {
 
           //REVIEW: Continue to just chain things like above, but group with parenthesis?
           // test if the provided coin term is in one of the compare coin term's "expression combine zones"
