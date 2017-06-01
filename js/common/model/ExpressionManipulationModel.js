@@ -1074,36 +1074,45 @@ define( function( require ) {
       var self = this;
 
       this.coinTerms.forEach( function( thatCoinTerm ) {
+
+        // Okay, this is one nasty looking 'if' clause, but the basic idea is that first a bunch of conditions are
+        // checked that would exclude the provided coin terms from joining, then it checks to see if the coin term is
+        // in the 'join zone', and then checks that it's closer than any previously found joinable coin term.
         if ( thatCoinTerm !== thisCoinTerm && // exclude thisCoinTerm
              !thatCoinTerm.userControlledProperty.get() && // exclude coin terms that are user controlled
              !self.isCoinTermInExpression( thatCoinTerm ) && // exclude coin terms that are already in expressions
              !thatCoinTerm.collectedProperty.get() && // exclude coin terms that are in a collection
-             !thatCoinTerm.inProgressAnimationProperty.get() /* exclude coin terms that are moving */ ) {
+             !thatCoinTerm.inProgressAnimationProperty.get() && // exclude coin terms that are moving
+             self.isCoinTermInExpressionCombineZone( thatCoinTerm, thisCoinTerm ) && // in the 'combine zone'
+             ( !joinableFreeCoinTerm ||
+               ( joinableFreeCoinTerm.positionProperty.get().distance( thatCoinTerm ) <
+                 joinableFreeCoinTerm.positionProperty.get().distance( thisCoinTerm ) ) ) ) {
 
-          //REVIEW: Continue to just chain things like above, but group with parenthesis?
-          // test if the provided coin term is in one of the compare coin term's "expression combine zones"
-          if ( self.isCoinTermInExpressionCombineZone( thatCoinTerm, thisCoinTerm ) ) {
-            if ( !joinableFreeCoinTerm ||
-                 ( joinableFreeCoinTerm.positionProperty.get().distance( thatCoinTerm ) <
-                   joinableFreeCoinTerm.positionProperty.get().distance( thisCoinTerm ) ) ) {
-              joinableFreeCoinTerm = thatCoinTerm;
-            }
-          }
+          joinableFreeCoinTerm = thatCoinTerm;
         }
       } );
 
       return joinableFreeCoinTerm;
     },
 
-    // @private, get the amount of overlap given two coin terms by comparing position and coin radius
-    //REVIEW: doc types with usual JSDoc? @returns?
+    /**
+     * get the amount of overlap given two coin terms by comparing position and coin radius
+     * @param {CoinTerm} coinTermA
+     * @param {CoinTerm} coinTermB
+     * @returns {number}
+     * @private
+     */
     getCoinOverlapAmount: function( coinTermA, coinTermB ) {
       var distanceBetweenCenters = coinTermA.positionProperty.get().distance( coinTermB.positionProperty.get() );
       return Math.max( ( coinTermA.coinRadius + coinTermB.coinRadius ) - distanceBetweenCenters, 0 );
     },
 
-    // @private, get the amount of overlap between the view bounds for two coin terms
-    //REVIEW: doc types with usual JSDoc? @returns?
+    /**
+     * get the amount of overlap between the view representations of two coin terms
+     * @param {CoinTerm} coinTermA
+     * @param {CoinTerm} coinTermB
+     * @returns {number} amount of overlap, which is essentially an area value in view coordinates
+     */
     getViewBoundsOverlapAmount: function( coinTermA, coinTermB ) {
       var overlap = 0;
 
@@ -1130,13 +1139,7 @@ define( function( require ) {
       this.coinTerms.forEach( function( thatCoinTerm ) {
 
         // test that the coin term is eligible for consideration first
-        //REVIEW: Could this be a comparison function of some type in CoinTerm itself?
-        if ( thisCoinTerm !== thatCoinTerm &&
-             thisCoinTerm.canCombineWith( thatCoinTerm ) && // test that coin terms are of the same type and can be combined
-             !thatCoinTerm.userControlledProperty.get() && // exclude user controlled coin terms
-             !thatCoinTerm.isFadingOut() &&  // exclude coin terms that are fading out
-             !thatCoinTerm.collectedProperty.get() &&  // exclude coin terms that are in a collection area
-             !self.isCoinTermInExpression( thatCoinTerm ) /* exclude coin terms in expressions */ ) {
+        if ( thatCoinTerm.isEligibleToCombineWith( thisCoinTerm ) && !self.isCoinTermInExpression( thatCoinTerm ) ) {
 
           // calculate and compare the relative overlap amounts, done a bit differently in the different view modes
           var overlapAmount;
@@ -1156,15 +1159,19 @@ define( function( require ) {
       return mostOverlappingLikeCoinTerm;
     },
 
-    //REVIEW: docs. returns {CoinTerm|null}?
+    /**
+     * @param {CoinTerm} coinTerm
+     * @param {Expression} expression
+     * @returns {CoinTerm|null}
+     * @private
+     */
     getOverlappingLikeCoinTermWithinExpression: function( coinTerm, expression ) {
 
       var overlappingCoinTerm = null;
 
       for ( var i = 0; i < expression.coinTerms.length; i++ ) {
         var potentiallyOverlappingCoinTerm = expression.coinTerms.get( i );
-        if ( potentiallyOverlappingCoinTerm !== coinTerm && !potentiallyOverlappingCoinTerm.userControlledProperty.get() && !potentiallyOverlappingCoinTerm.isFadingOut() &&
-             potentiallyOverlappingCoinTerm.canCombineWith( coinTerm ) ) {
+        if ( potentiallyOverlappingCoinTerm.isEligibleToCombineWith( coinTerm ) ) {
           var overlapAmount = 0;
           if ( this.viewModeProperty.get() === ViewMode.COINS ) {
             overlapAmount = this.getCoinOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );

@@ -412,13 +412,18 @@ define( function( require ) {
     },
 
     /**
-     * tests if this coin term can be legitimately combined with another coin term
-     * @param {CoinTerm} coinTerm
+     * check if this coin term is eligible to combine with the provided one, see the implementation for details of what
+     * it means to be 'eligible'
+     * @param {CoinTerm} candidateCoinTerm
      * @returns {boolean}
-     * @public
      */
-    canCombineWith: function( coinTerm ) {
-      return coinTerm !== this && coinTerm.typeID === this.typeID;
+    isEligibleToCombineWith: function( candidateCoinTerm ) {
+
+      return candidateCoinTerm !== this && // can't combine with self
+             candidateCoinTerm.typeID === this.typeID && // can only combine with coins of same type
+             !this.userControlledProperty.get() && // can't combine if currently user controlled
+             !this.isFadingOut() && // can't combine if currently fading out
+             !this.collectedProperty.get(); // can't combine if in a collection area
     },
 
     /**

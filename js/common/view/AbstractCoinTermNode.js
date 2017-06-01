@@ -55,7 +55,6 @@ define( function( require ) {
     this.cardLikeBackground = new Rectangle( -1, -1, 2, 2, BACKGROUND_CORNER_ROUNDING, BACKGROUND_CORNER_ROUNDING, {
       fill: EESharedConstants.CARD_BACKGROUND_COLOR,
       stroke: 'black',
-      lineWidth: 1, //REVIEW: lineWidth 1 is the default, should not be specified
       visible: false
     } );
     this.addChild( this.cardLikeBackground );
