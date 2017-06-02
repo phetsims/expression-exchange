@@ -33,7 +33,7 @@ define( function( require ) {
     // verify options are valid
     assert && assert( options.mode === 'normal' || options.mode === 'inverted', 'invalid mode option' );
 
-    // the following options can't be overridden
+    // the following options can't be overridden, and are set here and then passed to the parent type later
     //REVIEW: If they can't be overridden, do _.extend( options, { ... these ... } ) so the declaration is cleaner.
     // It will mutate the options object, overriding as necessary. Presumably include the content one below also.
     options.xMargin = MARGIN;
