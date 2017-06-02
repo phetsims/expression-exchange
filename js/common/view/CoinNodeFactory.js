@@ -14,6 +14,7 @@ define( function( require ) {
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Image = require( 'SCENERY/nodes/Image' );
+  var Node = require( 'SCENERY/nodes/Node' );
   var Path = require( 'SCENERY/nodes/Path' );
   var Shape = require( 'KITE/Shape' );
   var Vector2 = require( 'DOT/Vector2' );
@@ -34,22 +35,42 @@ define( function( require ) {
   var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
   var coinZBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z-back.png' );
 
+  // constants
+  var COIN_EDGE_DARKENING_AMOUNT = 0.25;
+  var COIN_EDGE_STROKE = 0.5;
+
+  // map for coin images
+  var coinFrontImages = {};
+  coinFrontImages[ CoinTermTypeID.X ] = new Image( coinXFrontImage );
+  coinFrontImages[ CoinTermTypeID.Y ] = new Image( coinYFrontImage );
+  coinFrontImages[ CoinTermTypeID.Z ] = new Image( coinZFrontImage );
+  coinFrontImages[ CoinTermTypeID.X_TIMES_Y ] = new Image( coinXYFrontImage );
+  coinFrontImages[ CoinTermTypeID.X_SQUARED ] = new Image( coinXSquaredFrontImage );
+  coinFrontImages[ CoinTermTypeID.Y_SQUARED ] = new Image( coinYSquaredFrontImage );
+  coinFrontImages[ CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED ] = new Image( coinXSquaredYSquaredFrontImage );
+  var coinBackImages = {};
+  coinBackImages[ CoinTermTypeID.X ] = new Image( coinXBackImage );
+  coinBackImages[ CoinTermTypeID.Y ] = new Image( coinYBackImage );
+  coinBackImages[ CoinTermTypeID.Z ] = new Image( coinZBackImage );
+  coinBackImages[ CoinTermTypeID.X_TIMES_Y ] = new Image( coinXYBackImage );
+  coinBackImages[ CoinTermTypeID.X_SQUARED ] = new Image( coinXSquaredBackImage );
+  coinBackImages[ CoinTermTypeID.Y_SQUARED ] = new Image( coinYSquaredBackImage );
+  coinBackImages[ CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED ] = new Image( coinXSquaredYSquaredBackImage );
+  
   // convenience function for drawing round coin shapes
   function createRoundCoinIcon( outerCircleRadius, outerCircleColor, innerCircleRadius, innerCircleColor ) {
 
     var outerCircle = new Circle( outerCircleRadius, {
       fill: outerCircleColor,
-      //REVIEW: at least 4 places with the same lineWidth and 0.25-darker color. Possibility for refactoring?
-      stroke: outerCircleColor.colorUtilsDarker( 0.25 ),
-      lineWidth: 0.5
+      stroke: outerCircleColor.colorUtilsDarker( COIN_EDGE_DARKENING_AMOUNT ),
+      lineWidth: COIN_EDGE_STROKE
     } );
 
-    //REVIEW: Type documentation may help make clear that this is optional?
     if ( innerCircleRadius ) {
       outerCircle.addChild( new Circle( innerCircleRadius, {
         fill: innerCircleColor,
-        stroke: outerCircleColor.colorUtilsDarker( 0.25 ),
-        lineWidth: 0.5
+        stroke: outerCircleColor.colorUtilsDarker( COIN_EDGE_DARKENING_AMOUNT ),
+        lineWidth: COIN_EDGE_STROKE
       } ) );
     }
 
@@ -60,13 +81,9 @@ define( function( require ) {
   function createHexagonalCoinIcon( outerMaxRadius, outerCircleColor, innerCircleRadius, innerCircleColor ) {
 
     var outerShape = new Shape();
-    var vector = new Vector2( 0, outerMaxRadius );
-    vector.rotate( -Math.PI * 0.055 );
-    //REVIEW: outerShape.moveToPoint( Vector2.createPolar( outerMaxRadius, Math.PI * 0.445 ) )
-    // or if minimizing GC, outerShape.moveToPoint( vector );
-    outerShape.moveTo( vector.x, vector.y );
+    var vector = Vector2.createPolar( outerMaxRadius, -Math.PI * 0.055 );
+    outerShape.moveToPoint( vector );
 
-    //REVIEW: only 5 times is necessary?
     _.times( 6, function() {
       //REVIEW: for(i): outerShape.moveToPoint( Vector2.createPolar( outerMaxRadius, Math.PI * 0.445 + i * Math.PI / 3 ) )
       // or if minimizing GC, remove the closure (bad for GC) and outerShape.lineToPoint( vector )
@@ -77,21 +94,20 @@ define( function( require ) {
 
     var hexagonalCoinNode = new Path( outerShape, {
       fill: outerCircleColor,
-      stroke: outerCircleColor.colorUtilsDarker( 0.25 ),
-      lineWidth: 0.5
+      stroke: outerCircleColor.colorUtilsDarker( COIN_EDGE_DARKENING_AMOUNT ),
+      lineWidth: COIN_EDGE_STROKE
     } );
 
     if ( innerCircleRadius ) {
       hexagonalCoinNode.addChild( new Circle( innerCircleRadius, {
         fill: innerCircleColor,
-        stroke: outerCircleColor.colorUtilsDarker( 0.25 ),
-        lineWidth: 0.5
+        stroke: outerCircleColor.colorUtilsDarker( COIN_EDGE_DARKENING_AMOUNT ),
+        lineWidth: COIN_EDGE_STROKE
       } ) );
     }
 
     return hexagonalCoinNode;
   }
-
 
   /**
    * static factory object used to create nodes that represent coins
@@ -103,76 +119,19 @@ define( function( require ) {
      * function to create a node that can be used to represents the front of the provided coin type
      * @param {CoinTermTypeID} coinTermTypeID
      * @param {number} radius
-     * @param {string} backOrFront - param that controls whether it is the back or front of the coin, 'front' or 'back'
+     * @param {boolean} isFront - controls whether the image is the front of back of the coin
      * @returns {Node}
      * @public
      */
-    createImageNode: function( coinTermTypeID, radius, backOrFront ) {
-      //REVIEW: backOrFront with enumeration constants should either be refactored to a 'Side' enumeration, or a boolean
-      // like isFront or isBack.
+    createImageNode: function( coinTermTypeID, radius, isFront ) {
 
-      var coinNode = null;
+      var imageMap = isFront ? coinFrontImages : coinBackImages;
+      var wrappedCoinNode = new Node( { children: [ imageMap[ coinTermTypeID ] ] } );
 
-      /*
-      REVIEW: recommend a top-level map for most of the switch statement, e.g.:
-      var imageMap = {};
-      imageMap[ Side.FRONT ][ CoinTermTypeID.X ] = coinXFrontImage;
-      imageMap[ Side.BACK ][ CoinTermTypeID.X ] = coinXBackImage;
+      // scale so that the image node has the specified radius
+      wrappedCoinNode.scale( radius * 2 / wrappedCoinNode.width );
 
-      This has the advantage of also returning shared nodes, so that they are reused instead of being recreated for each
-      instance of a coin.
-       */
-      switch( coinTermTypeID ) {
-
-        case CoinTermTypeID.X:
-          coinNode = new Image( backOrFront === 'front' ? coinXFrontImage : coinXBackImage );
-          break;
-
-        case CoinTermTypeID.Y:
-          coinNode = new Image( backOrFront === 'front' ? coinYFrontImage : coinYBackImage );
-          break;
-
-        case CoinTermTypeID.Z:
-          coinNode = new Image( backOrFront === 'front' ? coinZFrontImage : coinZBackImage );
-          break;
-
-        case CoinTermTypeID.X_TIMES_Y:
-          coinNode = new Image( backOrFront === 'front' ? coinXYFrontImage : coinXYBackImage );
-          break;
-
-        case CoinTermTypeID.X_SQUARED:
-          coinNode = new Image( backOrFront === 'front' ? coinXSquaredFrontImage : coinXSquaredBackImage );
-          break;
-
-        case CoinTermTypeID.Y_SQUARED:
-          coinNode = new Image( backOrFront === 'front' ? coinYSquaredFrontImage : coinYSquaredBackImage );
-          break;
-
-        case CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED:
-          coinNode = new Image( backOrFront === 'front' ? coinXSquaredYSquaredFrontImage : coinXSquaredYSquaredBackImage );
-          break;
-
-        case CoinTermTypeID.CONSTANT:
-          // this should never be depicted as a coin, so add something garish so that we'll notice if it is
-          // REVIEW: Why does this exist instead of an assertion failure? Sounds like it should never be viewed?
-          coinNode = new Circle( radius, {
-            fill: 'pink',
-            stroke: 'red',
-
-            // make the top left 0,0 so that it's the same as the images
-            left: 0,
-            top: 0
-          } );
-          break;
-
-        default:
-          assert && assert( false, 'unknown coin term type' );
-      }
-
-      // scale so that the coin image has the specified radius
-      coinNode.scale( radius * 2 / coinNode.width );
-
-      return coinNode;
+      return wrappedCoinNode;
     },
 
     /**

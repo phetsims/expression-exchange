@@ -42,7 +42,7 @@ define( function( require ) {
     //REVIEW: Recommend instead adding CoinTermTypeID.VALUES as an array with all of the enumeration values.
     _.values( CoinTermTypeID ).forEach( function( coinTermTypeId ) {
       if ( coinTermTypeId !== CoinTermTypeID.CONSTANT ) {
-        nodes.push( CoinNodeFactory.createImageNode( coinTermTypeId, COIN_RADIUS, 'front' ) );
+        nodes.push( CoinNodeFactory.createImageNode( coinTermTypeId, COIN_RADIUS, true ) );
       }
     } );
     RewardNode.call( this, { nodes: RewardNode.createRandomNodes( nodes, NUMBER_OF_NODES ) } );

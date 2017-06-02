@@ -67,8 +67,8 @@ define( function( require ) {
 
     // add the images for the front and back of the coin
     //REVIEW: It looks like this is creating Image nodes for every instance of this. Sharing Image nodes may reduce memory usage (and be faster?)
-    var coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, 'front' );
-    var coinBackImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, 'back' );
+    var coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, true );
+    var coinBackImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, false );
 
     // add a parent node that contains the two coin images, and also maintains consistent bounds
     var coinImagesNode = new Rectangle( 0, 0, coinTerm.coinRadius * 2, coinTerm.coinRadius * 2, {
