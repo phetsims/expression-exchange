@@ -42,11 +42,7 @@ define( function( require ) {
     } );
 
     // @public {Array.<CoinTermTypeID>}, read only - list of the coin term types present in this creator box
-    //REVIEW: _.uniq( _.map( creatorNodes, 'typeID' ) )
-    this.coinTermTypeList = _.uniq( _.map(
-      creatorNodes,
-      function( creatorNode ) { return creatorNode.typeID; }
-    ) );
+    this.coinTermTypeList = _.uniq( _.map( creatorNodes, 'typeID' ) );
 
     // add the panel or carousel that will contain the various coin terms that the user can create
     if ( creatorNodes.length > options.itemsPerCarouselPage ) {

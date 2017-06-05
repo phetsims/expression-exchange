@@ -39,7 +39,7 @@ define( function( require ) {
   var COIN_EDGE_DARKENING_AMOUNT = 0.25;
   var COIN_EDGE_STROKE = 0.5;
 
-  // map for coin images
+  // maps for coin images (front and back)
   var coinFrontImages = {};
   coinFrontImages[ CoinTermTypeID.X ] = new Image( coinXFrontImage );
   coinFrontImages[ CoinTermTypeID.Y ] = new Image( coinYFrontImage );
@@ -56,7 +56,7 @@ define( function( require ) {
   coinBackImages[ CoinTermTypeID.X_SQUARED ] = new Image( coinXSquaredBackImage );
   coinBackImages[ CoinTermTypeID.Y_SQUARED ] = new Image( coinYSquaredBackImage );
   coinBackImages[ CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED ] = new Image( coinXSquaredYSquaredBackImage );
-  
+
   // convenience function for drawing round coin shapes
   function createRoundCoinIcon( outerCircleRadius, outerCircleColor, innerCircleRadius, innerCircleColor ) {
 
@@ -81,12 +81,10 @@ define( function( require ) {
   function createHexagonalCoinIcon( outerMaxRadius, outerCircleColor, innerCircleRadius, innerCircleColor ) {
 
     var outerShape = new Shape();
-    var vector = Vector2.createPolar( outerMaxRadius, -Math.PI * 0.055 );
+    var vector = Vector2.createPolar( outerMaxRadius, -Math.PI * 0.055 ); // TODO where that comes from
     outerShape.moveToPoint( vector );
 
     _.times( 6, function() {
-      //REVIEW: for(i): outerShape.moveToPoint( Vector2.createPolar( outerMaxRadius, Math.PI * 0.445 + i * Math.PI / 3 ) )
-      // or if minimizing GC, remove the closure (bad for GC) and outerShape.lineToPoint( vector )
       vector.rotate( Math.PI / 3 );
       outerShape.lineTo( vector.x, vector.y );
     } );
@@ -139,13 +137,12 @@ define( function( require ) {
      * @returns {Node}
      * @param {CoinTermTypeID} coinTermTypeID
      * @param {number} radius
-     * @param {Object} options REVIEW: never used? Can be removed?
+     * @param {Object} options
      */
     createIconNode: function( coinTermTypeID, radius, options ) {
 
       var iconNode = null;
 
-      //REVIEW: See recommended pattern above instead of a switch? And sharing instances may be helpful for memory.
       switch( coinTermTypeID ) {
 
         case CoinTermTypeID.X:
@@ -188,7 +185,7 @@ define( function( require ) {
             radius,
             new Color( 221, 219, 219 ),
             radius * 0.7,
-            new Color( 206, 180, 44 ) //REVIEW: duplicated color. Should that be refactored out?
+            new Color( 206, 180, 44 )
           );
           break;
 

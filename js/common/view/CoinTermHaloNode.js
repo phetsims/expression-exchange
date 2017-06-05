@@ -15,6 +15,7 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
+  var Property = require( 'AXON/Property' );
   var RadialGradient = require( 'SCENERY/util/RadialGradient' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
@@ -59,12 +60,12 @@ define( function( require ) {
     this.addChild( termHalo );
 
     // control term halo visibility
-    //REVIEW: Only one usage with a link. Preferred to turn this into a multilink
-    var termHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
+    var termHaloVisibleMultilink = Property.multilink(
+      [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
       function( viewMode, combineHaloActive ) {
-        return ( viewMode === ViewMode.VARIABLES ) && combineHaloActive;
-      } );
-    var termHaloVisibilityObserver = termHaloVisibleProperty.linkAttribute( termHalo, 'visible' );
+        termHalo.visible = viewMode === ViewMode.VARIABLES && combineHaloActive;
+      }
+    );
 
     // move this node as the model representation moves
     function handlePositionChanged( position ){
@@ -75,8 +76,7 @@ define( function( require ) {
     this.disposeCoinTermHaloNode = function(){
       coinHaloVisibleProperty.unlinkAttribute( coinHaloVisibilityObserver );
       coinHaloVisibleProperty.dispose();
-      termHaloVisibleProperty.unlinkAttribute( termHaloVisibilityObserver );
-      termHaloVisibleProperty.dispose();
+      termHaloVisibleMultilink.dispose();
       coinTerm.positionProperty.unlink( handlePositionChanged );
     };
   }

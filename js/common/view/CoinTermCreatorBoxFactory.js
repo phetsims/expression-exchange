@@ -53,8 +53,14 @@ define( function( require ) {
     { typeID: CoinTermTypeID.Y, initialCount: -1 }
   ];
 
-  // helper function for making coin term creator nodes for the explore screens, which use a non-staggered format
-  //REVIEW: recommend normal function docs
+  /**
+   * helper function for making coin term creator nodes for the explore screens, which use a non-staggered format
+   * @param {CoinTermTypeID} typeID
+   * @param {number} createdCoinTermInitialCount
+   * @param {ExpressionManipulationModel} model
+   * @param {ExpressionManipulationView} view
+   * @returns {CoinTermCreatorNode}
+   */
   function makeExploreScreenCreatorNode( typeID, createdCoinTermInitialCount, model, view ) {
 
     // Create a property that will control number of coin terms shown in this creator node.  For the explore screens,
@@ -85,8 +91,15 @@ define( function( require ) {
     );
   }
 
-  // helper function for making creator nodes for the game screen, which uses a staggered format
-  //REVIEW: recommend normal function docs
+  /**
+   * helper function for making coin term creator nodes for the game screens, which use a staggered format
+   * @param {CoinTermTypeID} typeID
+   * @param {number} createdCoinTermInitialCount
+   * @param {number} numInstancesAllowed
+   * @param {ExpressionManipulationModel} model
+   * @param {ExpressionManipulationView} view
+   * @returns {CoinTermCreatorNode}
+   */
   function makeGameScreenCreatorNode( typeID, createdCoinTermInitialCount, numInstancesAllowed, model, view ) {
 
     // Create a property that will control number of coin terms shown in this creator node.  For the game screen,
@@ -95,6 +108,7 @@ define( function( require ) {
     var instanceCount = model.getCoinTermCountProperty( typeID, createdCoinTermInitialCount, true );
 
     //REVIEW: Potential memory leak here, since it seems like this is called whenever there is a new challenge?
+    //TODO: The review comment is correct, but it's not immediately obvious to me how to fix it, so revisit later
     instanceCount.link( function( count ) {
       numberToShowProperty.set( numInstancesAllowed - count );
     } );
