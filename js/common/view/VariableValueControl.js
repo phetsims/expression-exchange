@@ -39,7 +39,6 @@ define( function( require ) {
       radius: 16,
       touchAreaDilation: 5,
       listener: function() {
-        //REVIEW: All usages seem to have properties here. Is this check necessary?
         xValueProperty && xValueProperty.reset();
         yValueProperty && yValueProperty.reset();
         zValueProperty && zValueProperty.reset();

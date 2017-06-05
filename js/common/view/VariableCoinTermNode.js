@@ -167,9 +167,7 @@ define( function( require ) {
       termText.centerX = 0;
       termText.y = textBaseline * scale;
       termText.mouseArea = termText.localBounds
-        //REVIEW: dilatedXY does both together
-        .dilatedX( POINTER_AREA_X_DILATION_AMOUNT )
-        .dilatedY( POINTER_AREA_Y_DILATION_AMOUNT )
+        .dilatedXY( POINTER_AREA_X_DILATION_AMOUNT, POINTER_AREA_Y_DILATION_AMOUNT )
         .shiftedY( POINTER_AREA_DOWN_SHIFT );
       termText.touchArea = termText.mouseArea;
       termText.visible = viewModeProperty.value === ViewMode.VARIABLES && !showVariableValuesProperty.value;
@@ -310,7 +308,7 @@ define( function( require ) {
       coinValueText.visible = coinBackImageNode.visible;
     } );
 
-    //REVIEW: visibility/doc? Recommend just moving this to dispose() though
+    // @private
     this.disposeVariableCoinTermNode = function() {
       updateRepresentationMultilink.dispose();
       showCoinValuesProperty.unlink( updateCoinFlipAnimations );

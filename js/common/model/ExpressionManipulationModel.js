@@ -977,7 +977,7 @@ define( function( require ) {
       var mostOverlappingCollectionArea = null;
       this.collectionAreas.forEach( function( collectionArea ) {
         var coinTermBounds = coinTerm.getViewBounds();
-        var collectionAreaBounds = collectionArea.getBounds();
+        var collectionAreaBounds = collectionArea.bounds;
         var xOverlap = Math.max(
           0,
           Math.min( coinTermBounds.maxX, collectionAreaBounds.maxX ) - Math.max( coinTermBounds.minX, collectionAreaBounds.minX )

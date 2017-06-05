@@ -31,18 +31,11 @@ define( function( require ) {
     // @public, read-only {Expression|CoinTerm} - expression or coin term that has been collected, null if nothing
     this.collectedItemProperty = new Property( null );
 
-    // @public, read-write - description of the expression that this capture area can hold
-    //REVIEW: Is this {Property.<ExpressionDescription}?
+    // @public {Property.<ExpressionDescription|null} (read-write) - description of the expression that this capture area can hold
     this.expressionDescriptionProperty = new Property( null );
 
     // @public {Bounds2}, read-only - bounds in model space of this capture area
-    //REVIEW: EESharedConstants.COLLECTION_AREA_SIZE.toBounds( x, y )
-    this.bounds = new Bounds2(
-      x,
-      y,
-      x + EESharedConstants.COLLECTION_AREA_SIZE.width,
-      y + EESharedConstants.COLLECTION_AREA_SIZE.height
-    );
+    this.bounds = EESharedConstants.COLLECTION_AREA_SIZE.toBounds( x, y );
 
     // @public {ViewMode} (read-only) - view mode (coins or variables)
     this.viewMode = viewMode;
@@ -113,8 +106,7 @@ define( function( require ) {
       if ( this.isEmpty() && this.expressionDescriptionProperty.get().coinTermMatches( coinTerm ) ) {
 
         // collect this coin term
-        //REVIEW: use this.bounds.center instead?
-        coinTerm.travelToDestination( new Vector2( this.bounds.getCenterX(), this.bounds.getCenterY() ) );
+        coinTerm.travelToDestination( this.bounds.center );
         coinTerm.collectedProperty.set( true );
         this.collectedItemProperty.set( coinTerm );
       }
@@ -142,7 +134,6 @@ define( function( require ) {
     ejectCollectedItem: function() {
       var collectedItem = this.collectedItemProperty.get();
       var collectedItemBounds;
-      var xDestination;
       var yDestination;
 
       // the item's collected state must be updated first, since this can sometimes cause its bounds to change
@@ -150,27 +141,29 @@ define( function( require ) {
 
       // figure out the destination, which is slightly different for coin terms versus expressions
       if ( collectedItem instanceof Expression ) {
+
         collectedItemBounds = collectedItem.getBounds();
-        //REVIEW: xDestination is the same for both branches of the if. Consolidate?
-        xDestination = this.bounds.minX - collectedItemBounds.width - REJECTED_ITEM_DISTANCE;
         yDestination = this.bounds.getCenterY() - collectedItemBounds.height / 2;
       }
       else {
         assert && assert( collectedItem instanceof CoinTerm, 'unexpected item, cannot reject' );
         collectedItemBounds = collectedItem.getViewBounds();
-        xDestination = this.bounds.minX - collectedItemBounds.width - REJECTED_ITEM_DISTANCE;
         yDestination = this.bounds.getCenterY();
       }
 
       // send the collected item outside of the collection area
-      collectedItem.travelToDestination( new Vector2( xDestination, yDestination ) );
+      collectedItem.travelToDestination( new Vector2(
+        this.bounds.minX - collectedItemBounds.width - REJECTED_ITEM_DISTANCE,
+        yDestination
+      ) );
 
       // update internal state
       this.collectedItemProperty.reset();
     },
 
     /**
-     * get a reference to this collection area's model bounds, the results should not be changed
+     * get a reference to this collection area's model bounds, the results should not be changed, this exists to allow
+     * polymorphisim with other entities whose bounds are checked
      * @returns {Bounds2}
      * @public
      * REVIEW: this.bounds is public, what's the purpose of this extra method? Is it overridden anywhere?

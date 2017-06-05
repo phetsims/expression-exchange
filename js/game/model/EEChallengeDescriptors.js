@@ -562,7 +562,7 @@ define( function( require ) {
      * get a challenge descriptor for the specified level
      * @param {number} level
      * @param {number} challengeNumber
-     * @returns {Object} REVIEW: Definitely need documentation on this. Why not create an EEChallengeDescriptor type?
+     * @returns {EEChallengeDescriptor}
      * @public
      */
     getChallengeDescriptor: function( level, challengeNumber ) {
@@ -579,7 +579,7 @@ define( function( require ) {
       }
     },
 
-    //REVIEW: Usually type doc/visibility?
+    //@public
     CHALLENGES_PER_LEVEL: 5
   };
 
