@@ -37,7 +37,7 @@ define( function( require ) {
    * @param {string} termText - textual representation, e.g. 'x', must be compatible with SubSupText
    * @param {Property.<string>} termValueTextProperty
    * @param {CoinTermTypeID} typeID - type identifier for this coin term
-   * @param {Object} options
+   * @param {Object} [options]
    * @constructor
    */
   function CoinTerm( valueProperty, coinRadius, termText, termValueTextProperty, typeID, options ) {

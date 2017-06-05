@@ -142,7 +142,7 @@ define( function( require ) {
      *
      * @param {Object} creatorSetID
      * @param {ExpressionManipulationModel} model
-     * @param {Object} options
+     * @param {Object} [options]
      * @returns {CoinTermCreatorBox}
      * @public
      */
@@ -171,7 +171,7 @@ define( function( require ) {
      * @param {ChallengeDescriptor} challengeDescriptor
      * @param {number} challengeNumber
      * @param {ExpressionManipulationModel} model
-     * @param {Object} options
+     * @param {Object} [options]
      * @returns {CoinTermCreatorBox}
      * @public
      */

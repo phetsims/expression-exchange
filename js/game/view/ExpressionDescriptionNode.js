@@ -35,7 +35,7 @@ define( function( require ) {
   /**
    * @param {ExpressionDescription} expressionDescription
    * @param {ViewMode} viewMode
-   * @param {Object} options
+   * @param {Object} [options]
    * @constructor
    */
   function ExpressionDescriptionNode( expressionDescription, viewMode, options ) {

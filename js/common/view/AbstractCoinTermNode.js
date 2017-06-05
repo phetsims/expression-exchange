@@ -27,7 +27,7 @@ define( function( require ) {
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin term
-   * @param {Object} options
+   * @param {Object} [options]
    * @constructor
    */
   function AbstractCoinTermNode( coinTerm, options ) {

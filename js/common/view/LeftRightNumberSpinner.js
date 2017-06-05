@@ -28,8 +28,10 @@ define( function( require ) {
   var DEFAULT_MAX_VALUE = 10;
 
   /**
+   * @param {Propergy.<number>} variableValueProperty - property that wraps the values that will be manipulated
+   * @param {string} variableString - the variable text displayed in the control
+   * @param {Object} [options]
    * @constructor
-   * REVIEW: docs?
    */
   function LeftRightNumberSpinner( variableValueProperty, variableString, options ) {
     Node.call( this );

@@ -24,7 +24,7 @@ define( function( require ) {
   /**
    * @param {CoinTerm} constantCoinTerm - model of a coin
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
-   * @param {Object} options
+   * @param {Object} [options]
    * @constructor
    */
   function ConstantCoinTermNode( constantCoinTerm, viewModeProperty, options ) {
@@ -91,16 +91,9 @@ define( function( require ) {
         valueText.y = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET * constantCoinTerm.scaleProperty.get();
 
         // update the card background
-        self.cardLikeBackground.visible = false; // make sure card is invisible so it doesn't affect visible bounds
         self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilated( 10 ) );
-        if ( constantCoinTerm.cardOpacityProperty.get() === 0 ) {
-          //REVIEW: This was just set to false above?
-          self.cardLikeBackground.visible = false;
-        }
-        else {
-          self.cardLikeBackground.visible = true;
-          self.cardLikeBackground.opacity = constantCoinTerm.cardOpacityProperty.get();
-        }
+        self.cardLikeBackground.visible = constantCoinTerm.cardOpacityProperty.get() > 0;
+        self.cardLikeBackground.opacity = constantCoinTerm.cardOpacityProperty.get();
 
         // update the bounds that are registered with the model
         updateBoundsInModel();

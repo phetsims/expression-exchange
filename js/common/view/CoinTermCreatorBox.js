@@ -21,7 +21,7 @@ define( function( require ) {
 
   /**
    * @param {Array.<CoinTermCreatorNode>} creatorNodes - set of coin term creator nodes
-   * @param {Object} options
+   * @param {Object} [options]
    * @constructor
    */
   function CoinTermCreatorBox( creatorNodes, options ) {

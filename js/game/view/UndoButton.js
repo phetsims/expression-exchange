@@ -22,7 +22,7 @@ define( function( require ) {
 
   /**
    * @constructor
-   * @param {Object} options
+   * @param {Object} [options]
    */
   function UndoButton( options ) {
 

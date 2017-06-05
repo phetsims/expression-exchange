@@ -119,7 +119,7 @@ define( function( require ) {
     /**
      * create a coin term of the specified type
      * @param {CoinTermTypeID} typeID
-     * @param {Object} options - see CoinTerm constructor
+     * @param {Object} [options] - see CoinTerm constructor
      * @returns {CoinTerm}
      * @public
      */

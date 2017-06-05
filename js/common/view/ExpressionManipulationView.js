@@ -27,7 +27,7 @@ define( function( require ) {
   /**
    * @param {ExpressionManipulationModel} model
    * @param {Property.<Bounds2>} visibleBoundsProperty
-   * @param {Object} options
+   * @param {Object} [options]
    * @constructor
    */
   function ExpressionManipulationView( model, visibleBoundsProperty, options ) {
@@ -77,8 +77,7 @@ define( function( require ) {
 
     // add the node that will act as the barrier to interaction with other expressions when editing an expression
     var barrierRectangleBounds = null;
-    var barrierRectangleShape = new Shape(); //REVIEW: This assigned value is never used, as the shape value is re-set?
-    var barrierRectanglePath = new Path( barrierRectangleShape, {
+    var barrierRectanglePath = new Path( null, {
       fill: 'rgba( 100, 100, 100, 0.5 )',
       visible: false, // initially invisible, will become visible when editing an expression
       cursor: 'pointer'
@@ -103,7 +102,7 @@ define( function( require ) {
 
     // define a function that will update the shape of the barrier rectangle
     function updateBarrierRectangle() {
-      barrierRectangleShape = Shape.bounds( barrierRectangleBounds );
+      var barrierRectangleShape = Shape.bounds( barrierRectangleBounds );
       if ( model.expressionBeingEditedProperty.get() ) {
         var barrierRectangleHoleBounds = model.expressionBeingEditedProperty.get().getBounds();
         // note - must travel counterclockwise to create a hole

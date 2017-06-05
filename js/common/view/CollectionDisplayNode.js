@@ -24,7 +24,7 @@ define( function( require ) {
   /**
    * @param {ExpressionManipulationModel} model
    * @param {Array.<CoinTermTypeID>} displayList - a list of the coin terms types to display in the desired order
-   * @param {Object} options
+   * @param {Object} [options]
    * @constructor
    */
   function CollectionDisplayNode( model, displayList, options ) {

@@ -31,27 +31,13 @@ define( function( require ) {
     Node.call( this );
 
     // add a rectangle with the first portion of the text
-    var firstTextPortion = new Text( '+ -x', { font: MATH_FONT } );
-    var firstTextBackground = new Rectangle(
-      0,
-      0,
-      firstTextPortion.width * 1.4,
-      firstTextPortion.height * 1.05,
-      //REVIEW: recommend { cornerRadius: RECT_CORNER_RADIUS }
-      RECT_CORNER_RADIUS,
-      RECT_CORNER_RADIUS,
-      { fill: RECTANGLE_BACKGROUND_COLOR }
-    );
-    //REVIEW: Is this equivalent to firstTextPortion.center = firstTextBackground.center?
-    firstTextPortion.centerX = firstTextBackground.width / 2;
-    firstTextPortion.centerY = firstTextBackground.height / 2;
-    firstTextBackground.addChild( firstTextPortion );
-    this.addChild( firstTextBackground );
+    var firstTextWithBackground = new TextWidthBackground( '+ -x' );
+    this.addChild( firstTextWithBackground );
 
     // add the arrow
     var arrow = new ArrowNode( 0, 0, 15, 0, {
-      left: firstTextBackground.right + 5,
-      centerY: firstTextBackground.height / 2,
+      left: firstTextWithBackground.right + 5,
+      centerY: firstTextWithBackground.height / 2,
       stroke: null,
       fill: 'rgb( 150, 0, 0 )',
       tailWidth: 3,
@@ -59,23 +45,36 @@ define( function( require ) {
     } );
     this.addChild( arrow );
 
-    //REVIEW: This second* looks somewhat copied from above. Refactor so it's one code path?
-    // add a rectangle containing the 2nd text portion
-    var secondTextPortion = new Text( '\u2212 x', { font: MATH_FONT } );
-    var secondTextBackground = new Rectangle(
-      0,
-      0,
-      secondTextPortion.width * 1.4,
-      secondTextPortion.height * 1.1,
-      RECT_CORNER_RADIUS,
-      RECT_CORNER_RADIUS,
-      { fill: RECTANGLE_BACKGROUND_COLOR, left: arrow.right + 5 }
-    );
-    secondTextPortion.centerX = secondTextBackground.width / 2;
-    secondTextPortion.centerY = secondTextBackground.height / 2;
-    secondTextBackground.addChild( secondTextPortion );
-    this.addChild( secondTextBackground );
+    // add the 2nd enclosed text portion
+    this.addChild( new TextWidthBackground( '\u2212 x', { left: arrow.right + 5 } ) );
   }
+
+  /**
+   * inner class for the background box used for the textual portions of the icon
+   * @param {string} text
+   * @param {Object} [options]
+   * @constructor
+   */
+  function TextWidthBackground( text, options ) {
+
+    // create the textual node
+    var textNode = new Text( text, { font: MATH_FONT } );
+
+    // create the background, which is a rounded rectangle (the width and height multipliers were empirically determined)
+    Rectangle.call( this, 0, 0, textNode.width * 1.4, textNode.height * 1.1, {
+      fill: RECTANGLE_BACKGROUND_COLOR,
+      cornerRadius: RECT_CORNER_RADIUS
+    } );
+
+    // position and add the text node
+    textNode.center = this.center;
+    this.addChild( textNode );
+
+    // pass through any options to the parent type
+    this.mutate( options );
+  }
+
+  inherit( Rectangle, TextWidthBackground );
 
   expressionExchange.register( 'ShowSubtractionIcon', ShowSubtractionIcon );
 

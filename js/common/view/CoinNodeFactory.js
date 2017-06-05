@@ -137,7 +137,7 @@ define( function( require ) {
      * @returns {Node}
      * @param {CoinTermTypeID} coinTermTypeID
      * @param {number} radius
-     * @param {Object} options
+     * @param {Object} [options]
      */
     createIconNode: function( coinTermTypeID, radius, options ) {
 

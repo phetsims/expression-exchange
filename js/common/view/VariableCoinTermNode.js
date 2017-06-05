@@ -48,7 +48,7 @@ define( function( require ) {
    * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
    * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
    * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
-   * @param {Object} options
+   * @param {Object} [options]
    * @constructor
    */
   function VariableCoinTermNode( coinTerm,

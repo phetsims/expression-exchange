@@ -33,7 +33,7 @@ define( function( require ) {
    * @param {function} coinTermCreatorFunction - function( {CoinTermTypeID}, options ) : {CoinTerm} - creates the coin
    * term model elements that are added to the model, also used for creating "dummy" instances to associate with the
    * view nodes that collectively comprise the constructed creator node
-   * @param {Object} options
+   * @param {Object} [options]
    * @constructor
    */
   function CoinTermCreatorNode( expressionManipulationModel,
