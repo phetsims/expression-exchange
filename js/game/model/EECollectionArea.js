@@ -8,7 +8,6 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
