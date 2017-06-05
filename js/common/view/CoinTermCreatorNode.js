@@ -130,11 +130,9 @@ define( function( require ) {
     // in the model.  This works by forwarding the events it receives to the node that gets created in the view.
     this.addInputListener( {
       down: function( event ) {
-        //REVIEW: event.canStartPress() should be used instead here
-        // Ignore non-left-mouse-button
-        if ( event.pointer.isMouse && event.domEvent.button !== 0 ) {
-          return;
-        }
+
+        // Don't try to start drags with a right mouse button or an attached pointer.
+        if ( !event.canStartPress() ) { return; }
 
         // Determine the origin position of the new element based on where the creator node is.  This is done so that
         // the position to which this element will return when it is "put away" will match the position of this creator
