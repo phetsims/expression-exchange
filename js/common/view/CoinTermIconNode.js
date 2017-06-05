@@ -16,6 +16,7 @@ define( function( require ) {
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var Property = require( 'AXON/Property' );
   var RichText = require( 'SCENERY_PHET/RichText' );
   var Text = require( 'SCENERY/nodes/Text' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
@@ -32,7 +33,7 @@ define( function( require ) {
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
    * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
    * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
-   * @param {Object} options //REVIEW: single usage doesn't use this, shouldn't be marked as required
+   * @param {Object} [options]
    * @constructor
    */
   function CoinTermIconNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty, options ) {
@@ -56,14 +57,9 @@ define( function( require ) {
     this.addChild( coinValueText );
 
     // control the coin value text visibility
-    //REVIEW: One use, presumably inline
-    var coinValueVisibleProperty = new DerivedProperty(
-      [ viewModeProperty, showCoinValuesProperty ],
-      function( viewMode, showCoinValues ) {
-        return ( viewMode === ViewMode.COINS && showCoinValues );
-      }
-    );
-    coinValueVisibleProperty.linkAttribute( coinValueText, 'visible' );
+    Property.multilink( [ viewModeProperty, showCoinValuesProperty ], function( viewMode, showCoinValues ) {
+      coinValueText.visible = viewMode === ViewMode.COINS && showCoinValues;
+    } );
 
     // determine the max width of the textual components
     var maxTextWidth = coinIconNode.width * MAX_TERM_WIDTH_PROPORTION;
@@ -73,7 +69,6 @@ define( function( require ) {
       font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
       maxWidth: maxTextWidth
     } );
-    //REVIEW: Curious why this isn't included in the coinTerm.termText?
     if ( coinTerm.totalCountProperty.get() < 0 ) {
       termText.text = '-' + termText.text;
     }
@@ -96,27 +91,18 @@ define( function( require ) {
     } );
     this.addChild( termWithVariableValuesText );
 
-    // create a helper function to update the term value text
-    //REVIEW: single use, presumably inline?
-    function updateTermValueText() {
+    // update the variable text when it changes, which is triggered by changes to the underlying variable values
+    coinTerm.termValueTextProperty.link( function() {
       var termValueText = coinTerm.termValueTextProperty.value;
       var sign = coinTerm.totalCountProperty.get() > 0 ? '' : '-';
       termWithVariableValuesText.text = sign + termValueText;
       termWithVariableValuesText.center = coinCenter;
-    }
-
-    // update the variable text when it changes, which is triggered by changes to the underlying variable values
-    coinTerm.termValueTextProperty.link( updateTermValueText );
+    } );
 
     // control the visibility of the value text
-    //REVIEW Single use, but with a link. Presumably multilink instead of creating a derived property?
-    var variableTextVisibleProperty = new DerivedProperty(
-      [ viewModeProperty, showVariableValuesProperty ],
-      function( viewMode, showVariableValues ) {
-        return ( viewMode === ViewMode.VARIABLES && showVariableValues );
-      }
-    );
-    variableTextVisibleProperty.linkAttribute( termWithVariableValuesText, 'visible' );
+    Property.multilink( [ viewModeProperty, showVariableValuesProperty ], function( viewMode, showVariableValues ) {
+      termWithVariableValuesText.visible = viewMode === ViewMode.VARIABLES && showVariableValues;
+    } );
 
     this.mutate( options );
   }

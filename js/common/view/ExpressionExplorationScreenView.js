@@ -189,9 +189,7 @@ define( function( require ) {
           new Text( 'x', {
             font: new MathSymbolFont( 36 ),
             boundsMethod: 'accurate',
-            //REVIEW: center: coinImageNode.leftCenter
-            centerX: 0,
-            centerY: coinImageNode.height / 2
+            center: coinImageNode.leftCenter
           } )
         ]
       } );
@@ -298,8 +296,6 @@ define( function( require ) {
     var resetAllButton = new ResetAllButton( {
       listener: function() {
         model.reset();
-        //REVIEW: Nice to usually have reset functions on view types themselves if they need reset, so we don't need to
-        // reach into their properties.
         myCollectionAccordionBox.expandedProperty.reset();
         totalValueAccordionBox.expandedProperty.reset();
         if ( coinTermCreatorBox.pageNumberProperty ) {
@@ -318,18 +314,16 @@ define( function( require ) {
     this.visibleBoundsProperty.link( function( visibleBounds ) {
 
       // update the positions of the floating controls
-      // REVIEW: use bounds.left/bounds.right
-      totalValueAccordionBox.left = visibleBounds.minX + FLOATING_PANEL_INSET;
-      variableValuesAccordionBox.left = visibleBounds.minX + FLOATING_PANEL_INSET;
-      myCollectionAccordionBox.right = visibleBounds.maxX - FLOATING_PANEL_INSET;
+      totalValueAccordionBox.left = visibleBounds.left + FLOATING_PANEL_INSET;
+      variableValuesAccordionBox.left = visibleBounds.left + FLOATING_PANEL_INSET;
+      myCollectionAccordionBox.right = visibleBounds.right - FLOATING_PANEL_INSET;
       showCoinValuesCheckbox.left = myCollectionAccordionBox.left;
       showVariableValuesCheckbox.left = myCollectionAccordionBox.left;
       showAllCoefficientsCheckbox.left = myCollectionAccordionBox.left;
       if ( showSubtractionCheckbox ) {
         showSubtractionCheckbox.left = myCollectionAccordionBox.left;
       }
-      //REVIEW: bounds.right
-      resetAllButton.right = visibleBounds.maxX - FLOATING_PANEL_INSET;
+      resetAllButton.right = visibleBounds.right - FLOATING_PANEL_INSET;
     } );
 
     // Add the layer where the coin terms and expressions will be shown, done here so that coin terms and expressions

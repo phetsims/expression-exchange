@@ -67,39 +67,6 @@ define( function( require ) {
       }
     }
 
-    // function that updates the text and repositions it
-    //REVIEW: only one use. Ideally inline?
-    function updateRepresentation() {
-
-      // update value text
-      valueText.setScaleMagnitude( constantCoinTerm.scaleProperty.get() );
-      if ( constantCoinTerm.showMinusSignWhenNegativeProperty.get() ){
-        valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value;
-      }
-      else{
-        valueText.text = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value );
-      }
-
-      // update position
-      valueText.centerX = 0;
-      valueText.y = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET * constantCoinTerm.scaleProperty.get();
-
-      // update the card background
-      self.cardLikeBackground.visible = false; // make sure card is invisible so it doesn't affect visible bounds
-      self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilated( 10 ) );
-      if ( constantCoinTerm.cardOpacityProperty.get() === 0 ) {
-        //REVIEW: This was just set to false above?
-        self.cardLikeBackground.visible = false;
-      }
-      else {
-        self.cardLikeBackground.visible = true;
-        self.cardLikeBackground.opacity = constantCoinTerm.cardOpacityProperty.get();
-      }
-
-      // update the bounds that are registered with the model
-      updateBoundsInModel();
-    }
-
     // update the representation when model properties that affect it change
     var updateRepresentationMultilink = Property.multilink(
       [
@@ -108,7 +75,36 @@ define( function( require ) {
         constantCoinTerm.cardOpacityProperty,
         constantCoinTerm.scaleProperty
       ],
-      updateRepresentation
+      function() {
+
+        // update value text
+        valueText.setScaleMagnitude( constantCoinTerm.scaleProperty.get() );
+        if ( constantCoinTerm.showMinusSignWhenNegativeProperty.get() ) {
+          valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value;
+        }
+        else {
+          valueText.text = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value );
+        }
+
+        // update position
+        valueText.centerX = 0;
+        valueText.y = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET * constantCoinTerm.scaleProperty.get();
+
+        // update the card background
+        self.cardLikeBackground.visible = false; // make sure card is invisible so it doesn't affect visible bounds
+        self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilated( 10 ) );
+        if ( constantCoinTerm.cardOpacityProperty.get() === 0 ) {
+          //REVIEW: This was just set to false above?
+          self.cardLikeBackground.visible = false;
+        }
+        else {
+          self.cardLikeBackground.visible = true;
+          self.cardLikeBackground.opacity = constantCoinTerm.cardOpacityProperty.get();
+        }
+
+        // update the bounds that are registered with the model
+        updateBoundsInModel();
+      }
     );
 
     this.disposeConstantCoinTermNode = function(){

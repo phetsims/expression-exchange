@@ -65,9 +65,7 @@ define( function( require ) {
     model.collectionAreas.forEach( function( collectionArea ) {
       var ejectButton = new UndoButton( {
         listener: function() { collectionArea.ejectCollectedItem(); },
-        //REVIEW: leftTop: collectionArea.bounds.leftTop
-        left: collectionArea.bounds.minX,
-        top: collectionArea.bounds.minY
+        leftTop: collectionArea.bounds.leftTop
       } );
       self.addChild( ejectButton );
 
@@ -105,13 +103,7 @@ define( function( require ) {
 
     // define a function that will update the shape of the barrier rectangle
     function updateBarrierRectangle() {
-      //REVIEW: barrierRectangleShape = Shape.bounds( barrierRectangleBounds )
-      barrierRectangleShape = Shape.rect(
-        barrierRectangleBounds.minX,
-        barrierRectangleBounds.minY,
-        barrierRectangleBounds.maxX - barrierRectangleBounds.minX,
-        barrierRectangleBounds.maxY - barrierRectangleBounds.minY
-      );
+      barrierRectangleShape = Shape.bounds( barrierRectangleBounds );
       if ( model.expressionBeingEditedProperty.get() ) {
         var barrierRectangleHoleBounds = model.expressionBeingEditedProperty.get().getBounds();
         // note - must travel counterclockwise to create a hole
@@ -119,8 +111,6 @@ define( function( require ) {
         barrierRectangleShape.lineTo( barrierRectangleHoleBounds.minX, barrierRectangleHoleBounds.maxY );
         barrierRectangleShape.lineTo( barrierRectangleHoleBounds.maxX, barrierRectangleHoleBounds.maxY );
         barrierRectangleShape.lineTo( barrierRectangleHoleBounds.maxX, barrierRectangleHoleBounds.minY );
-        //REVIEW: Why the moveTo before the close? The close would now do nothing, and could be removed
-        barrierRectangleShape.moveTo( barrierRectangleHoleBounds.minX, barrierRectangleHoleBounds.minY );
         barrierRectangleShape.close();
       }
       barrierRectanglePath.setShape( barrierRectangleShape );
@@ -259,14 +249,11 @@ define( function( require ) {
      * get the view node for the provided coin term model element
      * @param {CoinTerm} coinTerm
      * @returns {AbstractCoinTermNode}
+     * @public
      */
     getViewForCoinTerm: function( coinTerm ) {
-      //REVIEW: _.find( this.coinTermLayer.children, function( coinTermNode ) { return coinTermNode.coinTerm === coinTerm; } );
-      var coinTermView = null;
-      this.coinTermLayer.getChildren().forEach( function( coinTermNode ) {
-        if ( coinTermNode.coinTerm && coinTermNode.coinTerm === coinTerm ) {
-          coinTermView = coinTermNode;
-        }
+      var coinTermView = _.find( this.coinTermLayer.children, function( coinTermNode ) {
+        return coinTermNode.coinTerm === coinTerm;
       } );
       return coinTermView;
     }

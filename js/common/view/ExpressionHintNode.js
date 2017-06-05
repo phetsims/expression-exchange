@@ -59,17 +59,16 @@ define( function( require ) {
         if ( anchorCoinTermOnLeft ) {
           leftHalfWidth = anchorCTBounds.width + 2 * INSET;
           rightHalfWidth = movingCTBounds.width + 2 * INSET;
-          leftHalfCenterX = expressionHint.anchorCoinTerm.positionProperty.get().x +
-                            ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2; //REVIEW: bounds.centerX?
+          leftHalfCenterX = expressionHint.anchorCoinTerm.positionProperty.get().x + anchorCTBounds.centerX;
         }
         else { // anchor coin term is on the right
           leftHalfWidth = movingCTBounds.width + 2 * INSET;
           rightHalfWidth = anchorCTBounds.width + 2 * INSET;
-          //REVIEW: use bounds.centerX
-          leftHalfCenterX = expressionHint.anchorCoinTerm.positionProperty.get().x + ( anchorCTBounds.minX + anchorCTBounds.maxX ) / 2 - anchorCTBounds.width / 2 - INSET - movingCTBounds.width / 2 - INSET;
+          leftHalfCenterX =                                                                 expressionHint.anchorCoinTerm.positionProperty.get().x + anchorCTBounds.centerX
+                            - anchorCTBounds.width / 2 - INSET - movingCTBounds.width / 2 - INSET;
         }
 
-        //REVIEW: Looks like a rectangle. Any reason why we can't use the shortcuts?
+        // draw rectangle on three sides with zig-zag line on remaining side
         var leftHalfShape = new Shape()
           .moveTo( leftHalfWidth, 0 )
           .lineTo( 0, 0 )
@@ -85,8 +84,7 @@ define( function( require ) {
         } );
         self.addChild( leftHalf );
 
-        // add right half
-        //REVIEW: Looks like a rectangle. Any reason why we can't use the shortcuts?
+        // draw rectangle on three sides with zig-zag line on remaining side
         var rightHalfShape = new Shape()
           .moveTo( 0, 0 )
           .lineTo( rightHalfWidth, 0 )

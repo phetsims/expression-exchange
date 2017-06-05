@@ -17,15 +17,16 @@ define( function( require ) {
    */
   function EditExpressionButton( options ) {
 
-    //REVIEW: Why not _.extend( options, { ... } ) here like usual, with all of the values above?
-    options = options || {};
+    options = _.extend( {}, options );
 
     // the following options can't be overridden
-    options.content = new FontAwesomeNode( 'exchange', { scale: 0.35 } ); // scale empirically determined
-    options.xMargin = 3; // empirically determined
-    options.yMargin = 5.5; // empirically determined
-    options.baseColor = 'white';
-    options.cursor = 'pointer';
+    options = _.extend( options, {
+      content: new FontAwesomeNode( 'exchange', { scale: 0.35 } ), // scale empirically determined
+      xMargin: 3, // empirically determined
+      yMargin: 5.5, // empirically determined
+      baseColor: 'white',
+      cursor: 'pointer'
+    } );
 
     RectangularPushButton.call( this, options );
   }
