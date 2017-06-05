@@ -66,14 +66,13 @@ define( function( require ) {
     var flipStateProperty = new Property( showCoinValuesProperty.get() ? 1 : 0 );
 
     // add the images for the front and back of the coin
-    //REVIEW: It looks like this is creating Image nodes for every instance of this. Sharing Image nodes may reduce memory usage (and be faster?)
     var coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, true );
     var coinBackImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, false );
 
-    // add a parent node that contains the two coin images, and also maintains consistent bounds
+    // add a parent node that contains the two coin images, and also maintains consistent bounds, necessary to prevent
+    // a bunch of bounds change notification when the coin term is flipped
     var coinImagesNode = new Rectangle( 0, 0, coinTerm.coinRadius * 2, coinTerm.coinRadius * 2, {
-      //REVIEW: Why is this 'invisible'? If actually required, 'transparent' or null would be better?
-      fill: 'rgba( 0, 0, 0, 0.01 )', // invisible
+      fill: 'transparent', // invisible
       children: [ coinFrontImageNode, coinBackImageNode ],
       x: -coinTerm.coinRadius,
       y: -coinTerm.coinRadius
@@ -137,7 +136,7 @@ define( function( require ) {
       var scale = coinTerm.scaleProperty.get(); // for convenience
 
       // control front coin image visibility
-      var desiredCoinImageWidth = coinTerm.coinRadius * 2 * coinTerm.scaleProperty.get();
+      var desiredCoinImageWidth = coinTerm.coinRadius * 2 * scale;
       if ( coinImagesNode.width !== desiredCoinImageWidth ) {
         //REVIEW: Usually setting this to 1 first doesn't do anything?
         coinImagesNode.setScaleMagnitude( 1 );
