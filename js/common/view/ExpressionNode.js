@@ -204,8 +204,6 @@ define( function( require ) {
     var rightHintMultilink = Property.multilink(
       [ expression.heightProperty, expression.widthProperty, expression.rightHintWidthProperty ],
       function( expressionHeight, expressionWidth, hintWidth ) {
-        //REVIEW: Usually easier to read if shape calls are chained? (Except can't chain the zigzag).
-        //REVIEW: Use local variable here instead of current scope declaration
         var rightHintShape = new Shape().moveTo( expressionWidth, 0 );
         addVerticalZigZagLine( rightHintShape, expressionWidth, 0, expressionWidth, expressionHeight, true );
         rightHintShape

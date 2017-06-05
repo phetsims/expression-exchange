@@ -42,34 +42,18 @@ define( function( require ) {
     var self = this;
 
     // shape and path
-    //REVIEW: null initial value would presumably be better?
-    var shape = new Shape.rect( 0, 0, 0.1, 0.1 ); // tiny rect, will be set in update function
-    //REVIEW: Why have something that's "essentially invisible" instead of a null or 'transparent' fill?
-    var expressionShapeNode = new Path( shape, { fill: 'rgba( 255, 255, 255, 0.01 )' } ); // essentially invisible
+    var expressionShapeNode = new Path( null, { fill: 'transparent' } ); // essentially invisible
     this.addChild( expressionShapeNode );
 
-    // define a function that will create or update the shape based on the width and height
-    //REVIEW: The pattern where a single-use link/multilink function is separated out into a named function in the
-    // current scope is throwing me off. Usually means it's something that's getting called from multiple call sites,
-    // whereas link/multilink functions are usually inlined and anonymous.
-    function updateShape() {
-      shape = new Shape.rect( 0, 0, expression.widthProperty.get(), expression.heightProperty.get() );
-      expressionShapeNode.shape = shape;
-    }
-
     // update the shape if the height or width change
-    var updateShapeMultilink = Property.multilink( [ expression.widthProperty, expression.heightProperty ], updateShape );
+    var updateShapeMultilink = Property.multilink(
+      [ expression.widthProperty, expression.heightProperty ], function() {
+        expressionShapeNode.shape = new Shape.rect( 0, 0, expression.widthProperty.get(), expression.heightProperty.get() );
+      }
+    );
 
-    // update the position as the expression moves
-    /*
-    REVIEW:
-    expression.upperLeftCornerProperty.linkAttribute( this, 'translation' );
-     */
-    function updatePosition( upperLeftCorner ) {
-      self.x = upperLeftCorner.x;
-      self.y = upperLeftCorner.y;
-    }
-    expression.upperLeftCornerProperty.link( updatePosition );
+    // update the expression's position as this node moves
+    var translationLinkHandle = expression.upperLeftCornerProperty.linkAttribute( this, 'translation' );
 
     // become invisible if the expression goes into edit mode so that the user can interact with the coin terms within
     function updateVisibility( inEditMode ) {
@@ -111,30 +95,25 @@ define( function( require ) {
 
     function hidePopUpButtons() {
       popUpButtonsNode.visible = false;
-
-      // put the pop up buttons in a place where they don't affect the overall bounds
-      //REVIEW: popUpButtonsNode.translation = Vector2.ZERO
-      popUpButtonsNode.x = 0;
-      popUpButtonsNode.y = 0;
+      popUpButtonsNode.translation = Vector2.ZERO;
     }
 
     // timer used to hide the button
-    //REVIEW: This isn't a reference to the timer, but a reference to the callback/thing to pass to clearTimeout. Name change?
-    var hideButtonsTimer = null;
+    var hideButtonsTimerCallback = null;
 
     // define helper functions for managing the button timer
     function clearHideButtonsTimer() {
-      if ( hideButtonsTimer ) {
-        Timer.clearTimeout( hideButtonsTimer );
-        hideButtonsTimer = null;
+      if ( hideButtonsTimerCallback ) {
+        Timer.clearTimeout( hideButtonsTimerCallback );
+        hideButtonsTimerCallback = null;
       }
     }
 
     function startHideButtonsTimer() {
       clearHideButtonsTimer(); // just in case one is already running
-      hideButtonsTimer = Timer.setTimeout( function() {
+      hideButtonsTimerCallback = Timer.setTimeout( function() {
         hidePopUpButtons();
-        hideButtonsTimer = null;
+        hideButtonsTimerCallback = null;
       }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );
     }
 
@@ -142,7 +121,7 @@ define( function( require ) {
     popUpButtonsNode.addInputListener( {
       enter: function() {
         if ( !expression.userControlledProperty.get() ){
-          assert && assert( hideButtonsTimer !== null, 'hide button timer should be running if pop up buttons are visible' );
+          assert && assert( hideButtonsTimerCallback !== null, 'hide button timer should be running if pop up buttons are visible' );
           clearHideButtonsTimer();
         }
       },
@@ -187,11 +166,7 @@ define( function( require ) {
       translate: function( translationParams ) {
 
         // figure out where the expression would go if unbounded
-        //REVIEW: Is this the same as unboundedUpperLeftCornerPosition.add( translationParams.delta )?
-        unboundedUpperLeftCornerPosition.setXY(
-          unboundedUpperLeftCornerPosition.x + translationParams.delta.x,
-          unboundedUpperLeftCornerPosition.y + translationParams.delta.y
-        );
+        unboundedUpperLeftCornerPosition.add( translationParams.delta );
 
         // set the expression position, but bound it so the user doesn't drag it completely out of the usable area
         expression.setPositionAndDestination( new Vector2(
@@ -210,7 +185,7 @@ define( function( require ) {
 
       end: function() {
         expression.userControlledProperty.set( false );
-        assert && assert( hideButtonsTimer === null, 'a timer for hiding the buttons was running at end of drag' );
+        assert && assert( hideButtonsTimerCallback === null, 'a timer for hiding the buttons was running at end of drag' );
         if ( breakApartButton.visible ) {
           startHideButtonsTimer();
         }
@@ -248,7 +223,7 @@ define( function( require ) {
 
     // create a dispose function
     this.disposeExpressionOverlayNode = function() {
-      expression.upperLeftCornerProperty.unlink( updatePosition );
+      expression.upperLeftCornerProperty.unlinkAttribute( translationLinkHandle );
       expression.inProgressAnimationProperty.unlink( updateDragHandlerAttachmentState );
       expression.inEditModeProperty.unlink( updateVisibility );
       updateShapeMultilink.dispose();
