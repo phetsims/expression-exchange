@@ -165,7 +165,6 @@ define( function( require ) {
      * polymorphisim with other entities whose bounds are checked
      * @returns {Bounds2}
      * @public
-     * REVIEW: this.bounds is public, what's the purpose of this extra method? Is it overridden anywhere?
      */
     getBounds: function() {
       return this.bounds;
