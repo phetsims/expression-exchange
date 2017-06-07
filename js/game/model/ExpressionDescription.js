@@ -38,51 +38,14 @@ define( function( require ) {
     return char === '+' || char === '-';
   }
 
-  // helper function to multiply two terms together
-  //REVIEW: doc? are these CoinTerms or the custom duck-typed object input? describe result? Maybe both are allowed?
-  //REVIEW: Ideally this would be a method on a Term object?
-  function multiplyTerms( term1, term2 ) {
-    //REVIEW: Why wouldn't the multiplication of terms be a term itself? Can we separate out a Term object?
-    var result = {
-      coefficient: term1.coefficient * term2.coefficient,
-      coinTermTypeID: null
-    };
-    if ( term1.coinTermTypeID === CoinTermTypeID.CONSTANT ) {
-      result.coinTermTypeID = term2.coinTermTypeID;
-    }
-    else if ( term2.coinTermTypeID === CoinTermTypeID.CONSTANT ) {
-      result.coinTermTypeID = term1.coinTermTypeID;
-    }
-    else if ( term1.coinTermTypeID === CoinTermTypeID.X && term2.coinTermTypeID === CoinTermTypeID.X ) {
-      result.coinTermTypeID = CoinTermTypeID.X_SQUARED;
-    }
-    else if ( term1.coinTermTypeID === CoinTermTypeID.X && term2.coinTermTypeID === CoinTermTypeID.Y ||
-              term1.coinTermTypeID === CoinTermTypeID.Y && term2.coinTermTypeID === CoinTermTypeID.X ) {
-      result.coinTermTypeID = CoinTermTypeID.X_TIMES_Y;
-    }
-    else if ( term1.coinTermTypeID === CoinTermTypeID.Y && term2.coinTermTypeID === CoinTermTypeID.Y ) {
-      result.coinTermTypeID = CoinTermTypeID.Y_SQUARED;
-    }
-    else if ( term1.coinTermTypeID === CoinTermTypeID.X_SQUARED && term2.coinTermTypeID === CoinTermTypeID.Y_SQUARED ||
-              term1.coinTermTypeID === CoinTermTypeID.Y_SQUARED && term2.coinTermTypeID === CoinTermTypeID.X_SQUARED ) {
-      result.coinTermTypeID = CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED;
-    }
-    else {
-      //REVIEW: throw preferred instead of assert( false )
-      assert && assert( false, 'unhandled term type combination for multiplication operation' );
-    }
-
-    return result;
-  }
-
   /**
-   * helper function that takes an expression string and an index and returns the terms, used recursively to handle
-   * parentheses
+   * A helper function that takes an expression string and an index and returns the terms, used recursively to handle
+   * parentheses.  This is not a perfectly general expression interpreter - it only handles the specific cases needed
+   * by the Expression Exchange simulation.
    * @param {String} expressionString - description of string with no white space or multiplication symbols, e.g.
-   *                                    2x-1 or x(y+2)
-   * @param {number}currentIndex
-   * REVIEW: returns???
-   * REVIEW: Doesn't seem to handle '(x+2)' (first test). Does it need to be that general?
+   * 2x-1 or x(y+2)
+   * @param {number} currentIndex
+   * @returns {Array.<Term>}
    */
   function interpretExpression( expressionString, currentIndex ) {
     var terms = [];
@@ -120,7 +83,7 @@ define( function( require ) {
 
         // the previously extracted term is now used to multiply the extracted expression (distributive property)
         var multipliedSubExpression = _.map( subExpressionInterpretationResult.terms, function( term ) {
-          return multiplyTerms( termExtractionResult.term, term );
+          return term.times( termExtractionResult.term );
         } );
 
         // add the new terms to the terms array or consolidate it with existing therms, and then update the index
@@ -162,8 +125,23 @@ define( function( require ) {
     };
   }
 
-  // helper function to extract a term from the equation string and interpret it as a coin term and quantity
-  //REVIEW: doesn't doc return type (pages of code below)
+  var stringToTermTypeMap = new Map();
+  stringToTermTypeMap.set( '', CoinTermTypeID.CONSTANT );
+  stringToTermTypeMap.set( 'x^2*y2', CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED );
+  stringToTermTypeMap.set( 'x^2', CoinTermTypeID.X_SQUARED );
+  stringToTermTypeMap.set( 'y^2', CoinTermTypeID.Y_SQUARED );
+  stringToTermTypeMap.set( 'xy', CoinTermTypeID.X_TIMES_Y );
+  stringToTermTypeMap.set( 'x', CoinTermTypeID.X );
+  stringToTermTypeMap.set( 'y', CoinTermTypeID.Y );
+  stringToTermTypeMap.set( 'z', CoinTermTypeID.Z );
+
+  /**
+   * helper function to extract a term from the equation string and also increase the index to the next token in the
+   * string
+   * @param {string} expressionString
+   * @param {number} index
+   * @returns {{term: {Term}, newIndex: {number}}}
+   */
   function extractTerm( expressionString, index ) {
 
     // handle the sign in front of the coefficient, if present
@@ -202,41 +180,8 @@ define( function( require ) {
     // extract the string that represents the term
     var termString = expressionString.substring( index, termEndIndex ).toLowerCase();
 
-    //REVIEW: Could simplify this with a lookup table, e.g.
-    // var termStringMap = {
-    //   '': CoinTermTypeID.CONSTANT,
-    //   'x^2*y^2': CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED,
-    //   'x^2': CoinTermTypeID.X_SQUARED,
-    //   ...
-    // }
-    var coinTermTypeID = null;
-    if ( termString.length === 0 ) {
-      coinTermTypeID = CoinTermTypeID.CONSTANT;
-    }
-    else if ( termString === 'x^2*y2' ) {
-      coinTermTypeID = CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED;
-    }
-    else if ( termString === 'x^2' ) {
-      coinTermTypeID = CoinTermTypeID.X_SQUARED;
-    }
-    else if ( termString === 'y^2' ) {
-      coinTermTypeID = CoinTermTypeID.Y_SQUARED;
-    }
-    else if ( termString === 'xy' ) {
-      coinTermTypeID = CoinTermTypeID.X_TIMES_Y;
-    }
-    else if ( termString === 'x' ) {
-      coinTermTypeID = CoinTermTypeID.X;
-    }
-    else if ( termString === 'y' ) {
-      coinTermTypeID = CoinTermTypeID.Y;
-    }
-    else if ( termString === 'z' ) {
-      coinTermTypeID = CoinTermTypeID.Z;
-    }
-    else {
-      assert && assert( false, 'unrecognized term string, value = ' + termString );
-    }
+    // get the coin term type
+    var coinTermTypeID = stringToTermTypeMap.get( termString );
 
     return {
       term: new Term( coefficient, coinTermTypeID ),
@@ -257,8 +202,8 @@ define( function( require ) {
       expressionMatches: function( expression ) {
 
         // count the totals of the coin term types in the provided expression
-        //REVIEW: noting the key and value types of this would help ({CoinTermTypeID} => {number})?
-        var expressionCoinTermCounts = {};
+
+        var expressionCoinTermCounts = {}; // maps coin term types (CoinTermTypeID) to numbers of each in the expression
         expression.coinTerms.forEach( function( coinTerm ) {
           if ( expressionCoinTermCounts[ coinTerm.typeID ] ) {
             expressionCoinTermCounts[ coinTerm.typeID ] += coinTerm.totalCountProperty.get();
@@ -304,13 +249,7 @@ define( function( require ) {
       coinTermMatches: function( coinTerm ) {
 
         // there must be only a single coin term in the the description for this to be a match
-        if ( this.terms.length !== 1 ) {
-          return false;
-        }
-
-        //REVIEW: why not have whatever Term type have equality?
-        return this.terms[ 0 ].coinTermTypeID === coinTerm.typeID &&
-               this.terms[ 0 ].coefficient === coinTerm.totalCountProperty.get();
+        return this.terms.length === 1 && this.terms[ 0 ].matchesCoinTerm( coinTerm );
       }
     }
   );
