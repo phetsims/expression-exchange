@@ -19,7 +19,6 @@ define( function( require ) {
   var EERewardNode = require( 'EXPRESSION_EXCHANGE/game/view/EERewardNode' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
   var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
-  var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
   var inherit = require( 'PHET_CORE/inherit' );
   var NextLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/NextLevelNode' );
   var Node = require( 'SCENERY/nodes/Node' );

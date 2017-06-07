@@ -29,16 +29,15 @@ define( function( require ) {
   function EEGameScreenView( gameModel ) {
 
     var self = this;
-    //REVIEW: visibility and type docs
-    this.gameModel = gameModel;
     ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
 
-    // hook up the audio player to the sound settings
-    //REVIEW: visibility docs
-    this.gameAudioPlayer = new GameAudioPlayer( gameModel.soundEnabledProperty );
+    // @private {EEGameModel}
+    this.gameModel = gameModel;
+
+    // create the audio play for the game sounds
+    var gameAudioPlayer = new GameAudioPlayer( gameModel.soundEnabledProperty );
 
     // consolidate the level scores into an array for the level selection node
-    //REVIEW: just pass in the levels themselves, this is unnecessary
     var levelScoreProperties = [];
     gameModel.gameLevels.forEach( function( gameLevelModel ) {
       levelScoreProperties.push( gameLevelModel.scoreProperty );
@@ -52,11 +51,8 @@ define( function( require ) {
     } );
 
     // add the node that allows the user to choose a game level to play
-    //REVIEW: Heavily prefer passing in the level models directly
-    //REVIEW: Then you don't need to SEPARATE out the functions, icons and scores, and then combine them in the other type.
-    //REVIEW: Name change to LevelSelectionNode might be clearer here as a type?
     //REVIEW: type/visibility docs
-    this.levelSelectionNode = new StartGameLevelNode(
+    var levelSelectionNode = new StartGameLevelNode(
       function( level ) { gameModel.selectLevel( level ); },
       function() { gameModel.reset(); },
       gameModel.soundEnabledProperty,
@@ -74,10 +70,10 @@ define( function( require ) {
       }
     );
 
-    this.addChild( this.levelSelectionNode );
+    this.addChild( levelSelectionNode );
 
     // currently displayed level or level selection node
-    var nodeInViewport = this.levelSelectionNode;
+    var nodeInViewport = levelSelectionNode;
 
     // define the value used to define how far the screens slide when moving in and out of view
     var slideDistance = this.layoutBounds.width * 1.25;
@@ -91,7 +87,7 @@ define( function( require ) {
         levelModel,
         self.layoutBounds,
         self.visibleBoundsProperty,
-        self.gameAudioPlayer
+        gameAudioPlayer
       );
       gameLevelView.visible = false; // will be made visible when the corresponding level is activated
       self.gameLevelViews.push( gameLevelView );
@@ -101,8 +97,8 @@ define( function( require ) {
     // hook up the animations for moving between level selection and game play
     gameModel.currentLevelProperty.lazyLink( function( newLevel, oldLevel ) {
 
-      var incomingViewNode = newLevel === null ? self.levelSelectionNode : self.gameLevelViews[ newLevel.levelNumber ];
-      var outgoingViewNode = oldLevel === null ? self.levelSelectionNode : self.gameLevelViews[ oldLevel.levelNumber ];
+      var incomingViewNode = newLevel === null ? levelSelectionNode : self.gameLevelViews[ newLevel.levelNumber ];
+      var outgoingViewNode = oldLevel === null ? levelSelectionNode : self.gameLevelViews[ oldLevel.levelNumber ];
       var outgoingNodeDestinationX;
       var incomingNodeStartX;
 
@@ -161,8 +157,11 @@ define( function( require ) {
 
   return inherit( ScreenView, EEGameScreenView, {
 
-    // @public
-    //REVIEW: docs
+    /**
+     * step the view, needed for animations
+     * @param {number} dt
+     * @public
+     */
     step: function( dt ) {
       var currentLevel = this.gameModel.currentLevelProperty.get();
       if ( currentLevel !== null ) {
