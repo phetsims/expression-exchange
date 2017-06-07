@@ -17,6 +17,7 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var NumberSpinner = require( 'SUN/NumberSpinner' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var Property = require( 'AXON/Property' );
   var RangeWithValue = require( 'DOT/RangeWithValue' );
   var Text = require( 'SCENERY/nodes/Text' );
 
@@ -28,7 +29,7 @@ define( function( require ) {
   var DEFAULT_MAX_VALUE = 10;
 
   /**
-   * @param {Propergy.<number>} variableValueProperty - property that wraps the values that will be manipulated
+   * @param {Property.<number>} variableValueProperty - property that wraps the values that will be manipulated
    * @param {string} variableString - the variable text displayed in the control
    * @param {Object} [options]
    * @constructor
@@ -42,7 +43,7 @@ define( function( require ) {
     }, options );
 
     // create and add the readout
-    var numberSpinner = new NumberSpinner( variableValueProperty, new RangeWithValue( options.minValue, options.maxValue ), {
+    var numberSpinner = new NumberSpinner( variableValueProperty, new Property( new RangeWithValue( options.minValue, options.maxValue ) ), {
       arrowsPosition: 'leftRight',
       font: READOUT_FONT,
       backgroundStroke: 'black',
