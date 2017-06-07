@@ -11,6 +11,7 @@ define( function( require ) {
   // modules
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  var HBox = require( 'SCENERY/nodes/HBox' );
   var inherit = require( 'PHET_CORE/inherit' );
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -36,20 +37,15 @@ define( function( require ) {
     Rectangle.call( this, 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
 
     // create and add the equation node
-    //REVIEW: Relies on Text.left being 0. Seems like we can just use HBox here to simplify logic?
-    var equationNode = new Node();
-    equationNode.addChild( new Text( '3', { font: TEXT_FONT } ) );
-    equationNode.addChild( new RichText( 'x<sup>2</sup>', {
-      font: MATH_FONT,
-      supScale: 0.5,
-      left: equationNode.width
-    } ) );
-    equationNode.addChild( new Text( ' \u2212 ', { font: TEXT_FONT, left: equationNode.width } ) );
-    equationNode.addChild( new RichText( 'x<sup>2</sup>', {
-      font: MATH_FONT,
-      supScale: 0.5,
-      left: equationNode.width
-    } ) );
+    var equationNode = new HBox( {
+      children: [
+        new Text( '3', { font: TEXT_FONT } ),
+        new RichText( 'x<sup>2</sup>', { font: MATH_FONT, supScale: 0.5 } ),
+        new Text( ' \u2212 ', { font: TEXT_FONT } ),
+        new RichText( 'x<sup>2</sup>', { font: MATH_FONT, supScale: 0.5 } )
+      ],
+      align: 'bottom'
+    } );
     equationNode.centerX = ICON_SIZE.width / 2;
     equationNode.centerY = ICON_SIZE.height * 0.45;
     this.addChild( equationNode );

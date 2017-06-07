@@ -17,7 +17,7 @@ define( function( require ) {
   var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
   var inherit = require( 'PHET_CORE/inherit' );
   var ScreenView = require( 'JOIST/ScreenView' );
-  var StartGameLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/StartGameLevelNode' );
+  var LevelSelectionNode = require( 'EXPRESSION_EXCHANGE/game/view/LevelSelectionNode' );
 
   // constants
   var SCREEN_CHANGE_TIME = 1000; // milliseconds
@@ -50,18 +50,13 @@ define( function( require ) {
     } );
 
     // add the node that allows the user to choose a game level to play
-    var levelSelectionNode = new StartGameLevelNode(
+    var levelSelectionNode = new LevelSelectionNode(
       function( level ) { gameModel.selectLevel( level ); },
       function() { gameModel.reset(); },
       gameModel.soundEnabledProperty,
       levelSelectionButtonIcons,
       levelScoreProperties,
       {
-        numStarsOnButtons: EEGameModel.CHALLENGES_PER_LEVEL,
-        perfectScore: EEGameModel.MAX_SCORE_PER_LEVEL,
-        numLevels: EEGameModel.NUMBER_OF_LEVELS,
-        numButtonRows: 2,
-        controlsInset: 10,
         size: this.layoutBounds,
         centerX: this.layoutBounds.centerX
       }

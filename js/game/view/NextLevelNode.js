@@ -30,7 +30,6 @@ define( function( require ) {
     var faceNode = new FaceNode( FACE_DIAMETER );
     this.addChild( faceNode );
 
-    //REVIEW: Replace the layout code with a VBox with spacing 10?
     var button = new RectangularPushButton( {
       content: new Text( nextString, { font: new PhetFont( 30 ) } ),
       centerX: faceNode.centerX,
