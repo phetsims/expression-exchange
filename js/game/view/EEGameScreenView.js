@@ -23,7 +23,7 @@ define( function( require ) {
   var SCREEN_CHANGE_TIME = 1000; // milliseconds
 
   /**
-   * @param {EEGameLevelModel} gameModel
+   * @param {EEGameLevel} gameModel
    * @constructor
    */
   function EEGameScreenView( gameModel ) {
@@ -41,7 +41,7 @@ define( function( require ) {
     // consolidate the level scores into an array for the level selection node
     //REVIEW: just pass in the levels themselves, this is unnecessary
     var levelScoreProperties = [];
-    gameModel.gameLevelModels.forEach( function( gameLevelModel ) {
+    gameModel.gameLevels.forEach( function( gameLevelModel ) {
       levelScoreProperties.push( gameLevelModel.scoreProperty );
     } );
 
@@ -86,7 +86,7 @@ define( function( require ) {
     // create the game level views and add them to the main game play node
     this.gameLevelViews = [];
     //REVIEW: a map() would work better instead of having to push? Just addChild inside it?
-    gameModel.gameLevelModels.forEach( function( levelModel ) {
+    gameModel.gameLevels.forEach( function( levelModel ) {
       var gameLevelView = new EEGameLevelView(
         gameModel,
         levelModel,
@@ -98,17 +98,11 @@ define( function( require ) {
       self.addChild( gameLevelView );
     } );
 
-    // set the bounds for retrieving coin terms when expressions or composite coin terms are broken up
-    //REVIEW: This is done right after creating the views for each level. Can we just pass it as part of the view
-    // construction?
-    gameModel.setCoinTermRetrievalBounds( this.layoutBounds );
-
     // hook up the animations for moving between level selection and game play
     gameModel.currentLevelProperty.lazyLink( function( newLevel, oldLevel ) {
 
-      //REVIEW: If currentLevelProperty is changed to point to EEGameLevelModels (renamed EEGameLevel), this isn't needed.
-      var incomingViewNode = newLevel === null ? self.levelSelectionNode : self.gameLevelViews[ newLevel ];
-      var outgoingViewNode = oldLevel === null ? self.levelSelectionNode : self.gameLevelViews[ oldLevel ];
+      var incomingViewNode = newLevel === null ? self.levelSelectionNode : self.gameLevelViews[ newLevel.levelNumber ];
+      var outgoingViewNode = oldLevel === null ? self.levelSelectionNode : self.gameLevelViews[ oldLevel.levelNumber ];
       var outgoingNodeDestinationX;
       var incomingNodeStartX;
 
@@ -170,9 +164,9 @@ define( function( require ) {
     // @public
     //REVIEW: docs
     step: function( dt ) {
-      var currentLevelNumber = this.gameModel.currentLevelProperty.get();
-      if ( currentLevelNumber !== null ) {
-        this.gameLevelViews[ currentLevelNumber ].step( dt );
+      var currentLevel = this.gameModel.currentLevelProperty.get();
+      if ( currentLevel !== null ) {
+        this.gameLevelViews[ currentLevel.levelNumber ].step( dt );
       }
     }
 

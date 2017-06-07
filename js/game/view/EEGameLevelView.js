@@ -37,7 +37,7 @@ define( function( require ) {
 
   /**
    * @param {EEGameModel} gameModel - main model for the game
-   * @param {EEGameLevelModel} levelModel - model for the level depicted by this view object
+   * @param {EEGameLevel} levelModel - model for the level depicted by this view object
    * @param {Bounds2} screenLayoutBounds
    * @param {Property.<Bounds2>} visibleBoundsProperty
    * @constructor
@@ -63,12 +63,18 @@ define( function( require ) {
     } );
     this.addChild( background );
 
+    // set the bounds for coin term retrieval in the model
+    levelModel.setCoinTermRetrievalBounds( screenLayoutBounds );
+
     // add the level label
-    var title = new Text( StringUtils.fillIn( levelNumberPatternString, { levelNumber: ( levelModel.level + 1 ) } ), {
-      font: new PhetFont( 20 ),
-      centerX: screenLayoutBounds.width * 0.4,
-      top: 20
-    } );
+    var title = new Text(
+      StringUtils.fillIn( levelNumberPatternString, { levelNumber: ( levelModel.levelNumber + 1 ) } ),
+      {
+        font: new PhetFont( 20 ),
+        centerX: screenLayoutBounds.width * 0.4,
+        top: 20
+      }
+    );
     this.addChild( title );
 
     // add the back button

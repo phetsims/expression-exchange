@@ -40,10 +40,10 @@ Some of this code had to be hooked to properties, while some of it was implement
 can be complicated, so it will be important to have a good understanding of such interactions if some of these
 behavioral rules need to be changed or fixed.
 
-REVIEW: Don't understand how a coin term can overlap (be a member of?) multiple expressions
-A decision was made that if a coin term overlaps multiple expressions, on the one with the most overlap should have its
-hints activated.  This means that the main model has to compare them and decide which one to activate, which means that
-this decision must be centralized in the main model rather than leaving it to the coin terms or expressions.
+A decision was made that if a user-controlled coin term overlaps multiple expressions, the one with the most overlap 
+should have its hints activated.  This means that the main model has to compare them and decide which one to activate,
+which means that this decision must be centralized in the main model rather than leaving it to the coin terms or
+expressions.
 
 The sim supports an "edit mode" for expressions where the coin terms within an expression can be combined or
 rearranged.  Only one expression can be edited at a time.

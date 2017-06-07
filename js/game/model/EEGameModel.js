@@ -11,7 +11,7 @@ define( function( require ) {
   // modules
   var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
   var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
-  var EEGameLevelModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameLevelModel' );
+  var EEGameLevel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameLevel' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
@@ -37,9 +37,8 @@ define( function( require ) {
     this.soundEnabledProperty = new Property( true );
     this.timerEnabledProperty = new Property( true );
 
-    // @public, currently selected level, null indicates no level selected which means that the level selection screen
-    // should be shown in the view
-    //REVIEW: Why is this not just a property of the EEGameLevelModel objects? Should simplify a lot of code
+    // @public {Property.<GameLevel>} - (read-only) currently selected level, null indicates no level selected, which
+    // means that the level selection screen should appear to the user
     this.currentLevelProperty = new Property( null );
 
     //------------------------------------------------------------------------
@@ -49,23 +48,14 @@ define( function( require ) {
     // shuffle the challenge descriptors before creating the levels
     EEChallengeDescriptors.shuffleChallenges();
 
-    // @public {Array.<EEGameLevelModel>} (read-only) - models for each of the game levels REVIEW: gameLevels is a
-    //                                                  better name?
-    this.gameLevelModels = [];
+    // @public {Array.<EEGameLevel>} (read-only) - models for each of the game levels
+    this.gameLevels = [];
     _.times( NUMBER_OF_LEVELS, function( level ) {
-      self.gameLevelModels.push( new EEGameLevelModel(
+      self.gameLevels.push( new EEGameLevel(
         level,
         level < 3 ? AllowedRepresentations.COINS_ONLY : AllowedRepresentations.VARIABLES_ONLY,
         self.soundEnabledProperty
       ) );
-    } );
-
-    // @public - score properties for each level
-    //REVIEW: visibility, type?
-    //REVIEW: Why is this necessary? Just access the gameLevelModels?
-    this.levelScoreProperties = []; // @public, read only
-    _.times( NUMBER_OF_LEVELS, function( index ) {
-      self.levelScoreProperties.push( self.gameLevelModels[ index ].scoreProperty );
     } );
   }
 
@@ -73,33 +63,34 @@ define( function( require ) {
 
   return inherit( Object, EEGameModel, {
 
-      //REVIEW: doc
+      /**
+       * step the model
+       * @param {number} dt - delta time
+       * @public
+       */
       step: function( dt ) {
 
         // step the currently active level model (if there is one)
-        if ( this.currentLevelProperty.get() !== null ) {
-          this.gameLevelModels[ this.currentLevelProperty.get() ].step( dt );
-        }
+        this.currentLevelProperty.get() && this.currentLevelProperty.get().step( dt );
       },
 
-      // @public
-      //REVIEW: doc, any why is this necessary? currentLevelProperty is public.
+      /**
+       * set the game level using a number (0-based)
+       * @param {number} levelNumber
+       * @public
+       */
       selectLevel: function( levelNumber ) {
-        this.currentLevelProperty.set( levelNumber );
+        this.currentLevelProperty.set( this.gameLevels[ levelNumber ] );
       },
 
+      /**
+       * move to the next level
+       * @public
+       */
       nextLevel: function() {
-        this.currentLevelProperty.set( ( this.currentLevelProperty.get() + 1  ) % NUMBER_OF_LEVELS );
-      },
-
-      // @public
-      //REVIEW: docs?
-      //REVIEW: This is done right after creating the views for each level. Can we just pass it as part of the view
-      // construction?
-      setCoinTermRetrievalBounds: function( bounds ) {
-        this.gameLevelModels.forEach( function( gameLevelModel ) {
-          gameLevelModel.setCoinTermRetrievalBounds( bounds );
-        } );
+        this.currentLevelProperty.set(
+          this.gameLevels[ ( this.currentLevelProperty.get().levelNumber + 1  ) % NUMBER_OF_LEVELS ]
+        );
       },
 
       // @public
@@ -109,11 +100,12 @@ define( function( require ) {
 
       // @public
       getAllLevelsCompleted: function() {
-        return _.every( this.gameLevelModels, function( gameLevelModel ) { return gameLevelModel.getLevelCompleted(); } );
+        return _.every( this.gameLevels, function( gameLevelModel ) { return gameLevelModel.getLevelCompleted(); } );
       },
 
+      // @public
       clearAllLevelsCompleted: function() {
-        this.gameLevelModels.forEach( function( gameLevelModel ) { gameLevelModel.clearLevelCompleted(); } );
+        this.gameLevels.forEach( function( gameLevelModel ) { gameLevelModel.clearLevelCompleted(); } );
       },
 
       // reset
@@ -128,7 +120,7 @@ define( function( require ) {
         this.timerEnabledProperty.reset();
 
         // reset each of the levels
-        this.gameLevelModels.forEach( function( levelModel ) {
+        this.gameLevels.forEach( function( levelModel ) {
           levelModel.reset();
         } );
       }

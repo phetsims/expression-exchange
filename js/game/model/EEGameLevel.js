@@ -3,9 +3,6 @@
 /**
  * model for a single level of the Expression Exchange game
  *
- * REVIEW: Why the 'Model' suffix? Usually would just be EEGameLevel
- * (thought this was the main model for the screen).
- *
  * @author John Blanco
  */
 define( function( require ) {
@@ -22,18 +19,18 @@ define( function( require ) {
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var EXPRESSION_COLLECTION_AREA_X_OFFSET = 750; //REVIEW: THe only use of this is in EECollectionArea. Move to there?
+  var EXPRESSION_COLLECTION_AREA_X_OFFSET = 750;
   var EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET = 50;
   var EXPRESSION_COLLECTION_AREA_Y_SPACING = 60;
   var NUM_EXPRESSION_COLLECTION_AREAS = 3;
 
   /**
-   * @param {number} level REVIEW: levelNumber? This object is the level!
+   * @param {number} levelNumber
    * @param {AllowedRepresentations} allowedRepresentations
    * @param {Property.<boolean>} soundEnabledProperty
    * @constructor
    */
-  function EEGameLevelModel( level, allowedRepresentations, soundEnabledProperty ) {
+  function EEGameLevel( levelNumber, allowedRepresentations, soundEnabledProperty ) {
 
     assert && assert(
       allowedRepresentations !== AllowedRepresentations.COINS_AND_VARIABLES,
@@ -48,14 +45,13 @@ define( function( require ) {
 
     var self = this;
 
-    this.level = level; // {number} @public, read only
+    this.levelNumber = levelNumber; // {number} @public, read only
     this.soundEnabledProperty = soundEnabledProperty; // @public {Property.<boolean>} (listen-only), used by view to enable/disable sounds
-    this.currentChallengeNumber = 0; //REVIEW: docs/visibility?
+    this.currentChallengeNumber = 0; // {number} @private
 
-    // @public - property that refers to the current challenge
-    //REVIEW: type doc?
+    // @public {EEChallengeDescriptor} (read-only) - property that refers to the current challenge
     this.currentChallengeProperty = new Property(
-      EEChallengeDescriptors.getChallengeDescriptor( level, this.currentChallengeNumber )
+      EEChallengeDescriptors.getChallengeDescriptor( levelNumber, this.currentChallengeNumber )
     );
 
     // @public {Property.<number>} (read only) - current score for this level
@@ -81,7 +77,6 @@ define( function( require ) {
     } );
 
     // helper function to update the score when items are collected or un-collected
-    //REVIEW: Lots of self references, maybe easier to specify as a method?
     function updateScore() {
       var score = 0;
       self.collectionAreas.forEach( function( collectionArea ) {
@@ -113,9 +108,9 @@ define( function( require ) {
     } );
   }
 
-  expressionExchange.register( 'EEGameLevelModel', EEGameLevelModel );
+  expressionExchange.register( 'EEGameLevel', EEGameLevel );
 
-  return inherit( ExpressionManipulationModel, EEGameLevelModel, {
+  return inherit( ExpressionManipulationModel, EEGameLevel, {
 
     /**
      * @public
@@ -126,7 +121,7 @@ define( function( require ) {
       this.scoreProperty.reset();
       this.currentChallengeNumber = 0;
       this.currentChallengeProperty.set(
-        EEChallengeDescriptors.getChallengeDescriptor( this.level, this.currentChallengeNumber )
+        EEChallengeDescriptors.getChallengeDescriptor( this.levelNumber, this.currentChallengeNumber )
       );
     },
 
@@ -160,11 +155,14 @@ define( function( require ) {
       this.scorePassedThroughZero = false;
     },
 
-    //REVIEW: visibility/other doc?
+    /**
+     * increment the challenge number and load the associated challenge
+     * @private
+     */
     loadNextChallenge: function() {
       this.currentChallengeNumber = ( this.currentChallengeNumber + 1 ) % EEChallengeDescriptors.CHALLENGES_PER_LEVEL;
       this.currentChallengeProperty.set( EEChallengeDescriptors.getChallengeDescriptor(
-        this.level,
+        this.levelNumber,
         this.currentChallengeNumber
       ) );
     }
