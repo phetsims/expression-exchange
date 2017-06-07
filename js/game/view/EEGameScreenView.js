@@ -35,7 +35,6 @@ define( function( require ) {
 
     // hook up the audio player to the sound settings
     //REVIEW: visibility docs
-    //REVIEW: Wait, this isn't used? EEGameLevelView uses a different instance of GameAudioPlayer?
     this.gameAudioPlayer = new GameAudioPlayer( gameModel.soundEnabledProperty );
 
     // consolidate the level scores into an array for the level selection node
@@ -91,7 +90,8 @@ define( function( require ) {
         gameModel,
         levelModel,
         self.layoutBounds,
-        self.visibleBoundsProperty
+        self.visibleBoundsProperty,
+        self.gameAudioPlayer
       );
       gameLevelView.visible = false; // will be made visible when the corresponding level is activated
       self.gameLevelViews.push( gameLevelView );

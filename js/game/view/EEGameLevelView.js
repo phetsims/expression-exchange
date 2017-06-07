@@ -40,9 +40,10 @@ define( function( require ) {
    * @param {EEGameLevel} levelModel - model for the level depicted by this view object
    * @param {Bounds2} screenLayoutBounds
    * @param {Property.<Bounds2>} visibleBoundsProperty
+   * @param {GameAudioPlayer} gameAudioPlayer
    * @constructor
    */
-  function EEGameLevelView( gameModel, levelModel, screenLayoutBounds, visibleBoundsProperty ) {
+  function EEGameLevelView( gameModel, levelModel, screenLayoutBounds, visibleBoundsProperty, gameAudioPlayer ) {
 
     var self = this;
 
@@ -54,14 +55,19 @@ define( function( require ) {
     // performance issues, and this property can be used to only clock when this is in the viewport.
     this.inViewportProperty = new Property( false );
 
-    // add an invisible background rectangle so that bounds are correct
-    //REVIEW: Shouldn't need a reference to this with proper layering?
+    // add an invisible background rectangle so that bounds are correct, this is needed for animation of game level views
     var background = new Rectangle( screenLayoutBounds, {
-      //REVIEW: if for debugging, why still here?
-      //REVIEW: Why have something that's "essentially invisible" instead of a null or 'transparent' fill?
-      stroke: 'rgba( 0, 0, 200, 0.01 )' // increase opacity to make the outline visible if desired (for debugging)
+      stroke: 'transparent' // increase opacity to make the outline visible if desired (for debugging)
     } );
     this.addChild( background );
+
+    // layer where everything else should appear
+    var middleLayer = new Node();
+    this.addChild( middleLayer );
+
+    // layer where the coin term nodes live
+    var coinTermLayer = new Node();
+    this.addChild( coinTermLayer );
 
     // set the bounds for coin term retrieval in the model
     levelModel.setCoinTermRetrievalBounds( screenLayoutBounds );
@@ -75,17 +81,15 @@ define( function( require ) {
         top: 20
       }
     );
-    this.addChild( title );
+    middleLayer.addChild( title );
 
     // add the back button
     var backButton = new BackButton( {
-      //REVIEW: easier to read with screenLayoutBounds.left and screenLayoutBounds.top
-      //REVIEW: Or leftTop: screenLayoutBounds.eroded( 30 ).leftTop
-      left: screenLayoutBounds.minX + 30,
-      top: screenLayoutBounds.minY + 30,
+      left: screenLayoutBounds.left + 30,
+      top: screenLayoutBounds.top + 30,
       listener: gameModel.returnToLevelSelection.bind( gameModel )
     } );
-    this.addChild( backButton );
+    middleLayer.addChild( backButton );
 
     // add the refresh button
     var refreshButton = new RectangularPushButton( {
@@ -97,20 +101,21 @@ define( function( require ) {
       left: backButton.left,
       top: backButton.bottom + 8
     } );
-    this.addChild( refreshButton );
+    middleLayer.addChild( refreshButton );
 
-    // create the expression manipulation view, added later for correct layering
+    // create the expression manipulation view
     var expressionManipulationView = new ExpressionManipulationView(
       levelModel,
       visibleBoundsProperty,
       { coinTermBreakApartButtonMode: 'inverted' }
     );
+    coinTermLayer.addChild( expressionManipulationView );
 
     // add the coin term creator box
     var coinTermCreatorBox = null;
     levelModel.currentChallengeProperty.link( function( currentChallenge ) {
       if ( coinTermCreatorBox ) {
-        self.removeChild( coinTermCreatorBox );
+        middleLayer.removeChild( coinTermCreatorBox );
       }
       coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
         currentChallenge,
@@ -118,42 +123,37 @@ define( function( require ) {
         expressionManipulationView,
         { centerX: title.centerX, bottom: screenLayoutBounds.bottom - 40 }
       );
-      self.addChild( coinTermCreatorBox );
-      //REVIEW: Seems like an anti-pattern to moveToBack here. Use layers instead?
-      coinTermCreatorBox.moveToBack(); // needs to be behind coin term and other layers...
-      background.moveToBack(); // ...except for the background
+      middleLayer.addChild( coinTermCreatorBox );
 
       // let the model know where the creator box is so that it knows when the user returns coin terms
       levelModel.creatorBoxBounds = coinTermCreatorBox.bounds;
     } );
 
     // add the check box that allows expressions with negative values to be simplified
-    //REVIEW: Third collection area seems easy to break in future refactoring. Pick last collection area instead?
-    var boundsOfLowestCollectionArea = levelModel.collectionAreas[ 2 ].bounds;
+    var boundsOfLowestCollectionArea = _.last( levelModel.collectionAreas ).bounds;
     var showSubtractionCheckbox = new CheckBox(
       new ShowSubtractionIcon(),
       levelModel.simplifyNegativesProperty,
       {
-        //REVIEW: for readability, use bounds.left and bounds.bottom?
-        left: boundsOfLowestCollectionArea.minX,
-        top: boundsOfLowestCollectionArea.maxY + 20,
+        left: boundsOfLowestCollectionArea.left,
+        top: boundsOfLowestCollectionArea.bottom + 20,
         maxWidth: boundsOfLowestCollectionArea.minX
       }
     );
-    this.addChild( showSubtractionCheckbox );
+    middleLayer.addChild( showSubtractionCheckbox );
 
     // add the node for moving to the next level, only shown when all challenges on this level have been answered
     this.nextLevelNode = new NextLevelNode( gameModel.nextLevel.bind( gameModel ), {
       centerX: title.centerX,
       centerY: screenLayoutBounds.height * 0.33 // empirically determined
     } );
-    this.addChild( this.nextLevelNode );
+    middleLayer.addChild( this.nextLevelNode );
 
     this.allLevelsCompletedDialog = new AllLevelsCompletedDialog( gameModel.returnToLevelSelection.bind( gameModel ), {
       centerX: title.centerX,
       centerY: screenLayoutBounds.height * 0.4 // empirically determined
     } );
-    this.addChild( this.allLevelsCompletedDialog );
+    middleLayer.addChild( this.allLevelsCompletedDialog );
 
     // only show the checkbox for simplifying expressions with negative values if some are present in the challenge
     levelModel.currentChallengeProperty.link( function( currentChallenge ) {
@@ -167,14 +167,6 @@ define( function( require ) {
       } );
       showSubtractionCheckbox.visible = negativesExist;
     } );
-
-    // add the view area where the user will interact with coin terms and expressions
-    this.addChild( expressionManipulationView );
-
-    // create the audio player
-    //REVIEW: Presumably this one is used, the one in EEGameScreenView is not?
-    // TODO: consider passing this in to save memory
-    var gameAudioPlayer = new GameAudioPlayer( levelModel.soundEnabledProperty );
 
     // show the appropriate dialog and reward node based on the score
     levelModel.scoreProperty.link( function( score, previousScore ) {
@@ -200,13 +192,11 @@ define( function( require ) {
           self.nextLevelNode.visible = true;
         }
 
-        // show the reward node if warranted
+        // show the reward node if warranted - this is created lazily to save time on startup and memory
         if ( allLevelsCompleted || EEQueryParameters.showRewardNodeEveryLevel ) {
           if ( !self.rewardNode ) {
-            //REVIEW: Can we create this on startup, so the extra logic isn't needed?
             self.rewardNode = new EERewardNode();
             background.addChild( self.rewardNode );
-            self.rewardNode.moveToBack(); //REVIEW: Why immediately move to back? why not insert it at the correct place?
           }
           self.rewardNode.visible = true;
         }
@@ -225,11 +215,12 @@ define( function( require ) {
 
   return inherit( Node, EEGameLevelView, {
 
-    // @public
-    //REVIEW: docs?
+    /**
+     * @param {number} dt
+     * @public
+     */
     step: function( dt ) {
       if ( this.inViewportProperty.get() && this.rewardNode && this.rewardNode.visible ) {
-        //REVIEW: Generally preferred to cap DT at the top level. Is the cap only needed for RewardNode?
         this.rewardNode.step( Math.min( dt, 1 ) );
       }
     },

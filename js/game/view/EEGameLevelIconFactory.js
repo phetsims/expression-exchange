@@ -8,19 +8,14 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var Image = require( 'SCENERY/nodes/Image' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var Text = require( 'SCENERY/nodes/Text' );
-
-  // images
-  var coinXTimesYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy-back.png' );
-  var coinYBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-back.png' );
-  var coinYSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared-back.png' );
 
   // constants
   var CARD_CORNER_ROUNDING = 4;
@@ -28,53 +23,35 @@ define( function( require ) {
   var CARD_STAGGER_OFFSET = 1.5; // empirically determined, same in x and y directions
   var ICON_WIDTH = 40;
   var CARD_ICON_HEIGHT = 40;
+  var COIN_RADIUS = 20; // empirically determined
 
-  // helper function for creating coin-image-based icons
-  //REVIEW Type docs generally helpful when reading this type of function
+  /**
+   * helper function for creating coin-image-based icons
+   * @param {CoinTermTypeID} coinTermTypeID - type of coin image to use
+   * @param {number} value - value that will appear on the face of the coin
+   * @returns {Node}
+   */
   function createCoinIcon( coinTermTypeID, value ) {
 
-    var rootNode = new Node();
-    var imageNode;
-
     // create the coin image node
-    //REVIEW: These images are also used in similar switch statements in CoinNodeFactory. This could be potentially
-    // factored out into CoinNodeFactory?
-    switch( coinTermTypeID ) {
-      case CoinTermTypeID.X:
-        imageNode = new Image( coinXTimesYFrontImage );
-        break;
-
-      case CoinTermTypeID.Y:
-        imageNode = new Image( coinYBackImage );
-        break;
-
-      case CoinTermTypeID.Z:
-        imageNode = new Image( coinYSquaredBackImage );
-        break;
-
-      default:
-        assert && assert( false, 'handling does not exist for coin term type: ' + coinTermTypeID );
-        break;
-    }
-
-    imageNode.setScaleMagnitude( ICON_WIDTH / imageNode.width );
-    rootNode.addChild( imageNode );
+    var imageNode = CoinNodeFactory.createImageNode( coinTermTypeID, COIN_RADIUS, false );
 
     // add the label
-    rootNode.addChild( new Text( value, {
+    var label = new Text( value, {
       font: NUMBER_LABEL_FONT,
       centerX: imageNode.width / 2,
       centerY: imageNode.height / 2
-    } ) );
+    } );
 
-    //REVIEW: Easier to
-    // return new Node( { children: [ imageNode, the_text_thing ] } ) rather than having an additional declaration and return.
-
-    return rootNode;
+    return new Node( { children: [ imageNode, label ] } );
   }
 
-  // helper function for creating the icons that look like stacks of cards
-  //REVIEW Type docs generally helpful when reading this type of function
+  /**
+   * helper function for creating the icons that look like a stack of cards
+   * @param {number} numberOnStack
+   * @param {number} numberOfAdditionalCards
+   * @returns {Node}
+   */
   function createCardStackIcon( numberOnStack, numberOfAdditionalCards ) {
     var rootNode = new Node();
     var cardWidth = ICON_WIDTH - numberOfAdditionalCards * CARD_STAGGER_OFFSET;
@@ -100,9 +77,7 @@ define( function( require ) {
     } ) );
 
     // add the cards to the root node
-    //REVIEW: cards.reverse() returns the reversed array, so that can be chained with the forEach directly
-    cards.reverse();
-    cards.forEach( function( card ) {
+    cards.reverse().forEach( function( card ) {
       rootNode.addChild( card );
     } );
 
@@ -125,20 +100,18 @@ define( function( require ) {
 
       var icon;
 
-      //REVIEW: If helpful, I've found it nice to have different objects for each level that handle creation of icons.
-      //REVIEW: No problem to leave as-is if this is the most convenient.
       switch( gameLevel ) {
 
         case 0:
-          icon = createCoinIcon( CoinTermTypeID.X, 1 );
+          icon = createCoinIcon( CoinTermTypeID.X_TIMES_Y, 1 );
           break;
 
         case 1:
-          icon = createCoinIcon( CoinTermTypeID.Y, 2 );
+          icon = createCoinIcon( CoinTermTypeID.X, 2 );
           break;
 
         case 2:
-          icon = createCoinIcon( CoinTermTypeID.Z, 3 );
+          icon = createCoinIcon( CoinTermTypeID.Y_SQUARED, 3 );
           break;
 
         case 3:
