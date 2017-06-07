@@ -46,7 +46,7 @@ define( function( require ) {
     var nextXPos = 0;
 
     if ( viewMode === ViewMode.COINS ) {
-      expressionDescription.termsArray.forEach( function( expressionTerm, index ) {
+      expressionDescription.terms.forEach( function( expressionTerm, index ) {
 
         // add coefficient if needed
         if ( expressionTerm.coefficient > 1 ) {
@@ -70,7 +70,7 @@ define( function( require ) {
         nextXPos += coinIconNode.width + COIN_TO_PLUS_SIGN_SPACING;
 
         // add plus symbol if not at end of expression
-        if ( index < expressionDescription.termsArray.length - 1 ) {
+        if ( index < expressionDescription.terms.length - 1 ) {
           var plusSign = new Text( '+', {
             font: COIN_EXPRESSION_FONT,
             left: nextXPos,

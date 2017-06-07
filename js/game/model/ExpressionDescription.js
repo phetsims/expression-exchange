@@ -12,6 +12,7 @@ define( function( require ) {
 
   // modules
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  var Term = require( 'EXPRESSION_EXCHANGE/game/model/Term' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
 
@@ -27,12 +28,9 @@ define( function( require ) {
     // remove all spaces from the expression
     var noWhitespaceExpressionString = expressionString.replace( /\s/g, '' );
 
-    // @public {Array.<{ coefficient: {number}, coinTermTypeID: {CoinTermTypeID} }>}, read-only
-    // Description of the expression as an ordered set of objects that contain the coefficient and
-    // the coin term ID, e.g. { coefficient: 2, coinTermTypeID: CoinTermTypeID.X }
-    //REVIEW: Why are these not Term objects? Separate type for this would be appriopriate
-    //REVIEW: Usually 'terms' as a property name would imply the array?
-    this.termsArray = interpretExpression( noWhitespaceExpressionString, 0 ).termsArray;
+    // @public {Array.<Term>}, read-only - Description of the expression as an ordered set of terms that contain the
+    // coefficient and the coin term ID
+    this.terms = interpretExpression( noWhitespaceExpressionString, 0 ).terms;
   }
 
   // helper function to identify one of the supported operators
@@ -87,27 +85,23 @@ define( function( require ) {
    * REVIEW: Doesn't seem to handle '(x+2)' (first test). Does it need to be that general?
    */
   function interpretExpression( expressionString, currentIndex ) {
-    var termsArray = [];
+    var terms = [];
     var termExtractionResult = null;
     var subExpressionInterpretationResult = null;
     while ( currentIndex < expressionString.length ) {
       termExtractionResult = extractTerm( expressionString, currentIndex );
       currentIndex = termExtractionResult.newIndex;
+
+      // the logic below was left unsimplified to make it explicit and clear what cases are being handled
       if ( currentIndex >= expressionString.length ) {
 
         // the end of the expression or sub-expression has been reached, add this term
-        termsArray.push( {
-          coefficient: termExtractionResult.coefficient,
-          coinTermTypeID: termExtractionResult.coinTermTypeID
-        } );
+        terms.push( termExtractionResult.term );
       }
       else if ( expressionString.charAt( currentIndex ) === ')' ) {
 
         // the end of the sub-expression has been reached, add this term
-        termsArray.push( {
-          coefficient: termExtractionResult.coefficient,
-          coinTermTypeID: termExtractionResult.coinTermTypeID
-        } );
+        terms.push( termExtractionResult.term );
         currentIndex++;
 
         // force exit of the loop
@@ -116,10 +110,7 @@ define( function( require ) {
       else if ( isOperator( expressionString.charAt( currentIndex ) ) ) {
 
         // this is a standalone term (not a multiplier for a sub-expression) so add it to the array and bump the index
-        termsArray.push( {
-          coefficient: termExtractionResult.coefficient,
-          coinTermTypeID: termExtractionResult.coinTermTypeID
-        } );
+        terms.push( termExtractionResult.term );
       }
       else if ( expressionString.charAt( currentIndex ) === '(' ) {
 
@@ -128,16 +119,16 @@ define( function( require ) {
         subExpressionInterpretationResult = interpretExpression( expressionString, currentIndex );
 
         // the previously extracted term is now used to multiply the extracted expression (distributive property)
-        var multipliedSubExpression = _.map( subExpressionInterpretationResult.termsArray, function( term ) {
-          return multiplyTerms( termExtractionResult, term );
+        var multipliedSubExpression = _.map( subExpressionInterpretationResult.terms, function( term ) {
+          return multiplyTerms( termExtractionResult.term, term );
         } );
 
         // add the new terms to the terms array or consolidate it with existing therms, and then update the index
-        multipliedSubExpression.forEach( function( termWithIndex ) {
+        multipliedSubExpression.forEach( function( multipliedSubExpressionTerm ) {
 
           // extract terms from the term array that match this one - there should be zero or one, no more
-          var matchingTermsArray = _.filter( termsArray, function( term ) {
-            return term.coinTermTypeID === termWithIndex.coinTermTypeID;
+          var matchingTermsArray = _.filter( terms, function( term ) {
+            return term.coinTermTypeID === multipliedSubExpressionTerm.coinTermTypeID;
           } );
 
           // test that the terms array was properly reduced before reaching this point
@@ -146,19 +137,16 @@ define( function( require ) {
           if ( matchingTermsArray.length === 1 ) {
             var matchingTerm = matchingTermsArray[ 0 ];
 
-            matchingTerm.coefficient += termWithIndex.coefficient;
+            matchingTerm.coefficient += multipliedSubExpressionTerm.coefficient;
             if ( matchingTerm.coefficient === 0 ) {
               // this term has cancelled, so remove it from the array
-              termsArray = _.without( termsArray, matchingTerm );
+              terms = _.without( terms, matchingTerm );
             }
           }
           else {
 
             // this is a new term, so simply add it to the array of terms
-            termsArray.push( {
-              coefficient: termWithIndex.coefficient,
-              coinTermTypeID: termWithIndex.coinTermTypeID
-            } );
+            terms.push( multipliedSubExpressionTerm );
           }
         } );
         currentIndex = subExpressionInterpretationResult.newIndex;
@@ -169,7 +157,7 @@ define( function( require ) {
     }
 
     return {
-      termsArray: termsArray,
+      terms: terms,
       newIndex: currentIndex
     };
   }
@@ -251,8 +239,7 @@ define( function( require ) {
     }
 
     return {
-      coefficient: coefficient,
-      coinTermTypeID: coinTermTypeID,
+      term: new Term( coefficient, coinTermTypeID ),
       newIndex: index + termString.length
     };
   }
@@ -291,13 +278,13 @@ define( function( require ) {
         var expressionCoinTermCountKeys = Object.keys( expressionCoinTermCounts );
 
         // Does the expression have the same number of coin term types as the description?
-        if ( this.termsArray.length !== expressionCoinTermCountKeys.length ) {
+        if ( this.terms.length !== expressionCoinTermCountKeys.length ) {
           return false;
         }
 
         // Do the counts match?  Note that this assumes the expression description is reduced.
-        for ( var i = 0; i < this.termsArray.length; i++ ) {
-          var termDescriptor = this.termsArray[ i ];
+        for ( var i = 0; i < this.terms.length; i++ ) {
+          var termDescriptor = this.terms[ i ];
           var expressionCount = expressionCoinTermCounts[ termDescriptor.coinTermTypeID ];
           if ( !expressionCount || expressionCount !== termDescriptor.coefficient ) {
             return false;
@@ -317,13 +304,13 @@ define( function( require ) {
       coinTermMatches: function( coinTerm ) {
 
         // there must be only a single coin term in the the description for this to be a match
-        if ( this.termsArray.length !== 1 ) {
+        if ( this.terms.length !== 1 ) {
           return false;
         }
 
         //REVIEW: why not have whatever Term type have equality?
-        return this.termsArray[ 0 ].coinTermTypeID === coinTerm.typeID &&
-               this.termsArray[ 0 ].coefficient === coinTerm.totalCountProperty.get();
+        return this.terms[ 0 ].coinTermTypeID === coinTerm.typeID &&
+               this.terms[ 0 ].coefficient === coinTerm.totalCountProperty.get();
       }
     }
   );
