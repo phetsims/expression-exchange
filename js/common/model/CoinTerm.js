@@ -116,7 +116,7 @@ define( function( require ) {
     // @public, read only, indicates that the value will never change, will be displayed differently in the view
     this.isConstant = typeID === CoinTermTypeID.CONSTANT;
 
-    // @public, listen only, a property with contains the text that should be shown when displaying term value
+    // @public, listen only, a property which contains the text that should be shown when displaying term value
     this.termValueTextProperty = termValueTextProperty;
 
     // @public {Array.<number>}, read only, tracks what this coin term is composed of and what it can be broken down into

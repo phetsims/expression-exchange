@@ -44,14 +44,12 @@ define( function( require ) {
     } );
 
     // create the icons used on the level selection buttons
-    //REVIEW: just pass in the levels themselves, this is unnecessary
     var levelSelectionButtonIcons = [];
     _.times( EEGameModel.NUMBER_OF_LEVELS, function( level ) {
       levelSelectionButtonIcons.push( EEGameLevelIconFactory.createIcon( level ) );
     } );
 
     // add the node that allows the user to choose a game level to play
-    //REVIEW: type/visibility docs
     var levelSelectionNode = new StartGameLevelNode(
       function( level ) { gameModel.selectLevel( level ); },
       function() { gameModel.reset(); },
@@ -59,7 +57,6 @@ define( function( require ) {
       levelSelectionButtonIcons,
       levelScoreProperties,
       {
-        //REVIEW: Almost all of these should be inlined in StartGameLevelNode, and not specified here.
         numStarsOnButtons: EEGameModel.CHALLENGES_PER_LEVEL,
         perfectScore: EEGameModel.MAX_SCORE_PER_LEVEL,
         numLevels: EEGameModel.NUMBER_OF_LEVELS,
@@ -80,7 +77,6 @@ define( function( require ) {
 
     // create the game level views and add them to the main game play node
     this.gameLevelViews = [];
-    //REVIEW: a map() would work better instead of having to push? Just addChild inside it?
     gameModel.gameLevels.forEach( function( levelModel ) {
       var gameLevelView = new EEGameLevelView(
         gameModel,
@@ -104,7 +100,6 @@ define( function( require ) {
 
       if ( newLevel === null ) {
 
-        //REVIEW: See make-a-ten's SlidingScreen. Can that be used as an abstraction for this?
         // level selection screen is coming in, which is a left-to-right motion
         incomingNodeStartX = self.layoutBounds.minX - slideDistance;
         outgoingNodeDestinationX = self.layoutBounds.minX + slideDistance;
@@ -122,7 +117,6 @@ define( function( require ) {
       } );
 
       // move out the old node
-      //REVIEW: See make-a-ten's SlidingScreen. Can that be used as an abstraction for this? Doesn't use TWEEN
       new TWEEN.Tween( { x: nodeInViewport.x } )
         .to( { x: outgoingNodeDestinationX }, SCREEN_CHANGE_TIME )
         .easing( TWEEN.Easing.Cubic.InOut )
@@ -137,7 +131,6 @@ define( function( require ) {
         } );
 
       // move in the new node
-      //REVIEW: See make-a-ten's SlidingScreen. Can that be used as an abstraction for this? Doesn't use TWEEN
       incomingViewNode.x = incomingNodeStartX;
       incomingViewNode.visible = true;
       new TWEEN.Tween( { x: incomingViewNode.x } )

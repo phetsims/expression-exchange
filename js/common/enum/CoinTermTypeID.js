@@ -21,6 +21,9 @@ define( function( require ) {
     CONSTANT: 'CONSTANT'
   };
 
+  // make the values available in an array
+  CoinTermTypeID.VALUES = _.values( CoinTermTypeID );
+
   // verify that enum is immutable, without the runtime penalty in production code
   if ( assert ) { Object.freeze( CoinTermTypeID ); }
 

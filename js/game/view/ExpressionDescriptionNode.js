@@ -4,7 +4,8 @@
  * a Scenery node that represents a visual description of an expression, used in the game to describe what the user
  * should attempt to construct
  *
- * REVIEW: This should use the ExpressionDescription's terms / termArray instead of re-parsing the string?
+ * Note the the expression description string is re-parsed in this object because the expression description is in the
+ * reduced form (no parens) and we need to handle subscripts and superscripts.
  */
 define( function( require ) {
   'use strict';
@@ -13,9 +14,9 @@ define( function( require ) {
   var CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  var HBox = require( 'SCENERY/nodes/HBox' );
   var inherit = require( 'PHET_CORE/inherit' );
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
-  var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var RichText = require( 'SCENERY_PHET/RichText' );
   var Text = require( 'SCENERY/nodes/Text' );
@@ -24,11 +25,8 @@ define( function( require ) {
   // constants
   var COIN_ICON_RADIUS = 10;
   var COIN_EXPRESSION_FONT = new PhetFont( 22 );
-  var COEFFICIENT_TO_COIN_SPACING = 1;
-  var COIN_TO_PLUS_SIGN_SPACING = 5;
   var EXPRESSION_FONT_FOR_NON_VARIABLE = new PhetFont( 22 );
   var EXPRESSION_FONT_FOR_VARIABLES = new MathSymbolFont( 24 );
-  var ADDITIONAL_EXPRESSION_FRAGMENT_SPACING = 2; // empirically determined to look good on the most platforms
   var SUP_SCALE = 0.65; // empirically determined to look good on the most platforms
   var SUB_SUP_OPTIONS = { font: EXPRESSION_FONT_FOR_VARIABLES, supScale: SUP_SCALE };
 
@@ -39,62 +37,51 @@ define( function( require ) {
    * @constructor
    */
   function ExpressionDescriptionNode( expressionDescription, viewMode, options ) {
-    var self = this;
-    Node.call( this );
 
-    //REVIEW: Using HBoxes would potentially be cleaner (not specifying lefts/centerYs everywhere)?
-    var nextXPos = 0;
+    HBox.call( this, { align: 'bottom' } );
+    var self = this;
 
     if ( viewMode === ViewMode.COINS ) {
+
+      this.setAlign( 'center' );
+
       expressionDescription.terms.forEach( function( expressionTerm, index ) {
 
         // add coefficient if needed
         if ( expressionTerm.coefficient > 1 ) {
-          var coefficientNode = new Text( expressionTerm.coefficient, {
-            font: COIN_EXPRESSION_FONT,
-            left: nextXPos,
-            centerY: COIN_ICON_RADIUS
-          } );
+          var coefficientNode = new Text( expressionTerm.coefficient, { font: COIN_EXPRESSION_FONT } );
           self.addChild( coefficientNode );
-          nextXPos += coefficientNode.width + COEFFICIENT_TO_COIN_SPACING;
         }
 
         // add coin icon
-        //REVIEW: for memory usage, consider not creating fresh coins here, but instead use DAG?
         var coinIconNode = CoinNodeFactory.createIconNode(
           expressionTerm.coinTermTypeID,
-          COIN_ICON_RADIUS,
-          { left: nextXPos, centerY: COIN_ICON_RADIUS }
+          COIN_ICON_RADIUS
         );
         self.addChild( coinIconNode );
-        nextXPos += coinIconNode.width + COIN_TO_PLUS_SIGN_SPACING;
 
         // add plus symbol if not at end of expression
         if ( index < expressionDescription.terms.length - 1 ) {
-          var plusSign = new Text( '+', {
-            font: COIN_EXPRESSION_FONT,
-            left: nextXPos,
-            centerY: COIN_ICON_RADIUS
-          } );
+          var plusSign = new Text( ' + ', { font: COIN_EXPRESSION_FONT } );
           self.addChild( plusSign );
-          nextXPos += plusSign.width + COIN_TO_PLUS_SIGN_SPACING;
         }
 
       } );
     }
     else if ( viewMode === ViewMode.VARIABLES ) {
 
-      // go through the expression string, turning the various pieces into nodes
+      this.setAlign( 'bottom' );
+
+      // Go through the expression string, turning the various pieces into nodes.  The 'terms' field of the expression
+      // description can't be used here because it is the returned version of the expression.
       var expressionStringIndex = 0;
+
       while ( expressionStringIndex < expressionDescription.expressionString.length ) {
-        //REVIEW: Why are we parsing this string, instead of relying on the terms array?
         var expressionFragmentInfo = createExpressionFragment(
           expressionDescription.expressionString,
           expressionStringIndex
         );
-        expressionFragmentInfo.node.left = nextXPos;
-        this.addChild( expressionFragmentInfo.node );
-        nextXPos += expressionFragmentInfo.node.width + ADDITIONAL_EXPRESSION_FRAGMENT_SPACING;
+        self.addChild( expressionFragmentInfo.node );
         expressionStringIndex += expressionFragmentInfo.charsUsed;
       }
     }
@@ -109,66 +96,58 @@ define( function( require ) {
    * helper function that creates an object that consists of a node that represents a variable and the number of
    * characters from the expression string that the node represents
    */
-  //REVIEW: Why parsing strings, and not using a logical (object) format with equivalent toString methods?
   function createVariableExpressionFragment( expressionString, startIndex ) {
 
     // error checking
     var firstChar = expressionString.charAt( startIndex );
     assert && assert( firstChar === 'x' || firstChar === 'y' || firstChar === 'z', 'unexpected first char of string' );
 
-    // create the object that will be populated and returned
-    //REVIEW: Usually simpler to return inline new objects, e.g.
-    // return {
-    //   node: ...,
-    //   charsUsed: ...
-    // }
-    var nodeInfo = {
-      node: null,
-      charsUsed: 0
-    };
+    var node = null;
+    var charsUsed = 0;
 
-    //REVIEW: Just use the parsed ExpressionDescription instead of this?
     // identify the expression to be created based on a finite set of those supported
     if ( expressionString.indexOf( 'x^2', startIndex ) === startIndex ) {
-      nodeInfo.node = new RichText( 'x' + '<sup>2</sup>', SUB_SUP_OPTIONS );
-      nodeInfo.charsUsed = 3;
+      node = new RichText( 'x' + '<sup>2</sup>', SUB_SUP_OPTIONS );
+      charsUsed = 3;
     }
     else if ( expressionString.indexOf( 'y^2', startIndex ) === startIndex ) {
-      nodeInfo.node = new RichText( 'y<sup>2</sup>', SUB_SUP_OPTIONS );
-      nodeInfo.charsUsed = 3;
+      node = new RichText( 'y<sup>2</sup>', SUB_SUP_OPTIONS );
+      charsUsed = 3;
     }
     else if ( expressionString.indexOf( 'xy', startIndex ) === startIndex ) {
-      nodeInfo.node = new Text( 'xy', {
+      node = new Text( 'xy', {
         font: EXPRESSION_FONT_FOR_VARIABLES
       } );
-      nodeInfo.charsUsed = 2;
+      charsUsed = 2;
     }
     else if ( expressionString.indexOf( 'x', startIndex ) === startIndex ) {
-      nodeInfo.node = new Text( 'x', {
+      node = new Text( 'x', {
         font: EXPRESSION_FONT_FOR_VARIABLES
       } );
-      nodeInfo.charsUsed = 1;
+      charsUsed = 1;
     }
     else if ( expressionString.indexOf( 'y', startIndex ) === startIndex ) {
-      nodeInfo.node = new Text( 'y', {
+      node = new Text( 'y', {
         font: EXPRESSION_FONT_FOR_VARIABLES
       } );
-      nodeInfo.charsUsed = 1;
+      charsUsed = 1;
     }
     else if ( expressionString.indexOf( 'z', startIndex ) === startIndex ) {
-      nodeInfo.node = new Text( 'z', {
+      node = new Text( 'z', {
         font: EXPRESSION_FONT_FOR_VARIABLES
       } );
-      nodeInfo.charsUsed = 1;
+      charsUsed = 1;
     }
     else {
       assert && assert( false, 'unsupported expression' );
     }
 
-    return nodeInfo;
+    return {
+      node: node,
+      charsUsed: charsUsed
+    };
   }
 
-  //REVIEW: Why parsing strings, and not using a logical (object) format with equivalent toString methods?
   function createNonVariableExpressionFragment( expressionString, startIndex ) {
     var fragmentString = '';
     var index = startIndex;
@@ -197,7 +176,6 @@ define( function( require ) {
    */
   function createExpressionFragment( expressionString, index ) {
 
-    //REVIEW: Why are we parsing strings? Presumably there is an improved logical representation of this that would be easier?
     var expressionFragment;
     var nextChar = expressionString.charAt( index );
     if ( nextChar === 'x' || nextChar === 'y' || nextChar === 'z' ) {
@@ -211,5 +189,5 @@ define( function( require ) {
 
   expressionExchange.register( 'ExpressionDescriptionNode', ExpressionDescriptionNode );
 
-  return inherit( Node, ExpressionDescriptionNode );
+  return inherit( HBox, ExpressionDescriptionNode );
 } );

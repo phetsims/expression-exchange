@@ -31,18 +31,20 @@ define( function( require ) {
    * @constructor
    */
   function EERewardNode() {
+
     var nodes = [];
+
+    // add nodes that look like smiley faces, stars, and variables
     nodes.push( new FaceNode( FACE_DIAMETER ) );
     nodes.push( new StarNode( { outerRadius: STAR_OUTER_RADIUS, innerRadius: STAR_INNER_RADIUS } ) );
     nodes.push( new Text( 'x', { font: VARIABLE_FONT } ) );
     nodes.push( new Text( 'y', { font: VARIABLE_FONT } ) );
     nodes.push( new Text( 'z', { font: VARIABLE_FONT } ) );
 
-    //REVIEW: Don't like this pattern, what if you add a function to the enumeration type?
-    //REVIEW: Recommend instead adding CoinTermTypeID.VALUES as an array with all of the enumeration values.
-    _.values( CoinTermTypeID ).forEach( function( coinTermTypeId ) {
-      if ( coinTermTypeId !== CoinTermTypeID.CONSTANT ) {
-        nodes.push( CoinNodeFactory.createImageNode( coinTermTypeId, COIN_RADIUS, true ) );
+    // add coin images
+    CoinTermTypeID.VALUES.forEach( function( coinTermTypeID ) {
+      if ( coinTermTypeID !== CoinTermTypeID.CONSTANT ) {
+        nodes.push( CoinNodeFactory.createImageNode( coinTermTypeID, COIN_RADIUS, true ) );
       }
     } );
     RewardNode.call( this, { nodes: RewardNode.createRandomNodes( nodes, NUMBER_OF_NODES ) } );
