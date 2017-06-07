@@ -19,10 +19,6 @@ define( function( require ) {
    */
   function Term( coefficient, coinTermTypeID ) {
 
-    if ( typeof( coefficient ) === 'undefined' || typeof( coinTermTypeID ) === 'undefined' ) {
-      debugger;
-    }
-
     // @public {number} (read only)
     this.coefficient = coefficient;
 
