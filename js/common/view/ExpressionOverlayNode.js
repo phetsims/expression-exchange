@@ -4,9 +4,6 @@
  * a node that is placed on the top layer of an expression to allow it to be dragged and to prevent input events from
  * getting to the constituents of the expression
  *
- * REVIEW: Lots of helper functions in a very large constructor that seems appropiate to break into methods assigned on
- * the object.
- *
  * @author John Blanco
  */
 define( function( require ) {
@@ -41,13 +38,14 @@ define( function( require ) {
     Node.call( this, { pickable: true, cursor: 'pointer' } );
     var self = this;
 
-    // shape and path
+    // shape and path for the overlay
     var expressionShapeNode = new Path( null, { fill: 'transparent' } ); // essentially invisible
     this.addChild( expressionShapeNode );
 
     // update the shape if the height or width change
     var updateShapeMultilink = Property.multilink(
-      [ expression.widthProperty, expression.heightProperty ], function() {
+      [ expression.widthProperty, expression.heightProperty ],
+      function() {
         expressionShapeNode.shape = new Shape.rect( 0, 0, expression.widthProperty.get(), expression.heightProperty.get() );
       }
     );
@@ -59,15 +57,16 @@ define( function( require ) {
     function updateVisibility( inEditMode ) {
       self.visible = !inEditMode;
     }
+
     expression.inEditModeProperty.link( updateVisibility );
 
     // add the parent node that will contain the pop-up buttons
-    var popUpButtonsNode = new Node( { visible: false } );
-    this.addChild( popUpButtonsNode );
+    this.popUpButtonsNode = new Node( { visible: false } ); // @private
+    this.addChild( this.popUpButtonsNode );
 
     // add the button used to break apart the expression
     var breakApartButton = new BreakApartButton();
-    popUpButtonsNode.addChild( breakApartButton );
+    this.popUpButtonsNode.addChild( breakApartButton );
 
     // adjust the touch area for the break apart button so that is is easy to touch but doesn't overlap other button
     var breakApartButtonTouchArea = breakApartButton.localBounds.copy();
@@ -78,7 +77,7 @@ define( function( require ) {
 
     // add the button used to put the expression into edit mode
     var editExpressionButton = new EditExpressionButton( { left: breakApartButton.right + BUTTON_SPACING } );
-    popUpButtonsNode.addChild( editExpressionButton );
+    this.popUpButtonsNode.addChild( editExpressionButton );
 
     // adjust the touch area for the edit button so that is is easy to touch but doesn't overlap other button
     var editExpressionButtonTouchArea = editExpressionButton.localBounds.copy();
@@ -87,47 +86,20 @@ define( function( require ) {
     editExpressionButtonTouchArea.minY = editExpressionButtonTouchArea.minY - editExpressionButton.height;
     editExpressionButton.touchArea = editExpressionButtonTouchArea;
 
-    function showPopUpButtons( xLocation ) {
-      popUpButtonsNode.visible = true;
-      popUpButtonsNode.centerX = xLocation;
-      popUpButtonsNode.bottom = -2;
-    }
-
-    function hidePopUpButtons() {
-      popUpButtonsNode.visible = false;
-      popUpButtonsNode.translation = Vector2.ZERO;
-    }
-
-    // timer used to hide the button
-    var hideButtonsTimerCallback = null;
-
-    // define helper functions for managing the button timer
-    function clearHideButtonsTimer() {
-      if ( hideButtonsTimerCallback ) {
-        Timer.clearTimeout( hideButtonsTimerCallback );
-        hideButtonsTimerCallback = null;
-      }
-    }
-
-    function startHideButtonsTimer() {
-      clearHideButtonsTimer(); // just in case one is already running
-      hideButtonsTimerCallback = Timer.setTimeout( function() {
-        hidePopUpButtons();
-        hideButtonsTimerCallback = null;
-      }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );
-    }
+    // @private {function} - timer used to hide the button
+    this.hideButtonsTimerCallback = null;
 
     // add a listener to the pop up button node to prevent it from disappearing if the user is hovering over it
-    popUpButtonsNode.addInputListener( {
+    this.popUpButtonsNode.addInputListener( {
       enter: function() {
-        if ( !expression.userControlledProperty.get() ){
-          assert && assert( hideButtonsTimerCallback !== null, 'hide button timer should be running if pop up buttons are visible' );
-          clearHideButtonsTimer();
+        if ( !expression.userControlledProperty.get() ) {
+          assert && assert( self.hideButtonsTimerCallback !== null, 'hide button timer should be running if pop up buttons are visible' );
+          self.clearHideButtonsTimer();
         }
       },
       exit: function() {
         if ( !expression.userControlledProperty.get() ) {
-          startHideButtonsTimer();
+          self.startHideButtonsTimer();
         }
       }
     } );
@@ -135,15 +107,15 @@ define( function( require ) {
     // add the listener that will initiate the break apart, and will also hide the buttons
     breakApartButton.addListener( function() {
       expression.breakApart();
-      hidePopUpButtons();
-      clearHideButtonsTimer();
+      self.hidePopUpButtons();
+      self.clearHideButtonsTimer();
     } );
 
     // add the listener that will put the expression into edit mode, and will also hide the buttons
     editExpressionButton.addListener( function() {
       expression.enterEditMode();
-      hidePopUpButtons();
-      clearHideButtonsTimer();
+      self.hidePopUpButtons();
+      self.clearHideButtonsTimer();
     } );
 
     // pre-allocated vectors, used for calculating allowable locations for the expression
@@ -159,8 +131,8 @@ define( function( require ) {
         expression.userControlledProperty.set( true );
         unboundedUpperLeftCornerPosition.set( expression.upperLeftCornerProperty.get() );
         boundedUpperLeftCornerPosition.set( unboundedUpperLeftCornerPosition );
-        clearHideButtonsTimer(); // in case it's running
-        showPopUpButtons( self.globalToLocalPoint( event.pointer.point ).x );
+        self.clearHideButtonsTimer(); // in case it's running
+        self.showPopUpButtons( self.globalToLocalPoint( event.pointer.point ).x );
       },
 
       translate: function( translationParams ) {
@@ -185,9 +157,9 @@ define( function( require ) {
 
       end: function() {
         expression.userControlledProperty.set( false );
-        assert && assert( hideButtonsTimerCallback === null, 'a timer for hiding the buttons was running at end of drag' );
+        assert && assert( self.hideButtonsTimerCallback === null, 'a timer for hiding the buttons was running at end of drag' );
         if ( breakApartButton.visible ) {
-          startHideButtonsTimer();
+          self.startHideButtonsTimer();
         }
       }
     } );
@@ -217,7 +189,7 @@ define( function( require ) {
     // update popup button visibility whenever the expression is added to or removed from a collection area
     expression.collectedProperty.lazyLink( function( collected ) {
       if ( collected ) {
-        hidePopUpButtons();
+        this.hidePopUpButtons();
       }
     } );
 
@@ -235,8 +207,47 @@ define( function( require ) {
 
   return inherit( Node, ExpressionOverlayNode, {
 
+    /**
+     * @param {number} xLocation
+     * @private
+     */
+    showPopUpButtons: function( xLocation ) {
+      this.popUpButtonsNode.visible = true;
+      this.popUpButtonsNode.centerX = xLocation;
+      this.popUpButtonsNode.bottom = -2;
+    },
+
+    /**
+     * @param {number} xLocation
+     * @private
+     */
+    hidePopUpButtons: function() {
+      this.popUpButtonsNode.visible = false;
+      this.popUpButtonsNode.translation = Vector2.ZERO;
+    },
+
+    /**
+     * clear the button used to hide the timer
+     * @private
+     */
+    clearHideButtonsTimer: function() {
+      if ( this.hideButtonsTimerCallback ) {
+        Timer.clearTimeout( this.hideButtonsTimerCallback );
+        this.hideButtonsTimerCallback = null;
+      }
+    },
+
+    startHideButtonsTimer: function() {
+      var self = this;
+      this.clearHideButtonsTimer(); // just in case one is already running
+      this.hideButtonsTimerCallback = Timer.setTimeout( function() {
+        self.hidePopUpButtons();
+        self.hideButtonsTimerCallback = null;
+      }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );
+    },
+
     // @public
-    dispose: function(){
+    dispose: function() {
       this.disposeExpressionOverlayNode();
       Node.prototype.dispose.call( this );
     }
