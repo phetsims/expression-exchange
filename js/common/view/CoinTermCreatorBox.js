@@ -71,9 +71,23 @@ define( function( require ) {
     this.addChild( this.coinTermCreatorBox );
 
     this.mutate( options );
+
+    // add a dispose function
+    this.disposeCoinTermCreatorBox = function() {
+      creatorNodes.forEach( function( creatorNode ) { creatorNode.dispose(); } );
+    };
   }
 
   expressionExchange.register( 'CoinTermCreatorBox', CoinTermCreatorBox );
 
-  return inherit( Node, CoinTermCreatorBox );
+  return inherit( Node, CoinTermCreatorBox, {
+
+    /**
+     * @public
+     */
+    dispose: function() {
+      this.disposeCoinTermCreatorBox();
+      Node.prototype.dispose.call( this );
+    }
+  } );
 } );

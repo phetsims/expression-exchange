@@ -115,6 +115,7 @@ define( function( require ) {
     levelModel.currentChallengeProperty.link( function( currentChallenge ) {
       if ( coinTermCreatorBox ) {
         middleLayer.removeChild( coinTermCreatorBox );
+        coinTermCreatorBox.dispose();
       }
       coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
         currentChallenge,

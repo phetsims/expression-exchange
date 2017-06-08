@@ -16,6 +16,7 @@ define( function( require ) {
   var Bounds2 = require( 'DOT/Bounds2' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var ConstantCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/ConstantCoinTermNode' );
+  var Emitter = require( 'AXON/Emitter' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
@@ -67,7 +68,9 @@ define( function( require ) {
 
     // @public {number} (read only) - initial count of the coin term created by this creator node, a.k.a. the coefficient
     this.createdCoinTermInitialCount = options.createdCoinTermInitialCount;
-    this.typeID = typeID; // @public, read only
+
+    this.typeID = typeID; // @public {CoinTermID} (read only)
+    this.disposeEmitter = new Emitter(); // @public, listen only
 
     // add the individual coin term node(s)
     var coinTermNodes = [];
@@ -104,8 +107,8 @@ define( function( require ) {
       coinTermNodes.push( coinTermNode );
     } );
 
-    // control the visibility of the individual coin term nodes
-    options.numberToShowProperty.link( function( numberToShow ) {
+    // create a listener that changes the visibility of individual nodes as the number to show changes
+    function numberToShowListener( numberToShow ) {
 
       self.pickable = numberToShow > 0;
 
@@ -122,7 +125,10 @@ define( function( require ) {
       else {
         coinTermNodes[ 0 ].opacity = 1;
       }
-    } );
+    }
+
+    // control the visibility of the individual coin term nodes
+    options.numberToShowProperty.link( numberToShowListener );
 
     // Add the listener that will allow the user to click on this node and create a new coin term, and then position it
     // in the model.  This works by forwarding the events it receives to the node that gets created in the view.
@@ -162,9 +168,28 @@ define( function( require ) {
         }
       }
     } );
+
+    // dispose function
+    this.disposeCoinTermCreatorNode = function() {
+      options.numberToShowProperty.unlink( numberToShowListener );
+
+      // this type emits an event upon disposal because it was needed to avoid memory leaks
+      this.disposeEmitter.emit();
+      this.disposeEmitter.removeAllListeners();
+      //this.disposeEmitter.dispose();
+    };
   }
 
   expressionExchange.register( 'CoinTermCreatorNode', CoinTermCreatorNode );
 
-  return inherit( Node, CoinTermCreatorNode );
+  return inherit( Node, CoinTermCreatorNode, {
+
+    /**
+     * @public
+     */
+    dispose: function() {
+      this.disposeCoinTermCreatorNode();
+      Node.prototype.dispose.call( this );
+    }
+  } );
 } );

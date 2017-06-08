@@ -17,6 +17,7 @@ define( function( require ) {
   var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var CoinTermCreatorBox = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBox' );
   var CoinTermCreatorNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorNode' );
+  var DerivedProperty = require( 'AXON/DerivedProperty' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Property = require( 'AXON/Property' );
@@ -103,18 +104,14 @@ define( function( require ) {
   function makeGameScreenCreatorNode( typeID, createdCoinTermInitialCount, numInstancesAllowed, model, view ) {
 
     // Create a property that will control number of coin terms shown in this creator node.  For the game screen,
-    // multiple creator nodes are shown and a staggered arrangement.
-    var numberToShowProperty = new Property( numInstancesAllowed );
-    var instanceCount = model.getCoinTermCountProperty( typeID, createdCoinTermInitialCount, true );
-
-    //REVIEW: Potential memory leak here, since it seems like this is called whenever there is a new challenge?
-    //TODO: The review comment is correct, but it's not immediately obvious to me how to fix it, so revisit later
-    instanceCount.link( function( count ) {
-      numberToShowProperty.set( numInstancesAllowed - count );
-    } );
+    // multiple creator nodes are shown in a staggered arrangement.
+    var numberToShowProperty = new DerivedProperty(
+      [ model.getCoinTermCountProperty( typeID, createdCoinTermInitialCount, true ) ],
+      function( instanceCount ) { return numInstancesAllowed - instanceCount; }
+    );
 
     // create the "creator node" for the specified coin term type
-    return new CoinTermCreatorNode(
+    var coinTermCreatorNode = new CoinTermCreatorNode(
       model,
       view,
       typeID,
@@ -128,6 +125,13 @@ define( function( require ) {
         onCard: true
       }
     );
+
+    // dispose of the derived property in order to avoid memory leaks
+    coinTermCreatorNode.disposeEmitter.addListener( function() {
+      numberToShowProperty.dispose();
+    } );
+
+    return coinTermCreatorNode;
   }
 
 

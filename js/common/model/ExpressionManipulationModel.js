@@ -6,8 +6,6 @@
  * explore screens and for each of the game challenges.  Options are used to support the different restrictions for
  * each screen.
  *
- * REVIEW: Large constructor, recommend extracting listeners if possible.
- *
  * @author John Blanco
  */
 define( function( require ) {
@@ -130,6 +128,9 @@ define( function( require ) {
     // coin term because the user has essentially put it away
     this.creatorBoxBounds = Bounds2.NOTHING;
 
+    // @private {boolean} - make this option available to methods
+    this.partialCancellationEnabled = options.partialCancellationEnabled;
+
     // add a listener that resets the coin term values when the view mode switches from variables to coins
     this.viewModeProperty.link( function( newViewMode, oldViewMode ) {
       if ( newViewMode === ViewMode.COINS && oldViewMode === ViewMode.VARIABLES ) {
@@ -139,370 +140,23 @@ define( function( require ) {
       }
     } );
 
-    // function to update the total value of the coin terms
-    function updateTotal() {
-      var total = 0;
-      self.coinTerms.forEach( function( coinTerm ) {
-        total += coinTerm.valueProperty.value * coinTerm.totalCountProperty.get();
-      } );
-      self.totalValueProperty.set( total );
-    }
-
     // add a listener that updates the total whenever one of the term value properties change
     Property.multilink(
       [ this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty, this.coinTerms.lengthProperty ],
-      updateTotal
+      function() {
+        var total = 0;
+        self.coinTerms.forEach( function( coinTerm ) {
+          total += coinTerm.valueProperty.value * coinTerm.totalCountProperty.get();
+        } );
+        self.totalValueProperty.set( total );
+      }
     );
 
-    // when a coin term is added, add listeners to handle the things about it that are dynamic and can affect the model
-    this.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
-      //REVIEW ~200 line item-added-listener is a lot. Can things be broken up into functions?
+    // add a listener that handles the addition of coin terms
+    this.coinTerms.addItemAddedListener( this.coinTermAddedListener.bind( this ) );
 
-      // Add a listener that will potentially combine this coin term with expressions or other coin terms based on
-      // where it is released.
-      function coinTermUserControlledListener( userControlled ) {
-
-        if ( userControlled === false ) {
-
-          // Set a bunch of variables related to the current state of this coin term.  It's not really necessary to set
-          // them all every time, but it avoids a deeply nested if-else structure.
-          var releasedOverCreatorBox = addedCoinTerm.getViewBounds().intersectsBounds( self.creatorBoxBounds );
-          var expressionBeingEdited = self.expressionBeingEditedProperty.get();
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( addedCoinTerm );
-          var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
-          var mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( addedCoinTerm );
-          var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
-
-          if ( expressionBeingEdited ) {
-
-            // An expression is being edited, so a released coin term could be either moved to a new location within an
-            // expression or combined with another coin term in the expression.
-
-            // state checking
-            assert && assert(
-              expressionBeingEdited.coinTerms.contains( addedCoinTerm ),
-              'coin term being released is not in expression being edited, this should not occur'
-            );
-
-            // determine if the coin term was dropped while overlapping a coin term of the same type
-            var overlappingLikeCoinTerm = self.getOverlappingLikeCoinTermWithinExpression(
-              addedCoinTerm,
-              expressionBeingEdited
-            );
-
-            if ( overlappingLikeCoinTerm ) {
-
-              // combine the dropped coin term with the one with which it overlaps
-              overlappingLikeCoinTerm.absorb( addedCoinTerm, options.partialCancellationEnabled );
-              expressionExchange.log && expressionExchange.log(
-                overlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' + overlappingLikeCoinTerm.id +
-                ' composition = ' + '[' + overlappingLikeCoinTerm.composition + ']' );
-              self.removeCoinTerm( addedCoinTerm, false );
-            }
-            else {
-
-              // the coin term has been dropped at some potentially new location withing the expression
-              expressionBeingEdited.reintegrateCoinTerm( addedCoinTerm );
-            }
-          }
-          else if ( releasedOverCreatorBox ) {
-
-            // the user has put this coin term back in the creator box, so remove it
-            self.removeCoinTerm( addedCoinTerm, true );
-          }
-          else if ( mostOverlappingCollectionArea ) {
-
-            // The coin term was released over a collection area (this only occurs on game screens).  Notify the
-            // collection area so that it can either collect or reject it.
-            mostOverlappingCollectionArea.collectOrRejectCoinTerm( addedCoinTerm );
-          }
-          else if ( mostOverlappingExpression ) {
-
-            // the user is adding the coin term to an expression
-            mostOverlappingExpression.addCoinTerm( addedCoinTerm );
-            expressionExchange.log && expressionExchange.log( 'added ' + addedCoinTerm.id + ' to ' +
-                                                              mostOverlappingExpression.id );
-          }
-          else if ( mostOverlappingLikeCoinTerm ) {
-
-            // The coin term was released over a coin term of the same type, so combine the two coin terms into a single
-            // one with a higher count value.
-            addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
-              mostOverlappingLikeCoinTerm.absorb( addedCoinTerm, options.partialCancellationEnabled );
-              expressionExchange.log && expressionExchange.log(
-                mostOverlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' +
-                mostOverlappingLikeCoinTerm.id + ' composition = ' + '[' +
-                mostOverlappingLikeCoinTerm.composition + ']' );
-              self.removeCoinTerm( addedCoinTerm, false );
-              addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
-            } );
-            addedCoinTerm.travelToDestination( mostOverlappingLikeCoinTerm.positionProperty.get() );
-          }
-          else if ( joinableFreeCoinTerm ) {
-
-            // The coin term was released in a place where it could join another free coin term.
-            var expressionHintToRemove;
-            self.expressionHints.forEach( function( expressionHint ) {
-              if ( expressionHint.containsCoinTerm( addedCoinTerm ) && expressionHint.containsCoinTerm( joinableFreeCoinTerm ) ) {
-                expressionHintToRemove = expressionHint;
-              }
-            } );
-            if ( expressionHintToRemove ) {
-              self.removeExpressionHint( expressionHintToRemove );
-            }
-
-            // create the next expression with these coin terms
-            self.expressions.push( new Expression(
-              joinableFreeCoinTerm,
-              addedCoinTerm,
-              self.simplifyNegativesProperty
-            ) );
-          }
-        }
-      }
-
-      addedCoinTerm.userControlledProperty.lazyLink( coinTermUserControlledListener );
-
-      // add a listener that will handle requests to break apart the coin term
-      function coinTermBreakApartListener() {
-
-        if ( addedCoinTerm.composition.length < 2 ) {
-          // bail if the coin term can't be decomposed
-          return;
-        }
-        var extractedCoinTerms = addedCoinTerm.extractConstituentCoinTerms();
-        var relativeViewBounds = addedCoinTerm.localViewBoundsProperty.get();
-
-        // If the total combined coin count was even, shift the 'parent coin' a bit so that the coins end up being
-        // distributed around the centerX position.
-        if ( extractedCoinTerms.length % 2 === 1 ) {
-          addedCoinTerm.travelToDestination(
-            new Vector2(
-              addedCoinTerm.positionProperty.get().x - relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
-              addedCoinTerm.positionProperty.get().y
-            )
-          );
-        }
-
-        // add the extracted coin terms to the model
-        var interCoinTermDistance = relativeViewBounds.width + BREAK_APART_SPACING;
-        var nextLeftX = addedCoinTerm.destinationProperty.get().x - interCoinTermDistance;
-        var nextRightX = addedCoinTerm.destinationProperty.get().x + interCoinTermDistance;
-        extractedCoinTerms.forEach( function( extractedCoinTerm, index ) {
-          var destination;
-          self.addCoinTerm( extractedCoinTerm );
-          if ( index % 2 === 0 ) {
-            destination = new Vector2( nextRightX, addedCoinTerm.positionProperty.get().y );
-            nextRightX += interCoinTermDistance;
-          }
-          else {
-            destination = new Vector2( nextLeftX, addedCoinTerm.positionProperty.get().y );
-            nextLeftX -= interCoinTermDistance;
-          }
-
-          // if the destination is outside of the allowed bounds, change it to be in bounds
-          if ( !self.coinTermRetrievalBounds.containsPoint( destination ) ) {
-            destination = self.getNextOpenRetrievalSpot();
-          }
-
-          // initiate the animation
-          extractedCoinTerm.travelToDestination( destination );
-        } );
-      }
-
-      addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListener );
-
-      // add a listener that will remove this coin if and when it returns to its original position
-      function coinTermReturnedToOriginListener() {
-        self.removeCoinTerm( addedCoinTerm, false );
-      }
-
-      addedCoinTerm.returnedToOriginEmitter.addListener( coinTermReturnedToOriginListener );
-
-      // monitor the existence strength of this coin term
-      function coinTermExistenceStrengthListener( existenceStrength ) {
-
-        if ( existenceStrength <= 0 ) {
-
-          // the existence strength has gone to zero, remove this from the model
-          self.removeCoinTerm( addedCoinTerm, false );
-
-          if ( self.expressionBeingEditedProperty.get() ) {
-            if ( self.expressionBeingEditedProperty.get().coinTerms.length === 0 ) {
-
-              // the removal of the coin term caused the expression being edited to be empty, so drop out of edit mode
-              self.stopEditingExpression();
-            }
-          }
-        }
-      }
-
-      addedCoinTerm.existenceStrengthProperty.link( coinTermExistenceStrengthListener );
-
-      // clean up the listeners added above if and when this coin term is removed from the model
-      self.coinTerms.addItemRemovedListener( function coinTermRemovalListener( removedCoinTerm ) {
-        if ( removedCoinTerm === addedCoinTerm ) {
-          addedCoinTerm.userControlledProperty.unlink( coinTermUserControlledListener );
-          addedCoinTerm.breakApartEmitter.removeListener( coinTermBreakApartListener );
-          addedCoinTerm.returnedToOriginEmitter.removeListener( coinTermReturnedToOriginListener );
-          addedCoinTerm.existenceStrengthProperty.unlink( coinTermExistenceStrengthListener );
-          self.coinTerms.removeItemRemovedListener( coinTermRemovalListener );
-        }
-      } );
-    } );
-
-    this.expressions.addItemAddedListener( function( addedExpression ) {
-      //REVIEW: Also a very large listener, can this be broken up into more manageable pieces?
-
-      // add a listener for when the expression is released, which may cause it to be combined with another expression
-      function expressionUserControlledListener( userControlled ) {
-
-        if ( !userControlled ) {
-
-          // Set a bunch of variables related to the current state of this expression.  It's not really necessary to set
-          // them all every time, but it avoids a deeply nested if-else structure.
-          var releasedOverCreatorBox = addedExpression.getBounds().intersectsBounds( self.creatorBoxBounds );
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( addedExpression );
-          var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( addedExpression );
-          var numOverlappingCoinTerms = addedExpression.hoveringCoinTerms.length;
-
-          // state checking
-          assert && assert(
-            numOverlappingCoinTerms === 0 || numOverlappingCoinTerms === 1,
-            'max of one overlapping free coin term when expression is released, seeing ' + numOverlappingCoinTerms
-          );
-
-          if ( releasedOverCreatorBox ) {
-
-            // the expression was released over the creator box, so it and the coin terms should be "put away"
-            self.removeExpression( addedExpression );
-          }
-          else if ( mostOverlappingCollectionArea ) {
-
-            // The expression was released in a location that at least partially overlaps a collection area.  The
-            // collection area must decide whether to collect or reject the expression.
-            mostOverlappingCollectionArea.collectOrRejectExpression( addedExpression );
-          }
-          else if ( mostOverlappingExpression ) {
-
-            // The expression was released in a place where it at least partially overlaps another expression, the the
-            // two expressions should be joined into one.  The first step is to remove the expression from the list of
-            // those hovering.
-            mostOverlappingExpression.removeHoveringExpression( addedExpression );
-
-            // send the combining expression to the right side of receiving expression
-            var destinationForCombine = mostOverlappingExpression.getUpperRightCorner();
-            addedExpression.travelToDestination( destinationForCombine );
-
-            // Listen for when the expression is in place and, when it is, transfer its coin terms to the receiving
-            // expression.
-            addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener() {
-
-              // destination reached, combine with other expression, but ONLY if it hasn't moved
-              if ( mostOverlappingExpression.getUpperRightCorner().equals( destinationForCombine ) ) {
-                var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
-                self.expressions.remove( addedExpression );
-                coinTermsToBeMoved.forEach( function( coinTerm ) {
-                  expressionExchange.log && expressionExchange.log( 'moving ' + coinTerm.id + ' from ' +
-                                                                    addedExpression.id + ' to ' +
-                                                                    mostOverlappingExpression.id );
-                  mostOverlappingExpression.addCoinTerm( coinTerm );
-                } );
-                addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
-              }
-            } );
-          }
-          else if ( numOverlappingCoinTerms === 1 ) {
-
-            // the expression was released over a free coin term, so have that free coin term join the expression
-            var coinTermToAddToExpression = addedExpression.hoveringCoinTerms[ 0 ];
-            if ( addedExpression.rightHintActiveProperty.get() ) {
-
-              // move to the left side of the coin term
-              addedExpression.travelToDestination(
-                coinTermToAddToExpression.positionProperty.get().plusXY(
-                  -addedExpression.widthProperty.get() - addedExpression.rightHintWidthProperty.get() / 2,
-                  -addedExpression.heightProperty.get() / 2
-                )
-              );
-            }
-            else {
-
-              assert && assert(
-                addedExpression.leftHintActiveProperty.get(),
-                'at least one hint should be active if there is a hovering coin term'
-              );
-
-              // move to the right side of the coin term
-              addedExpression.travelToDestination(
-                coinTermToAddToExpression.positionProperty.get().plusXY(
-                  addedExpression.leftHintWidthProperty.get() / 2,
-                  -addedExpression.heightProperty.get() / 2
-                )
-              );
-            }
-
-            addedExpression.destinationReachedEmitter.addListener( function addCoinTermAfterAnimation() {
-              addedExpression.addCoinTerm( coinTermToAddToExpression );
-              addedExpression.destinationReachedEmitter.removeListener( addCoinTermAfterAnimation );
-            } );
-          }
-        }
-      }
-
-      addedExpression.userControlledProperty.lazyLink( expressionUserControlledListener );
-
-      // add a listener that will handle requests to break apart this expression
-      function expressionBreakApartListener() {
-
-        // keep a reference to the center for when we spread out the coin terms
-        var expressionCenterX = addedExpression.getBounds().centerX;
-
-        // remove the coin terms from the expression and the expression from the model
-        var newlyFreedCoinTerms = addedExpression.removeAllCoinTerms();
-        self.expressions.remove( addedExpression );
-
-        // spread the released coin terms out horizontally
-        //var numRetrievedCoinTerms = 0;
-        newlyFreedCoinTerms.forEach( function( newlyFreedCoinTerm ) {
-
-          // calculate a destination that will cause the coin terms to spread out from the expression center
-          var horizontalDistanceFromExpressionCenter = newlyFreedCoinTerm.positionProperty.get().x - expressionCenterX;
-          var coinTermDestination = new Vector2(
-            newlyFreedCoinTerm.positionProperty.get().x + horizontalDistanceFromExpressionCenter * 0.15, // spread factor empirically determined
-            newlyFreedCoinTerm.positionProperty.get().y
-          );
-
-          // if the destination is outside of the allowed bounds, change it to be in bounds
-          if ( !self.coinTermRetrievalBounds.containsPoint( coinTermDestination ) ) {
-            coinTermDestination = self.getNextOpenRetrievalSpot();
-          }
-
-          // initiate the animation
-          newlyFreedCoinTerm.travelToDestination( coinTermDestination );
-        } );
-      }
-
-      addedExpression.breakApartEmitter.addListener( expressionBreakApartListener );
-
-      // add a listener that will handle requests to edit this expression
-      function editExpressionListener() {
-        self.expressionBeingEditedProperty.set( addedExpression );
-      }
-
-      addedExpression.selectedForEditEmitter.addListener( editExpressionListener );
-
-      // remove the listeners when this expression is removed
-      self.expressions.addItemRemovedListener( function expressionRemovedListener( removedExpression ) {
-        if ( removedExpression === addedExpression ) {
-          addedExpression.dispose();
-          addedExpression.userControlledProperty.unlink( expressionUserControlledListener );
-          addedExpression.breakApartEmitter.removeListener( expressionBreakApartListener );
-          addedExpression.selectedForEditEmitter.removeListener( editExpressionListener );
-          self.expressions.removeItemRemovedListener( expressionRemovedListener );
-        }
-      } );
-    } );
+    // add a listener that handles the addition of an expression
+    this.expressions.addItemAddedListener( this.expressionAddedListener.bind( this ) );
   }
 
   expressionExchange.register( 'ExpressionManipulationModel', ExpressionManipulationModel );
@@ -993,6 +647,366 @@ define( function( require ) {
         }
       } );
       return mostOverlappingCollectionArea;
+    },
+
+    /**
+     * handler for when a coin term is added to the model, hooks up a bunch of listeners
+     * @param addedCoinTerm
+     * @private
+     */
+    coinTermAddedListener: function( addedCoinTerm ) {
+
+      var self = this;
+
+      // Add a listener that will potentially combine this coin term with expressions or other coin terms based on
+      // where it is released.
+      function coinTermUserControlledListener( userControlled ) {
+
+        if ( userControlled === false ) {
+
+          // Set a bunch of variables related to the current state of this coin term.  It's not really necessary to set
+          // them all every time, but it avoids a deeply nested if-else structure.
+          var releasedOverCreatorBox = addedCoinTerm.getViewBounds().intersectsBounds( self.creatorBoxBounds );
+          var expressionBeingEdited = self.expressionBeingEditedProperty.get();
+          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( addedCoinTerm );
+          var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
+          var mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( addedCoinTerm );
+          var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
+
+          if ( expressionBeingEdited ) {
+
+            // An expression is being edited, so a released coin term could be either moved to a new location within an
+            // expression or combined with another coin term in the expression.
+
+            // state checking
+            assert && assert(
+              expressionBeingEdited.coinTerms.contains( addedCoinTerm ),
+              'coin term being released is not in expression being edited, this should not occur'
+            );
+
+            // determine if the coin term was dropped while overlapping a coin term of the same type
+            var overlappingLikeCoinTerm = self.getOverlappingLikeCoinTermWithinExpression(
+              addedCoinTerm,
+              expressionBeingEdited
+            );
+
+            if ( overlappingLikeCoinTerm ) {
+
+              // combine the dropped coin term with the one with which it overlaps
+              overlappingLikeCoinTerm.absorb( addedCoinTerm, self.partialCancellationEnabled );
+              expressionExchange.log && expressionExchange.log(
+                overlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' + overlappingLikeCoinTerm.id +
+                ' composition = ' + '[' + overlappingLikeCoinTerm.composition + ']' );
+              self.removeCoinTerm( addedCoinTerm, false );
+            }
+            else {
+
+              // the coin term has been dropped at some potentially new location withing the expression
+              expressionBeingEdited.reintegrateCoinTerm( addedCoinTerm );
+            }
+          }
+          else if ( releasedOverCreatorBox ) {
+
+            // the user has put this coin term back in the creator box, so remove it
+            self.removeCoinTerm( addedCoinTerm, true );
+          }
+          else if ( mostOverlappingCollectionArea ) {
+
+            // The coin term was released over a collection area (this only occurs on game screens).  Notify the
+            // collection area so that it can either collect or reject it.
+            mostOverlappingCollectionArea.collectOrRejectCoinTerm( addedCoinTerm );
+          }
+          else if ( mostOverlappingExpression ) {
+
+            // the user is adding the coin term to an expression
+            mostOverlappingExpression.addCoinTerm( addedCoinTerm );
+            expressionExchange.log && expressionExchange.log( 'added ' + addedCoinTerm.id + ' to ' +
+                                                              mostOverlappingExpression.id );
+          }
+          else if ( mostOverlappingLikeCoinTerm ) {
+
+            // The coin term was released over a coin term of the same type, so combine the two coin terms into a single
+            // one with a higher count value.
+            addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
+              mostOverlappingLikeCoinTerm.absorb( addedCoinTerm, self.partialCancellationEnabled );
+              expressionExchange.log && expressionExchange.log(
+                mostOverlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' +
+                mostOverlappingLikeCoinTerm.id + ' composition = ' + '[' +
+                mostOverlappingLikeCoinTerm.composition + ']' );
+              self.removeCoinTerm( addedCoinTerm, false );
+              addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
+            } );
+            addedCoinTerm.travelToDestination( mostOverlappingLikeCoinTerm.positionProperty.get() );
+          }
+          else if ( joinableFreeCoinTerm ) {
+
+            // The coin term was released in a place where it could join another free coin term.
+            var expressionHintToRemove;
+            self.expressionHints.forEach( function( expressionHint ) {
+              if ( expressionHint.containsCoinTerm( addedCoinTerm ) && expressionHint.containsCoinTerm( joinableFreeCoinTerm ) ) {
+                expressionHintToRemove = expressionHint;
+              }
+            } );
+            if ( expressionHintToRemove ) {
+              self.removeExpressionHint( expressionHintToRemove );
+            }
+
+            // create the next expression with these coin terms
+            self.expressions.push( new Expression(
+              joinableFreeCoinTerm,
+              addedCoinTerm,
+              self.simplifyNegativesProperty
+            ) );
+          }
+        }
+      }
+
+      addedCoinTerm.userControlledProperty.lazyLink( coinTermUserControlledListener );
+
+      // add a listener that will handle requests to break apart the coin term
+      function coinTermBreakApartListener() {
+
+        if ( addedCoinTerm.composition.length < 2 ) {
+          // bail if the coin term can't be decomposed
+          return;
+        }
+        var extractedCoinTerms = addedCoinTerm.extractConstituentCoinTerms();
+        var relativeViewBounds = addedCoinTerm.localViewBoundsProperty.get();
+
+        // If the total combined coin count was even, shift the 'parent coin' a bit so that the coins end up being
+        // distributed around the centerX position.
+        if ( extractedCoinTerms.length % 2 === 1 ) {
+          addedCoinTerm.travelToDestination(
+            new Vector2(
+              addedCoinTerm.positionProperty.get().x - relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
+              addedCoinTerm.positionProperty.get().y
+            )
+          );
+        }
+
+        // add the extracted coin terms to the model
+        var interCoinTermDistance = relativeViewBounds.width + BREAK_APART_SPACING;
+        var nextLeftX = addedCoinTerm.destinationProperty.get().x - interCoinTermDistance;
+        var nextRightX = addedCoinTerm.destinationProperty.get().x + interCoinTermDistance;
+        extractedCoinTerms.forEach( function( extractedCoinTerm, index ) {
+          var destination;
+          self.addCoinTerm( extractedCoinTerm );
+          if ( index % 2 === 0 ) {
+            destination = new Vector2( nextRightX, addedCoinTerm.positionProperty.get().y );
+            nextRightX += interCoinTermDistance;
+          }
+          else {
+            destination = new Vector2( nextLeftX, addedCoinTerm.positionProperty.get().y );
+            nextLeftX -= interCoinTermDistance;
+          }
+
+          // if the destination is outside of the allowed bounds, change it to be in bounds
+          if ( !self.coinTermRetrievalBounds.containsPoint( destination ) ) {
+            destination = self.getNextOpenRetrievalSpot();
+          }
+
+          // initiate the animation
+          extractedCoinTerm.travelToDestination( destination );
+        } );
+      }
+
+      addedCoinTerm.breakApartEmitter.addListener( coinTermBreakApartListener );
+
+      // add a listener that will remove this coin if and when it returns to its original position
+      function coinTermReturnedToOriginListener() {
+        self.removeCoinTerm( addedCoinTerm, false );
+      }
+
+      addedCoinTerm.returnedToOriginEmitter.addListener( coinTermReturnedToOriginListener );
+
+      // monitor the existence strength of this coin term
+      function coinTermExistenceStrengthListener( existenceStrength ) {
+
+        if ( existenceStrength <= 0 ) {
+
+          // the existence strength has gone to zero, remove this from the model
+          self.removeCoinTerm( addedCoinTerm, false );
+
+          if ( self.expressionBeingEditedProperty.get() ) {
+            if ( self.expressionBeingEditedProperty.get().coinTerms.length === 0 ) {
+
+              // the removal of the coin term caused the expression being edited to be empty, so drop out of edit mode
+              self.stopEditingExpression();
+            }
+          }
+        }
+      }
+
+      addedCoinTerm.existenceStrengthProperty.link( coinTermExistenceStrengthListener );
+
+      // clean up the listeners added above if and when this coin term is removed from the model
+      self.coinTerms.addItemRemovedListener( function coinTermRemovalListener( removedCoinTerm ) {
+        if ( removedCoinTerm === addedCoinTerm ) {
+          addedCoinTerm.userControlledProperty.unlink( coinTermUserControlledListener );
+          addedCoinTerm.breakApartEmitter.removeListener( coinTermBreakApartListener );
+          addedCoinTerm.returnedToOriginEmitter.removeListener( coinTermReturnedToOriginListener );
+          addedCoinTerm.existenceStrengthProperty.unlink( coinTermExistenceStrengthListener );
+          self.coinTerms.removeItemRemovedListener( coinTermRemovalListener );
+        }
+      } );
+    },
+
+    /**
+     * handle the addition of an expresion to the model
+     * @param {Expression} addedExpression
+     * @private
+     */
+    expressionAddedListener: function( addedExpression ) {
+      var self = this;
+
+      // add a listener for when the expression is released, which may cause it to be combined with another expression
+      function expressionUserControlledListener( userControlled ) {
+
+        if ( !userControlled ) {
+
+          // Set a bunch of variables related to the current state of this expression.  It's not really necessary to set
+          // them all every time, but it avoids a deeply nested if-else structure.
+          var releasedOverCreatorBox = addedExpression.getBounds().intersectsBounds( self.creatorBoxBounds );
+          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( addedExpression );
+          var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( addedExpression );
+          var numOverlappingCoinTerms = addedExpression.hoveringCoinTerms.length;
+
+          // state checking
+          assert && assert(
+            numOverlappingCoinTerms === 0 || numOverlappingCoinTerms === 1,
+            'max of one overlapping free coin term when expression is released, seeing ' + numOverlappingCoinTerms
+          );
+
+          if ( releasedOverCreatorBox ) {
+
+            // the expression was released over the creator box, so it and the coin terms should be "put away"
+            self.removeExpression( addedExpression );
+          }
+          else if ( mostOverlappingCollectionArea ) {
+
+            // The expression was released in a location that at least partially overlaps a collection area.  The
+            // collection area must decide whether to collect or reject the expression.
+            mostOverlappingCollectionArea.collectOrRejectExpression( addedExpression );
+          }
+          else if ( mostOverlappingExpression ) {
+
+            // The expression was released in a place where it at least partially overlaps another expression, the the
+            // two expressions should be joined into one.  The first step is to remove the expression from the list of
+            // those hovering.
+            mostOverlappingExpression.removeHoveringExpression( addedExpression );
+
+            // send the combining expression to the right side of receiving expression
+            var destinationForCombine = mostOverlappingExpression.getUpperRightCorner();
+            addedExpression.travelToDestination( destinationForCombine );
+
+            // Listen for when the expression is in place and, when it is, transfer its coin terms to the receiving
+            // expression.
+            addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener() {
+
+              // destination reached, combine with other expression, but ONLY if it hasn't moved
+              if ( mostOverlappingExpression.getUpperRightCorner().equals( destinationForCombine ) ) {
+                var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
+                self.expressions.remove( addedExpression );
+                coinTermsToBeMoved.forEach( function( coinTerm ) {
+                  expressionExchange.log && expressionExchange.log( 'moving ' + coinTerm.id + ' from ' +
+                                                                    addedExpression.id + ' to ' +
+                                                                    mostOverlappingExpression.id );
+                  mostOverlappingExpression.addCoinTerm( coinTerm );
+                } );
+                addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
+              }
+            } );
+          }
+          else if ( numOverlappingCoinTerms === 1 ) {
+
+            // the expression was released over a free coin term, so have that free coin term join the expression
+            var coinTermToAddToExpression = addedExpression.hoveringCoinTerms[ 0 ];
+            if ( addedExpression.rightHintActiveProperty.get() ) {
+
+              // move to the left side of the coin term
+              addedExpression.travelToDestination(
+                coinTermToAddToExpression.positionProperty.get().plusXY(
+                  -addedExpression.widthProperty.get() - addedExpression.rightHintWidthProperty.get() / 2,
+                  -addedExpression.heightProperty.get() / 2
+                )
+              );
+            }
+            else {
+
+              assert && assert(
+                addedExpression.leftHintActiveProperty.get(),
+                'at least one hint should be active if there is a hovering coin term'
+              );
+
+              // move to the right side of the coin term
+              addedExpression.travelToDestination(
+                coinTermToAddToExpression.positionProperty.get().plusXY(
+                  addedExpression.leftHintWidthProperty.get() / 2,
+                  -addedExpression.heightProperty.get() / 2
+                )
+              );
+            }
+
+            addedExpression.destinationReachedEmitter.addListener( function addCoinTermAfterAnimation() {
+              addedExpression.addCoinTerm( coinTermToAddToExpression );
+              addedExpression.destinationReachedEmitter.removeListener( addCoinTermAfterAnimation );
+            } );
+          }
+        }
+      }
+
+      addedExpression.userControlledProperty.lazyLink( expressionUserControlledListener );
+
+      // add a listener that will handle requests to break apart this expression
+      function expressionBreakApartListener() {
+
+        // keep a reference to the center for when we spread out the coin terms
+        var expressionCenterX = addedExpression.getBounds().centerX;
+
+        // remove the coin terms from the expression and the expression from the model
+        var newlyFreedCoinTerms = addedExpression.removeAllCoinTerms();
+        self.expressions.remove( addedExpression );
+
+        // spread the released coin terms out horizontally
+        //var numRetrievedCoinTerms = 0;
+        newlyFreedCoinTerms.forEach( function( newlyFreedCoinTerm ) {
+
+          // calculate a destination that will cause the coin terms to spread out from the expression center
+          var horizontalDistanceFromExpressionCenter = newlyFreedCoinTerm.positionProperty.get().x - expressionCenterX;
+          var coinTermDestination = new Vector2(
+            newlyFreedCoinTerm.positionProperty.get().x + horizontalDistanceFromExpressionCenter * 0.15, // spread factor empirically determined
+            newlyFreedCoinTerm.positionProperty.get().y
+          );
+
+          // if the destination is outside of the allowed bounds, change it to be in bounds
+          if ( !self.coinTermRetrievalBounds.containsPoint( coinTermDestination ) ) {
+            coinTermDestination = self.getNextOpenRetrievalSpot();
+          }
+
+          // initiate the animation
+          newlyFreedCoinTerm.travelToDestination( coinTermDestination );
+        } );
+      }
+
+      addedExpression.breakApartEmitter.addListener( expressionBreakApartListener );
+
+      // add a listener that will handle requests to edit this expression
+      function editExpressionListener() {
+        self.expressionBeingEditedProperty.set( addedExpression );
+      }
+
+      addedExpression.selectedForEditEmitter.addListener( editExpressionListener );
+
+      // remove the listeners when this expression is removed
+      self.expressions.addItemRemovedListener( function expressionRemovedListener( removedExpression ) {
+        if ( removedExpression === addedExpression ) {
+          addedExpression.dispose();
+          addedExpression.userControlledProperty.unlink( expressionUserControlledListener );
+          addedExpression.breakApartEmitter.removeListener( expressionBreakApartListener );
+          addedExpression.selectedForEditEmitter.removeListener( editExpressionListener );
+          self.expressions.removeItemRemovedListener( expressionRemovedListener );
+        }
+      } );
     },
 
     /**
