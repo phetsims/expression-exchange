@@ -34,6 +34,9 @@ define( function( require ) {
   // strings
   var levelNumberPatternString = require( 'string!EXPRESSION_EXCHANGE/levelNumberPattern' );
 
+  // constants
+  var BUTTON_XY_TOUCH_DILATION = 4;
+
   /**
    * @param {EEGameModel} gameModel - main model for the game
    * @param {EEGameLevel} levelModel - model for the level depicted by this view object
@@ -86,7 +89,9 @@ define( function( require ) {
     var backButton = new BackButton( {
       left: screenLayoutBounds.left + 30,
       top: screenLayoutBounds.top + 30,
-      listener: gameModel.returnToLevelSelection.bind( gameModel )
+      listener: gameModel.returnToLevelSelection.bind( gameModel ),
+      touchAreaXDilation: BUTTON_XY_TOUCH_DILATION,
+      touchAreaYDilation: BUTTON_XY_TOUCH_DILATION
     } );
     middleLayer.addChild( backButton );
 
@@ -98,7 +103,9 @@ define( function( require ) {
       yMargin: 7,
       listener: function() { levelModel.refresh(); },
       left: backButton.left,
-      top: backButton.bottom + 8
+      top: backButton.bottom + 8,
+      touchAreaXDilation: BUTTON_XY_TOUCH_DILATION,
+      touchAreaYDilation: BUTTON_XY_TOUCH_DILATION
     } );
     middleLayer.addChild( refreshButton );
 

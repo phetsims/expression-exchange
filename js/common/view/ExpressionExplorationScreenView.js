@@ -55,6 +55,8 @@ define( function( require ) {
   var ACCORDION_BOX_BUTTON_Y_MARGIN = 4;
   var ACCORDION_BOX_CORNER_RADIUS = 7;
   var ACCORDION_BOX_CONTENT_X_MARGIN = 15;
+  var ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X = 15;
+  var ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y = 15;
   var CHECK_BOX_FONT = new PhetFont( { size: 16 } );
   var CHECK_BOX_VERTICAL_SPACING = 6;
   var INSET = 10; // inset from edges of layout bounds, in screen coords
@@ -130,7 +132,9 @@ define( function( require ) {
       buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
       contentXMargin: 30, // empirically determined
       minWidth: leftSideBoxWidth,
-      maxWidth: leftSideBoxWidth
+      maxWidth: leftSideBoxWidth,
+      buttonTouchAreaXDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X,
+      buttonTouchAreaYDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y
     } );
     this.addChild( totalValueAccordionBox );
 
@@ -167,7 +171,9 @@ define( function( require ) {
       buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
       buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
       minWidth: leftSideBoxWidth,
-      maxWidth: leftSideBoxWidth
+      maxWidth: leftSideBoxWidth,
+      buttonTouchAreaXDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X,
+      buttonTouchAreaYDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y
     } );
     variableValuesAccordionBox.expandedProperty.value = false; // initially closed
     this.addChild( variableValuesAccordionBox );
@@ -232,7 +238,9 @@ define( function( require ) {
       buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
       contentXMargin: ACCORDION_BOX_CONTENT_X_MARGIN,
       minWidth: collectionDisplayWidth + 2 * ACCORDION_BOX_BUTTON_X_MARGIN,
-      maxWidth: collectionDisplayWidth + 2 * ACCORDION_BOX_BUTTON_X_MARGIN
+      maxWidth: collectionDisplayWidth + 2 * ACCORDION_BOX_BUTTON_X_MARGIN,
+      buttonTouchAreaXDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X,
+      buttonTouchAreaYDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y
     } );
     this.addChild( myCollectionAccordionBox );
 
@@ -305,8 +313,8 @@ define( function( require ) {
       },
       right: this.layoutBounds.maxX - 10,
       bottom: this.layoutBounds.maxY - 10,
-      touchAreaDilation: 10,
-      radius: EESharedConstants.RESET_BUTTON_RADIUS
+      radius: EESharedConstants.RESET_ALL_BUTTON_RADIUS,
+      touchAreaDilation: EESharedConstants.RESET_ALL_BUTTON_TOUCH_AREA_DILATION
     } );
     this.addChild( resetAllButton );
 

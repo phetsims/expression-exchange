@@ -57,7 +57,9 @@ define( function( require ) {
     COIN_TERM_TYPE_TO_TEXT_MAP: COIN_TERM_TYPE_TO_TEXT_MAP,
 
     // misc
-    RESET_BUTTON_RADIUS: 24
+    RESET_ALL_BUTTON_RADIUS: 24,
+    RESET_ALL_BUTTON_TOUCH_AREA_DILATION: 10,
+
   };
 
   expressionExchange.register( 'EESharedConstants', EESharedConstants );
