@@ -3,9 +3,6 @@
 /**
  * a Scenery node that represents a coin term whose underlying value can vary in the view
  *
- * REVIEW: Lots of inner functions in a very long constructor. Would highly recommend that this be broken into methods
- * with properties, to reduce complexity.
- *
  * @author John Blanco
  */
 define( function( require ) {
@@ -58,258 +55,81 @@ define( function( require ) {
                                  showAllCoefficientsProperty,
                                  options ) {
 
-    var self = this;
     AbstractCoinTermNode.call( this, coinTerm, options );
 
-    // view-specific property for controlling the coin flip animation, 0 = heads, 1 = tails, values in between are used
-    // to scale the coin term and thus make it look like it's flipping
-    var flipStateProperty = new Property( showCoinValuesProperty.get() ? 1 : 0 );
+    // @private {CoinTerm} - make the coin term available to methods
+    this.coinTerm = coinTerm;
 
-    // add the images for the front and back of the coin
-    var coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, true );
-    var coinBackImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, false );
+    // @private {Property.<ViewMode>} - make the view mode available to methods
+    this.viewModeProperty = viewModeProperty;
 
-    // add a parent node that contains the two coin images, and also maintains consistent bounds, necessary to prevent
-    // a bunch of bounds change notification when the coin term is flipped
-    var coinImagesNode = new Rectangle( 0, 0, coinTerm.coinRadius * 2, coinTerm.coinRadius * 2, {
+    // @private {Image} - add the images for the front and back of the coin
+    this.coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, true );
+    this.coinBackImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, false );
+
+    // @private - add a parent node that contains the two coin images, and also maintains consistent bounds, necessary
+    // to prevent a bunch of bounds change notification when the coin term is flipped
+    this.coinImagesNode = new Rectangle( 0, 0, coinTerm.coinRadius * 2, coinTerm.coinRadius * 2, {
       fill: 'transparent', // invisible
-      children: [ coinFrontImageNode, coinBackImageNode ],
+      children: [ this.coinFrontImageNode, this.coinBackImageNode ],
       x: -coinTerm.coinRadius,
       y: -coinTerm.coinRadius
     } );
-    this.coinAndTextRootNode.addChild( coinImagesNode );
+    this.coinAndTextRootNode.addChild( this.coinImagesNode );
 
-    // convenience var
-    var textBaseline = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET;
+    // @private - add the coin value text
+    this.coinValueText = new Text( '', { font: VALUE_FONT } );
+    this.coinImagesNode.addChild( this.coinValueText );
 
-    // add the coin value text
-    var coinValueText = new Text( '', { font: VALUE_FONT } );
-    coinImagesNode.addChild( coinValueText );
+    // @private - add the 'term' text, e.g. xy
+    this.termText = new RichText( 'temp', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
+    this.coinAndTextRootNode.addChild( this.termText );
 
-    // add the 'term' text, e.g. xy
-    var termText = new RichText( 'temp', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
-    this.coinAndTextRootNode.addChild( termText );
+    // @private - Add the text that includes the variable values.  This can change, so it starts off blank.
+    this.termWithVariableValuesText = new RichText( ' ', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
+    this.coinAndTextRootNode.addChild( this.termWithVariableValuesText );
 
-    // Add the text that includes the variable values.  This can change, so it starts off blank.
-    var termWithVariableValuesText = new RichText( ' ', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
-    this.coinAndTextRootNode.addChild( termWithVariableValuesText );
-
-    // add the coefficient value
-    var coefficientText = new Text( '', {
+    // @private - add the coefficient value
+    this.coefficientText = new Text( '', {
       font: COEFFICIENT_FONT
     } );
-    this.coinAndTextRootNode.addChild( coefficientText );
+    this.coinAndTextRootNode.addChild( this.coefficientText );
 
-    // helper function to take the view bounds information and communicates it to the model
-    function updateBoundsInModel() {
+    // @private {Property.<number>} - view-specific property for controlling the coin flip animation, 0 = heads, 1 =
+    // tails, values in between are used to scale the coin term and thus make it look like it's flipping
+    this.flipStateProperty = new Property( showCoinValuesProperty.get() ? 1 : 0 );
 
-      // make the bounds relative to the coin term's position, which corresponds to the center of the coin
-      var relativeVisibleBounds = self.coinAndTextRootNode.visibleLocalBounds;
-
-      // Expressions are kept the same width whether the view mode is set to coins or variables, but it is possible to
-      // override this behavior using a query parameter.  This behavior is being retained in case we ever want to
-      // experiment with it in the future.  See https://github.com/phetsims/expression-exchange/issues/10
-      if ( !EEQueryParameters.adjustExpressionWidth ) {
-
-        var width = Math.max( coinImagesNode.width, termText.width, termWithVariableValuesText.width );
-
-        if ( coefficientText.visible || Math.abs( coinTerm.totalCountProperty.get() ) > 1 ) {
-          width += coefficientText.width + COEFFICIENT_X_SPACING;
-        }
-
-        // set the view bounds such that the non-coefficient portion is always the same width
-        relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( width - relativeVisibleBounds.width ) / 2 );
-      }
-
-      // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
-      if ( !coinTerm.localViewBoundsProperty.get() || !coinTerm.localViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
-        coinTerm.localViewBoundsProperty.set( relativeVisibleBounds );
-      }
-    }
-
-    // function that updates all nodes that comprise this composite node
-    function updateRepresentation() {
-
-      // TODO: this was written with no thought given to performance, may need to optimize
-
-      var scale = coinTerm.scaleProperty.get(); // for convenience
-
-      // control front coin image visibility
-      var desiredCoinImageWidth = coinTerm.coinRadius * 2 * scale;
-      if ( coinImagesNode.width !== desiredCoinImageWidth ) {
-        coinImagesNode.setScaleMagnitude( 1 );
-        coinImagesNode.setScaleMagnitude( desiredCoinImageWidth / coinImagesNode.width );
-        coinImagesNode.center = Vector2.ZERO;
-      }
-      coinImagesNode.visible = viewModeProperty.value === ViewMode.COINS;
-
-      // update coin value text
-      coinValueText.text = coinTerm.valueProperty.value;
-      coinValueText.centerX = coinTerm.coinRadius;
-      coinValueText.centerY = coinTerm.coinRadius;
-
-      // determine if the coefficient is visible, since this will be used several times below
-      var coefficientVisible = Math.abs( coinTerm.totalCountProperty.get() ) !== 1 ||
-                               showAllCoefficientsProperty.value;
-
-      // update the term text, which only changes if it switches from positive to negative
-      termText.setScaleMagnitude( scale );
-      if ( coinTerm.totalCountProperty.get() < 0 && !coefficientVisible &&
-           coinTerm.showMinusSignWhenNegativeProperty.get() ) {
-
-        termText.text = '-' + coinTerm.termText;
-      }
-      else {
-        termText.text = coinTerm.termText;
-      }
-      termText.centerX = 0;
-      termText.y = textBaseline * scale;
-      termText.mouseArea = termText.localBounds
-        .dilatedXY( POINTER_AREA_X_DILATION_AMOUNT, POINTER_AREA_Y_DILATION_AMOUNT )
-        .shiftedY( POINTER_AREA_DOWN_SHIFT );
-      termText.touchArea = termText.mouseArea;
-      termText.visible = viewModeProperty.value === ViewMode.VARIABLES && !showVariableValuesProperty.value;
-
-      // term value text, which shows the variable values and operators such as exponents
-      var termValueText = coinTerm.termValueTextProperty.value;
-      if ( coinTerm.totalCountProperty.get() === -1 && !showAllCoefficientsProperty.value &&
-           coinTerm.showMinusSignWhenNegativeProperty.get() ) {
-        // prepend a minus sign
-        termValueText = '-' + termValueText;
-      }
-
-      termWithVariableValuesText.setScaleMagnitude( scale );
-      termWithVariableValuesText.text = termValueText;
-      termWithVariableValuesText.centerX = 0;
-      termWithVariableValuesText.y = textBaseline * scale;
-      termWithVariableValuesText.mouseArea = termWithVariableValuesText.localBounds
-        .dilatedX( POINTER_AREA_X_DILATION_AMOUNT )
-        .dilatedY( POINTER_AREA_Y_DILATION_AMOUNT )
-        .shiftedY( POINTER_AREA_DOWN_SHIFT );
-      termWithVariableValuesText.touchArea = termWithVariableValuesText.mouseArea;
-      termWithVariableValuesText.visible = viewModeProperty.value === ViewMode.VARIABLES &&
-                                           showVariableValuesProperty.value;
-
-      // coefficient value and visibility
-      coefficientText.setScaleMagnitude( scale );
-      coefficientText.text = coinTerm.showMinusSignWhenNegativeProperty.get() ?
-                             coinTerm.totalCountProperty.get() :
-                             Math.abs( coinTerm.totalCountProperty.get() );
-      coefficientText.visible = coefficientVisible;
-
-      // position the coefficient
-      if ( viewModeProperty.value === ViewMode.COINS ) {
-        coefficientText.right = coinImagesNode.left - COEFFICIENT_X_SPACING;
-        coefficientText.centerY = coinImagesNode.centerY;
-      }
-      else if ( termText.visible ) {
-        coefficientText.right = termText.left - COEFFICIENT_X_SPACING;
-        coefficientText.y = textBaseline * scale;
-      }
-      else {
-        coefficientText.right = termWithVariableValuesText.left - COEFFICIENT_X_SPACING;
-        coefficientText.y = textBaseline * scale;
-      }
-
-      // update the card background
-      self.cardLikeBackground.visible = false; // make sure card is invisible so it doesn't affect visible bounds
-      self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilated( 10 ) );
-      if ( coinTerm.cardOpacityProperty.get() === 0 ) {
-        self.cardLikeBackground.visible = false;
-      }
-      else {
-        self.cardLikeBackground.visible = true;
-        self.cardLikeBackground.opacity = coinTerm.cardOpacityProperty.get();
-      }
-
-      // update the bounds that are registered with the model
-      updateBoundsInModel();
-    }
+    // @private {TWEEN} - tracks current animation
+    this.activeFlipAnimation = null;
 
     // if anything about the coin term's values changes or any of the display mode, the representation needs to be updated
     var updateRepresentationMultilink = Property.multilink(
       [
+        viewModeProperty,
+        showAllCoefficientsProperty,
+        showVariableValuesProperty,
+        showCoinValuesProperty,
         coinTerm.totalCountProperty,
         coinTerm.valueProperty,
         coinTerm.termValueTextProperty,
         coinTerm.showMinusSignWhenNegativeProperty,
         coinTerm.cardOpacityProperty,
-        coinTerm.scaleProperty,
-        viewModeProperty,
-        showCoinValuesProperty,
-        showVariableValuesProperty,
-        showAllCoefficientsProperty
+        coinTerm.scaleProperty
       ],
-      updateRepresentation
+      this.updateRepresentation.bind( this )
     );
 
-    // hook up the code for initiating flip animations
-    var activeFlipAnimation = null;
-
-    function updateCoinFlipAnimations( showCoinValues ) {
-
-      if ( viewModeProperty.get() === ViewMode.COINS ) {
-        if ( activeFlipAnimation ) {
-          activeFlipAnimation.stop();
-        }
-
-        var targetFlipState = showCoinValues ? 1 : 0;
-
-        // use an tween to change the flip state over time
-        activeFlipAnimation = new TWEEN.Tween( { flipState: flipStateProperty.get() } )
-          .to( { flipState: targetFlipState }, COIN_FLIP_TIME * 1000 )
-          .easing( TWEEN.Easing.Cubic.InOut )
-          .start( phet.joist.elapsedTime )
-          .onUpdate( function() { flipStateProperty.set( this.flipState ); } )
-          .onComplete( function() {
-            activeFlipAnimation = null;
-          } );
-      }
-      else {
-
-        // do the change immediately, heads if NOT showing coin values, tails if we are
-        flipStateProperty.set( showCoinValues ? 1 : 0 );
-      }
-    }
-
-    showCoinValuesProperty.link( updateCoinFlipAnimations );
+    // hook up the listener that will step the changes to the flip state when the 'show values' state changes
+    var flipStateAnimator = this.updateCoinFlipAnimations.bind( this );
+    showCoinValuesProperty.link( flipStateAnimator );
 
     // adjust the coin images when the flipped state changes
-    flipStateProperty.link( function( flipState ) {
-
-      // Use the y scale as the 'full scale' value.  This assumes that the two images are the same size, that they are
-      // equal in width and height when unscaled, and that the Y dimension is not being scaled.
-      var fullScale = coinFrontImageNode.getScaleVector().y;
-
-      // set the width of the front image
-      coinFrontImageNode.setScaleMagnitude(
-        Math.max( ( 1 - 2 * flipState ) * fullScale, MIN_SCALE_FOR_FLIP ),
-        fullScale
-      );
-      coinFrontImageNode.centerX = coinImagesNode.width / 2;
-
-      // set the width of the back image
-      coinBackImageNode.setScaleMagnitude(
-        Math.max( 2 * ( flipState - 0.5 ) * fullScale, MIN_SCALE_FOR_FLIP ),
-        fullScale
-      );
-      coinBackImageNode.centerX = coinImagesNode.width / 2;
-      coinBackImageNode.centerX = coinImagesNode.width / 2;
-
-      // set the width of the coin value text
-      coinValueText.setScaleMagnitude( Math.max( 2 * ( flipState - 0.5 ), MIN_SCALE_FOR_FLIP ), 1 );
-      coinValueText.centerX = coinTerm.coinRadius;
-
-      // set visibility of both images and the value text
-      coinFrontImageNode.visible = flipState <= 0.5;
-      coinBackImageNode.visible = flipState >= 0.5;
-      coinValueText.visible = coinBackImageNode.visible;
-    } );
+    this.flipStateProperty.link( this.updateFlipAppearance.bind( this ) );
 
     // @private
     this.disposeVariableCoinTermNode = function() {
       updateRepresentationMultilink.dispose();
-      showCoinValuesProperty.unlink( updateCoinFlipAnimations );
+      showCoinValuesProperty.unlink( flipStateAnimator );
     };
   }
 
@@ -317,7 +137,208 @@ define( function( require ) {
 
   return inherit( AbstractCoinTermNode, VariableCoinTermNode, {
 
-    // @public
+    // helper function to take the view bounds information and communicates it to the model
+    /**
+     * update the bounds used by the model to position and align coin terms
+     * @private
+     */
+    updateBoundsInModel: function() {
+
+      // make the bounds relative to the coin term's position, which corresponds to the center of the coin
+      var relativeVisibleBounds = this.coinAndTextRootNode.visibleLocalBounds;
+
+      // Expressions are kept the same width whether the view mode is set to coins or variables, but it is possible to
+      // override this behavior using a query parameter.  This behavior is being retained in case we ever want to
+      // experiment with it in the future.  See https://github.com/phetsims/expression-exchange/issues/10
+      if ( !EEQueryParameters.adjustExpressionWidth ) {
+
+        var width = Math.max( this.coinImagesNode.width, this.termText.width, this.termWithVariableValuesText.width );
+
+        if ( this.coefficientText.visible || Math.abs( this.coinTerm.totalCountProperty.get() ) > 1 ) {
+          width += this.coefficientText.width + COEFFICIENT_X_SPACING;
+        }
+
+        // set the view bounds such that the non-coefficient portion is always the same width
+        relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( width - relativeVisibleBounds.width ) / 2 );
+      }
+
+      // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
+      if ( !this.coinTerm.localViewBoundsProperty.get() || !this.coinTerm.localViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
+        this.coinTerm.localViewBoundsProperty.set( relativeVisibleBounds );
+      }
+    },
+
+    /**
+     * function that updates all nodes that comprise this composite node
+     * @private
+     */
+    updateRepresentation: function( viewMode, showAllCoefficients, showVariableValues ) {
+
+      // TODO: this was written with no thought given to performance, may need to optimize
+
+      // convenience vars
+      var textBaseline = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET;
+      var scale = this.coinTerm.scaleProperty.get(); // for convenience
+
+      // control front coin image visibility
+      var desiredCoinImageWidth = this.coinTerm.coinRadius * 2 * scale;
+      if ( this.coinImagesNode.width !== desiredCoinImageWidth ) {
+        this.coinImagesNode.setScaleMagnitude( 1 );
+        this.coinImagesNode.setScaleMagnitude( desiredCoinImageWidth / this.coinImagesNode.width );
+        this.coinImagesNode.center = Vector2.ZERO;
+      }
+      this.coinImagesNode.visible = viewMode === ViewMode.COINS;
+
+      // update coin value text
+      this.coinValueText.text = this.coinTerm.valueProperty.value;
+      this.coinValueText.centerX = this.coinTerm.coinRadius;
+      this.coinValueText.centerY = this.coinTerm.coinRadius;
+
+      // determine if the coefficient is visible, since this will be used several times below
+      var coefficientVisible = Math.abs( this.coinTerm.totalCountProperty.get() ) !== 1 || showAllCoefficients;
+
+      // update the term text, which only changes if it switches from positive to negative
+      this.termText.setScaleMagnitude( scale );
+      if ( this.coinTerm.totalCountProperty.get() < 0 && !coefficientVisible &&
+           this.coinTerm.showMinusSignWhenNegativeProperty.get() ) {
+
+        this.termText.text = '-' + this.coinTerm.termText;
+      }
+      else {
+        this.termText.text = this.coinTerm.termText;
+      }
+      this.termText.centerX = 0;
+      this.termText.y = textBaseline * scale;
+      this.termText.mouseArea = this.termText.localBounds
+        .dilatedXY( POINTER_AREA_X_DILATION_AMOUNT, POINTER_AREA_Y_DILATION_AMOUNT )
+        .shiftedY( POINTER_AREA_DOWN_SHIFT );
+      this.termText.touchArea = this.termText.mouseArea;
+      this.termText.visible = viewMode === ViewMode.VARIABLES && !showVariableValues;
+
+      // term value text, which shows the variable values and operators such as exponents
+      var termValueText = this.coinTerm.termValueTextProperty.value;
+      if ( this.coinTerm.totalCountProperty.get() === -1 && !showAllCoefficients &&
+           this.coinTerm.showMinusSignWhenNegativeProperty.get() ) {
+        // prepend a minus sign
+        termValueText = '-' + termValueText;
+      }
+
+      this.termWithVariableValuesText.setScaleMagnitude( scale );
+      this.termWithVariableValuesText.text = termValueText;
+      this.termWithVariableValuesText.centerX = 0;
+      this.termWithVariableValuesText.y = textBaseline * scale;
+      this.termWithVariableValuesText.mouseArea = this.termWithVariableValuesText.localBounds
+        .dilatedX( POINTER_AREA_X_DILATION_AMOUNT )
+        .dilatedY( POINTER_AREA_Y_DILATION_AMOUNT )
+        .shiftedY( POINTER_AREA_DOWN_SHIFT );
+      this.termWithVariableValuesText.touchArea = this.termWithVariableValuesText.mouseArea;
+      this.termWithVariableValuesText.visible = viewMode === ViewMode.VARIABLES && showVariableValues;
+
+      // coefficient value and visibility
+      this.coefficientText.setScaleMagnitude( scale );
+      this.coefficientText.text = this.coinTerm.showMinusSignWhenNegativeProperty.get() ?
+                                  this.coinTerm.totalCountProperty.get() :
+                                  Math.abs( this.coinTerm.totalCountProperty.get() );
+      this.coefficientText.visible = coefficientVisible;
+
+      // position the coefficient
+      if ( viewMode === ViewMode.COINS ) {
+        this.coefficientText.right = this.coinImagesNode.left - COEFFICIENT_X_SPACING;
+        this.coefficientText.centerY = this.coinImagesNode.centerY;
+      }
+      else if ( this.termText.visible ) {
+        this.coefficientText.right = this.termText.left - COEFFICIENT_X_SPACING;
+        this.coefficientText.y = textBaseline * scale;
+      }
+      else {
+        this.coefficientText.right = this.termWithVariableValuesText.left - COEFFICIENT_X_SPACING;
+        this.coefficientText.y = textBaseline * scale;
+      }
+
+      // update the card background
+      this.cardLikeBackground.visible = false; // make sure card is invisible so it doesn't affect visible bounds
+      this.cardLikeBackground.setRectBounds( this.coinAndTextRootNode.visibleLocalBounds.dilated( 10 ) );
+      if ( this.coinTerm.cardOpacityProperty.get() === 0 ) {
+        this.cardLikeBackground.visible = false;
+      }
+      else {
+        this.cardLikeBackground.visible = true;
+        this.cardLikeBackground.opacity = this.coinTerm.cardOpacityProperty.get();
+      }
+
+      // update the bounds that are registered with the model
+      this.updateBoundsInModel();
+    },
+
+    /**
+     * update the coin flip animation, used to show or hide the coin values
+     * @param {boolean} showCoinValues
+     */
+    updateCoinFlipAnimations: function( showCoinValues ) {
+
+      var self = this;
+
+      if ( this.viewModeProperty.get() === ViewMode.COINS ) {
+        if ( this.activeFlipAnimation ) {
+          this.activeFlipAnimation.stop();
+        }
+
+        var targetFlipState = showCoinValues ? 1 : 0;
+
+        // use an tween to change the flip state over time
+        this.activeFlipAnimation = new TWEEN.Tween( { flipState: this.flipStateProperty.get() } )
+          .to( { flipState: targetFlipState }, COIN_FLIP_TIME * 1000 )
+          .easing( TWEEN.Easing.Cubic.InOut )
+          .start( phet.joist.elapsedTime )
+          .onUpdate( function() { self.flipStateProperty.set( this.flipState ); } )
+          .onComplete( function() { self.activeFlipAnimation = null; } );
+      }
+      else {
+
+        // do the change immediately, heads if NOT showing coin values, tails if we are
+        this.flipStateProperty.set( showCoinValues ? 1 : 0 );
+      }
+    },
+
+    /**
+     * update the scale and visibility of the images in order to make it look like the coin is flipping, works in
+     * conjunction with the "flipState" variable to perform the flip animation
+     * @param {number} flipState
+     */
+    updateFlipAppearance: function( flipState ) {
+
+      // Use the y scale as the 'full scale' value.  This assumes that the two images are the same size, that they are
+      // equal in width and height when unscaled, and that the Y dimension is not being scaled.
+      var fullScale = this.coinFrontImageNode.getScaleVector().y;
+
+      // set the width of the front image
+      this.coinFrontImageNode.setScaleMagnitude(
+        Math.max( ( 1 - 2 * flipState ) * fullScale, MIN_SCALE_FOR_FLIP ),
+        fullScale
+      );
+      this.coinFrontImageNode.centerX = this.coinImagesNode.width / 2;
+
+      // set the width of the back image
+      this.coinBackImageNode.setScaleMagnitude(
+        Math.max( 2 * ( flipState - 0.5 ) * fullScale, MIN_SCALE_FOR_FLIP ),
+        fullScale
+      );
+      this.coinBackImageNode.centerX = this.coinImagesNode.width / 2;
+      this.coinBackImageNode.centerX = this.coinImagesNode.width / 2;
+
+      // set the width of the coin value text
+      this.coinValueText.setScaleMagnitude( Math.max( 2 * ( flipState - 0.5 ), MIN_SCALE_FOR_FLIP ), 1 );
+      this.coinValueText.centerX = this.coinTerm.coinRadius;
+
+      // set visibility of both images and the value text
+      this.coinFrontImageNode.visible = flipState <= 0.5;
+      this.coinBackImageNode.visible = flipState >= 0.5;
+      this.coinValueText.visible = this.coinBackImageNode.visible;
+    },
+
+    /**
+     * @public
+     */
     dispose: function() {
       this.disposeVariableCoinTermNode();
       AbstractCoinTermNode.prototype.dispose.call( this );
