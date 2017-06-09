@@ -85,7 +85,7 @@ define( function( require ) {
       coinTermCreatorSetID,
       model,
       expressionManipulationView,
-      { centerX: this.layoutBounds.centerX, bottom: this.layoutBounds.bottom - 50 }
+      { centerX: this.layoutBounds.centerX, centerY: this.layoutBounds.bottom - 100 }
     );
     this.addChild( coinTermCreatorBox );
 
