@@ -81,7 +81,7 @@ define( function( require ) {
   function createHexagonalCoinIcon( outerMaxRadius, outerCircleColor, innerCircleRadius, innerCircleColor ) {
 
     var outerShape = new Shape();
-    var vector = Vector2.createPolar( outerMaxRadius, -Math.PI * 0.055 ); // TODO where that comes from
+    var vector = Vector2.createPolar( outerMaxRadius, Math.PI * -0.25 ); // angle empirically determined to match coin image
     outerShape.moveToPoint( vector );
 
     _.times( 6, function() {
