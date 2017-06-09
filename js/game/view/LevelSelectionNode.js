@@ -59,7 +59,7 @@ define( function( require ) {
     }, options );
 
     // Verify parameters
-    assert(
+    assert && assert(
       iconNodes.length === options.numLevels && scores.length === options.numLevels,
       'Number of game levels doesn\'t match length of provided arrays'
     );
