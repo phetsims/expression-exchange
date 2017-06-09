@@ -189,7 +189,7 @@ define( function( require ) {
     // update popup button visibility whenever the expression is added to or removed from a collection area
     expression.collectedProperty.lazyLink( function( collected ) {
       if ( collected ) {
-        this.hidePopUpButtons();
+        self.hidePopUpButtons();
       }
     } );
 
