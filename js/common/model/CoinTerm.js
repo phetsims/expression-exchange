@@ -68,6 +68,10 @@ define( function( require ) {
     // @public {Property.<boolean>}, indicate whether user is currently dragging this coin
     this.userControlledProperty = new Property( false );
 
+    this.userControlledProperty.link( function( uc ) {
+      expressionExchange.log && expressionExchange.log( 'coin term ' + self.id + ' uc changed to: ' + uc );
+    } );
+
     // @public {Property.<boolean>}
     this.combineHaloActiveProperty = new Property( false );
 
@@ -101,6 +105,12 @@ define( function( require ) {
     // @public {Property.<number>}, used by view to make the coin terms appear smaller if necessary when put in
     //                              collection areas (game only)
     this.scaleProperty = new Property( 1 );
+
+    // @public {Property.<boolean>} - a property that can be set in order to prevent the user from being able to
+    // interact directly with the coin term, useful for preventing problems with expression assembly.  This is not done
+    // as positive logic, e.g. 'userInteractionEnabledProperty', because there are other states of the coin term that
+    // can prevent interaction also.
+    this.preventUserInteractionProperty = new Property( false );
 
     //------------------------------------------------------------------------
     // non-property attributes

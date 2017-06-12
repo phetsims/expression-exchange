@@ -440,7 +440,7 @@ define( function( require ) {
     stopEditingExpression: function() {
 
       var expressionBeingEdited = this.expressionBeingEditedProperty.get();
-      expressionBeingEdited.exitEditMode();
+      expressionBeingEdited.inEditModeProperty.set( false );
 
       // Handle the special cases where one or zero coin terms remain after combining terms, which is no longer
       // considered an expression.
@@ -921,6 +921,7 @@ define( function( require ) {
 
             // the expression was released over a free coin term, so have that free coin term join the expression
             var coinTermToAddToExpression = addedExpression.hoveringCoinTerms[ 0 ];
+            coinTermToAddToExpression.preventUserInteractionProperty.set( true );
             if ( addedExpression.rightHintActiveProperty.get() ) {
 
               // move to the left side of the coin term
@@ -949,6 +950,7 @@ define( function( require ) {
 
             addedExpression.destinationReachedEmitter.addListener( function addCoinTermAfterAnimation() {
               addedExpression.addCoinTerm( coinTermToAddToExpression );
+              coinTermToAddToExpression.preventUserInteractionProperty.set( false );
               addedExpression.destinationReachedEmitter.removeListener( addCoinTermAfterAnimation );
             } );
           }
@@ -991,11 +993,13 @@ define( function( require ) {
       addedExpression.breakApartEmitter.addListener( expressionBreakApartListener );
 
       // add a listener that will handle requests to edit this expression
-      function editExpressionListener() {
-        self.expressionBeingEditedProperty.set( addedExpression );
+      function editModeListener( inEditMode ) {
+        if ( inEditMode ) {
+          self.expressionBeingEditedProperty.set( addedExpression );
+        }
       }
 
-      addedExpression.selectedForEditEmitter.addListener( editExpressionListener );
+      addedExpression.inEditModeProperty.link( editModeListener );
 
       // remove the listeners when this expression is removed
       self.expressions.addItemRemovedListener( function expressionRemovedListener( removedExpression ) {
@@ -1003,7 +1007,7 @@ define( function( require ) {
           addedExpression.dispose();
           addedExpression.userControlledProperty.unlink( expressionUserControlledListener );
           addedExpression.breakApartEmitter.removeListener( expressionBreakApartListener );
-          addedExpression.selectedForEditEmitter.removeListener( editExpressionListener );
+          addedExpression.inEditModeProperty.unlink( editModeListener );
           self.expressions.removeItemRemovedListener( expressionRemovedListener );
         }
       } );

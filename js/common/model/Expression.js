@@ -89,9 +89,6 @@ define( function( require ) {
     // @public {Emitter}, listen only, emits an event when an animation finishes and the destination is reached
     this.destinationReachedEmitter = new Emitter();
 
-    // @public {Emitter}, listen only, emits an event when this expression has been selected by the user to be edited
-    this.selectedForEditEmitter = new Emitter();
-
     // @public {Emitter}, listen only, emits an event when the size of the expression or the relative positions of the coins
     // change, generally used by the view so that it knows when to update, does NOT fire for position-only changes
     // or for activation/deactivation of hints
@@ -153,6 +150,14 @@ define( function( require ) {
         if ( coinTerm.inProgressAnimationProperty.get() ) {
           coinTerm.goImmediatelyToDestination();
         }
+      } );
+    } );
+
+    // add a listener that does internal state updates when entering or exiting edit mode
+    this.inEditModeProperty.link( function( inEditMode ) {
+      self.coinTerms.forEach( function( coinTerm ) {
+        // don't bock user interaction with coin terms when in edit mode
+        coinTerm.preventUserInteractionProperty.set( !inEditMode );
       } );
     } );
 
@@ -413,6 +418,9 @@ define( function( require ) {
         'coin term is already present in expression, most likely cause is explained in https://github.com/phetsims/expression-exchange/issues/31'
       );
 
+      // prevent the user from direct interaction with this coin term while it's in this expression
+      coinTerm.preventUserInteractionProperty.set( true );
+
       this.coinTerms.push( coinTerm );
 
       var coinTermRelativeViewBounds = coinTerm.localViewBoundsProperty.get();
@@ -501,6 +509,7 @@ define( function( require ) {
      * @public
      */
     removeCoinTerm: function( coinTerm ) {
+      coinTerm.preventUserInteractionProperty.set( false );
       coinTerm.breakApartAllowedProperty.set( true );
       coinTerm.showMinusSignWhenNegativeProperty.set( true );
       this.coinTerms.remove( coinTerm );
@@ -649,8 +658,7 @@ define( function( require ) {
      */
     setPositionAndDestination: function( upperLeftCornerDestination ) {
       this.translate( upperLeftCornerDestination.minus( this.upperLeftCornerProperty.get() ) );
-    }
-    ,
+    },
 
     /**
      * initiate a break apart, which just emits an event and counts on parent model to handle
@@ -658,27 +666,7 @@ define( function( require ) {
      */
     breakApart: function() {
       this.breakApartEmitter.emit();
-    }
-    ,
-
-    /**
-     * emit an event that signifies that this expression has been selected for editing
-     * @public
-     */
-    enterEditMode: function() {
-      this.inEditModeProperty.set( true );
-      this.selectedForEditEmitter.emit();
-    }
-    ,
-
-    /**
-     * clear the edit mode, provided essentially for API symmetry
-     * @public
-     */
-    exitEditMode: function() {
-      this.inEditModeProperty.set( false );
-    }
-    ,
+    },
 
     /**
      * get the amount of overlap between the provided coin term's bounds and this expression's "join zone"
@@ -697,8 +685,7 @@ define( function( require ) {
         Math.min( coinTermBounds.maxY, this.joinZone.maxY ) - Math.max( coinTermBounds.minY, this.joinZone.minY )
       );
       return xOverlap * yOverlap;
-    }
-    ,
+    },
 
     /**
      * get the amount of overlap between the provided expression and this expression
@@ -718,8 +705,7 @@ define( function( require ) {
         Math.min( otherExpressionBounds.maxY, thisExpressionBounds.maxY ) - Math.max( otherExpressionBounds.minY, thisExpressionBounds.minY )
       );
       return xOverlap * yOverlap;
-    }
-    ,
+    },
 
     /**
      * get the upper right corner of this expression

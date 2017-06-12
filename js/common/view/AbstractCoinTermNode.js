@@ -121,14 +121,13 @@ define( function( require ) {
     var totalCountListener = this.handleCombinedCountChanged.bind( this );
     coinTerm.totalCountProperty.link( totalCountListener );
 
-    // Add a listener that will make this node non-pickable when animating or when collected.  Doing this when
-    // animating prevents a number of multi-touch issues.
-    function updatePickability() {
-      self.pickable = ( coinTerm.inProgressAnimationProperty.get() === null && !coinTerm.collectedProperty.get() );
-    }
-
-    coinTerm.inProgressAnimationProperty.link( updatePickability );
-    coinTerm.collectedProperty.link( updatePickability );
+    // update the pickability of this node
+    var pickabilityUpdaterMultilink = new Property.multilink(
+      [ coinTerm.preventUserInteractionProperty, coinTerm.inProgressAnimationProperty, coinTerm.collectedProperty ],
+      function( preventUserInteraction, inProgressAnimation, collected ) {
+        self.pickable = !preventUserInteraction && !inProgressAnimation && !collected;
+      }
+    );
 
     // internal dispose function, reference in inherit block
     this.disposeAbstractCoinTermNode = function() {
@@ -138,7 +137,7 @@ define( function( require ) {
       coinTerm.userControlledProperty.unlink( userControlledListener );
       coinTerm.breakApartAllowedProperty.unlink( breakApartAllowedListener );
       coinTerm.totalCountProperty.unlink( totalCountListener );
-      coinTerm.inProgressAnimationProperty.unlink( updatePickability );
+      pickabilityUpdaterMultilink.dispose();
     };
 
     this.mutate( options );
