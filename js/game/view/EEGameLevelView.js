@@ -230,16 +230,6 @@ define( function( require ) {
       if ( this.inViewportProperty.get() && this.rewardNode && this.rewardNode.visible ) {
         this.rewardNode.step( Math.min( dt, 1 ) );
       }
-    },
-
-    /**
-     * set the pickability (i.e. whether or not the user can interact with it) of the 'next level' dialog node, useful
-     * for preventing interaction when moving the game level view around
-     * @param {Boolean} pickable
-     * @public
-     */
-    setNextLevelNodePickable: function( pickable ) {
-      this.nextLevelNode.pickable = pickable;
     }
 
   } );

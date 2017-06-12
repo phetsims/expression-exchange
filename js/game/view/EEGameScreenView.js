@@ -93,6 +93,11 @@ define( function( require ) {
       var outgoingNodeDestinationX;
       var incomingNodeStartX;
 
+      // prevent interaction during animation
+      incomingViewNode.pickable = false;
+      outgoingViewNode.pickable = false;
+
+      // determine how the incoming and outgoing nodes should move
       if ( newLevel === null ) {
 
         // level selection screen is coming in, which is a left-to-right motion
@@ -106,11 +111,6 @@ define( function( require ) {
         outgoingNodeDestinationX = self.layoutBounds.minX - slideDistance;
       }
 
-      // prevent any interaction with the 'next level' dialogs while the animations are in progress
-      self.gameLevelViews.forEach( function( gameLevelView ) {
-        gameLevelView.setNextLevelNodePickable( false );
-      } );
-
       // move out the old node
       new TWEEN.Tween( { x: nodeInViewport.x } )
         .to( { x: outgoingNodeDestinationX }, SCREEN_CHANGE_TIME )
@@ -121,8 +121,7 @@ define( function( require ) {
         } )
         .onUpdate( function() { nodeInViewport.x = this.x; } )
         .onComplete( function() {
-          nodeInViewport.visible = false;
-          nodeInViewport = null;
+          outgoingViewNode.visible = false;
         } );
 
       // move in the new node
@@ -135,7 +134,7 @@ define( function( require ) {
         .onUpdate( function() { incomingViewNode.x = this.x; } )
         .onComplete( function() {
           nodeInViewport = incomingViewNode;
-          nodeInViewport.setNextLevelNodePickable && nodeInViewport.setNextLevelNodePickable( true );
+          nodeInViewport.pickable = true;
           nodeInViewport.inViewportProperty && nodeInViewport.inViewportProperty.set( true );
         } );
     } );
