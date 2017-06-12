@@ -9,7 +9,6 @@ define( function( require ) {
 
   // modules
   var Bounds2 = require( 'DOT/Bounds2' );
-  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var Color = require( 'SCENERY/util/Color' );
   var Dimension2 = require( 'DOT/Dimension2' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -45,7 +44,7 @@ define( function( require ) {
 
     // misc
     RESET_ALL_BUTTON_RADIUS: 24,
-    RESET_ALL_BUTTON_TOUCH_AREA_DILATION: 10,
+    RESET_ALL_BUTTON_TOUCH_AREA_DILATION: 10
   };
 
   expressionExchange.register( 'EESharedConstants', EESharedConstants );
