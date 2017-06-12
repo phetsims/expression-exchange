@@ -413,10 +413,7 @@ define( function( require ) {
      */
     addCoinTerm: function( coinTerm ) {
 
-      assert && assert(
-        !this.coinTerms.contains( coinTerm ),
-        'coin term is already present in expression, most likely cause is explained in https://github.com/phetsims/expression-exchange/issues/31'
-      );
+      assert && assert( !this.coinTerms.contains( coinTerm ), 'coin term is already present in expression' );
 
       // prevent the user from direct interaction with this coin term while it's in this expression
       coinTerm.preventUserInteractionProperty.set( true );
