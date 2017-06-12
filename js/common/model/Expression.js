@@ -24,7 +24,8 @@ define( function( require ) {
 
   // constants
   var INTER_COIN_TERM_SPACING = 30; // in model units, empirically determined
-  var INSET = 12; // space around coin terms, empirically determined
+  var X_MARGIN = 14; // margin for coin terms, empirically determined
+  var Y_MARGIN = 12; // margin for coin terms, empirically determined
   var ANIMATION_SPEED = 400; // in model units (which are basically screen coordinates) per second
 
   // class var for creating unique IDs
@@ -251,23 +252,23 @@ define( function( require ) {
 
       // to minimize redraws in the view, only update width when the hints are active
       if ( this.rightHintActiveProperty.get() ) {
-        this.rightHintWidthProperty.set( rightHintMaxCoinWidth + 2 * INSET );
+        this.rightHintWidthProperty.set( rightHintMaxCoinWidth + 2 * X_MARGIN );
       }
       if ( this.leftHintActiveProperty.get() ) {
-        this.leftHintWidthProperty.set( leftHintMaxCoinWidth + 2 * INSET );
+        this.leftHintWidthProperty.set( leftHintMaxCoinWidth + 2 * X_MARGIN );
       }
 
       // update the property that indicates whether the combine halo is active
       this.combineHaloActiveProperty.set( this.hoveringExpressions.length > 0 );
 
       // update the overall height of the expression if needed
-      var neededHeight = tallestCoinTermHeight + 2 * INSET;
+      var neededHeight = tallestCoinTermHeight + 2 * Y_MARGIN;
       if ( this.heightProperty.get() !== neededHeight ) {
         this.upperLeftCornerProperty.set( this.upperLeftCornerProperty.get().minusXY(
           0,
           ( neededHeight - this.heightProperty.get() ) / 2
         ) );
-        this.heightProperty.set( tallestCoinTermHeight + 2 * INSET );
+        this.heightProperty.set( neededHeight );
         this.layoutChangedEmitter.emit();
       }
 
@@ -376,7 +377,7 @@ define( function( require ) {
         }
       }
 
-      // adjust the size and position of the background
+      // adjust the size and position of this expression
       var maxHeight = 0;
       var totalWidth = 0;
       coinTermsLeftToRight.forEach( function( coinTerm ) {
@@ -384,14 +385,15 @@ define( function( require ) {
         maxHeight = relativeViewBounds.height > maxHeight ? relativeViewBounds.height : maxHeight;
         totalWidth += relativeViewBounds.width;
       } );
-      var scaledInset = INSET * this.scaleProperty.get();
+      var scaledXMargin = X_MARGIN * this.scaleProperty.get();
+      var scaledYMargin = Y_MARGIN * this.scaleProperty.get();
       this.upperLeftCornerProperty.set( new Vector2(
         coinTermsLeftToRight[ 0 ].destinationProperty.get().x +
-        coinTermsLeftToRight[ 0 ].localViewBoundsProperty.get().minX - scaledInset,
-        yPos - maxHeight / 2 - scaledInset
+        coinTermsLeftToRight[ 0 ].localViewBoundsProperty.get().minX - scaledXMargin,
+        yPos - maxHeight / 2 - scaledYMargin
       ) );
-      this.heightProperty.set( maxHeight + 2 * scaledInset );
-      this.widthProperty.set( totalWidth + 2 * scaledInset + scaledCoinTermSpacing * ( coinTermsLeftToRight.length - 1 ) );
+      this.widthProperty.set( totalWidth + 2 * scaledXMargin + scaledCoinTermSpacing * ( coinTermsLeftToRight.length - 1 ) );
+      this.heightProperty.set( maxHeight + 2 * scaledYMargin );
 
       // emit an event if the size or the coin term positions changed
       if ( this.widthProperty.get() !== originalWidth || this.heightProperty.get() !== originalHeight || coinTermsMoved ) {
@@ -406,14 +408,10 @@ define( function( require ) {
      */
     addCoinTerm: function( coinTerm ) {
 
-      if ( this.coinTerms.contains( coinTerm ) ) {
-        // TODO:   There is a race condition that only occurs during fuzz testing where somehow a coin term that is
-        // inside an expression becomes user controlled and then is added back to the expression.  This is a workaround.
-        // This should be fully investigated before publication.  See
-        // https://github.com/phetsims/expression-exchange/issues/31
-        expressionExchange.log && expressionExchange.log( 'warning: an attempt was made to re-add a coin term that is already in the expression' );
-        return;
-      }
+      assert && assert(
+        !this.coinTerms.contains( coinTerm ),
+        'coin term is already present in expression, most likely cause is explained in https://github.com/phetsims/expression-exchange/issues/31'
+      );
 
       this.coinTerms.push( coinTerm );
 
@@ -423,10 +421,10 @@ define( function( require ) {
       if ( this.coinTerms.length === 1 ) {
 
         // this is the first coin term, so set the initial width and height
-        this.widthProperty.set( coinTermRelativeViewBounds.width + 2 * INSET );
-        this.heightProperty.set( coinTermRelativeViewBounds.height + 2 * INSET );
+        this.widthProperty.set( coinTermRelativeViewBounds.width + 2 * X_MARGIN );
+        this.heightProperty.set( coinTermRelativeViewBounds.height + 2 * X_MARGIN );
         this.upperLeftCornerProperty.set( new Vector2(
-          coinTermPosition.x + coinTermRelativeViewBounds.minX - INSET,
+          coinTermPosition.x + coinTermRelativeViewBounds.minX - X_MARGIN,
           coinTermPosition.y - this.heightProperty.get() / 2
         ) );
       }
@@ -441,14 +439,14 @@ define( function( require ) {
         var xDestination;
         if ( coinTermPosition.x > upperLeftCorner.x + originalWidth / 2 ) {
           // add to the right side
-          xDestination = upperLeftCorner.x + this.widthProperty.get() - INSET - coinTermRelativeViewBounds.maxX;
+          xDestination = upperLeftCorner.x + this.widthProperty.get() - X_MARGIN - coinTermRelativeViewBounds.maxX;
         }
         else {
           // add to the left side, and shift the expression accordingly
           this.upperLeftCornerProperty.set(
             upperLeftCorner.minusXY( INTER_COIN_TERM_SPACING + coinTermRelativeViewBounds.width, 0 )
           );
-          xDestination = this.upperLeftCornerProperty.get().x + INSET - coinTermRelativeViewBounds.minX;
+          xDestination = this.upperLeftCornerProperty.get().x + X_MARGIN - coinTermRelativeViewBounds.minX;
         }
 
         var destination = new Vector2(
@@ -564,7 +562,7 @@ define( function( require ) {
       this.updateCoinTermShowMinusSignFlag();
 
       // set the position of each coin term based on its order
-      var leftEdge = this.upperLeftCornerProperty.get().x + INSET;
+      var leftEdge = this.upperLeftCornerProperty.get().x + X_MARGIN;
       var centerY = this.upperLeftCornerProperty.get().y + this.heightProperty.get() / 2;
       coinTermsLeftToRight.forEach( function( orderedCoinTerm ) {
         orderedCoinTerm.travelToDestination( new Vector2(
