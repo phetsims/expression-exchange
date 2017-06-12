@@ -23,14 +23,6 @@ define( function( require ) {
   var CONSTANT_ONE_VALUE_PROPERTY = new Property( 1 );
   var CONSTANT_ONE_TEXT_VALUE_PROPERTY = new Property( '1' );
 
-  // map of coin term type IDs to the text that is shown in 'variable' mode
-  var TYPE_TO_TEXT_MAP = new Map();
-  TYPE_TO_TEXT_MAP.set( CoinTermTypeID.X, 'x' );
-  TYPE_TO_TEXT_MAP.set( CoinTermTypeID.Y, 'y' );
-  TYPE_TO_TEXT_MAP.set( CoinTermTypeID.Z, 'z' );
-  TYPE_TO_TEXT_MAP.set( CoinTermTypeID.Z, 'z' );
-
-
   /**
    * @param {number} xValueProperty
    * @param {number} yValueProperty

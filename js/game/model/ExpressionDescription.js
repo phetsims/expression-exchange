@@ -125,15 +125,16 @@ define( function( require ) {
     };
   }
 
-  var stringToTermTypeMap = new Map();
-  stringToTermTypeMap.set( '', CoinTermTypeID.CONSTANT );
-  stringToTermTypeMap.set( 'x^2*y2', CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED );
-  stringToTermTypeMap.set( 'x^2', CoinTermTypeID.X_SQUARED );
-  stringToTermTypeMap.set( 'y^2', CoinTermTypeID.Y_SQUARED );
-  stringToTermTypeMap.set( 'xy', CoinTermTypeID.X_TIMES_Y );
-  stringToTermTypeMap.set( 'x', CoinTermTypeID.X );
-  stringToTermTypeMap.set( 'y', CoinTermTypeID.Y );
-  stringToTermTypeMap.set( 'z', CoinTermTypeID.Z );
+  var stringToTermTypeMap = {
+    '': CoinTermTypeID.CONSTANT,
+    'x^2*y2': CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED,
+    'x^2': CoinTermTypeID.X_SQUARED,
+    'y^2': CoinTermTypeID.Y_SQUARED,
+    'xy': CoinTermTypeID.X_TIMES_Y,
+    'x': CoinTermTypeID.X,
+    'y': CoinTermTypeID.Y,
+    'z': CoinTermTypeID.Z
+  };
 
   /**
    * helper function to extract a term from the equation string and also increase the index to the next token in the
@@ -181,7 +182,7 @@ define( function( require ) {
     var termString = expressionString.substring( index, termEndIndex ).toLowerCase();
 
     // get the coin term type
-    var coinTermTypeID = stringToTermTypeMap.get( termString );
+    var coinTermTypeID = stringToTermTypeMap[ termString ];
 
     return {
       term: new Term( coefficient, coinTermTypeID ),

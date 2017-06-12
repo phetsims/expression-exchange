@@ -14,16 +14,6 @@ define( function( require ) {
   var Dimension2 = require( 'DOT/Dimension2' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  // create a map of coin term IDs to the text that is shown when in 'variables' mode
-  var COIN_TERM_TYPE_TO_TEXT_MAP = new Map();
-  COIN_TERM_TYPE_TO_TEXT_MAP.set( CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED, 'x^2*y2' );
-  COIN_TERM_TYPE_TO_TEXT_MAP.set( CoinTermTypeID.X_SQUARED, 'x^2' );
-  COIN_TERM_TYPE_TO_TEXT_MAP.set( CoinTermTypeID.Y_SQUARED, 'y^2' );
-  COIN_TERM_TYPE_TO_TEXT_MAP.set( CoinTermTypeID.X_TIMES_Y, 'xy' );
-  COIN_TERM_TYPE_TO_TEXT_MAP.set( CoinTermTypeID.X, 'x' );
-  COIN_TERM_TYPE_TO_TEXT_MAP.set( CoinTermTypeID.Y, 'y' );
-  COIN_TERM_TYPE_TO_TEXT_MAP.set( CoinTermTypeID.Z, 'z' );
-
   var EESharedConstants = {
 
     LAYOUT_BOUNDS: new Bounds2( 0, 0, 1024, 618 ), // at the time of this writing this is the same as the default
@@ -53,13 +43,9 @@ define( function( require ) {
     // size of the collection areas in the game, in view coordinates, empirically determined
     COLLECTION_AREA_SIZE: new Dimension2( 220, 90 ),
 
-    // map of coin term types to the term text
-    COIN_TERM_TYPE_TO_TEXT_MAP: COIN_TERM_TYPE_TO_TEXT_MAP,
-
     // misc
     RESET_ALL_BUTTON_RADIUS: 24,
     RESET_ALL_BUTTON_TOUCH_AREA_DILATION: 10,
-
   };
 
   expressionExchange.register( 'EESharedConstants', EESharedConstants );
