@@ -26,6 +26,7 @@ define( function( require ) {
     credits: {
       leadDesign: 'Amanda McGarry',
       softwareDevelopment: 'John Blanco',
+      graphicArts: 'Mariah Hermsmeyer',
       team: 'Amanda McGarry, Ariel Paul, Kathy Perkins',
       qualityAssurance: 'Steele Dalton, Elise Morgan, Oliver Nix, Oliver Orejola, Bryan Yoelin'
     }
