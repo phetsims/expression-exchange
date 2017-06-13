@@ -171,12 +171,15 @@ define( function( require ) {
 
     // dispose function
     this.disposeCoinTermCreatorNode = function() {
+      coinTermNodes.forEach( function( coinTermNode ) {
+        coinTermNode.dispose();
+      } );
       options.numberToShowProperty.unlink( numberToShowListener );
 
       // this type emits an event upon disposal because it was needed to avoid memory leaks
       this.disposeEmitter.emit();
       this.disposeEmitter.removeAllListeners();
-      //this.disposeEmitter.dispose();
+      this.disposeEmitter.dispose();
     };
   }
 

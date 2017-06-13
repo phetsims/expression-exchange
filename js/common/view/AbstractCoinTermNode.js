@@ -78,7 +78,7 @@ define( function( require ) {
       .withOffsets( 0, this.breakApartButton.height, 0, 0 );
 
     // add the listener to the break apart button
-    this.breakApartButton.addListener( function() {
+    function breakApartButtonListener() {
       coinTerm.breakApart();
 
       // hide the button after clicking
@@ -86,7 +86,9 @@ define( function( require ) {
 
       // cancel timer if running
       self.clearHideButtonTimer();
-    } );
+    }
+
+    this.breakApartButton.addListener( breakApartButtonListener );
 
     // add a listener for changes to the 'break apart allowed' state
     var breakApartButtonOverListener = this.handleOverBreakApartButtonChanged.bind( this );
@@ -134,10 +136,13 @@ define( function( require ) {
       coinTerm.positionProperty.unlink( handlePositionChanged );
       coinTerm.existenceStrengthProperty.unlink( existenceStrengthListener );
       self.breakApartButton.buttonModel.overProperty.unlink( breakApartButtonOverListener );
+      self.breakApartButton.removeListener( breakApartButtonListener );
       coinTerm.userControlledProperty.unlink( userControlledListener );
       coinTerm.breakApartAllowedProperty.unlink( breakApartAllowedListener );
       coinTerm.totalCountProperty.unlink( totalCountListener );
       pickabilityUpdaterMultilink.dispose();
+      self.breakApartButton.dispose();
+      self.removeAllChildren();
     };
 
     this.mutate( options );

@@ -191,8 +191,8 @@ define( function( require ) {
       coinHaloLayer.addChild( coinTermHaloNode );
 
       // set up a listener to remove the nodes when the corresponding coin is removed from the model
-      model.coinTerms.addItemRemovedListener( function removalListener( removedCoin ) {
-        if ( removedCoin === addedCoinTerm ) {
+      model.coinTerms.addItemRemovedListener( function removalListener( removedCoinTerm ) {
+        if ( removedCoinTerm === addedCoinTerm ) {
           coinTermLayer.removeChild( coinTermNode );
           coinTermNode.dispose();
           coinHaloLayer.removeChild( coinTermHaloNode );
