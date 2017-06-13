@@ -41,21 +41,21 @@ define( function( require ) {
 
   // maps for coin images (front and back)
   var coinFrontImages = {};
-  coinFrontImages[ CoinTermTypeID.X ] = new Image( coinXFrontImage );
-  coinFrontImages[ CoinTermTypeID.Y ] = new Image( coinYFrontImage );
-  coinFrontImages[ CoinTermTypeID.Z ] = new Image( coinZFrontImage );
-  coinFrontImages[ CoinTermTypeID.X_TIMES_Y ] = new Image( coinXYFrontImage );
-  coinFrontImages[ CoinTermTypeID.X_SQUARED ] = new Image( coinXSquaredFrontImage );
-  coinFrontImages[ CoinTermTypeID.Y_SQUARED ] = new Image( coinYSquaredFrontImage );
-  coinFrontImages[ CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED ] = new Image( coinXSquaredYSquaredFrontImage );
+  coinFrontImages[ CoinTermTypeID.X ] = coinXFrontImage;
+  coinFrontImages[ CoinTermTypeID.Y ] = coinYFrontImage;
+  coinFrontImages[ CoinTermTypeID.Z ] = coinZFrontImage;
+  coinFrontImages[ CoinTermTypeID.X_TIMES_Y ] = coinXYFrontImage;
+  coinFrontImages[ CoinTermTypeID.X_SQUARED ] = coinXSquaredFrontImage;
+  coinFrontImages[ CoinTermTypeID.Y_SQUARED ] = coinYSquaredFrontImage;
+  coinFrontImages[ CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED ] = coinXSquaredYSquaredFrontImage;
   var coinBackImages = {};
-  coinBackImages[ CoinTermTypeID.X ] = new Image( coinXBackImage );
-  coinBackImages[ CoinTermTypeID.Y ] = new Image( coinYBackImage );
-  coinBackImages[ CoinTermTypeID.Z ] = new Image( coinZBackImage );
-  coinBackImages[ CoinTermTypeID.X_TIMES_Y ] = new Image( coinXYBackImage );
-  coinBackImages[ CoinTermTypeID.X_SQUARED ] = new Image( coinXSquaredBackImage );
-  coinBackImages[ CoinTermTypeID.Y_SQUARED ] = new Image( coinYSquaredBackImage );
-  coinBackImages[ CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED ] = new Image( coinXSquaredYSquaredBackImage );
+  coinBackImages[ CoinTermTypeID.X ] = coinXBackImage;
+  coinBackImages[ CoinTermTypeID.Y ] = coinYBackImage;
+  coinBackImages[ CoinTermTypeID.Z ] = coinZBackImage;
+  coinBackImages[ CoinTermTypeID.X_TIMES_Y ] = coinXYBackImage;
+  coinBackImages[ CoinTermTypeID.X_SQUARED ] = coinXSquaredBackImage;
+  coinBackImages[ CoinTermTypeID.Y_SQUARED ] = coinYSquaredBackImage;
+  coinBackImages[ CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED ] = coinXSquaredYSquaredBackImage;
 
   // convenience function for drawing round coin shapes
   function createRoundCoinIcon( outerCircleRadius, outerCircleColor, innerCircleRadius, innerCircleColor ) {
@@ -124,12 +124,12 @@ define( function( require ) {
     createImageNode: function( coinTermTypeID, radius, isFront ) {
 
       var imageMap = isFront ? coinFrontImages : coinBackImages;
-      var wrappedCoinNode = new Node( { children: [ imageMap[ coinTermTypeID ] ] } );
+      var imageNode = new Image( imageMap[ coinTermTypeID ] );
 
       // scale so that the image node has the specified radius
-      wrappedCoinNode.scale( radius * 2 / wrappedCoinNode.width );
+      imageNode.scale( radius * 2 / imageNode.width );
 
-      return wrappedCoinNode;
+      return imageNode;
     },
 
     /**
