@@ -27,7 +27,7 @@ define( function( require ) {
       leadDesign: 'Amanda McGarry',
       softwareDevelopment: 'John Blanco',
       graphicArts: 'Mariah Hermsmeyer',
-      team: 'Amanda McGarry, Ariel Paul, Kathy Perkins',
+      team: 'Ariel Paul, Kathy Perkins, David Webb',
       qualityAssurance: 'Steele Dalton, Elise Morgan, Oliver Nix, Oliver Orejola, Bryan Yoelin'
     }
   };
