@@ -219,7 +219,10 @@ define( function( require ) {
         if ( collected ) {
           gameAudioPlayer.correctAnswer();
         }
-        else {
+        else if ( collectionArea.collectedItemProperty.get() === null ) {
+
+          // only play the 'incorrect answer' sound if the item was rejected due to being incorrect, play nothing it
+          // the collection area was full.
           gameAudioPlayer.wrongAnswer();
         }
       } );
