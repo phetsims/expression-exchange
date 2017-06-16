@@ -193,7 +193,7 @@ define( function( require ) {
         userControlledExpressions.forEach( function( userControlledExpression ) {
 
           var expressionIsOverCreatorBox = userControlledExpression.getBounds().intersectsBounds( self.creatorBoxBounds );
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( userControlledExpression );
+          var mostOverlappingCollectionArea = self.getMostOverlappingEmptyCollectionAreaForExpression( userControlledExpression );
           var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( userControlledExpression );
           var mostOverlappingCoinTerm = self.getFreeCoinTermMostOverlappingWithExpression( userControlledExpression );
           var expressionOverWhichThisExpressionIsHovering = null;
@@ -251,7 +251,7 @@ define( function( require ) {
         userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
 
           var coinTermIsOverCreatorBox = userControlledCoinTerm.getViewBounds().intersectsBounds( self.creatorBoxBounds );
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( userControlledCoinTerm );
+          var mostOverlappingCollectionArea = self.getMostOverlappingEmptyCollectionAreaForCoinTerm( userControlledCoinTerm );
           var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( userControlledCoinTerm );
           var mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( userControlledCoinTerm );
           var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( userControlledCoinTerm );
@@ -609,11 +609,14 @@ define( function( require ) {
      * @param {Expression} expression
      * @private
      */
-    getMostOverlappingCollectionAreaForExpression: function( expression ) {
+    getMostOverlappingEmptyCollectionAreaForExpression: function( expression ) {
       var maxOverlap = 0;
       var mostOverlappingCollectionArea = null;
-      this.collectionAreas.forEach( function( collectionArea ) {
-        if ( expression.getOverlap( collectionArea ) > maxOverlap ) {
+      var emptyCollectionAreas = this.collectionAreas.filter( function( collectionArea ) {
+        return collectionArea.collectedItemProperty.get() === null;
+      } );
+      emptyCollectionAreas.forEach( function( collectionArea ) {
+        if ( collectionArea.collectedItemProperty.get() === null && expression.getOverlap( collectionArea ) > maxOverlap ) {
           mostOverlappingCollectionArea = collectionArea;
           maxOverlap = expression.getOverlap( collectionArea );
         }
@@ -626,10 +629,13 @@ define( function( require ) {
      * @param {CoinTerm} coinTerm
      * @private
      */
-    getMostOverlappingCollectionAreaForCoinTerm: function( coinTerm ) {
+    getMostOverlappingEmptyCollectionAreaForCoinTerm: function( coinTerm ) {
       var maxOverlap = 0;
       var mostOverlappingCollectionArea = null;
-      this.collectionAreas.forEach( function( collectionArea ) {
+      var emptyCollectionAreas = this.collectionAreas.filter( function( collectionArea ) {
+        return collectionArea.collectedItemProperty.get() === null
+      } );
+      emptyCollectionAreas.forEach( function( collectionArea ) {
         var coinTermBounds = coinTerm.getViewBounds();
         var collectionAreaBounds = collectionArea.bounds;
         var xOverlap = Math.max(
@@ -668,7 +674,7 @@ define( function( require ) {
           // them all every time, but it avoids a deeply nested if-else structure.
           var releasedOverCreatorBox = addedCoinTerm.getViewBounds().intersectsBounds( self.creatorBoxBounds );
           var expressionBeingEdited = self.expressionBeingEditedProperty.get();
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( addedCoinTerm );
+          var mostOverlappingCollectionArea = self.getMostOverlappingEmptyCollectionAreaForCoinTerm( addedCoinTerm );
           var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
           var mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( addedCoinTerm );
           var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
@@ -867,7 +873,7 @@ define( function( require ) {
           // Set a bunch of variables related to the current state of this expression.  It's not really necessary to set
           // them all every time, but it avoids a deeply nested if-else structure.
           var releasedOverCreatorBox = addedExpression.getBounds().intersectsBounds( self.creatorBoxBounds );
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( addedExpression );
+          var mostOverlappingCollectionArea = self.getMostOverlappingEmptyCollectionAreaForExpression( addedExpression );
           var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( addedExpression );
           var numOverlappingCoinTerms = addedExpression.hoveringCoinTerms.length;
 
