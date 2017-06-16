@@ -304,6 +304,7 @@ define( function( require ) {
     var resetAllButton = new ResetAllButton( {
       listener: function() {
         model.reset();
+        coinTermCreatorBox.reset();
         myCollectionAccordionBox.expandedProperty.reset();
         totalValueAccordionBox.expandedProperty.reset();
         if ( coinTermCreatorBox.pageNumberProperty ) {

@@ -82,6 +82,10 @@ define( function( require ) {
 
   return inherit( Node, CoinTermCreatorBox, {
 
+    reset: function() {
+      this.coinTermCreatorBox.reset && this.coinTermCreatorBox.reset();
+    },
+
     /**
      * @public
      */
