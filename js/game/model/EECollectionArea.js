@@ -10,6 +10,7 @@ define( function( require ) {
   // modules
   var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  var Emitter = require( 'AXON/Emitter' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -42,6 +43,10 @@ define( function( require ) {
     // @public {Property.<boolean>} - used by the view to turn on/off a "halo" for the collection area, generally used
     // when the user holds something over the collection area
     this.haloActiveProperty = new Property( false );
+
+    // @public {Emitter} listen only - emitter that emits an event when an item is tested and is either collected or
+    // rejected, including a boolean parameter that is true if accepted, false if rejected
+    this.itemEvaluatedEmitter = new Emitter();
   }
 
   expressionExchange.register( 'EECollectionArea', EECollectionArea );
@@ -59,6 +64,8 @@ define( function( require ) {
       // test that this collection area is in the correct state
       assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
 
+      var expressionCollected;
+
       // bounds used for positioning of the expression
       var expressionBounds;
 
@@ -68,6 +75,7 @@ define( function( require ) {
         // collect this expression - the collection state must be set first in case it causes an update of the bounds
         expression.collectedProperty.set( true );
         expressionBounds = expression.getBounds();
+        expressionCollected = true;
 
         // move the expression into the container, a little below center so there's no overlap with eject button
         expression.travelToDestination( new Vector2(
@@ -84,7 +92,10 @@ define( function( require ) {
           this.bounds.minX - expressionBounds.width - REJECTED_ITEM_DISTANCE,
           this.bounds.getCenterY() - expressionBounds.height / 2
         ) );
+        expressionCollected = false;
       }
+
+      this.itemEvaluatedEmitter.emit1( expressionCollected );
     },
 
     /**
@@ -98,6 +109,8 @@ define( function( require ) {
       // test that this collection area is in the correct state
       assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
 
+      var coinTermCollected;
+
       // get bounds for positioning of the coin term
       var coinTermViewBounds = coinTerm.getViewBounds();
 
@@ -108,6 +121,7 @@ define( function( require ) {
         coinTerm.travelToDestination( this.bounds.center );
         coinTerm.collectedProperty.set( true );
         this.collectedItemProperty.set( coinTerm );
+        coinTermCollected = true;
       }
       else {
 
@@ -115,7 +129,10 @@ define( function( require ) {
         coinTerm.travelToDestination( new Vector2(
           this.bounds.minX - coinTermViewBounds.width - REJECTED_ITEM_DISTANCE, this.bounds.getCenterY()
         ) );
+        coinTermCollected = false;
       }
+
+      this.itemEvaluatedEmitter.emit1( coinTermCollected );
     },
 
     /**

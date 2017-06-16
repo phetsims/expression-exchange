@@ -176,12 +176,7 @@ define( function( require ) {
     } );
 
     // show the appropriate dialog and reward node based on the score
-    levelModel.scoreProperty.link( function( score, previousScore ) {
-
-      // play the appropriate sound
-      if ( score > previousScore ) {
-        gameAudioPlayer.correctAnswer();
-      }
+    levelModel.scoreProperty.link( function( score ) {
 
       if ( score === EEGameModel.MAX_SCORE_PER_LEVEL ) {
 
@@ -215,6 +210,19 @@ define( function( require ) {
           self.rewardNode.visible = false;
         }
       }
+    } );
+
+    // hook up listeners to the collection areas to play the appropriate sounds upon collection or rejection of a user-
+    // submitted answer
+    levelModel.collectionAreas.forEach( function( collectionArea ) {
+      collectionArea.itemEvaluatedEmitter.addListener( function( collected ) {
+        if ( collected ) {
+          gameAudioPlayer.correctAnswer();
+        }
+        else {
+          gameAudioPlayer.wrongAnswer();
+        }
+      } );
     } );
   }
 
