@@ -633,7 +633,7 @@ define( function( require ) {
       var maxOverlap = 0;
       var mostOverlappingCollectionArea = null;
       var emptyCollectionAreas = this.collectionAreas.filter( function( collectionArea ) {
-        return collectionArea.collectedItemProperty.get() === null
+        return collectionArea.collectedItemProperty.get() === null;
       } );
       emptyCollectionAreas.forEach( function( collectionArea ) {
         var coinTermBounds = coinTerm.getViewBounds();
@@ -778,31 +778,34 @@ define( function( require ) {
         }
         var extractedCoinTerms = addedCoinTerm.extractConstituentCoinTerms();
         var relativeViewBounds = addedCoinTerm.localViewBoundsProperty.get();
+        var initialPosition = addedCoinTerm.positionProperty.get().copy();
 
         // If the total combined coin count was even, shift the 'parent coin' a bit so that the coins end up being
-        // distributed around the centerX position.
+        // distributed around the centerX position, but make sure it remains in bounds.
         if ( extractedCoinTerms.length % 2 === 1 ) {
-          addedCoinTerm.travelToDestination(
-            new Vector2(
-              addedCoinTerm.positionProperty.get().x - relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
-              addedCoinTerm.positionProperty.get().y
-            )
+          var parentCoinTermDestination = new Vector2(
+            initialPosition.x - relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
+            initialPosition.y
           );
+          if ( !self.coinTermRetrievalBounds.containsPoint( parentCoinTermDestination ) ) {
+            parentCoinTermDestination = self.getNextOpenRetrievalSpot();
+          }
+          addedCoinTerm.travelToDestination( parentCoinTermDestination );
         }
 
         // add the extracted coin terms to the model
         var interCoinTermDistance = relativeViewBounds.width + BREAK_APART_SPACING;
-        var nextLeftX = addedCoinTerm.destinationProperty.get().x - interCoinTermDistance;
-        var nextRightX = addedCoinTerm.destinationProperty.get().x + interCoinTermDistance;
+        var nextLeftX = initialPosition.x - interCoinTermDistance;
+        var nextRightX = initialPosition.x + interCoinTermDistance;
         extractedCoinTerms.forEach( function( extractedCoinTerm, index ) {
           var destination;
           self.addCoinTerm( extractedCoinTerm );
           if ( index % 2 === 0 ) {
-            destination = new Vector2( nextRightX, addedCoinTerm.positionProperty.get().y );
+            destination = new Vector2( nextRightX, initialPosition.y );
             nextRightX += interCoinTermDistance;
           }
           else {
-            destination = new Vector2( nextLeftX, addedCoinTerm.positionProperty.get().y );
+            destination = new Vector2( nextLeftX, initialPosition.y );
             nextLeftX -= interCoinTermDistance;
           }
 
