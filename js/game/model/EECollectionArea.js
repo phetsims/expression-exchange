@@ -9,6 +9,7 @@ define( function( require ) {
 
   // modules
   var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
+  var CollectionAttemptResult = require( 'EXPRESSION_EXCHANGE/game/enum/CollectionAttemptResult' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Emitter = require( 'AXON/Emitter' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -64,18 +65,27 @@ define( function( require ) {
       // test that this collection area is in the correct state
       assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
 
-      var expressionCollected;
-
       // bounds used for positioning of the expression
       var expressionBounds;
 
+      // results of the attempt to collect this expression
+      var collectionAttemptResult;
+
       // test whether the provided expression matches the expression spec for this collection area
-      if ( this.isEmpty() && this.expressionDescriptionProperty.get().expressionMatches( expression ) ) {
+      if ( this.expressionDescriptionProperty.get().expressionMatches( expression ) ) {
+        collectionAttemptResult = this.isEmpty() ?
+                                  CollectionAttemptResult.COLLECTED :
+                                  CollectionAttemptResult.REJECTED_DUE_TO_FULL_COLLECTION_AREA;
+      }
+      else {
+        collectionAttemptResult = CollectionAttemptResult.REJECTED_AS_INCORRECT;
+      }
+
+      if ( collectionAttemptResult === CollectionAttemptResult.COLLECTED ) {
 
         // collect this expression - the collection state must be set first in case it causes an update of the bounds
         expression.collectedProperty.set( true );
         expressionBounds = expression.getBounds();
-        expressionCollected = true;
 
         // move the expression into the container, a little below center so there's no overlap with eject button
         expression.travelToDestination( new Vector2(
@@ -92,10 +102,10 @@ define( function( require ) {
           this.bounds.minX - expressionBounds.width - REJECTED_ITEM_DISTANCE,
           this.bounds.getCenterY() - expressionBounds.height / 2
         ) );
-        expressionCollected = false;
       }
 
-      this.itemEvaluatedEmitter.emit1( expressionCollected );
+      // signal the results of this collection attempt
+      this.itemEvaluatedEmitter.emit1( collectionAttemptResult );
     },
 
     /**
@@ -109,19 +119,28 @@ define( function( require ) {
       // test that this collection area is in the correct state
       assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
 
-      var coinTermCollected;
-
       // get bounds for positioning of the coin term
       var coinTermViewBounds = coinTerm.getViewBounds();
 
-      // test whether the provided expression matches the expression spec for this collection area
-      if ( this.isEmpty() && this.expressionDescriptionProperty.get().coinTermMatches( coinTerm ) ) {
+      // results of the attempt to collect this coin term
+      var collectionAttemptResult;
+
+      // test whether the provided coin term matches the expression spec for this collection area
+      if ( this.expressionDescriptionProperty.get().coinTermMatches( coinTerm ) ) {
+        collectionAttemptResult = this.isEmpty() ?
+                                  CollectionAttemptResult.COLLECTED :
+                                  CollectionAttemptResult.REJECTED_DUE_TO_FULL_COLLECTION_AREA;
+      }
+      else {
+        collectionAttemptResult = CollectionAttemptResult.REJECTED_AS_INCORRECT;
+      }
+
+      if ( CollectionAttemptResult.COLLECTED ) {
 
         // collect this coin term
         coinTerm.travelToDestination( this.bounds.center );
         coinTerm.collectedProperty.set( true );
         this.collectedItemProperty.set( coinTerm );
-        coinTermCollected = true;
       }
       else {
 
@@ -129,10 +148,10 @@ define( function( require ) {
         coinTerm.travelToDestination( new Vector2(
           this.bounds.minX - coinTermViewBounds.width - REJECTED_ITEM_DISTANCE, this.bounds.getCenterY()
         ) );
-        coinTermCollected = false;
       }
 
-      this.itemEvaluatedEmitter.emit1( coinTermCollected );
+      // signal the results of this collection attempt
+      this.itemEvaluatedEmitter.emit1( collectionAttemptResult );
     },
 
     /**
