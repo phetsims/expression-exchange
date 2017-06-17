@@ -95,8 +95,8 @@ define( function( require ) {
     // @public {ObservableArray.<ExpressionHint}, read and listen only, list of expression hints in the model
     this.expressionHints = new ObservableArray();
 
-    // @public {Bounds2} (read-only) - coin terms that end up outside these bounds are moved back inside the bounds
-    this.coinTermRetrievalBounds = Bounds2.EVERYTHING;
+    // @public {Bounds2} (read-only) - coin terms and expression that end up outside these bounds are moved back inside
+    this.retrievalBounds = Bounds2.EVERYTHING;
 
     // @public {Array.<EECollectionArea>}, read only - areas where expressions or coin terms can be collected, used
     // only in game
@@ -611,6 +611,79 @@ define( function( require ) {
     },
 
     /**
+     * find a location where the provided expression won't overlap with others - this is only approximate, and doesn't
+     * work perfectly in situations where there are lots of expressions in the play area
+     * @returns {Vector2}
+     * @private
+     */
+    getOpenExpressionPlacementLocation: function( expression ) {
+
+      // variables that controls the search grid, empirically determined
+      var minX = 170;
+      var minY = 30;
+      var xPos = minX;
+      var yPos = minY;
+      var xIncrement = 30;
+      var yIncrement = 30;
+
+      // variables used in the loop to test if a position is available
+      var position = new Vector2( xPos, minY );
+      var openPositionFound = false;
+      var proposedBounds = new Bounds2( 0, 0, 0, 0 );
+
+      // loop, searching for open positions
+      while ( this.retrievalBounds.containsPoint( position ) && !openPositionFound ) {
+
+        // calculate the bounds for the expression at this position
+        proposedBounds.setMinMax(
+          xPos,
+          yPos,
+          xPos + expression.widthProperty.get(),
+          yPos + expression.heightProperty.get()
+        );
+
+        var overlapFound = false;
+        for ( var i = 0; i < this.expressions.length && !overlapFound; i++ ) {
+          if ( this.expressions.get( i ).getBounds().intersectsBounds( proposedBounds ) ) {
+            overlapFound = true;
+          }
+        }
+
+        if ( !overlapFound ) {
+
+          // this position works
+          openPositionFound = true;
+        }
+        else {
+
+          // move to the next grid position
+          yPos += yIncrement;
+          if ( yPos > this.retrievalBounds.maxY ) {
+            yPos = minY;
+            xPos += xIncrement;
+            if ( xPos > this.retrievalBounds.maxX ) {
+
+              // we're out of space, fall out of the loop
+              break;
+            }
+          }
+          position.setXY( xPos, yPos );
+        }
+      }
+
+      if ( !openPositionFound ) {
+
+        // the screen was too full and we couldn't find a spot, so choose something at random
+        position.setXY(
+          minX + phet.joist.random.nextDouble() * ( this.retrievalBounds.width - expression.widthProperty.get() - minX ),
+          minY + phet.joist.random.nextDouble() * ( this.retrievalBounds.height - expression.widthProperty.get() - minY )
+        );
+      }
+
+      return position;
+    },
+
+    /**
      * get a reference to the collection area that most overlaps with the provided expression, null if no overlap exists
      * @param {Expression} expression
      * @private
@@ -787,7 +860,7 @@ define( function( require ) {
             initialPosition.x - relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
             initialPosition.y
           );
-          if ( !self.coinTermRetrievalBounds.containsPoint( parentCoinTermDestination ) ) {
+          if ( !self.retrievalBounds.containsPoint( parentCoinTermDestination ) ) {
             parentCoinTermDestination = self.getNextOpenRetrievalSpot();
           }
           addedCoinTerm.travelToDestination( parentCoinTermDestination );
@@ -810,7 +883,7 @@ define( function( require ) {
           }
 
           // if the destination is outside of the allowed bounds, change it to be in bounds
-          if ( !self.coinTermRetrievalBounds.containsPoint( destination ) ) {
+          if ( !self.retrievalBounds.containsPoint( destination ) ) {
             destination = self.getNextOpenRetrievalSpot();
           }
 
@@ -924,6 +997,14 @@ define( function( require ) {
                 } );
                 addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
               }
+              else {
+
+                // The destination was reached, but the expression that this one was joining has moved, so the wedding
+                // is off.  If this one is now out of bounds, move it to a reachable location.
+                if ( !self.retrievalBounds.intersectsBounds( addedExpression.getBounds() ) ) {
+                  addedExpression.travelToDestination( self.getOpenExpressionPlacementLocation( addedExpression ) );
+                }
+              }
             } );
           }
           else if ( numOverlappingCoinTerms === 1 ) {
@@ -990,7 +1071,7 @@ define( function( require ) {
           );
 
           // if the destination is outside of the allowed bounds, change it to be in bounds
-          if ( !self.coinTermRetrievalBounds.containsPoint( coinTermDestination ) ) {
+          if ( !self.retrievalBounds.containsPoint( coinTermDestination ) ) {
             coinTermDestination = self.getNextOpenRetrievalSpot();
           }
 
@@ -1219,9 +1300,9 @@ define( function( require ) {
     /**
      * @param {Bounds2} bounds
      */
-    setCoinTermRetrievalBounds: function( bounds ) {
-      assert && assert( this.coinTermRetrievalBounds === Bounds2.EVERYTHING, 'coin term bounds should only be set once' );
-      this.coinTermRetrievalBounds = bounds;
+    setRetrievalBounds: function( bounds ) {
+      assert && assert( this.retrievalBounds === Bounds2.EVERYTHING, 'coin term bounds should only be set once' );
+      this.retrievalBounds = bounds;
     }
 
   } );

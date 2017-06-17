@@ -73,7 +73,7 @@ define( function( require ) {
     this.addChild( coinTermLayer );
 
     // set the bounds for coin term retrieval in the model
-    levelModel.setCoinTermRetrievalBounds( screenLayoutBounds );
+    levelModel.setRetrievalBounds( screenLayoutBounds );
 
     // add the level label
     var title = new Text(

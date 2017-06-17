@@ -75,7 +75,7 @@ define( function( require ) {
     ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
 
     // set the bounds used to decide when coin terms need to be "pulled back"
-    model.setCoinTermRetrievalBounds( this.layoutBounds );
+    model.setRetrievalBounds( this.layoutBounds );
 
     // create the view element where coin terms and expressions will be manipulated, but don't add it yet
     var expressionManipulationView = new ExpressionManipulationView( model, this.visibleBoundsProperty );
