@@ -135,7 +135,7 @@ define( function( require ) {
         collectionAttemptResult = CollectionAttemptResult.REJECTED_AS_INCORRECT;
       }
 
-      if ( CollectionAttemptResult.COLLECTED ) {
+      if ( collectionAttemptResult === CollectionAttemptResult.COLLECTED ) {
 
         // collect this coin term
         coinTerm.travelToDestination( this.bounds.center );
