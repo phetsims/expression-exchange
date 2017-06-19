@@ -76,14 +76,14 @@ define( function( require ) {
     this.addChild( rightHintNode );
 
     // layer where the plus and/or minus symbols go
-    var symbolsLayer = new Node();
-    this.addChild( symbolsLayer );
+    var operatorsLayer = new Node();
+    this.addChild( operatorsLayer );
 
     // function to update the background and the plus/minus symbols
     function updateBackgroundAndSymbols() {
 
       // symbols are recreated each time to keep things simple
-      symbolsLayer.removeAllChildren();
+      operatorsLayer.removeAllChildren();
 
       if ( expression.coinTerms.length > 0 ) {
 
@@ -141,9 +141,9 @@ define( function( require ) {
                        coinTermsLeftToRight[ i + 1 ].destinationProperty.get().x +
                        coinTermsLeftToRight[ i + 1 ].localViewBoundsProperty.get().minX ) / 2 -
                      expression.upperLeftCornerProperty.get().x,
-            centerY: coinTermsLeftToRight[ i ].destinationProperty.get().y - expression.upperLeftCornerProperty.get().y
+            centerY: expressionHeight / 2
           } );
-          symbolsLayer.addChild( operator );
+          operatorsLayer.addChild( operator );
         }
       }
       else {
