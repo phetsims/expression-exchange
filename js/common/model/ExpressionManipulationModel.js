@@ -851,34 +851,38 @@ define( function( require ) {
         }
         var extractedCoinTerms = addedCoinTerm.extractConstituentCoinTerms();
         var relativeViewBounds = addedCoinTerm.localViewBoundsProperty.get();
-        var initialPosition = addedCoinTerm.positionProperty.get().copy();
+        var pointToDistributeAround = addedCoinTerm.destinationProperty.get();
 
-        // If the total combined coin count was even, shift the 'parent coin' a bit so that the coins end up being
-        // distributed around the centerX position, but make sure it remains in bounds.
+        // If the total combined coin count was even, shift the distribution point a bit so that the coins end up being
+        // distributed around the centerX position.
         if ( extractedCoinTerms.length % 2 === 1 ) {
-          var parentCoinTermDestination = new Vector2(
-            initialPosition.x - relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
-            initialPosition.y
+          pointToDistributeAround = pointToDistributeAround.plusXY(
+            -relativeViewBounds.width / 2 - BREAK_APART_SPACING / 2,
+            0
           );
-          if ( !self.retrievalBounds.containsPoint( parentCoinTermDestination ) ) {
-            parentCoinTermDestination = self.getNextOpenRetrievalSpot();
+
+          // set the parent coin position to the distribution point if it is in bounds
+          if ( self.retrievalBounds.containsPoint( pointToDistributeAround ) ) {
+            addedCoinTerm.travelToDestination( pointToDistributeAround );
           }
-          addedCoinTerm.travelToDestination( parentCoinTermDestination );
+          else {
+            addedCoinTerm.travelToDestination( self.getNextOpenRetrievalSpot() );
+          }
         }
 
         // add the extracted coin terms to the model
         var interCoinTermDistance = relativeViewBounds.width + BREAK_APART_SPACING;
-        var nextLeftX = initialPosition.x - interCoinTermDistance;
-        var nextRightX = initialPosition.x + interCoinTermDistance;
+        var nextLeftX = pointToDistributeAround.x - interCoinTermDistance;
+        var nextRightX = pointToDistributeAround.x + interCoinTermDistance;
         extractedCoinTerms.forEach( function( extractedCoinTerm, index ) {
           var destination;
           self.addCoinTerm( extractedCoinTerm );
           if ( index % 2 === 0 ) {
-            destination = new Vector2( nextRightX, initialPosition.y );
+            destination = new Vector2( nextRightX, pointToDistributeAround.y );
             nextRightX += interCoinTermDistance;
           }
           else {
-            destination = new Vector2( nextLeftX, initialPosition.y );
+            destination = new Vector2( nextLeftX, pointToDistributeAround.y );
             nextLeftX -= interCoinTermDistance;
           }
 
