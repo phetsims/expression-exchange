@@ -10,6 +10,7 @@ define( function( require ) {
 
   // modules
   var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
+  var DerivedProperty = require( 'AXON/DerivedProperty' );
   var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
   var EECollectionArea = require( 'EXPRESSION_EXCHANGE/game/model/EECollectionArea' );
   var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
@@ -57,23 +58,28 @@ define( function( require ) {
     // @public {Property.<number>} (read only) - current score for this level
     this.scoreProperty = new Property( 0 );
 
-    // @private {boolean} - a flag used to track whether this level has been completed.  In order to be set to true, the
-    // user must have started from a score of zero and reached the max score since the last time this flag was cleared.
-    this.levelCompleted = false;
+    // @public {Property.<boolean>} (read-only) - a flag used to track whether this level has been completed.  In order
+    // to be set to true, the user must have started from a score of zero and reached the max score since the last time
+    // this flag was cleared.
+    this.currentlyCompleteProperty = new DerivedProperty( [ this.scoreProperty ], function( score ) {
+      return score === NUM_EXPRESSION_COLLECTION_AREAS;
+    } );
 
-    // @private {boolean} - a flag that tracks whether the score has been set to zero since the last time this level
-    // was completed.  This is used to make sure that the user has fully completed the level after clearing the level
-    // complete flag.  It is accessed through methods defined below.
-    this.scorePassedThroughZero = false;
+    // @private {boolean}
+    this.scoreWasZeroSinceLastCompletion = true;
 
-    // update the flags that track level completion
+    // @public {Property.<boolean>} (read-only) - a flag used to track whether this level has been completed since the
+    // last time this flag was cleared.  For this to be true, the score must have gone from zero to the max sing the
+    // last time this flag was set.
+    this.completedSinceLastClearProperty = new Property( false );
+
+    // update the variable that track whether the user has fully solved the level since the last time this flag was
+    // cleared
     this.scoreProperty.link( function( score ) {
-      if ( !self.scorePassedThroughZero && score === 0 ) {
-        self.scorePassedThroughZero = true;
+      if ( score === 0 ) {
+        self.scoreWasZeroSinceLastCompletion = true;
       }
-      if ( self.scorePassedThroughZero && score === NUM_EXPRESSION_COLLECTION_AREAS ) {
-        self.levelCompleted = true;
-      }
+      self.completedSinceLastClearProperty.set( score === NUM_EXPRESSION_COLLECTION_AREAS && self.scoreWasZeroSinceLastCompletion );
     } );
 
     // helper function to update the score when items are collected or un-collected
@@ -87,13 +93,19 @@ define( function( require ) {
       self.scoreProperty.set( score );
     }
 
+    // create a property that is the inverse of the level completed property, used to control viz of undo buttons
+    var undoAllowedProperty = new DerivedProperty( [ this.currentlyCompleteProperty ], function( levelCompleted ) {
+      return !levelCompleted;
+    } );
+
     // initialize the collection areas
     var collectionAreaYPos = EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET;
     _.times( NUM_EXPRESSION_COLLECTION_AREAS, function() {
       var collectionArea = new EECollectionArea(
         EXPRESSION_COLLECTION_AREA_X_OFFSET,
         collectionAreaYPos,
-        allowedRepresentations === AllowedRepresentations.COINS_ONLY ? ViewMode.COINS : ViewMode.VARIABLES
+        allowedRepresentations === AllowedRepresentations.COINS_ONLY ? ViewMode.COINS : ViewMode.VARIABLES,
+        undoAllowedProperty
       );
       collectionArea.collectedItemProperty.link( updateScore );
       self.collectionAreas.push( collectionArea );
@@ -117,7 +129,6 @@ define( function( require ) {
      */
     reset: function() {
       ExpressionManipulationModel.prototype.reset.call( this );
-      this.clearLevelCompleted();
       this.scoreProperty.reset();
       this.currentChallengeNumber = 0;
       this.currentChallengeProperty.set(
@@ -134,25 +145,6 @@ define( function( require ) {
       } );
       ExpressionManipulationModel.prototype.reset.call( this );
       this.loadNextChallenge();
-    },
-
-    /**
-     * get a boolean value indicating whether this level has been fully completed, meaning that it was fully unsolved
-     * and is now fully solved, since the sim was launched or since the last time the flag was reset
-     * @returns {boolean}
-     * @public
-     */
-    getLevelCompleted: function() {
-      return this.levelCompleted;
-    },
-
-    /**
-     * clear the indicators that track whether this level has been fully completed
-     * @public
-     */
-    clearLevelCompleted: function() {
-      this.levelCompleted = false;
-      this.scorePassedThroughZero = false;
     },
 
     /**

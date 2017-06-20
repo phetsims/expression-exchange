@@ -100,12 +100,16 @@ define( function( require ) {
 
       // @public
       getAllLevelsCompleted: function() {
-        return _.every( this.gameLevels, function( gameLevelModel ) { return gameLevelModel.getLevelCompleted(); } );
+        return _.every( this.gameLevels, function( gameLevelModel ) {
+          return gameLevelModel.completedSinceLastClearProperty.get();
+        } );
       },
 
       // @public
       clearAllLevelsCompleted: function() {
-        this.gameLevels.forEach( function( gameLevelModel ) { gameLevelModel.clearLevelCompleted(); } );
+        this.gameLevels.forEach( function( gameLevelModel ) {
+          gameLevelModel.completedSinceLastClearProperty.set( false );
+        } );
       },
 
       // reset

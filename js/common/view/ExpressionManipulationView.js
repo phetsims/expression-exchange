@@ -63,16 +63,19 @@ define( function( require ) {
 
     // add the buttons for ejecting expressions from the collection area, must be above the expressions in the z-order
     model.collectionAreas.forEach( function( collectionArea ) {
-      var ejectButton = new UndoButton( {
+      var undoButton = new UndoButton( {
         listener: function() { collectionArea.ejectCollectedItem(); },
         leftTop: collectionArea.bounds.leftTop
       } );
-      self.addChild( ejectButton );
+      self.addChild( undoButton );
 
-      // control the visibility of the eject button
-      collectionArea.collectedItemProperty.link( function( collectedItem ) {
-        ejectButton.visible = collectedItem !== null;
-      } );
+      // control the visibility of the undo button
+      Property.multilink(
+        [ collectionArea.undoAllowedProperty, collectionArea.collectedItemProperty ],
+        function( undoAllowed, collectedItem ) {
+          undoButton.visible = undoAllowed && collectedItem !== null;
+        }
+      );
     } );
 
     // add the node that will act as the barrier to interaction with other expressions when editing an expression

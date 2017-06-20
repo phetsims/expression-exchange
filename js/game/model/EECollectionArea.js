@@ -25,11 +25,15 @@ define( function( require ) {
    * @param {number} x
    * @param {number} y
    * @param {ViewMode} viewMode
+   * @param {Property.<boolean>} undoAllowedProperty
    * @constructor
    */
-  function EECollectionArea( x, y, viewMode ) {
+  function EECollectionArea( x, y, viewMode, undoAllowedProperty ) {
 
-    // @public, read-only {Expression|CoinTerm} - expression or coin term that has been collected, null if nothing
+    // @public {Property.<boolean>} (read-only) - property indicating whether the undo functionality is enabled
+    this.undoAllowedProperty = undoAllowedProperty;
+
+    // @public {Expression|CoinTerm} (read-only) - expression or coin term that has been collected, null if nothing
     this.collectedItemProperty = new Property( null );
 
     // @public {Property.<ExpressionDescription|null} (read-write) - description of the expression that this capture area can hold
