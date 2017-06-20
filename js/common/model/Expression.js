@@ -222,7 +222,8 @@ define( function( require ) {
       // in the step function so that it is only done a max of once per animation frame rather than redoing it for each
       // coin term whose bounds change.
       if ( this.resizeNeeded ) {
-        this.updateSizeAndCoinTermPositions( true );
+        var animateUpdateMotion = !this.userControlledProperty.get() && !this.inProgressAnimationProperty.get();
+        this.updateSizeAndCoinTermPositions( animateUpdateMotion );
         this.resizeNeeded = false;
       }
 
@@ -461,14 +462,14 @@ define( function( require ) {
         );
 
         // decide whether or not to animate to the destination
-        if ( !this.userControlledProperty.get() ) {
+        if ( !this.userControlledProperty.get() && !this.inProgressAnimationProperty.get() ) {
 
           // animate to the new location
           coinTerm.travelToDestination( destination );
         }
         else {
 
-          // if this expression is being moved by the user, don't animate - it won't end well
+          // if this expression is being moved by the user or is animating, don't animate - it won't end well
           coinTerm.setPositionAndDestination( destination );
         }
       }
