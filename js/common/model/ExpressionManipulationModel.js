@@ -999,7 +999,6 @@ define( function( require ) {
                                                                     mostOverlappingExpression.id );
                   mostOverlappingExpression.addCoinTerm( coinTerm );
                 } );
-                addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
               }
               else {
 
@@ -1009,6 +1008,7 @@ define( function( require ) {
                   addedExpression.travelToDestination( self.getOpenExpressionPlacementLocation( addedExpression ) );
                 }
               }
+              addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );
             } );
           }
           else if ( numOverlappingCoinTerms === 1 ) {
