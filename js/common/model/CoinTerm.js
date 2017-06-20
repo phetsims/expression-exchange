@@ -27,6 +27,7 @@ define( function( require ) {
   var CLOSE_ENOUGH_TO_HOME = 1E-6; // distance at which a coin term is considered to have returned to origin
   var CARD_PRE_FADE_TIME = 0.25; // time before card starts to fade after user grabs it, in seconds
   var CARD_FADE_TIME = 0.5; // time for a card to fade out
+  var MAX_ANIMATION_TIME = 1; // max time for an animation to complete
 
   // class var for creating unique IDs
   var creationCount = 0;
@@ -290,8 +291,10 @@ define( function( require ) {
       else {
 
         // calculate the time needed to get to the destination
-        var animationDuration = this.positionProperty.get().distance( destination ) /
-                                EESharedConstants.COIN_TERM_MOVEMENT_SPEED;
+        var animationDuration = Math.min(
+          this.positionProperty.get().distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED,
+          MAX_ANIMATION_TIME
+        );
 
         this.inProgressAnimationProperty.set( new AnimationSpec(
           this.positionProperty.get().copy(),

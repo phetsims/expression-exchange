@@ -27,6 +27,7 @@ define( function( require ) {
   var X_MARGIN = 14; // margin for coin terms, empirically determined
   var Y_MARGIN = 12; // margin for coin terms, empirically determined
   var ANIMATION_SPEED = 400; // in model units (which are basically screen coordinates) per second
+  var MAX_ANIMATION_TIME = 1; // seconds
 
   // class var for creating unique IDs
   var creationCount = 0;
@@ -631,7 +632,10 @@ define( function( require ) {
      */
     travelToDestination: function( upperLeftCornerDestination ) {
       var self = this;
-      var animationDuration = self.upperLeftCornerProperty.get().distance( upperLeftCornerDestination ) / ANIMATION_SPEED;
+      var animationDuration = Math.min(
+        self.upperLeftCornerProperty.get().distance( upperLeftCornerDestination ) / ANIMATION_SPEED,
+        MAX_ANIMATION_TIME
+      );
       if ( animationDuration === 0 ) {
 
         // already there, so emit a notification and call it good
