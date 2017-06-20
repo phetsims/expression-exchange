@@ -13,7 +13,6 @@ define( function( require ) {
   var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
-  var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var EERewardNode = require( 'EXPRESSION_EXCHANGE/game/view/EERewardNode' );
@@ -149,19 +148,6 @@ define( function( require ) {
     );
     middleLayer.addChild( showSubtractionCheckbox );
 
-    // add the node for moving to the next level, only shown when all challenges on this level have been answered
-    this.nextLevelNode = new NextLevelNode( gameModel.nextLevel.bind( gameModel ), {
-      centerX: title.centerX,
-      centerY: screenLayoutBounds.height * 0.33 // empirically determined
-    } );
-    middleLayer.addChild( this.nextLevelNode );
-
-    this.allLevelsCompletedDialog = new AllLevelsCompletedDialog( gameModel.returnToLevelSelection.bind( gameModel ), {
-      centerX: title.centerX,
-      centerY: screenLayoutBounds.height * 0.4 // empirically determined
-    } );
-    middleLayer.addChild( this.allLevelsCompletedDialog );
-
     // only show the checkbox for simplifying expressions with negative values if some are present in the challenge
     levelModel.currentChallengeProperty.link( function( currentChallenge ) {
 
@@ -175,40 +161,88 @@ define( function( require ) {
       showSubtractionCheckbox.visible = negativesExist;
     } );
 
-    // show the appropriate dialog and reward node based on the score
-    levelModel.scoreProperty.link( function( score ) {
+    // add the node for moving to the next level, only shown when all challenges on this level have been answered
+    this.nextLevelNode = new NextLevelNode( gameModel.nextLevel.bind( gameModel ), {
+      centerX: title.centerX,
+      centerY: screenLayoutBounds.height * 0.33 // multiplier empirically determined
+    } );
+    middleLayer.addChild( this.nextLevelNode );
 
-      if ( score === EEGameModel.MAX_SCORE_PER_LEVEL ) {
+    // helper function for showing the reward node
+    function showRewardNode() {
+      if ( !self.rewardNode ) {
+        self.rewardNode = new EERewardNode();
+        background.addChild( self.rewardNode );
+      }
+      self.rewardNode.visible = true;
+    }
 
-        var allLevelsCompleted = gameModel.getAllLevelsCompleted();
+    // for symmetry
+    function hideRewardNode() {
+      if ( self.rewardNode ) {
+        self.rewardNode.visible = false;
+      }
+    }
 
-        // show the appropriate dialog
-        if ( allLevelsCompleted ) {
-          self.allLevelsCompletedDialog.visible = true;
+    // define a property that tracks whether the 'next level' node should be visible.  This is done as a separate
+    // view-only property because the logic that decides whether to show it is somewhat complex.
+    var showNextLevelNodeProperty = new Property( false );
 
-          // clear the flags for all levels completed so that the user will have to complete them again in order to
-          // see this dialog
-          gameModel.clearAllLevelsCompleted();
+    levelModel.currentlyCompleteProperty.link( function( currentlyCompleted ) {
+      showNextLevelNodeProperty.set( currentlyCompleted );
+      if ( EEQueryParameters.showRewardNodeEveryLevel ) {
+        if ( currentlyCompleted ) {
+          showRewardNode();
         }
         else {
-          self.nextLevelNode.visible = true;
-        }
-
-        // show the reward node if warranted - this is created lazily to save time on startup and memory
-        if ( allLevelsCompleted || EEQueryParameters.showRewardNodeEveryLevel ) {
-          if ( !self.rewardNode ) {
-            self.rewardNode = new EERewardNode();
-            background.addChild( self.rewardNode );
-          }
-          self.rewardNode.visible = true;
+          hideRewardNode();
         }
       }
-      else {
-        self.nextLevelNode.visible = false;
+    } );
+
+    gameModel.allLevelsCompletedProperty.link( function( allLevelsCompleted ) {
+
+      // when all levels become completed, we no longer show the "Next Level" nodes, see
+      // https://github.com/phetsims/expression-exchange/issues/108 for more information about why
+      if ( allLevelsCompleted ) {
+        showNextLevelNodeProperty.set( false );
+      }
+    } );
+
+    showNextLevelNodeProperty.link( function( showNextLevelNode ) {
+      self.nextLevelNode.visible = showNextLevelNode;
+    } );
+
+    // create the dialog that is shown when all levels reach completion
+    this.allLevelsCompletedDialog = new AllLevelsCompletedDialog( gameModel.returnToLevelSelection.bind( gameModel ), {
+      centerX: title.centerX,
+      centerY: screenLayoutBounds.height * 0.4, // empirically determined
+      visible: false
+    } );
+    middleLayer.addChild( this.allLevelsCompletedDialog );
+
+    gameModel.allLevelsCompletedProperty.link( function( allLevelsCompleted ) {
+
+      if ( allLevelsCompleted && self.inViewportProperty.get() ) {
+
+        // show the 'all levels completed' dialog
+        self.allLevelsCompletedDialog.visible = true;
+
+        // show the reward node
+        showRewardNode();
+
+        // play the sound that indicates all levels have been completed
+        gameAudioPlayer.gameOverPerfectScore();
+      }
+    } );
+
+    // when this node leaves the view port, check whether all levels had been completed and, if so, hide the associated
+    // celebratory nodes and reset the flag in the model.
+    this.inViewportProperty.link( function( inViewPort, wasInViewPort ) {
+      if ( !inViewPort && wasInViewPort && gameModel.allLevelsCompletedProperty.get() ) {
+        hideRewardNode();
         self.allLevelsCompletedDialog.visible = false;
-        if ( self.rewardNode ) {
-          self.rewardNode.visible = false;
-        }
+        gameModel.clearAllLevelsCompleted();
       }
     } );
 

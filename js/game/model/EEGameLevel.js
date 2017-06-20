@@ -69,7 +69,7 @@ define( function( require ) {
     this.scoreWasZeroSinceLastCompletion = true;
 
     // @public {Property.<boolean>} (read-only) - a flag used to track whether this level has been completed since the
-    // last time this flag was cleared.  For this to be true, the score must have gone from zero to the max sing the
+    // last time this flag was cleared.  For this to be true, the score must have gone from zero to the max since the
     // last time this flag was set.
     this.completedSinceLastClearProperty = new Property( false );
 

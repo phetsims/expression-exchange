@@ -41,6 +41,9 @@ define( function( require ) {
     // means that the level selection screen should appear to the user
     this.currentLevelProperty = new Property( null );
 
+    // @public {Property.<boolean>}, (read-only) - transitions to true when all game levels have been completed
+    this.allLevelsCompletedProperty = new Property( false );
+
     //------------------------------------------------------------------------
     // other initialization
     //------------------------------------------------------------------------
@@ -51,11 +54,15 @@ define( function( require ) {
     // @public {Array.<EEGameLevel>} (read-only) - models for each of the game levels
     this.gameLevels = [];
     _.times( NUMBER_OF_LEVELS, function( level ) {
-      self.gameLevels.push( new EEGameLevel(
+      var gameLevel = new EEGameLevel(
         level,
         level < 3 ? AllowedRepresentations.COINS_ONLY : AllowedRepresentations.VARIABLES_ONLY,
         self.soundEnabledProperty
-      ) );
+      );
+      self.gameLevels.push( gameLevel );
+      gameLevel.completedSinceLastClearProperty.link( function() {
+        self.allLevelsCompletedProperty.set( self.getAllLevelsCompleted() );
+      } );
     } );
   }
 
