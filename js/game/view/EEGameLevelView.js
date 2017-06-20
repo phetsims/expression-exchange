@@ -13,7 +13,6 @@ define( function( require ) {
   var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
   var CheckBox = require( 'SUN/CheckBox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
-  var CollectionAttemptResult = require( 'EXPRESSION_EXCHANGE/game/enum/CollectionAttemptResult' );
   var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -216,11 +215,11 @@ define( function( require ) {
     // hook up listeners to the collection areas to play the appropriate sounds upon collection or rejection of a user-
     // submitted answer
     levelModel.collectionAreas.forEach( function( collectionArea ) {
-      collectionArea.itemEvaluatedEmitter.addListener( function( collectionAttemptResult ) {
-        if ( collectionAttemptResult === CollectionAttemptResult.COLLECTED ) {
+      collectionArea.collectionAttemptedEmitter.addListener( function( itemCollected ) {
+        if ( itemCollected ) {
           gameAudioPlayer.correctAnswer();
         }
-        else if ( collectionAttemptResult === CollectionAttemptResult.REJECTED_AS_INCORRECT ) {
+        else if ( !itemCollected && collectionArea.isEmpty() ) {
           gameAudioPlayer.wrongAnswer();
         }
       } );

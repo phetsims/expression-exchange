@@ -9,7 +9,6 @@ define( function( require ) {
 
   // modules
   var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
-  var CollectionAttemptResult = require( 'EXPRESSION_EXCHANGE/game/enum/CollectionAttemptResult' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Emitter = require( 'AXON/Emitter' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
@@ -49,9 +48,9 @@ define( function( require ) {
     // when the user holds something over the collection area
     this.haloActiveProperty = new Property( false );
 
-    // @public {Emitter} listen only - emitter that emits an event when an item is tested and is either collected or
-    // rejected, including a boolean parameter that is true if accepted, false if rejected
-    this.itemEvaluatedEmitter = new Emitter();
+    // @public {Emitter} listen only - emitter that emits an event when an at attempt is made to collect an item, and
+    // includes a parameter that is true if the item was collected and false if not
+    this.collectionAttemptedEmitter = new Emitter();
   }
 
   expressionExchange.register( 'EECollectionArea', EECollectionArea );
@@ -73,22 +72,13 @@ define( function( require ) {
       var expressionBounds;
 
       // results of the attempt to collect this expression
-      var collectionAttemptResult;
+      var collected;
 
-      // test whether the provided expression matches the expression spec for this collection area
-      if ( this.expressionDescriptionProperty.get().expressionMatches( expression ) ) {
-        collectionAttemptResult = this.isEmpty() ?
-                                  CollectionAttemptResult.COLLECTED :
-                                  CollectionAttemptResult.REJECTED_DUE_TO_FULL_COLLECTION_AREA;
-      }
-      else {
-        collectionAttemptResult = CollectionAttemptResult.REJECTED_AS_INCORRECT;
-      }
-
-      if ( collectionAttemptResult === CollectionAttemptResult.COLLECTED ) {
+      if ( this.isEmpty() && this.expressionDescriptionProperty.get().expressionMatches( expression ) ) {
 
         // collect this expression - the collection state must be set first in case it causes an update of the bounds
         expression.collectedProperty.set( true );
+        collected = true;
         expressionBounds = expression.getBounds();
 
         // move the expression into the container, a little below center so there's no overlap with eject button
@@ -102,6 +92,7 @@ define( function( require ) {
 
         // reject this expression
         expressionBounds = expression.getBounds();
+        collected = false;
         expression.travelToDestination( new Vector2(
           this.bounds.minX - expressionBounds.width - REJECTED_ITEM_DISTANCE,
           this.bounds.getCenterY() - expressionBounds.height / 2
@@ -109,7 +100,7 @@ define( function( require ) {
       }
 
       // signal the results of this collection attempt
-      this.itemEvaluatedEmitter.emit1( collectionAttemptResult );
+      this.collectionAttemptedEmitter.emit1( collected );
     },
 
     /**
@@ -126,22 +117,13 @@ define( function( require ) {
       // get bounds for positioning of the coin term
       var coinTermViewBounds = coinTerm.getViewBounds();
 
-      // results of the attempt to collect this coin term
-      var collectionAttemptResult;
+      // results of the attempt to collect this expression
+      var collected;
 
-      // test whether the provided coin term matches the expression spec for this collection area
-      if ( this.expressionDescriptionProperty.get().coinTermMatches( coinTerm ) ) {
-        collectionAttemptResult = this.isEmpty() ?
-                                  CollectionAttemptResult.COLLECTED :
-                                  CollectionAttemptResult.REJECTED_DUE_TO_FULL_COLLECTION_AREA;
-      }
-      else {
-        collectionAttemptResult = CollectionAttemptResult.REJECTED_AS_INCORRECT;
-      }
-
-      if ( collectionAttemptResult === CollectionAttemptResult.COLLECTED ) {
+      if ( this.isEmpty() && this.expressionDescriptionProperty.get().coinTermMatches( coinTerm ) ) {
 
         // collect this coin term
+        collected = true;
         coinTerm.travelToDestination( this.bounds.center );
         coinTerm.collectedProperty.set( true );
         this.collectedItemProperty.set( coinTerm );
@@ -149,13 +131,14 @@ define( function( require ) {
       else {
 
         // reject this coin term
+        collected = false;
         coinTerm.travelToDestination( new Vector2(
           this.bounds.minX - coinTermViewBounds.width - REJECTED_ITEM_DISTANCE, this.bounds.getCenterY()
         ) );
       }
 
       // signal the results of this collection attempt
-      this.itemEvaluatedEmitter.emit1( collectionAttemptResult );
+      this.collectionAttemptedEmitter.emit1( collected );
     },
 
     /**
