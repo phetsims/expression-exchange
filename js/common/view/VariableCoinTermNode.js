@@ -30,7 +30,7 @@ define( function( require ) {
   var VALUE_FONT = new PhetFont( { size: 30 } );
   var VARIABLE_FONT = new MathSymbolFont( 36 );
   var COIN_FLIP_TIME = 0.5; // in seconds
-  var MIN_SCALE_FOR_FLIP = 0.15;
+  var MIN_SCALE_FOR_FLIP = 0.05;
 
   // The following constants control how the pointer areas (mouse and touch) are set up for the textual representation
   // of the coin term.  These are empirically determined such that they are easy for users to grab but the don't
@@ -181,12 +181,6 @@ define( function( require ) {
       var scale = this.coinTerm.scaleProperty.get(); // for convenience
 
       // control front coin image visibility
-      var desiredCoinImageWidth = this.coinTerm.coinRadius * 2 * scale;
-      if ( this.coinImagesNode.width !== desiredCoinImageWidth ) {
-        this.coinImagesNode.setScaleMagnitude( 1 );
-        this.coinImagesNode.setScaleMagnitude( desiredCoinImageWidth / this.coinImagesNode.width );
-        this.coinImagesNode.center = Vector2.ZERO;
-      }
       this.coinImagesNode.visible = viewMode === ViewMode.COINS;
 
       // update coin value text
