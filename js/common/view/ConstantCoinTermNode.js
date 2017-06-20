@@ -91,7 +91,10 @@ define( function( require ) {
         valueText.y = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET * constantCoinTerm.scaleProperty.get();
 
         // update the card background
-        self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilated( 10 ) );
+        self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilatedXY(
+          AbstractCoinTermNode.BACKGROUND_CARD_X_MARGIN,
+          ( AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_TEXT_MODE - self.coinAndTextRootNode.visibleLocalBounds.height ) / 2
+        ) );
         self.cardLikeBackground.visible = constantCoinTerm.cardOpacityProperty.get() > 0;
         self.cardLikeBackground.opacity = constantCoinTerm.cardOpacityProperty.get();
 

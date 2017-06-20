@@ -32,7 +32,8 @@ define( function( require ) {
       itemsPerCarouselPage: 3,
       itemSpacing: 20, // empirically determined to work for most cases in this sim
       cornerRadius: 4,
-      staggeredCreatorNodes: false
+      staggeredCreatorNodes: false,
+      align: 'center'
     }, options );
 
     // @public {boolean}, read only - a flag that indicates if creator nodes that create coin terms with negative
@@ -46,6 +47,13 @@ define( function( require ) {
 
     // add the panel or carousel that will contain the various coin terms that the user can create
     if ( creatorNodes.length > options.itemsPerCarouselPage ) {
+
+      // check options compatibility
+      assert && assert(
+        options.align === 'center',
+        'only center alignment is supported for creator boxes that use a carousel'
+      );
+
       // @private {Node}
       this.coinTermCreatorBox = new Carousel( creatorNodes, {
         itemsPerPage: options.itemsPerCarouselPage,
@@ -54,10 +62,12 @@ define( function( require ) {
       } );
     }
     else {
+
       // everything will fit on one page, so use a panel instead of a carousel
       var coinTermCreatorHBox = new HBox( {
         children: creatorNodes,
         spacing: options.itemSpacing,
+        align: options.align,
         resize: false
       } );
       // @private {Node}

@@ -256,15 +256,15 @@ define( function( require ) {
       }
 
       // update the card background
-      this.cardLikeBackground.visible = false; // make sure card is invisible so it doesn't affect visible bounds
-      this.cardLikeBackground.setRectBounds( this.coinAndTextRootNode.visibleLocalBounds.dilated( 10 ) );
-      if ( this.coinTerm.cardOpacityProperty.get() === 0 ) {
-        this.cardLikeBackground.visible = false;
-      }
-      else {
-        this.cardLikeBackground.visible = true;
-        this.cardLikeBackground.opacity = this.coinTerm.cardOpacityProperty.get();
-      }
+      var targetCardHeight = viewMode === ViewMode.COINS ?
+                             AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_COIN_MODE :
+                             AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_TEXT_MODE;
+      this.cardLikeBackground.setRectBounds( this.coinAndTextRootNode.visibleLocalBounds.dilatedXY(
+        AbstractCoinTermNode.BACKGROUND_CARD_X_MARGIN,
+        ( targetCardHeight - this.coinAndTextRootNode.visibleLocalBounds.height ) / 2
+      ) );
+      this.cardLikeBackground.opacity = this.coinTerm.cardOpacityProperty.get();
+      this.cardLikeBackground.visible = this.cardLikeBackground.opacity > 0;
 
       // update the bounds that are registered with the model
       this.updateBoundsInModel();

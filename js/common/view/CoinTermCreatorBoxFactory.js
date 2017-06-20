@@ -181,7 +181,8 @@ define( function( require ) {
      */
     createGameScreenCreatorBox: function( challengeDescriptor, model, view, options ) {
       options = _.extend( {
-        itemSpacing: 30
+        itemSpacing: 30,
+        align: 'top'
       }, options );
 
       // create the list of creator nodes from the descriptor list

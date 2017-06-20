@@ -339,8 +339,19 @@ define( function( require ) {
 
   }, {
 
-    // To look correct in equations, the text all needs to be on the same baseline.  The value was empirically
-    // determined and may need to change if font sizes change.
-    TEXT_BASELINE_Y_OFFSET: 12
+    // statics
+
+    // @public {number} - To look correct in equations, the text all needs to be on the same baseline.  The value was
+    // empirically determined and may need to change if font sizes change.
+    TEXT_BASELINE_Y_OFFSET: 12,
+
+    // @public {number} - Height of the background cards - these are fixed so that stacks of them that are side-by-side
+    // look good.  The values were empirically determined.
+    BACKGROUND_CARD_HEIGHT_TEXT_MODE: 70,
+    BACKGROUND_CARD_HEIGHT_COIN_MODE: 70,
+
+    // @public {number} - horizontal margin for card background
+    BACKGROUND_CARD_X_MARGIN: 15
+
   } );
 } );
