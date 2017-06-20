@@ -188,8 +188,11 @@ define( function( require ) {
     // view-only property because the logic that decides whether to show it is somewhat complex.
     var showNextLevelNodeProperty = new Property( false );
 
-    levelModel.currentlyCompleteProperty.link( function( currentlyCompleted ) {
+    // show the "next level" node when this level becomes completed
+    levelModel.completedSinceLastClearProperty.link( function( currentlyCompleted ) {
       showNextLevelNodeProperty.set( currentlyCompleted );
+
+      // if the appropriate query param is set, show the reward node every time this level is successfully completed
       if ( EEQueryParameters.showRewardNodeEveryLevel ) {
         if ( currentlyCompleted ) {
           showRewardNode();

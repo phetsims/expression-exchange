@@ -58,13 +58,6 @@ define( function( require ) {
     // @public {Property.<number>} (read only) - current score for this level
     this.scoreProperty = new Property( 0 );
 
-    // @public {Property.<boolean>} (read-only) - a flag used to track whether this level has been completed.  In order
-    // to be set to true, the user must have started from a score of zero and reached the max score since the last time
-    // this flag was cleared.
-    this.currentlyCompleteProperty = new DerivedProperty( [ this.scoreProperty ], function( score ) {
-      return score === NUM_EXPRESSION_COLLECTION_AREAS;
-    } );
-
     // @private {boolean}
     this.scoreWasZeroSinceLastCompletion = true;
 
@@ -93,9 +86,9 @@ define( function( require ) {
       self.scoreProperty.set( score );
     }
 
-    // create a property that is the inverse of the level completed property, used to control viz of undo buttons
-    var undoAllowedProperty = new DerivedProperty( [ this.currentlyCompleteProperty ], function( levelCompleted ) {
-      return !levelCompleted;
+    // create a property that indicate whether undo of collection areas should be allowed
+    var undoAllowedProperty = new DerivedProperty( [ this.scoreProperty ], function( score ) {
+      return score < NUM_EXPRESSION_COLLECTION_AREAS;
     } );
 
     // initialize the collection areas
