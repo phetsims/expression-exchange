@@ -172,10 +172,10 @@ define( function( require ) {
     },
 
     /**
-     * @param {ChallengeDescriptor} challengeDescriptor
-     * @param {number} challengeNumber
+     * @param {EEChallengeDescriptor} challengeDescriptor
      * @param {ExpressionManipulationModel} model
-     * @param {Object} [options]
+     * @param {ExpressionManipulationView} view
+     * @param {Object} options
      * @returns {CoinTermCreatorBox}
      * @public
      */
