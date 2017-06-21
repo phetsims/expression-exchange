@@ -70,6 +70,10 @@ define( function( require ) {
     var coinTermLayer = new Node();
     this.addChild( coinTermLayer );
 
+    // layer where the dialog-ish nodes are shown
+    var notificationsLayer = new Node();
+    this.addChild( notificationsLayer );
+
     // set the bounds for coin term retrieval in the model
     levelModel.setRetrievalBounds( screenLayoutBounds );
 
@@ -166,7 +170,7 @@ define( function( require ) {
       centerX: title.centerX,
       centerY: screenLayoutBounds.height * 0.33 // multiplier empirically determined
     } );
-    middleLayer.addChild( this.nextLevelNode );
+    notificationsLayer.addChild( this.nextLevelNode );
 
     // helper function for showing the reward node
     function showRewardNode() {
@@ -222,7 +226,7 @@ define( function( require ) {
       centerY: screenLayoutBounds.height * 0.4, // empirically determined
       visible: false
     } );
-    middleLayer.addChild( this.allLevelsCompletedDialog );
+    notificationsLayer.addChild( this.allLevelsCompletedDialog );
 
     gameModel.allLevelsCompletedProperty.link( function( allLevelsCompleted ) {
 
