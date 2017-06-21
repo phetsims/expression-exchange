@@ -8,17 +8,27 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var Color = require( 'SCENERY/util/Color' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var Node = require( 'SCENERY/nodes/Node' );
   var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
 
   // constants
   var MARGIN = 3.5;
   var ICON_SCALE = 0.35;
-  var YELLOW = new Color( 'yellow' );
-  var BLACK = new Color( 'black' );
+  var BLACK_ICON = new FontAwesomeNode( 'cut', {
+    scale: ICON_SCALE,
+    rotation: -Math.PI / 2, // scissors point up
+    fill: 'black',
+    stroke: 'black'
+  } );
+  var YELLOW_ICON = new FontAwesomeNode( 'cut', {
+    scale: ICON_SCALE,
+    rotation: -Math.PI / 2, // scissors point up
+    fill: 'yellow',
+    stroke: 'yellow'
+  } );
 
   /**
    * @constructor
@@ -33,26 +43,36 @@ define( function( require ) {
     // verify options are valid
     assert && assert( options.mode === 'normal' || options.mode === 'inverted', 'invalid mode option' );
 
-    var iconColor = options.mode === 'normal' ? BLACK : YELLOW;
+    var icon = options.mode === 'normal' ? BLACK_ICON : YELLOW_ICON;
+    var iconNode = new Node( { children: [ icon ] } );
 
     // the following options can't be overridden, and are set here and then passed to the parent type below
     _.extend( options, {
       xMargin: MARGIN,
       yMargin: MARGIN,
-      baseColor: options.mode === 'normal' ? YELLOW : BLACK,
+      baseColor: options.mode === 'normal' ? 'yellow' : 'black',
       cursor: 'pointer',
-      content: new FontAwesomeNode( 'cut', {
-        scale: ICON_SCALE,
-        rotation: -Math.PI / 2, // scissors point up
-        fill: iconColor,
-        stroke: iconColor
-      } )
+      content: iconNode
     } );
 
     RectangularPushButton.call( this, options );
+
+    this.disposeBreakApartButton = function() {
+      iconNode.dispose();
+      iconNode.removeAllChildren();
+    };
   }
 
   expressionExchange.register( 'BreakApartButton', BreakApartButton );
 
-  return inherit( RectangularPushButton, BreakApartButton );
+  return inherit( RectangularPushButton, BreakApartButton, {
+
+    /**
+     * @public
+     */
+    dispose: function() {
+      this.disposeBreakApartButton();
+      RectangularPushButton.prototype.dispose.call( this );
+    }
+  } );
 } );
