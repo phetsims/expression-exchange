@@ -11,11 +11,14 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var Node = require( 'SCENERY/nodes/Node' );
   var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
 
   // constants
   var MARGIN = 3.5;
   var ICON_SCALE = 0.35;
+  var BLACK_SCISSORS_ICON = createIconNode( 'black' );
+  var YELLOW_SCISSORS_ICON = createIconNode( 'yellow' );
 
   /**
    * @constructor
@@ -30,7 +33,8 @@ define( function( require ) {
     // verify options are valid
     assert && assert( options.mode === 'normal' || options.mode === 'inverted', 'invalid mode option' );
 
-    var iconNode = options.mode === 'normal' ? createIconNode( 'black' ) : createIconNode( 'yellow' );
+    var icon = options.mode === 'normal' ? BLACK_SCISSORS_ICON : YELLOW_SCISSORS_ICON;
+    var iconNode = new Node( { children: [ icon ] } );
 
     // the following options can't be overridden, and are set here and then passed to the parent type below
     _.extend( options, {
@@ -48,7 +52,6 @@ define( function( require ) {
       iconNode.removeAllChildren();
     };
   }
-
 
   /**
    * helper function for creating the icon node used on the button
