@@ -20,7 +20,7 @@ define( function( require ) {
   var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var NUMBER_OF_NODES = 75;
+  var NUMBER_OF_NODES = 60;
   var FACE_DIAMETER = 50;
   var COIN_RADIUS = 22;
   var STAR_OUTER_RADIUS = 20;
