@@ -54,6 +54,13 @@ define( function( require ) {
                                  showAllCoefficientsProperty,
                                  options ) {
 
+    options = _.extend( {
+
+      // this value can be set to false in order to conserve nodes, and therefore memory, if this node will never need
+      // to show the value of the coin term
+      supportShowValues: true
+    }, options );
+
     AbstractCoinTermNode.call( this, coinTerm, options );
 
     // @private {CoinTerm} - make the coin term available to methods
@@ -63,30 +70,40 @@ define( function( require ) {
     this.viewModeProperty = viewModeProperty;
 
     // @private {Image} - add the images for the front and back of the coin
+    var coinImageNodes = [];
     this.coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, true );
-    this.coinBackImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, false );
+    coinImageNodes.push( this.coinFrontImageNode );
+    if ( options.supportShowValues ) {
+      this.coinBackImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, false );
+      coinImageNodes.push( this.coinBackImageNode );
+    }
 
     // @private - add a parent node that contains the two coin images, and also maintains consistent bounds, necessary
     // to prevent a bunch of bounds change notification when the coin term is flipped
     this.coinImagesNode = new Rectangle( 0, 0, coinTerm.coinRadius * 2, coinTerm.coinRadius * 2, {
       fill: 'transparent', // invisible
-      children: [ this.coinFrontImageNode, this.coinBackImageNode ],
+      children: coinImageNodes,
       x: -coinTerm.coinRadius,
       y: -coinTerm.coinRadius
     } );
     this.coinAndTextRootNode.addChild( this.coinImagesNode );
 
     // @private - add the coin value text
-    this.coinValueText = new Text( '', { font: VALUE_FONT } );
-    this.coinImagesNode.addChild( this.coinValueText );
+    if ( options.supportShowValues ) {
+      this.coinValueText = new Text( '', { font: VALUE_FONT } );
+      this.coinImagesNode.addChild( this.coinValueText );
+    }
 
     // @private - add the 'term' text, e.g. xy
     this.termText = new RichText( 'temp', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
     this.coinAndTextRootNode.addChild( this.termText );
 
-    // @private - Add the text that includes the variable values.  This can change, so it starts off blank.
-    this.termWithVariableValuesText = new RichText( ' ', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
-    this.coinAndTextRootNode.addChild( this.termWithVariableValuesText );
+    if ( options.supportShowValues ) {
+
+      // @private - Add the text that includes the variable values.  This can change, so it starts off blank.
+      this.termWithVariableValuesText = new RichText( ' ', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
+      this.coinAndTextRootNode.addChild( this.termWithVariableValuesText );
+    }
 
     // @private - add the coefficient value
     this.coefficientText = new Text( '', {
@@ -118,17 +135,22 @@ define( function( require ) {
       this.updateRepresentation.bind( this )
     );
 
-    // hook up the listener that will step the changes to the flip state when the 'show values' state changes
-    var flipStateAnimator = this.updateCoinFlipAnimations.bind( this );
-    showCoinValuesProperty.link( flipStateAnimator );
+    if ( options.supportShowValues ) {
 
-    // adjust the coin images when the flipped state changes
-    this.flipStateProperty.link( this.updateFlipAppearance.bind( this ) );
+      // hook up the listener that will step the changes to the flip state when the 'show values' state changes
+      var flipStateAnimator = this.updateCoinFlipAnimations.bind( this );
+      showCoinValuesProperty.link( flipStateAnimator );
+
+      // adjust the coin images when the flipped state changes
+      this.flipStateProperty.link( this.updateFlipAppearance.bind( this ) );
+    }
 
     // @private
     this.disposeVariableCoinTermNode = function() {
       updateRepresentationMultilink.dispose();
-      showCoinValuesProperty.unlink( flipStateAnimator );
+      if ( flipStateAnimator ) {
+        showCoinValuesProperty.unlink( flipStateAnimator );
+      }
     };
   }
 
@@ -151,7 +173,9 @@ define( function( require ) {
       // experiment with it in the future.  See https://github.com/phetsims/expression-exchange/issues/10
       if ( !EEQueryParameters.adjustExpressionWidth ) {
 
-        var width = Math.max( this.coinImagesNode.width, this.termText.width, this.termWithVariableValuesText.width );
+        var termWithVariableValuesTextWidth = this.termWithVariableValuesText ? this.termWithVariableValuesText.width : 0;
+
+        var width = Math.max( this.coinImagesNode.width, this.termText.width, termWithVariableValuesTextWidth );
 
         if ( this.coefficientText.visible || Math.abs( this.coinTerm.totalCountProperty.get() ) > 1 ) {
           width += this.coefficientText.width + COEFFICIENT_X_SPACING;
@@ -183,9 +207,11 @@ define( function( require ) {
       this.coinImagesNode.visible = viewMode === ViewMode.COINS;
 
       // update coin value text
-      this.coinValueText.text = this.coinTerm.valueProperty.value;
-      this.coinValueText.centerX = this.coinTerm.coinRadius;
-      this.coinValueText.centerY = this.coinTerm.coinRadius;
+      if ( this.coinValueText ) {
+        this.coinValueText.text = this.coinTerm.valueProperty.value;
+        this.coinValueText.centerX = this.coinTerm.coinRadius;
+        this.coinValueText.centerY = this.coinTerm.coinRadius;
+      }
 
       // determine if the coefficient is visible, since this will be used several times below
       var coefficientVisible = Math.abs( this.coinTerm.totalCountProperty.get() ) !== 1 || showAllCoefficients;
@@ -216,16 +242,18 @@ define( function( require ) {
         termValueText = '-' + termValueText;
       }
 
-      this.termWithVariableValuesText.setScaleMagnitude( scale );
-      this.termWithVariableValuesText.text = termValueText;
-      this.termWithVariableValuesText.centerX = 0;
-      this.termWithVariableValuesText.y = textBaseline * scale;
-      this.termWithVariableValuesText.mouseArea = this.termWithVariableValuesText.localBounds
-        .dilatedX( POINTER_AREA_X_DILATION_AMOUNT )
-        .dilatedY( POINTER_AREA_Y_DILATION_AMOUNT )
-        .shiftedY( POINTER_AREA_DOWN_SHIFT );
-      this.termWithVariableValuesText.touchArea = this.termWithVariableValuesText.mouseArea;
-      this.termWithVariableValuesText.visible = viewMode === ViewMode.VARIABLES && showVariableValues;
+      if ( this.termWithVariableValuesText ) {
+        this.termWithVariableValuesText.setScaleMagnitude( scale );
+        this.termWithVariableValuesText.text = termValueText;
+        this.termWithVariableValuesText.centerX = 0;
+        this.termWithVariableValuesText.y = textBaseline * scale;
+        this.termWithVariableValuesText.mouseArea = this.termWithVariableValuesText.localBounds
+          .dilatedX( POINTER_AREA_X_DILATION_AMOUNT )
+          .dilatedY( POINTER_AREA_Y_DILATION_AMOUNT )
+          .shiftedY( POINTER_AREA_DOWN_SHIFT );
+        this.termWithVariableValuesText.touchArea = this.termWithVariableValuesText.mouseArea;
+        this.termWithVariableValuesText.visible = viewMode === ViewMode.VARIABLES && showVariableValues;
+      }
 
       // coefficient value and visibility
       this.coefficientText.setScaleMagnitude( scale );
@@ -243,7 +271,7 @@ define( function( require ) {
         this.coefficientText.right = this.termText.left - COEFFICIENT_X_SPACING;
         this.coefficientText.y = textBaseline * scale;
       }
-      else {
+      else if ( this.termWithVariableValuesText ) {
         this.coefficientText.right = this.termWithVariableValuesText.left - COEFFICIENT_X_SPACING;
         this.coefficientText.y = textBaseline * scale;
       }
@@ -299,6 +327,8 @@ define( function( require ) {
      * @param {number} flipState
      */
     updateFlipAppearance: function( flipState ) {
+
+      assert && assert( this.coinBackImageNode, 'options were not correctly set on this node to support coin flip' );
 
       // Use the y scale as the 'full scale' value.  This assumes that the two images are the same size, that they are
       // equal in width and height when unscaled, and that the Y dimension is not being scaled.

@@ -122,7 +122,8 @@ define( function( require ) {
         createdCoinTermDecomposable: false,
         maxNumberShown: numInstancesAllowed,
         numberToShowProperty: numberToShowProperty,
-        onCard: true
+        onCard: true,
+        supportShowValues: false
       }
     );
 

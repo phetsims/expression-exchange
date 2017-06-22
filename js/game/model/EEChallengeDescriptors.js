@@ -566,7 +566,7 @@ define( function( require ) {
      * @public
      */
     getChallengeDescriptor: function( level, challengeNumber ) {
-      return challengeSets[ level ][ challengeNumber ];
+      return challengeSets[ level ][ 0 ];
     },
 
     /**
@@ -574,9 +574,9 @@ define( function( require ) {
      * @public
      */
     shuffleChallenges: function() {
-      for ( var i = 0; i < challengeSets.length; i++ ) {
-        challengeSets[ i ] = phet.joist.random.shuffle( challengeSets[ i ] );
-      }
+      //for ( var i = 0; i < challengeSets.length; i++ ) {
+      //  challengeSets[ i ] = phet.joist.random.shuffle( challengeSets[ i ] );
+      //}
     },
 
     //@public
