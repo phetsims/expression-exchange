@@ -741,7 +741,7 @@ define( function( require ) {
       // where it is released.
       function coinTermUserControlledListener( userControlled ) {
 
-        if ( userControlled === false ) {
+        if ( !userControlled ) {
 
           // Set a bunch of variables related to the current state of this coin term.  It's not really necessary to set
           // them all every time, but it avoids a deeply nested if-else structure.
