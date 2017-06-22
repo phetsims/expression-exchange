@@ -10,7 +10,11 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var Node = require( 'SCENERY/nodes/Node' );
   var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
+
+  // constants
+  var ICON = new FontAwesomeNode( 'exchange', { scale: 0.35 } ); // scale empirically determined
 
   /**
    * @constructor
@@ -19,9 +23,11 @@ define( function( require ) {
 
     options = _.extend( {}, options );
 
+    var iconNode = new Node( { children: [ ICON ] } );
+
     // the following options can't be overridden
     options = _.extend( options, {
-      content: new FontAwesomeNode( 'exchange', { scale: 0.35 } ), // scale empirically determined
+      content: iconNode,
       xMargin: 3, // empirically determined
       yMargin: 5.5, // empirically determined
       baseColor: 'white',
@@ -29,9 +35,24 @@ define( function( require ) {
     } );
 
     RectangularPushButton.call( this, options );
+
+    this.disposeEditExpressionButton = function() {
+      iconNode.removeAllChildren();
+      iconNode.dispose();
+    };
   }
 
   expressionExchange.register( 'EditExpressionButton', EditExpressionButton );
 
-  return inherit( RectangularPushButton, EditExpressionButton );
+  return inherit( RectangularPushButton, EditExpressionButton, {
+
+    /**
+     * @public
+     */
+    dispose: function() {
+      this.disposeEditExpressionButton();
+      RectangularPushButton.prototype.dispose.call( this );
+    }
+
+  } );
 } );

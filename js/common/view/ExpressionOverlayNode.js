@@ -195,6 +195,8 @@ define( function( require ) {
 
     // create a dispose function
     this.disposeExpressionOverlayNode = function() {
+      editExpressionButton.dispose();
+      breakApartButton.dispose();
       expression.upperLeftCornerProperty.unlinkAttribute( translationLinkHandle );
       expression.inProgressAnimationProperty.unlink( updateDragHandlerAttachmentState );
       expression.inEditModeProperty.unlink( updateVisibility );
