@@ -35,7 +35,8 @@ define( function( require ) {
     options = _.extend( {
       addDragHandler: true,
       dragBounds: Bounds2.EVERYTHING,
-      breakApartButtonMode: 'normal'
+      breakApartButtonEnabled: true,
+      breakApartButtonMode: 'normal' // valid values are 'normal' and 'inverted', ignored if button not enabled
     }, options );
 
     var self = this;
@@ -70,29 +71,22 @@ define( function( require ) {
 
     // @private {BreakApartButton} - the button that will allow composite coins to be decomposed, added outside of the
     // root node so that it doesn't affect the bounds used in the model.
-    this.breakApartButton = new BreakApartButton( { visible: false, mode: options.breakApartButtonMode } );
-    this.addChild( this.breakApartButton );
+    if ( options.breakApartButtonEnabled ) {
 
-    // adjust the touch area of the break apart button to make it easier to use on touch devices
-    this.breakApartButton.touchArea = this.breakApartButton.localBounds.dilatedX( this.breakApartButton.width / 2 )
-      .withOffsets( 0, this.breakApartButton.height, 0, 0 );
+      this.breakApartButton = new BreakApartButton( { visible: false, mode: options.breakApartButtonMode } );
+      this.addChild( this.breakApartButton );
 
-    // add the listener to the break apart button
-    function breakApartButtonListener() {
-      coinTerm.breakApart();
+      // adjust the touch area of the break apart button to make it easier to use on touch devices
+      this.breakApartButton.touchArea = this.breakApartButton.localBounds.dilatedX( this.breakApartButton.width / 2 )
+        .withOffsets( 0, this.breakApartButton.height, 0, 0 );
 
-      // hide the button after clicking
-      self.hideBreakApartButton();
+      var breakApartButtonListener = this.handleBreakApartButtonPressed.bind( this );
+      this.breakApartButton.addListener( breakApartButtonListener );
 
-      // cancel timer if running
-      self.clearHideButtonTimer();
+      // add a listener for changes to the 'break apart allowed' state
+      var breakApartButtonOverListener = this.handleOverBreakApartButtonChanged.bind( this );
+      this.breakApartButton.buttonModel.overProperty.lazyLink( breakApartButtonOverListener );
     }
-
-    this.breakApartButton.addListener( breakApartButtonListener );
-
-    // add a listener for changes to the 'break apart allowed' state
-    var breakApartButtonOverListener = this.handleOverBreakApartButtonChanged.bind( this );
-    this.breakApartButton.buttonModel.overProperty.lazyLink( breakApartButtonOverListener );
 
     // move this node as the model representation moves
     function handlePositionChanged( position ) {
@@ -135,13 +129,15 @@ define( function( require ) {
     this.disposeAbstractCoinTermNode = function() {
       coinTerm.positionProperty.unlink( handlePositionChanged );
       coinTerm.existenceStrengthProperty.unlink( existenceStrengthListener );
-      self.breakApartButton.buttonModel.overProperty.unlink( breakApartButtonOverListener );
-      self.breakApartButton.removeListener( breakApartButtonListener );
       coinTerm.userControlledProperty.unlink( userControlledListener );
       coinTerm.breakApartAllowedProperty.unlink( breakApartAllowedListener );
       coinTerm.totalCountProperty.unlink( totalCountListener );
       pickabilityUpdaterMultilink.dispose();
-      self.breakApartButton.dispose();
+      if ( self.breakApartButton ) {
+        self.breakApartButton.buttonModel.overProperty.unlink( breakApartButtonOverListener );
+        self.breakApartButton.removeListener( breakApartButtonListener );
+        self.breakApartButton.dispose();
+      }
       self.removeAllChildren();
     };
 
@@ -193,15 +189,19 @@ define( function( require ) {
      * @private
      */
     showBreakApartButton: function() {
-      this.breakApartButton.centerX = 0;
-      this.breakApartButton.bottom = this.coinAndTextRootNode.visibleLocalBounds.minY - 3; // just above the coin term
-      this.breakApartButton.visible = true;
+      if ( this.breakApartButton ) {
+        this.breakApartButton.centerX = 0;
+        this.breakApartButton.bottom = this.coinAndTextRootNode.visibleLocalBounds.minY - 3; // just above the coin term
+        this.breakApartButton.visible = true;
+      }
     },
 
     // define a function that will position and hide the break apart button
     hideBreakApartButton: function() {
-      this.breakApartButton.center = Vector2.ZERO; // position within coin term so bounds aren't affected
-      this.breakApartButton.visible = false;
+      if ( this.breakApartButton ) {
+        this.breakApartButton.center = Vector2.ZERO; // position within coin term so bounds aren't affected
+        this.breakApartButton.visible = false;
+      }
     },
 
     /**
@@ -239,7 +239,7 @@ define( function( require ) {
           this.clearHideButtonTimer(); // called in case the timer was running
           this.showBreakApartButton();
         }
-        else if ( this.breakApartButton.visible ) {
+        else if ( this.breakApartButton && this.breakApartButton.visible ) {
 
           // the userControlled flag transitioned to false while the button was visible, start the time to hide it
           this.startHideButtonTimer();
@@ -253,7 +253,7 @@ define( function( require ) {
      * @private
      */
     handleBreakApartAllowedChanged: function( breakApartAllowed ) {
-      if ( this.breakApartButton.visible && !breakApartAllowed ) {
+      if ( this.breakApartButton && this.breakApartButton.visible && !breakApartAllowed ) {
         this.clearHideButtonTimer();
         this.hideBreakApartButton();
       }
@@ -269,12 +269,27 @@ define( function( require ) {
         this.moveToFront();
       }
 
-      if ( this.breakApartButton.visible && Math.abs( newCount ) < 2 ) {
+      if ( this.breakApartButton && this.breakApartButton.visible && Math.abs( newCount ) < 2 ) {
 
         // if combined count was reduced through cancellation while the break apart button was visible, hide it, see
         // https://github.com/phetsims/expression-exchange/issues/29
         this.hideBreakApartButton();
       }
+    },
+
+    /**
+     * handler for pressing of the break apart button
+     * @private
+     */
+    handleBreakApartButtonPressed: function() {
+
+      this.coinTerm.breakApart();
+
+      // hide the button after clicking
+      this.hideBreakApartButton();
+
+      // cancel timer if running
+      this.clearHideButtonTimer();
     },
 
     /**
