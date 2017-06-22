@@ -69,6 +69,11 @@ define( function( require ) {
     // @private {Property.<ViewMode>} - make the view mode available to methods
     this.viewModeProperty = viewModeProperty;
 
+    // @private {Rectangle} - an invisible node used to make sure text is rendered without bounds issues, see
+    // https://github.com/phetsims/expression-exchange/issues/26
+    this.boundsRect = new Rectangle( 0, 0, 1, 1, { fill: 'transparent' } );
+    this.coinAndTextRootNode.addChild( this.boundsRect );
+
     // @private {Image} - add the images for the front and back of the coin
     var coinImageNodes = [];
     this.coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, true );
@@ -286,6 +291,12 @@ define( function( require ) {
       ) );
       this.cardLikeBackground.opacity = this.coinTerm.cardOpacityProperty.get();
       this.cardLikeBackground.visible = this.cardLikeBackground.opacity > 0;
+
+      // Update the invisible rectangle that mimics and expands upon the bounds.  The amount of dilation was
+      // empirically determined.
+      this.boundsRect.visible = false;
+      this.boundsRect.setRectBounds( this.coinAndTextRootNode.visibleLocalBounds.dilated( 3 ) );
+      this.boundsRect.visible = true;
 
       // update the bounds that are registered with the model
       this.updateBoundsInModel();
