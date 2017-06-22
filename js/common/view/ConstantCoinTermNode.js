@@ -21,6 +21,13 @@ define( function( require ) {
   var VALUE_FONT = new PhetFont( { size: 34 } );
   var MIN_RELATIVE_BOUNDS_WIDTH = 45; // empirically determined to be similar to variable coin term widths
 
+  // The following constants control how the pointer areas (mouse and touch) are set up for the textual representation
+  // of the coin term.  These are empirically determined such that they are easy for users to grab but the don't
+  // protrude from expressions.
+  var POINTER_AREA_X_DILATION_AMOUNT = 15; // in screen coords
+  var POINTER_AREA_Y_DILATION_AMOUNT = 8; // in screen coords, less than X amt to avoid protruding out of expression
+  var POINTER_AREA_DOWN_SHIFT = 3; // in screen coords
+
   /**
    * @param {CoinTerm} constantCoinTerm - model of a coin
    * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
@@ -86,9 +93,15 @@ define( function( require ) {
           valueText.text = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value );
         }
 
-        // update position
+        // update relative position
         valueText.centerX = 0;
         valueText.y = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET * constantCoinTerm.scaleProperty.get();
+
+        // update pointer areas
+        valueText.mouseArea = valueText.localBounds
+          .dilatedXY( POINTER_AREA_X_DILATION_AMOUNT, POINTER_AREA_Y_DILATION_AMOUNT )
+          .shiftedY( POINTER_AREA_DOWN_SHIFT );
+        valueText.touchArea = valueText.mouseArea;
 
         // update the card background
         self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilatedXY(
