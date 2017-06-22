@@ -79,8 +79,7 @@ define( function( require ) {
       var coinTermNodeOptions = {
         addDragHandler: false,
         x: index * STAGGER_OFFSET,
-        y: index * STAGGER_OFFSET,
-        breakApartButtonEnabled: false // no need for break apart button in creator nodes, saves a bit of memory
+        y: index * STAGGER_OFFSET
       };
       var dummyCoinTerm = coinTermCreatorFunction( typeID, {
         initialPosition: Vector2.ZERO,

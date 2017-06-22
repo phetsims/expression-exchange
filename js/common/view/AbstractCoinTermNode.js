@@ -35,8 +35,7 @@ define( function( require ) {
     options = _.extend( {
       addDragHandler: true,
       dragBounds: Bounds2.EVERYTHING,
-      breakApartButtonEnabled: true,
-      breakApartButtonMode: 'normal' // valid values are 'normal' and 'inverted', ignored if button not enabled
+      breakApartButtonMode: 'normal' // valid values are 'normal' and 'inverted'
     }, options );
 
     var self = this;
@@ -62,6 +61,9 @@ define( function( require ) {
     this.coinAndTextRootNode = new Node();
     this.addChild( this.coinAndTextRootNode );
 
+    // @private {String} - make option visible to methods
+    this.breakApartButtonMode = options.breakApartButtonMode;
+
     // add a listener that will adjust opacity as existence strength changes
     var existenceStrengthListener = this.handleExistenceStrengthChanged.bind( this );
     coinTerm.existenceStrengthProperty.link( existenceStrengthListener );
@@ -69,24 +71,9 @@ define( function( require ) {
     // @private {function} - timer callback will be used to hide the break apart button if user doesn't use it
     this.hideButtonTimer = null;
 
-    // @private {BreakApartButton} - the button that will allow composite coins to be decomposed, added outside of the
-    // root node so that it doesn't affect the bounds used in the model.
-    if ( options.breakApartButtonEnabled ) {
-
-      this.breakApartButton = new BreakApartButton( { visible: false, mode: options.breakApartButtonMode } );
-      this.addChild( this.breakApartButton );
-
-      // adjust the touch area of the break apart button to make it easier to use on touch devices
-      this.breakApartButton.touchArea = this.breakApartButton.localBounds.dilatedX( this.breakApartButton.width / 2 )
-        .withOffsets( 0, this.breakApartButton.height, 0, 0 );
-
-      var breakApartButtonListener = this.handleBreakApartButtonPressed.bind( this );
-      this.breakApartButton.addListener( breakApartButtonListener );
-
-      // add a listener for changes to the 'break apart allowed' state
-      var breakApartButtonOverListener = this.handleOverBreakApartButtonChanged.bind( this );
-      this.breakApartButton.buttonModel.overProperty.lazyLink( breakApartButtonOverListener );
-    }
+    // @private {BreakApartButton} - the button that will allow composite coins to be decomposed, added lazily in order
+    // to conserve memory
+    this.breakApartButton = null;
 
     // move this node as the model representation moves
     function handlePositionChanged( position ) {
@@ -133,11 +120,6 @@ define( function( require ) {
       coinTerm.breakApartAllowedProperty.unlink( breakApartAllowedListener );
       coinTerm.totalCountProperty.unlink( totalCountListener );
       pickabilityUpdaterMultilink.dispose();
-      if ( self.breakApartButton ) {
-        self.breakApartButton.buttonModel.overProperty.unlink( breakApartButtonOverListener );
-        self.breakApartButton.removeListener( breakApartButtonListener );
-        self.breakApartButton.dispose();
-      }
       self.removeAllChildren();
     };
 
@@ -183,25 +165,52 @@ define( function( require ) {
       }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );
     },
 
-    // define a function that will position and show the break apart button
     /**
      * position and show the break apart button
      * @private
      */
     showBreakApartButton: function() {
-      if ( this.breakApartButton ) {
-        this.breakApartButton.centerX = 0;
-        this.breakApartButton.bottom = this.coinAndTextRootNode.visibleLocalBounds.minY - 3; // just above the coin term
-        this.breakApartButton.visible = true;
+      if ( !this.breakApartButton ) {
+        this.addBreakApartButton();
       }
+      this.breakApartButton.centerX = 0;
+      this.breakApartButton.bottom = this.coinAndTextRootNode.visibleLocalBounds.minY - 3; // just above the coin term
+      this.breakApartButton.visible = true;
     },
 
-    // define a function that will position and hide the break apart button
+    /**
+     * position the break apart button such that the bounds are within the bounds of the coin term node and hide it
+     * @private
+     */
     hideBreakApartButton: function() {
       if ( this.breakApartButton ) {
         this.breakApartButton.center = Vector2.ZERO; // position within coin term so bounds aren't affected
         this.breakApartButton.visible = false;
       }
+    },
+
+    /**
+     * add the break apart button, generally not done until needed in order to conserve memory
+     * @private
+     */
+    addBreakApartButton: function() {
+
+      this.breakApartButton = new BreakApartButton( { visible: false, mode: this.breakApartButtonMode } );
+
+      // Add the button outside of the root coin-and-text node so that it isn't included in the bounds that are shared
+      // with the model.
+      this.addChild( this.breakApartButton );
+
+      // adjust the touch area of the break apart button to make it easier to use on touch devices
+      this.breakApartButton.touchArea = this.breakApartButton.localBounds.dilatedX( this.breakApartButton.width / 2 )
+        .withOffsets( 0, this.breakApartButton.height, 0, 0 );
+
+      this.breakApartButtonListener = this.handleBreakApartButtonPressed.bind( this ); // @private, needed for disposal
+      this.breakApartButton.addListener( this.breakApartButtonListener );
+
+      // add a listener for changes to the 'break apart allowed' state
+      this.breakApartButtonOverListener = this.handleOverBreakApartButtonChanged.bind( this ); // @private, needed for disposal
+      this.breakApartButton.buttonModel.overProperty.lazyLink( this.breakApartButtonOverListener );
     },
 
     /**
@@ -349,6 +358,11 @@ define( function( require ) {
      */
     dispose: function() {
       this.disposeAbstractCoinTermNode();
+      if ( this.breakApartButton ) {
+        this.breakApartButton.buttonModel.overProperty.unlink( this.breakApartButtonOverListener );
+        this.breakApartButton.removeListener( this.breakApartButtonListener );
+        this.breakApartButton.dispose();
+      }
       Node.prototype.dispose.call( this );
     }
 
