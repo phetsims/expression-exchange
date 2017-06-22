@@ -187,6 +187,7 @@ define( function( require ) {
     if ( model.allowedRepresentations === AllowedRepresentations.COINS_AND_VARIABLES ) {
 
       var coinImageNode = new Image( switchCoinImage, { minWidth: SWITCH_COIN_WIDTH, maxWidth: SWITCH_COIN_WIDTH } );
+      coinImageNode.touchArea = coinImageNode.localBounds.dilatedXY( 15, 20 ).shiftedX( -10 );
 
       // enclose the variable text in a node so that its vertical position can be accurately set
       var variableIconNode = new Node( {
@@ -199,6 +200,7 @@ define( function( require ) {
           } )
         ]
       } );
+      variableIconNode.touchArea = variableIconNode.localBounds.dilatedXY( 10, 5 ).shiftedX( 5 );
 
       // add the switch
       this.addChild( new ABSwitch(
