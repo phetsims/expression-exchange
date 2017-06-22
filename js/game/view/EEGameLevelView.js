@@ -181,10 +181,12 @@ define( function( require ) {
       self.rewardNode.visible = true;
     }
 
-    // for symmetry
-    function hideRewardNode() {
+    // the reward node is removed rather then hidden in order to conserve memory
+    function removeRewardNode() {
       if ( self.rewardNode ) {
-        self.rewardNode.visible = false;
+        background.removeChild( self.rewardNode );
+        self.rewardNode.dispose();
+        self.rewardNode = null;
       }
     }
 
@@ -202,7 +204,7 @@ define( function( require ) {
           showRewardNode();
         }
         else {
-          hideRewardNode();
+          removeRewardNode();
         }
       }
     } );
@@ -247,7 +249,7 @@ define( function( require ) {
     // celebratory nodes and reset the flag in the model.
     this.inViewportProperty.link( function( inViewPort, wasInViewPort ) {
       if ( !inViewPort && wasInViewPort && gameModel.allLevelsCompletedProperty.get() ) {
-        hideRewardNode();
+        removeRewardNode();
         self.allLevelsCompletedDialog.visible = false;
         gameModel.clearAllLevelsCompleted();
       }
