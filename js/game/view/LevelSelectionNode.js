@@ -16,6 +16,7 @@ define( function( require ) {
   var LevelSelectionButton = require( 'VEGAS/LevelSelectionButton' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var Property = require( 'AXON/Property' );
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
   var SoundToggleButton = require( 'SCENERY_PHET/buttons/SoundToggleButton' );
   var Text = require( 'SCENERY/nodes/Text' );
@@ -54,7 +55,7 @@ define( function( require ) {
       buttonBackgroundColor: '#EDA891',
       numButtonRows: 2,
       controlsInset: 10,
-      size: EESharedConstants.LAYOUT_BOUNDS,
+      layoutBoundsProperty: new Property( EESharedConstants.LAYOUT_BOUNDS ),
       buttonScale: 0.8
     }, options );
 
@@ -108,8 +109,9 @@ define( function( require ) {
     var numColumns = options.numLevels / options.numButtonRows;
     var buttonSpacingX = buttons[ 0 ].width * 1.2; // Note: Assumes all buttons are the same size.
     var buttonSpacingY = buttons[ 0 ].height * 1.2;  // Note: Assumes all buttons are the same size.
-    var firstButtonOrigin = new Vector2( options.size.width / 2 - ( numColumns - 1 ) * buttonSpacingX / 2,
-      options.size.height * 0.5 - ( ( options.numButtonRows - 1 ) * buttonSpacingY ) / 2 );
+    var initialLayoutBounds = options.layoutBoundsProperty.get();
+    var firstButtonOrigin = new Vector2( initialLayoutBounds.width / 2 - ( numColumns - 1 ) * buttonSpacingX / 2,
+      initialLayoutBounds.height * 0.5 - ( ( options.numButtonRows - 1 ) * buttonSpacingY ) / 2 );
     for ( var row = 0; row < options.numButtonRows; row++ ) {
       for ( var col = 0; col < numColumns; col++ ) {
         var buttonIndex = row * numColumns + col;
@@ -117,12 +119,17 @@ define( function( require ) {
         buttons[ buttonIndex ].centerY = firstButtonOrigin.y + row * buttonSpacingY;
       }
     }
-    resetButton.right = options.size.width - options.controlsInset;
-    resetButton.bottom = options.size.height - options.controlsInset;
-    title.centerX = options.size.width / 2;
+    title.centerX = initialLayoutBounds.width / 2;
     title.centerY = buttons[ 0 ].top / 2;
-    soundToggleButton.left = options.controlsInset;
-    soundToggleButton.bottom = options.size.height - options.controlsInset;
+
+    resetButton.bottom = initialLayoutBounds.height - options.controlsInset;
+    soundToggleButton.bottom = initialLayoutBounds.height - options.controlsInset;
+
+    // have the reset and volume buttons have floating X positions
+    options.layoutBoundsProperty.link( function( layoutBounds ) {
+      resetButton.right = layoutBounds.maxX - options.controlsInset;
+      soundToggleButton.left = layoutBounds.minX + options.controlsInset;
+    } );
   }
 
   expressionExchange.register( 'LevelSelectionNode', LevelSelectionNode );

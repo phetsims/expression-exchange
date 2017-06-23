@@ -57,7 +57,7 @@ define( function( require ) {
       levelSelectionButtonIcons,
       levelScoreProperties,
       {
-        size: this.layoutBounds,
+        layoutBoundsProperty: this.visibleBoundsProperty,
         centerX: this.layoutBounds.centerX
       }
     );
