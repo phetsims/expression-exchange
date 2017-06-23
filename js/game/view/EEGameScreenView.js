@@ -67,9 +67,6 @@ define( function( require ) {
     // currently displayed level or level selection node
     var nodeInViewport = levelSelectionNode;
 
-    // define the value used to define how far the screens slide when moving in and out of view
-    var slideDistance = this.layoutBounds.width * 1.25;
-
     // create the game level views and add them to the main game play node
     this.gameLevelViews = [];
     gameModel.gameLevels.forEach( function( levelModel ) {
@@ -88,6 +85,7 @@ define( function( require ) {
     // hook up the animations for moving between level selection and game play
     gameModel.currentLevelProperty.lazyLink( function( newLevel, oldLevel ) {
 
+      var slideDistance = self.visibleBoundsProperty.get().width;
       var incomingViewNode = newLevel === null ? levelSelectionNode : self.gameLevelViews[ newLevel.levelNumber ];
       var outgoingViewNode = oldLevel === null ? levelSelectionNode : self.gameLevelViews[ oldLevel.levelNumber ];
       var outgoingNodeDestinationX;
