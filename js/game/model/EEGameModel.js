@@ -12,12 +12,13 @@ define( function( require ) {
   var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
   var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
   var EEGameLevel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameLevel' );
+  var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
 
   // constants
-  var NUMBER_OF_LEVELS = 8;
+  var NUMBER_OF_LEVELS = EEQueryParameters.minimalGameLevels ? 2 : 8;
   var CHALLENGES_PER_LEVEL = 3;
   var POINTS_PER_CHALLENGE = 1;
   var MAX_SCORE_PER_LEVEL = CHALLENGES_PER_LEVEL * POINTS_PER_CHALLENGE;

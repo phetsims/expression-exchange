@@ -172,6 +172,14 @@ define( function( require ) {
     } );
     notificationsLayer.addChild( this.nextLevelNode );
 
+    // create the dialog that is shown when all levels reach completion
+    this.allLevelsCompletedDialog = new AllLevelsCompletedDialog( gameModel.returnToLevelSelection.bind( gameModel ), {
+      centerX: title.centerX,
+      centerY: screenLayoutBounds.height * 0.4, // empirically determined
+      visible: false
+    } );
+    notificationsLayer.addChild( this.allLevelsCompletedDialog );
+
     // helper function for showing the reward node
     function showRewardNode() {
       if ( !self.rewardNode ) {
@@ -196,7 +204,7 @@ define( function( require ) {
 
     // show the "next level" node when this level becomes completed
     levelModel.completedSinceLastClearProperty.link( function( currentlyCompleted ) {
-      showNextLevelNodeProperty.set( currentlyCompleted );
+      showNextLevelNodeProperty.set( currentlyCompleted && !gameModel.allLevelsCompletedProperty.get() );
 
       // if the appropriate query param is set, show the reward node every time this level is successfully completed
       if ( EEQueryParameters.showRewardNodeEveryLevel ) {
@@ -209,39 +217,33 @@ define( function( require ) {
       }
     } );
 
-    gameModel.allLevelsCompletedProperty.link( function( allLevelsCompleted ) {
+    showNextLevelNodeProperty.linkAttribute( this.nextLevelNode, 'visible' );
+
+    gameModel.allLevelsCompletedProperty.link( function( allLevelsCompleted, allLevelsWereCompleted ) {
 
       // when all levels become completed, we no longer show the "Next Level" nodes, see
       // https://github.com/phetsims/expression-exchange/issues/108 for more information about why
       if ( allLevelsCompleted ) {
         showNextLevelNodeProperty.set( false );
+
+        if ( self.inViewportProperty.get() ) {
+
+          // show the 'all levels completed' dialog
+          self.allLevelsCompletedDialog.visible = true;
+
+          // show the reward node
+          showRewardNode();
+
+          // play the sound that indicates all levels have been completed
+          gameAudioPlayer.gameOverPerfectScore();
+        }
       }
-    } );
 
-    showNextLevelNodeProperty.link( function( showNextLevelNode ) {
-      self.nextLevelNode.visible = showNextLevelNode;
-    } );
-
-    // create the dialog that is shown when all levels reach completion
-    this.allLevelsCompletedDialog = new AllLevelsCompletedDialog( gameModel.returnToLevelSelection.bind( gameModel ), {
-      centerX: title.centerX,
-      centerY: screenLayoutBounds.height * 0.4, // empirically determined
-      visible: false
-    } );
-    notificationsLayer.addChild( this.allLevelsCompletedDialog );
-
-    gameModel.allLevelsCompletedProperty.link( function( allLevelsCompleted ) {
-
-      if ( allLevelsCompleted && self.inViewportProperty.get() ) {
-
-        // show the 'all levels completed' dialog
-        self.allLevelsCompletedDialog.visible = true;
-
-        // show the reward node
-        showRewardNode();
-
-        // play the sound that indicates all levels have been completed
-        gameAudioPlayer.gameOverPerfectScore();
+      // this handles the case where the user presses the refresh button while in the "all levels completed" state
+      if ( !allLevelsCompleted && allLevelsWereCompleted && self.inViewportProperty.get() ) {
+        self.allLevelsCompletedDialog.visible = false;
+        removeRewardNode();
+        gameModel.clearAllLevelsCompleted();
       }
     } );
 

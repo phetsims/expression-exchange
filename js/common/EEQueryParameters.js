@@ -20,9 +20,11 @@ define( function( require ) {
     adjustExpressionWidth: { type: 'flag' },
 
     // show the reward screen every time a level is completed instead of when ALL levels are completed
-    showRewardNodeEveryLevel: { type: 'flag' }
-  } );
+    showRewardNodeEveryLevel: { type: 'flag' },
 
+    // reduce the number of game levels, useful for testing "all levels completed" behavior
+    minimalGameLevels: { type: 'flag' }
+  } );
 
   expressionExchange.register( 'EEQueryParameters', EEQueryParameters );
 
