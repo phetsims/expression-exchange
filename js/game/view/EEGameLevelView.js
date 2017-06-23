@@ -23,6 +23,7 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetColorScheme = require( 'SCENERY_PHET/PhetColorScheme' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  var platform = require( 'PHET_CORE/platform' );
   var Property = require( 'AXON/Property' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
@@ -182,11 +183,13 @@ define( function( require ) {
 
     // helper function for showing the reward node
     function showRewardNode() {
-      if ( !self.rewardNode ) {
+      if ( !self.rewardNode && !platform.mobileSafari ) {
         self.rewardNode = new EERewardNode();
         background.addChild( self.rewardNode );
       }
-      self.rewardNode.visible = true;
+      if ( self.rewardNode ) {
+        self.rewardNode.visible = true;
+      }
     }
 
     // the reward node is removed rather then hidden in order to conserve memory
