@@ -1,6 +1,6 @@
 {
   "coinValues": {
-    "value": "coin values"
+    "value": "Coin Values"
   },
   "done": {
     "value": "Done"
@@ -27,13 +27,13 @@
     "value": "My Collection"
   },
   "allCoefficients": {
-    "value": "all coefficients"
+    "value": "All Coefficients"
   },
   "total": {
     "value": "Total"
   },
   "variableValues": {
-    "value": "variable values"
+    "value": "Variable Values"
   },
   "variables": {
     "value": "Variables"
