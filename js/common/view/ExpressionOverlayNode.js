@@ -113,9 +113,12 @@ define( function( require ) {
 
     // add the listener that will put the expression into edit mode, and will also hide the buttons
     editExpressionButton.addListener( function() {
-      expression.inEditModeProperty.set( true );
-      self.hidePopUpButtons();
-      self.clearHideButtonsTimer();
+
+      if ( !expression.userControlledProperty.get() ) {
+        expression.inEditModeProperty.set( true );
+        self.hidePopUpButtons();
+        self.clearHideButtonsTimer();
+      }
     } );
 
     // pre-allocated vectors, used for calculating allowable locations for the expression

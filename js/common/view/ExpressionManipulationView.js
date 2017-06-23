@@ -92,7 +92,9 @@ define( function( require ) {
     barrierRectanglePath.addInputListener( {
 
       down: function() {
-        barrierRectangleArmedForRemoval = true;
+        if ( !model.isAnythingUserControlled() ) {
+          barrierRectangleArmedForRemoval = true;
+        }
       },
 
       up: function() {

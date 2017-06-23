@@ -1309,6 +1309,28 @@ define( function( require ) {
     setRetrievalBounds: function( bounds ) {
       assert && assert( this.retrievalBounds === Bounds2.EVERYTHING, 'coin term bounds should only be set once' );
       this.retrievalBounds = bounds;
+    },
+
+    /**
+     * returns true is any expression or coin term is currently user controlled, helpful in preventing multi-touch
+     * issues
+     * @returns {boolean}
+     * @public
+     */
+    isAnythingUserControlled: function() {
+      var somethingIsUserControlled = false;
+      var i;
+      for ( i = 0; i < this.coinTerms.length && !somethingIsUserControlled; i++ ) {
+        if ( this.coinTerms.get( i ).userControlledProperty.get() ) {
+          somethingIsUserControlled = true;
+        }
+      }
+      for ( i = 0; i < this.expressions.length && !somethingIsUserControlled; i++ ) {
+        if ( this.expressions.get( i ).userControlledProperty.get() ) {
+          somethingIsUserControlled = true;
+        }
+      }
+      return somethingIsUserControlled;
     }
 
   } );
