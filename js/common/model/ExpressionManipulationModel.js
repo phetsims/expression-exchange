@@ -534,7 +534,6 @@ define( function( require ) {
      * @private
      */
     getFreeCoinTermMostOverlappingWithExpression: function( expression ) {
-      var self = this;
       var maxOverlap = 0;
       var mostOverlappingFreeCoinTerm = null;
 
