@@ -335,7 +335,13 @@ define( function( require ) {
           // offset things a little in touch mode for better visibility while dragging
           if ( event.pointer.isTouch ) {
             var position = self.globalToParentPoint( event.pointer.point );
-            coinTermPositionAndDestination.set( position.plusXY( 0, TOUCH_DRAG_Y_OFFSET ) );
+            var adjustedPosition = position.plusXY( 0, TOUCH_DRAG_Y_OFFSET );
+            if ( dragBounds.containsPoint( adjustedPosition ) ) {
+              coinTermPositionAndDestination.set( adjustedPosition );
+            }
+            else {
+              coinTermPositionAndDestination.set( position );
+            }
           }
           else {
             coinTermPositionAndDestination.set( self.coinTerm.positionProperty.get() );
