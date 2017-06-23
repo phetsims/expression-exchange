@@ -28,7 +28,7 @@ define( function( require ) {
       softwareDevelopment: 'John Blanco',
       graphicArts: 'Mariah Hermsmeyer',
       team: 'Ariel Paul, Kathy Perkins, David Webb',
-      qualityAssurance: 'Steele Dalton, Elise Morgan, Oliver Nix, Oliver Orejola, Bryan Yoelin'
+      qualityAssurance: 'Steele Dalton, Alex Dornan, Ethan Johnson'
     }
   };
 
