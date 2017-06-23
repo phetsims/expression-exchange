@@ -107,11 +107,9 @@ define( function( require ) {
     //                              collection areas (game only)
     this.scaleProperty = new Property( 1 );
 
-    // @public {Property.<boolean>} - a property that can be set in order to prevent the user from being able to
-    // interact directly with the coin term, useful for preventing problems with expression assembly.  This is not done
-    // as positive logic, e.g. 'userInteractionEnabledProperty', because there are other states of the coin term that
-    // can prevent interaction also.
-    this.preventUserInteractionProperty = new Property( false );
+    // @public {Property.<Expression|null>} - expression of which this coin term is a part, which is null for a 'solo'
+    // coin term.
+    this.expressionProperty = new Property( null );
 
     //------------------------------------------------------------------------
     // non-property attributes

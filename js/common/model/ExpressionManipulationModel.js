@@ -1015,7 +1015,7 @@ define( function( require ) {
 
             // the expression was released over a free coin term, so have that free coin term join the expression
             var coinTermToAddToExpression = addedExpression.hoveringCoinTerms[ 0 ];
-            coinTermToAddToExpression.preventUserInteractionProperty.set( true );
+            coinTermToAddToExpression.expressionProperty.set( addedExpression ); // prevents interaction during animation
             if ( addedExpression.rightHintActiveProperty.get() ) {
 
               // move to the left side of the coin term
@@ -1044,7 +1044,6 @@ define( function( require ) {
 
             addedExpression.destinationReachedEmitter.addListener( function addCoinTermAfterAnimation() {
               addedExpression.addCoinTerm( coinTermToAddToExpression );
-              coinTermToAddToExpression.preventUserInteractionProperty.set( false );
               addedExpression.destinationReachedEmitter.removeListener( addCoinTermAfterAnimation );
             } );
           }
@@ -1192,7 +1191,7 @@ define( function( require ) {
         // in the 'join zone', and then checks that it's closer than any previously found joinable coin term.
         if ( thatCoinTerm !== thisCoinTerm && // exclude thisCoinTerm
              !thatCoinTerm.userControlledProperty.get() && // exclude coin terms that are user controlled
-             !self.isCoinTermInExpression( thatCoinTerm ) && // exclude coin terms that are already in expressions
+             thatCoinTerm.expressionProperty.get() === null && // exclude coin terms that are in or are joining expressions
              !thatCoinTerm.collectedProperty.get() && // exclude coin terms that are in a collection
              !thatCoinTerm.inProgressAnimationProperty.get() && // exclude coin terms that are moving
              self.isCoinTermInExpressionCombineZone( thatCoinTerm, thisCoinTerm ) && // in the 'combine zone'

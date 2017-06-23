@@ -154,14 +154,6 @@ define( function( require ) {
       } );
     } );
 
-    // add a listener that does internal state updates when entering or exiting edit mode
-    this.inEditModeProperty.link( function( inEditMode ) {
-      self.coinTerms.forEach( function( coinTerm ) {
-        // don't bock user interaction with coin terms when in edit mode
-        coinTerm.preventUserInteractionProperty.set( !inEditMode );
-      } );
-    } );
-
     // add a listener that will adjust the scale when needed, generally done when expression is collected or uncollected
     this.scaleProperty.lazyLink( function( scale, previousScale ) {
 
@@ -418,7 +410,7 @@ define( function( require ) {
       assert && assert( !this.coinTerms.contains( coinTerm ), 'coin term is already present in expression' );
 
       // prevent the user from direct interaction with this coin term while it's in this expression
-      coinTerm.preventUserInteractionProperty.set( true );
+      coinTerm.expressionProperty.set( this );
 
       this.coinTerms.push( coinTerm );
 
@@ -508,7 +500,7 @@ define( function( require ) {
      * @public
      */
     removeCoinTerm: function( coinTerm ) {
-      coinTerm.preventUserInteractionProperty.set( false );
+      coinTerm.expressionProperty.set( null );
       coinTerm.breakApartAllowedProperty.set( true );
       coinTerm.showMinusSignWhenNegativeProperty.set( true );
       this.coinTerms.remove( coinTerm );

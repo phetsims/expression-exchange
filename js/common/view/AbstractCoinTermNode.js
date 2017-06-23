@@ -104,13 +104,27 @@ define( function( require ) {
     var totalCountListener = this.handleCombinedCountChanged.bind( this );
     coinTerm.totalCountProperty.link( totalCountListener );
 
+    // function to update the pickability as the states change
+    function updatePickability() {
+      var expression = coinTerm.expressionProperty.get();
+      self.pickable = ( expression === null || expression.inEditModeProperty.get() ) && !coinTerm.inProgressAnimationProperty.get() && !coinTerm.collectedProperty.get();
+    }
+
     // update the pickability of this node
     var pickabilityUpdaterMultilink = new Property.multilink(
-      [ coinTerm.preventUserInteractionProperty, coinTerm.inProgressAnimationProperty, coinTerm.collectedProperty ],
-      function( preventUserInteraction, inProgressAnimation, collected ) {
-        self.pickable = !preventUserInteraction && !inProgressAnimation && !collected;
-      }
+      [ coinTerm.expressionProperty, coinTerm.inProgressAnimationProperty, coinTerm.collectedProperty ],
+      updatePickability
     );
+
+    // allow the coin term to be pickable if the expression that it is in transitions into edit mode
+    coinTerm.expressionProperty.link( function( expression, previousExpression ) {
+      if ( expression ) {
+        expression.inEditModeProperty.link( updatePickability );
+      }
+      else if ( previousExpression ) {
+        previousExpression.inEditModeProperty.unlink( updatePickability );
+      }
+    } );
 
     // internal dispose function, reference in inherit block
     this.disposeAbstractCoinTermNode = function() {
