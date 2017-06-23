@@ -20,6 +20,7 @@ define( function( require ) {
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var RichText = require( 'SCENERY_PHET/RichText' );
   var Text = require( 'SCENERY/nodes/Text' );
+  var Vector2 = require( 'DOT/Vector2' );
   var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
@@ -210,6 +211,14 @@ define( function( require ) {
 
       // control front coin image visibility
       this.coinImagesNode.visible = viewMode === ViewMode.COINS;
+
+      // adjust the size of the coin term images
+      var desiredCoinImageWidth = this.coinTerm.coinRadius * 2 * scale;
+      if ( Math.abs( this.coinImagesNode.width - desiredCoinImageWidth ) > 1E-4 ) {
+        this.coinImagesNode.setScaleMagnitude( 1 );
+        this.coinImagesNode.setScaleMagnitude( desiredCoinImageWidth / this.coinImagesNode.width );
+        this.coinImagesNode.center = Vector2.ZERO;
+      }
 
       // update coin value text
       if ( this.coinValueText ) {
