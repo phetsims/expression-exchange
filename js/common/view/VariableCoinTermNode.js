@@ -203,8 +203,6 @@ define( function( require ) {
      */
     updateRepresentation: function( viewMode, showAllCoefficients, showVariableValues ) {
 
-      // TODO: this was written with no thought given to performance, may need to optimize
-
       // convenience vars
       var textBaseline = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET;
       var scale = this.coinTerm.scaleProperty.get(); // for convenience

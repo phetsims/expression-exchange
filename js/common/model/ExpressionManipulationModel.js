@@ -1147,7 +1147,6 @@ define( function( require ) {
      */
     isCoinTermInExpressionCombineZone: function( coinTermA, coinTermB ) {
 
-      // TODO: This could end up being a fair amount of allocations and may need some pre-allocated bounds for good performance
       // Make the combine zone wider, but vertically shorter, than the actual bounds, as this gives the most desirable
       // behavior.  The multiplier for the height was empirically determined.
       var extendedTargetCoinTermBounds = coinTermA.getViewBounds().dilatedXY(
