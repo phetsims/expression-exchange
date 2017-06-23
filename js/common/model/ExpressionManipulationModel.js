@@ -991,8 +991,10 @@ define( function( require ) {
             // expression.
             addedExpression.destinationReachedEmitter.addListener( function destinationReachedListener() {
 
-              // destination reached, combine with other expression, but ONLY if it hasn't moved
-              if ( mostOverlappingExpression.getUpperRightCorner().equals( destinationForCombine ) ) {
+              // destination reached, combine with other expression, but ONLY if it hasn't moved or been removed
+              if ( mostOverlappingExpression.getUpperRightCorner().equals( destinationForCombine ) &&
+                   self.expressions.contains( mostOverlappingExpression ) ) {
+
                 var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
                 self.expressions.remove( addedExpression );
                 coinTermsToBeMoved.forEach( function( coinTerm ) {
