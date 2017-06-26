@@ -352,20 +352,21 @@ define( function( require ) {
       // equal in width and height when unscaled, and that the Y dimension is not being scaled.
       var fullScale = this.coinFrontImageNode.getScaleVector().y;
 
+      var centerX = this.coinTerm.coinRadius;
+
       // set the width of the front image
       this.coinFrontImageNode.setScaleMagnitude(
         Math.max( ( 1 - 2 * flipState ) * fullScale, MIN_SCALE_FOR_FLIP ),
         fullScale
       );
-      this.coinFrontImageNode.centerX = this.coinImagesNode.width / 2;
+      this.coinFrontImageNode.centerX = centerX;
 
       // set the width of the back image
       this.coinBackImageNode.setScaleMagnitude(
         Math.max( 2 * ( flipState - 0.5 ) * fullScale, MIN_SCALE_FOR_FLIP ),
         fullScale
       );
-      this.coinBackImageNode.centerX = this.coinImagesNode.width / 2;
-      this.coinBackImageNode.centerX = this.coinImagesNode.width / 2;
+      this.coinBackImageNode.centerX = centerX;
 
       // set the width of the coin value text
       this.coinValueText.setScaleMagnitude( Math.max( 2 * ( flipState - 0.5 ), MIN_SCALE_FOR_FLIP ), 1 );
