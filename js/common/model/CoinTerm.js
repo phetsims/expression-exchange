@@ -251,7 +251,7 @@ define( function( require ) {
         ) );
       }
 
-      // if the card is visible, step its fade sequence
+      // if the background card is visible, step its fade sequence
       if ( this.cardPreFadeCountdown !== null ) {
         this.cardPreFadeCountdown = Math.max( this.cardPreFadeCountdown - dt, 0 );
         if ( this.cardPreFadeCountdown === 0 ) {

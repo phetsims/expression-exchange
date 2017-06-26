@@ -774,6 +774,14 @@ define( function( require ) {
     },
 
     /**
+     * clear the list of other expressions that are currently hovering over this expression
+     * @public
+     */
+    clearHoveringExpressions: function() {
+      this.hoveringExpressions.length = 0;
+    },
+
+    /**
      * returns true if the given coin term is on the list of those hovering over the expression
      * @param {CoinTerm} coinTerm
      * @returns {boolean}

@@ -87,6 +87,13 @@ define( function( require ) {
     } );
     this.addChild( barrierRectanglePath );
 
+    // TODO: Temp code for debugger fuzz test error
+    if ( !window.phet.exex ) {
+      window.phet.exex = {};
+      window.phet.exex.barrierRects = [];
+    }
+    window.phet.exex.barrierRects.push( barrierRectanglePath );
+
     // add a listener to the barrier rectangle that will exit the expression editing mode when clicked upon
     var barrierRectangleArmedForRemoval = false;
     barrierRectanglePath.addInputListener( {

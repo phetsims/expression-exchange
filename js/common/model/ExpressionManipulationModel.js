@@ -182,6 +182,12 @@ define( function( require ) {
       // halos should be activated and deactivated based on the positions of all coin terms and expressions.
       if ( !this.expressionBeingEditedProperty.get() ) {
 
+        // clear the hovering lists for all expressions - they will then be updated below
+        this.expressions.forEach( function( expression ) {
+          expression.clearHoveringCoinTerms();
+          expression.clearHoveringExpressions();
+        } );
+
         // get a list of user controlled expressions, max of one on mouse based systems, any number on touch devices
         var userControlledExpressions = _.filter( this.expressions.getArray(), function( expression ) {
           return expression.userControlledProperty.get();
@@ -227,11 +233,6 @@ define( function( require ) {
 
             if ( expression === expressionOverWhichThisExpressionIsHovering ) {
               expression.addHoveringExpression( userControlledExpression );
-            }
-            else {
-
-              // removes it if there, no-op if not
-              expression.removeHoveringExpression( userControlledExpression );
             }
           } );
 
@@ -293,9 +294,6 @@ define( function( require ) {
           self.expressions.forEach( function( expression ) {
             if ( expression === expressionOverWhichCoinTermIsHovering ) {
               expression.addHoveringCoinTerm( userControlledCoinTerm );
-            }
-            else {
-              expression.removeHoveringCoinTerm( userControlledCoinTerm );
             }
           } );
         } );
@@ -978,7 +976,7 @@ define( function( require ) {
           }
           else if ( mostOverlappingExpression ) {
 
-            // The expression was released in a place where it at least partially overlaps another expression, the the
+            // The expression was released in a place where it at least partially overlaps another expression, so the
             // two expressions should be joined into one.  The first step is to remove the expression from the list of
             // those hovering.
             mostOverlappingExpression.removeHoveringExpression( addedExpression );
