@@ -133,9 +133,13 @@ define( function( require ) {
     // Add the listener that will allow the user to click on this node and create a new coin term, and then position it
     // in the model.  This works by forwarding the events it receives to the node that gets created in the view.
     this.addInputListener( {
+
       down: function( event ) {
 
-        // Don't try to start drags with a right mouse button or an attached pointer.
+        // ignore this if already dragging
+        if ( event.pointer.dragging ) { return; }
+
+        // don't try to start drags with a right mouse button or an attached pointer
         if ( !event.canStartPress() ) { return; }
 
         // Determine the origin position of the new element based on where the creator node is.  This is done so that
@@ -166,7 +170,18 @@ define( function( require ) {
           // forward the event to the view node's drag handler
           createdCoinTermView.dragHandler.startDrag( event );
         }
+      },
+
+      // touch enters this node
+      touchenter: function( event ) {
+        this.down( event );
+      },
+
+      // touch moves over this node
+      touchmove: function( event ) {
+        this.down( event );
       }
+
     } );
 
     // dispose function
