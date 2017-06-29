@@ -123,7 +123,7 @@ define( function( require ) {
 
     // add accordion box that will contain the total value readout
     var totalValueAccordionBox = new AccordionBox( totalValueReadout, {
-      titleNode: new Text( totalString, { font: ACCORDION_BOX_TITLE_FONT } ),
+      titleNode: new Text( totalString, { font: ACCORDION_BOX_TITLE_FONT, maxWidth: leftSideBoxWidth * 0.9 } ),
       fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
       left: INSET,
       top: INSET,
@@ -162,7 +162,7 @@ define( function( require ) {
 
     // add the variable value control to an accordion box, and add the accordion box to the view
     var variableValuesAccordionBox = new AccordionBox( variableValueControl, {
-      titleNode: new Text( variablesString, { font: ACCORDION_BOX_TITLE_FONT } ),
+      titleNode: new Text( variablesString, { font: ACCORDION_BOX_TITLE_FONT, maxWidth: leftSideBoxWidth * 0.65 } ),
       fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
       contentYMargin: 20,
       left: INSET,
@@ -231,7 +231,10 @@ define( function( require ) {
 
     // add accordion box that will contain the collection display
     var myCollectionAccordionBox = new AccordionBox( myCollectionDisplay, {
-      titleNode: new Text( myCollectionString, { font: ACCORDION_BOX_TITLE_FONT } ),
+      titleNode: new Text( myCollectionString, {
+        font: ACCORDION_BOX_TITLE_FONT,
+        maxWidth: collectionDisplayWidth * 0.90
+      } ),
       fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
       right: this.layoutBounds.width - INSET,
       top: INSET,
