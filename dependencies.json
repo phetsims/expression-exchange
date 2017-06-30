@@ -13,7 +13,7 @@
     "branch": "master"
   },
   "chipper": {
-    "sha": "5e2fcd6dad2c4861efc4108c0cde61dd7c5ff785",
+    "sha": "57453afd020aaea9738cb7eca2a085f7e896d92e",
     "branch": "master"
   },
   "dot": {
@@ -45,11 +45,11 @@
     "branch": "master"
   },
   "scenery": {
-    "sha": "e75c1c55981e54cb87e77a430a9fcee66362ddb6",
+    "sha": "494ce43dcce4aa3ff84dffdd334fd42d6202d224",
     "branch": "master"
   },
   "scenery-phet": {
-    "sha": "1610b400b28d089d924cb41d72aafac2c60f0007",
+    "sha": "727d5bd7ac8d93a1c6e8b78b27c9fb6a8a4e783d",
     "branch": "master"
   },
   "sherpa": {
@@ -57,7 +57,7 @@
     "branch": "master"
   },
   "sun": {
-    "sha": "1ea05e92d1a8ce6a275ac75541265e1b508c9be9",
+    "sha": "37de5da5f86651b3b942338abd6f22c2daed65cd",
     "branch": "master"
   },
   "tandem": {
