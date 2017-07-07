@@ -128,6 +128,7 @@ define( function( require ) {
 
     // internal dispose function, reference in inherit block
     this.disposeAbstractCoinTermNode = function() {
+      this.clearHideButtonTimer();
       coinTerm.positionProperty.unlink( handlePositionChanged );
       coinTerm.existenceStrengthProperty.unlink( existenceStrengthListener );
       coinTerm.userControlledProperty.unlink( userControlledListener );
@@ -152,8 +153,10 @@ define( function( require ) {
      */
     handleExistenceStrengthChanged: function( existenceStrength ) {
       assert && assert( existenceStrength >= 0 && existenceStrength <= 1, 'existence strength must be between 0 and 1' );
-      this.opacity = existenceStrength;
-      this.pickable = existenceStrength === 1; // prevent interaction with fading coin term
+      if ( !this.isDisposed() ) {
+        this.pickable = existenceStrength === 1; // prevent interaction with fading coin term
+        this.opacity = existenceStrength;
+      }
     },
 
     /**

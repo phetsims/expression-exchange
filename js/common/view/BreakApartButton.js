@@ -49,7 +49,6 @@ define( function( require ) {
 
     this.disposeBreakApartButton = function() {
       iconNode.dispose();
-      iconNode.removeAllChildren();
     };
   }
 

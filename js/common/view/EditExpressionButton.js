@@ -37,7 +37,6 @@ define( function( require ) {
     RectangularPushButton.call( this, options );
 
     this.disposeEditExpressionButton = function() {
-      iconNode.removeAllChildren();
       iconNode.dispose();
     };
   }
