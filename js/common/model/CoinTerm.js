@@ -163,13 +163,6 @@ define( function( require ) {
     // listeners to own properties
     //------------------------------------------------------------------------
 
-    // monitor position, emit returned to origin event when appropriate
-    this.positionProperty.lazyLink( function( position ) {
-      if ( position.distance( self.initialPosition ) < CLOSE_ENOUGH_TO_HOME && !self.userControlledProperty.get() ) {
-        self.returnedToOriginEmitter.emit();
-      }
-    } );
-
     // monitor the total count, start fading the existence strength if it goes to zero
     this.totalCountProperty.lazyLink( function( totalCount ) {
       if ( totalCount === 0 ) {
@@ -269,6 +262,11 @@ define( function( require ) {
           // fade complete
           this.cardFadeCountdown = null;
         }
+      }
+
+      // if this coin term has returned to its origin, emit an event to trigger removal
+      if ( this.positionProperty.get().distance( this.initialPosition ) < CLOSE_ENOUGH_TO_HOME && !this.userControlledProperty.get() ) {
+        this.returnedToOriginEmitter.emit();
       }
     },
 
