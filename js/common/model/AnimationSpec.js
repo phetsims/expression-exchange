@@ -20,16 +20,16 @@ define( function( require ) {
    */
   function AnimationSpec( startPosition, travelVector, totalDuration ) {
 
-    // @public {Vector2} (read only)
+    // @public (read only) {Vector2}
     this.startPosition = startPosition;
 
-    // @public {Vector2} (read only)
+    // @public (read only) {Vector2}
     this.travelVector = travelVector;
 
-    // @public {number} (read only)
+    // @public (read only) {number}
     this.totalDuration = totalDuration;
 
-    // @public {number} (read-write) - time that has passed since the animation was initiated
+    // @public (read only) {number} - time that has passed since the animation was initiated
     this.timeSoFar = 0;
   }
 

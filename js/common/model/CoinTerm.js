@@ -60,18 +60,14 @@ define( function( require ) {
     // properties
     //------------------------------------------------------------------------
 
-    // @public {Property.<Vector2>} (read only), set using methods below
+    // @public (read only) {Property.<Vector2>}, set using methods below
     this.positionProperty = new Property( options.initialPosition );
 
-    // @public {Property.<Vector2>} (read only), set using methods below
+    // @public (read only) {Property.<Vector2>}, set using methods below
     this.destinationProperty = new Property( options.initialPosition );
 
     // @public {Property.<boolean>}, indicate whether user is currently dragging this coin
     this.userControlledProperty = new Property( false );
-
-    this.userControlledProperty.link( function( uc ) {
-      expressionExchange.log && expressionExchange.log( 'coin term ' + self.id + ' uc changed to: ' + uc );
-    } );
 
     // @public {Property.<boolean>}
     this.combineHaloActiveProperty = new Property( false );
@@ -82,21 +78,22 @@ define( function( require ) {
     // @public {Property.<boolean>, indicates whether this is in a collection box (for game)
     this.collectedProperty = new Property( false );
 
-    // @public {Property.<AnimationSpec|null>} (read only), tracks the current in-progress animation, null if none
+    // @public (read only) {Property.<AnimationSpec|null>}, tracks the current in-progress animation, null if none
     this.inProgressAnimationProperty = new Property( null );
 
-    // @public {Property.<number>} (read-only) - total number of coins/terms combined into this one, can be negative
+    // @public (read only) {Property.<number>} - total number of coins/terms combined into this one, can be negative
     this.totalCountProperty = new Property( options.initialCount );
 
-    // @public (read-write) - flag that controls whether breaking apart is allowed
+    // @public (read-write) {Property.<boolean> - flag that controls whether breaking apart is allowed
     this.breakApartAllowedProperty = new Property( true );
 
-    // @public (read only) - The bounds of this model element's view representation relative to the element's current
-    // position. This admittedly breaks the usual model-view rules, but many things in the view need to know this, so
-    // having it available on the model element after being set by the view worked out to be the best approach.
+    // @public (read only) {Property.<Bounds2> - The bounds of this model element's view representation relative to the
+    // element's current position. This admittedly breaks the usual model-view rules, but many things in the view need
+    // to know this, so having it available on the model element after being set by the view worked out to be the best
+    // approach.
     this.localViewBoundsProperty = new Property( null );
 
-    // @public {Property.<number>} (read only) - ranges from 1 to 0, used primarily for fading out of a coin term when
+    // @public (read only) {Property.<number>} (read only) - ranges from 1 to 0, used primarily for fading out of a coin term when
     // cancellation occurs, once set to any value less than 1 it will automatically fade to 0
     this.existenceStrengthProperty = new Property( 1 );
 
@@ -104,7 +101,7 @@ define( function( require ) {
     this.cardOpacityProperty = new Property( options.initiallyOnCard ? 1 : 0 );
 
     // @public {Property.<number>}, used by view to make the coin terms appear smaller if necessary when put in
-    //                              collection areas (game only)
+    // collection areas (game only)
     this.scaleProperty = new Property( 1 );
 
     // @public {Property.<Expression|null>} - expression of which this coin term is a part, which is null for a 'solo'
@@ -128,7 +125,7 @@ define( function( require ) {
     // @public, listen only, a property which contains the text that should be shown when displaying term value
     this.termValueTextProperty = termValueTextProperty;
 
-    // @public {Array.<number>}, read only, tracks what this coin term is composed of and what it can be broken down into
+    // @public (read-only) {Array.<number>}, tracks what this coin term is composed of and what it can be broken down into
     this.composition = [];
     if ( Math.abs( options.initialCount ) > 1 && options.decomposable ) {
       _.times( Math.abs( options.initialCount ), function() {
@@ -162,6 +159,10 @@ define( function( require ) {
     //------------------------------------------------------------------------
     // listeners to own properties
     //------------------------------------------------------------------------
+
+    this.userControlledProperty.link( function( uc ) {
+      expressionExchange.log && expressionExchange.log( 'coin term ' + self.id + ' uc changed to: ' + uc );
+    } );
 
     // monitor the total count, start fading the existence strength if it goes to zero
     this.totalCountProperty.lazyLink( function( totalCount ) {

@@ -47,17 +47,17 @@ define( function( require ) {
     // properties
     //------------------------------------------------------------------------
 
-    this.upperLeftCornerProperty = new Property( Vector2.ZERO ); // @public {Property.<Vector2>} (read only)
-    this.widthProperty = new Property( 0 ); // @public {Property.<number>} (read only)
-    this.heightProperty = new Property( 0 ); // @public {Property.<number>} (read only)
+    this.upperLeftCornerProperty = new Property( Vector2.ZERO ); // @public {Property.<Vector2>}
+    this.widthProperty = new Property( 0 ); // @public (read only) {Property.<number>}
+    this.heightProperty = new Property( 0 ); // @public (read only) {Property.<number>}
     this.userControlledProperty = new Property( false ); // @public {Property.<boolean>} (read-write)
     this.inEditModeProperty = new Property( false ); // @public {Property.<boolean>}, indicates whether this expression is being edited
     this.collectedProperty = new Property( false ); // @public {Property.<boolean>}, indicates whether this is in a collection box (for game)
 
-    // @public {Property.<AnimationSpec>} (read only), tracks the current in-progress animation, if any
+    // @public (read only) {Property.<AnimationSpec>}, tracks the current in-progress animation, if any
     this.inProgressAnimationProperty = new Property( null );
 
-    // @public {Property.<boolean>} (read only) indicates whether the 'combine halo' should be visible
+    // @public (read only) {Property.<boolean>} indicates whether the 'combine halo' should be visible
     this.combineHaloActiveProperty = new Property( false );
 
     // @public (read only) - size and state of the hints that can appear at left and right of the expression
