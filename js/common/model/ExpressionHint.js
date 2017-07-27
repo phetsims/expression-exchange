@@ -19,7 +19,7 @@ define( function( require ) {
    */
   function ExpressionHint( anchorCoinTerm, movingCoinTerm ) {
 
-    // @public (read only) {CoinTerm}
+    // @public (read-only) {CoinTerm}
     this.anchorCoinTerm = anchorCoinTerm;
     this.movingCoinTerm = movingCoinTerm;
 

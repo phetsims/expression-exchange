@@ -48,19 +48,19 @@ define( function( require ) {
     //------------------------------------------------------------------------
 
     this.upperLeftCornerProperty = new Property( Vector2.ZERO ); // @public {Property.<Vector2>}
-    this.widthProperty = new Property( 0 ); // @public (read only) {Property.<number>}
-    this.heightProperty = new Property( 0 ); // @public (read only) {Property.<number>}
-    this.userControlledProperty = new Property( false ); // @public {Property.<boolean>} (read-write)
-    this.inEditModeProperty = new Property( false ); // @public {Property.<boolean>}, indicates whether this expression is being edited
-    this.collectedProperty = new Property( false ); // @public {Property.<boolean>}, indicates whether this is in a collection box (for game)
+    this.widthProperty = new Property( 0 ); // @public (read-only) {Property.<number>}
+    this.heightProperty = new Property( 0 ); // (read-only) @public {Property.<number>}
+    this.userControlledProperty = new Property( false ); // @public {Property.<boolean>}
+    this.inEditModeProperty = new Property( false ); // @public {Property.<boolean>} - indicates whether this expression is being edited
+    this.collectedProperty = new Property( false ); // @public {Property.<boolean>} - indicates whether this is in a collection box (for game)
 
-    // @public (read only) {Property.<AnimationSpec>}, tracks the current in-progress animation, if any
+    // @public (read-only) {Property.<AnimationSpec>} - tracks the current in-progress animation, if any
     this.inProgressAnimationProperty = new Property( null );
 
-    // @public (read only) {Property.<boolean>} indicates whether the 'combine halo' should be visible
+    // @public (read-only) {Property.<boolean>} indicates whether the 'combine halo' should be visible
     this.combineHaloActiveProperty = new Property( false );
 
-    // @public (read only) - size and state of the hints that can appear at left and right of the expression
+    // @public (read-only) - size and state of the hints that can appear at left and right of the expression
     this.leftHintActiveProperty = new Property( false );
     this.leftHintWidthProperty = new Property( 0 );
     this.rightHintActiveProperty = new Property( false );
@@ -80,42 +80,42 @@ define( function( require ) {
     // observable arrays
     //------------------------------------------------------------------------
 
-    // @public {ObservableArray.<CoinTerm>}, read and listen only, items should be added and removed via methods
+    // @public (read/listen-only) {ObservableArray.<CoinTerm>} - items should be added and removed via methods
     this.coinTerms = new ObservableArray();
 
     //------------------------------------------------------------------------
     // emitters
     //------------------------------------------------------------------------
 
-    // @public {Emitter}, listen only, emits an event when an animation finishes and the destination is reached
+    // @public {Emitter} - listen only, emits an event when an animation finishes and the destination is reached
     this.destinationReachedEmitter = new Emitter();
 
-    // @public {Emitter}, listen only, emits an event when the size of the expression or the relative positions of the coins
+    // @public {Emitter} - listen only, emits an event when the size of the expression or the relative positions of the coins
     // change, generally used by the view so that it knows when to update, does NOT fire for position-only changes
     // or for activation/deactivation of hints
     this.layoutChangedEmitter = new Emitter();
 
-    // @public {Emitter}, listen only, emits an event when this expression should be broken apart
+    // @public {Emitter} - listen only, emits an event when this expression should be broken apart
     this.breakApartEmitter = new Emitter();
 
     //------------------------------------------------------------------------
     // non-observable attributes
     //------------------------------------------------------------------------
 
-    // @private {Array.<CoinTerm>}, tracks coin terms that are hovering over this expression but are being controlled by
+    // @private {Array.<CoinTerm>} - tracks coin terms that are hovering over this expression but are being controlled by
     // the user so are not yet part of the expression.  This is used to activate and size the hints.  Coin terms should
     // be added and removed via methods.
     this.hoveringCoinTerms = [];
 
-    // @private {Array.<Expression>}, tracks expressions that are hovering over this expression and would be combined
+    // @private {Array.<Expression>} - tracks expressions that are hovering over this expression and would be combined
     // with this one if released by the user.  This is used to activate the 'halo' that indicates that potential
     // combination.
     this.hoveringExpressions = [];
 
-    // @private {boolean}, tracks whether the expression should be resized on the next step
+    // @private {boolean} - tracks whether the expression should be resized on the next step
     this.resizeNeeded = false;
 
-    // @private {CoinTerm.id} => {Function}, map used to track user controlled listeners that are added to coin terms
+    // @private {CoinTerm.id} => {Function} - map used to track user controlled listeners that are added to coin terms
     // that join this expression
     this.mapCoinTermsToUCListeners = {};
 

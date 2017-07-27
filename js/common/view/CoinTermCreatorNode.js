@@ -66,10 +66,10 @@ define( function( require ) {
     Node.call( this, { cursor: 'pointer' } );
     var self = this;
 
-    // @public {number} (read only) - initial count of the coin term created by this creator node, a.k.a. the coefficient
+    // @public (read-only) {number} - initial count of the coin term created by this creator node, a.k.a. the coefficient
     this.createdCoinTermInitialCount = options.createdCoinTermInitialCount;
 
-    this.typeID = typeID; // @public {CoinTermID} (read only)
+    this.typeID = typeID; // @public (read-only) {CoinTermID}
     this.disposeEmitter = new Emitter(); // @public, listen only
 
     // add the individual coin term node(s)

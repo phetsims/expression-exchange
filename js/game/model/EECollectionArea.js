@@ -29,19 +29,19 @@ define( function( require ) {
    */
   function EECollectionArea( x, y, viewMode, undoAllowedProperty ) {
 
-    // @public {Property.<boolean>} (read-only) - property indicating whether the undo functionality is enabled
+    // @public (read-only) {Property.<boolean>} - property indicating whether the undo functionality is enabled
     this.undoAllowedProperty = undoAllowedProperty;
 
-    // @public {Expression|CoinTerm} (read-only) - expression or coin term that has been collected, null if nothing
+    // @public (read-only) {Expression|CoinTerm} - expression or coin term that has been collected, null if nothing
     this.collectedItemProperty = new Property( null );
 
     // @public {Property.<ExpressionDescription|null} (read-write) - description of the expression that this capture area can hold
     this.expressionDescriptionProperty = new Property( null );
 
-    // @public {Bounds2}, read-only - bounds in model space of this capture area
+    // @public (read-only) {Bounds2} - bounds in model space of this capture area
     this.bounds = EESharedConstants.COLLECTION_AREA_SIZE.toBounds( x, y );
 
-    // @public {ViewMode} (read-only) - view mode (coins or variables)
+    // @public (read-only) {ViewMode} - view mode (coins or variables)
     this.viewMode = viewMode;
 
     // @public {Property.<boolean>} - used by the view to turn on/off a "halo" for the collection area, generally used

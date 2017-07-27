@@ -41,7 +41,7 @@ define( function( require ) {
     var self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
-    // @public {CoinTerm} (read only)
+    // @public (read-only) {CoinTerm}
     this.coinTerm = coinTerm;
 
     // @protected {Rectangle}

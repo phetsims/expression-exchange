@@ -50,18 +50,18 @@ define( function( require ) {
     this.soundEnabledProperty = soundEnabledProperty; // @public {Property.<boolean>} (listen-only), used by view to enable/disable sounds
     this.currentChallengeNumber = 0; // {number} @private
 
-    // @public {EEChallengeDescriptor} (read-only) - property that refers to the current challenge
+    // @public (read-only) {EEChallengeDescriptor} - property that refers to the current challenge
     this.currentChallengeProperty = new Property(
       EEChallengeDescriptors.getChallengeDescriptor( levelNumber, this.currentChallengeNumber )
     );
 
-    // @public {Property.<number>} (read only) - current score for this level
+    // @public (read-only) {Property.<number>} - current score for this level
     this.scoreProperty = new Property( 0 );
 
     // @private {boolean}
     this.scoreWasZeroSinceLastCompletion = true;
 
-    // @public {Property.<boolean>} (read-only) - a flag used to track whether this level has been completed since the
+    // @public (read-only) {Property.<boolean>} - a flag used to track whether this level has been completed since the
     // last time this flag was cleared.  For this to be true, the score must have gone from zero to the max since the
     // last time this flag was set.
     this.completedSinceLastClearProperty = new Property( false );

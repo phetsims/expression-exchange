@@ -38,11 +38,11 @@ define( function( require ) {
     this.soundEnabledProperty = new Property( true );
     this.timerEnabledProperty = new Property( true );
 
-    // @public {Property.<GameLevel>} - (read-only) currently selected level, null indicates no level selected, which
+    // @public (read-only) {Property.<GameLevel>} - currently selected level, null indicates no level selected, which
     // means that the level selection screen should appear to the user
     this.currentLevelProperty = new Property( null );
 
-    // @public {Property.<boolean>}, (read-only) - transitions to true when all game levels have been completed
+    // @public (read-only) {Property.<boolean>} - transitions to true when all game levels have been completed
     this.allLevelsCompletedProperty = new Property( false );
 
     //------------------------------------------------------------------------
@@ -52,7 +52,7 @@ define( function( require ) {
     // shuffle the challenge descriptors before creating the levels
     EEChallengeDescriptors.shuffleChallenges();
 
-    // @public {Array.<EEGameLevel>} (read-only) - models for each of the game levels
+    // @public (read-only) {Array.<EEGameLevel>} - models for each of the game levels
     this.gameLevels = [];
     _.times( NUMBER_OF_LEVELS, function( level ) {
       var gameLevel = new EEGameLevel(

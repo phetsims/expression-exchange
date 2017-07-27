@@ -22,13 +22,13 @@ define( function( require ) {
    */
   function ExpressionDescription( expressionString ) {
 
-    // @public {string}, read-only - the string that describes this expression
+    // @public (read-only) {string} - the string that describes this expression
     this.expressionString = expressionString;
 
     // remove all spaces from the expression
     var noWhitespaceExpressionString = expressionString.replace( /\s/g, '' );
 
-    // @public {Array.<Term>}, read-only - Description of the expression as an ordered set of terms that contain the
+    // @public (read-only) {Array.<Term>} - Description of the expression as an ordered set of terms that contain the
     // coefficient and the coin term ID
     this.terms = interpretExpression( noWhitespaceExpressionString, 0 ).terms;
   }

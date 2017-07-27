@@ -69,10 +69,10 @@ define( function( require ) {
     this.yTermValueProperty = new Property( 5 );
     this.zTermValueProperty = new Property( 10 );
 
-    // @public {Property.<number>} (read-only)
+    // @public (read-only) {Property.<number>}
     this.totalValueProperty = new Property( 0 );
 
-    // @public {Property.<Expression>}, read-only, null when no expression is being edited
+    // @public (read-only) {Property.<Expression>} - null when no expression is being edited
     this.expressionBeingEditedProperty = new Property( null );
 
     // @public {Property.<boolean>}
@@ -80,25 +80,25 @@ define( function( require ) {
 
     var self = this;
 
-    // @public {CoinTermFactory}, read only, factory used to create coin terms
+    // @public (read-only) {CoinTermFactory} - factory used to create coin terms
     this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
 
-    // @public {AllowedRepresentations}, read only, options that control what is available to the user to manipulate
+    // @public (read-only) {AllowedRepresentations} - options that control what is available to the user to manipulate
     this.allowedRepresentations = options.allowedRepresentations;
 
-    // @public {ObservableArray.<CoinTerm>}, read and listen only, list of all coin terms in the model
+    // @public (read/listen-only) {ObservableArray.<CoinTerm>} - list of all coin terms in the model
     this.coinTerms = new ObservableArray();
 
-    // @public {ObservableArray.<Expression>}, read and listen only, list of expressions in the model
+    // @public (read/listen-only) {ObservableArray.<Expression>} - list of expressions in the model
     this.expressions = new ObservableArray();
 
-    // @public {ObservableArray.<ExpressionHint}, read and listen only, list of expression hints in the model
+    // @public (read/listen-only) {ObservableArray.<ExpressionHint} - list of expression hints in the model
     this.expressionHints = new ObservableArray();
 
-    // @public {Bounds2} (read-only) - coin terms and expression that end up outside these bounds are moved back inside
+    // @public (read-only) {Bounds2} - coin terms and expression that end up outside these bounds are moved back inside
     this.retrievalBounds = Bounds2.EVERYTHING;
 
-    // @public {Array.<EECollectionArea>}, read only - areas where expressions or coin terms can be collected, used
+    // @public (read-only) {Array.<EECollectionArea>} - areas where expressions or coin terms can be collected, used
     // only in game
     this.collectionAreas = [];
 
@@ -124,8 +124,8 @@ define( function( require ) {
       } );
     } );
 
-    // @public {@Bounds2} (read-write) - should be set by view, generally just once.  Used to determine when to remove a
-    // coin term because the user has essentially put it away
+    // @public {@Bounds2} - should be set by view, generally just once.  Used to determine when to remove a coin term
+    // because the user has essentially put it away
     this.creatorBoxBounds = Bounds2.NOTHING;
 
     // @private {boolean} - make this option available to methods

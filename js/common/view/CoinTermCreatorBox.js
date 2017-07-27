@@ -36,13 +36,13 @@ define( function( require ) {
       align: 'center'
     }, options );
 
-    // @public {boolean}, read only - a flag that indicates if creator nodes that create coin terms with negative
+    // @public (read-only) {boolean} - a flag that indicates if creator nodes that create coin terms with negative
     // initial values are present
     this.negativeTermsPresent = _.some( creatorNodes, function( creatorNode ) {
       return ( creatorNode.createdCoinTermInitialCount < 0 );
     } );
 
-    // @public {Array.<CoinTermTypeID>}, read only - list of the coin term types present in this creator box
+    // @public (read-only) {Array.<CoinTermTypeID>} - list of the coin term types present in this creator box
     this.coinTermTypeList = _.uniq( _.map( creatorNodes, 'typeID' ) );
 
     // add the panel or carousel that will contain the various coin terms that the user can create

@@ -20,10 +20,10 @@ define( function( require ) {
    */
   function Term( coefficient, coinTermTypeID ) {
 
-    // @public {number} (read only)
+    // @public (read-only) {number}
     this.coefficient = coefficient;
 
-    // @public {CoinTermTypeID} (read only)
+    // @public (read-only) {CoinTermTypeID}
     this.coinTermTypeID = coinTermTypeID;
   }
 
