@@ -48,7 +48,7 @@ define( function( require ) {
     // when the user holds something over the collection area
     this.haloActiveProperty = new Property( false );
 
-    // @public {Emitter} listen only - emitter that emits an event when an at attempt is made to collect an item, and
+    // @public (read-only) {Emitter} - emitter that emits an event when an at attempt is made to collect an item, and
     // includes a parameter that is true if the item was collected and false if not
     this.collectionAttemptedEmitter = new Emitter();
   }

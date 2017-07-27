@@ -144,13 +144,13 @@ define( function( require ) {
     // emitters
     //------------------------------------------------------------------------
 
-    // @public {Emitter} - listen only, emits an event when an animation finishes and the destination is reached
+    // @public (read-only) {Emitter} - emits an event when an animation finishes and the destination is reached
     this.destinationReachedEmitter = new Emitter();
 
-    // @public {Emitter} - listen only, emits an event when coin terms returns to original position and is not user controlled
+    // @public (read-only) {Emitter} - emits an event when coin terms returns to original position and is not user controlled
     this.returnedToOriginEmitter = new Emitter();
 
-    // @public {Emitter} - listen only, emits an event when this coin term should be broken apart
+    // @public (read-only) {Emitter} - emits an event when this coin term should be broken apart
     this.breakApartEmitter = new Emitter();
 
     // @private {Vector2} - used when animating back to original position

@@ -87,15 +87,15 @@ define( function( require ) {
     // emitters
     //------------------------------------------------------------------------
 
-    // @public {Emitter} - listen only, emits an event when an animation finishes and the destination is reached
+    // @public (read-only) {Emitter} - emits an event when an animation finishes and the destination is reached
     this.destinationReachedEmitter = new Emitter();
 
-    // @public {Emitter} - listen only, emits an event when the size of the expression or the relative positions of the coins
+    // @public (read-only) {Emitter} - emits an event when the size of the expression or the relative positions of the coins
     // change, generally used by the view so that it knows when to update, does NOT fire for position-only changes
     // or for activation/deactivation of hints
     this.layoutChangedEmitter = new Emitter();
 
-    // @public {Emitter} - listen only, emits an event when this expression should be broken apart
+    // @public (read-only) {Emitter} - emits an event when this expression should be broken apart
     this.breakApartEmitter = new Emitter();
 
     //------------------------------------------------------------------------
