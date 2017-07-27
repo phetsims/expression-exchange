@@ -35,7 +35,7 @@ define( function( require ) {
     // @public (read-only) {Expression|CoinTerm} - expression or coin term that has been collected, null if nothing
     this.collectedItemProperty = new Property( null );
 
-    // @public {Property.<ExpressionDescription|null} (read-write) - description of the expression that this capture area can hold
+    // @public {Property.<ExpressionDescription|null} - description of the expression that this capture area can hold
     this.expressionDescriptionProperty = new Property( null );
 
     // @public (read-only) {Bounds2} - bounds in model space of this capture area
