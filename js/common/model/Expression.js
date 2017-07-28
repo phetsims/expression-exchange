@@ -49,7 +49,7 @@ define( function( require ) {
 
     this.upperLeftCornerProperty = new Property( Vector2.ZERO ); // @public {Property.<Vector2>}
     this.widthProperty = new Property( 0 ); // @public (read-only) {Property.<number>}
-    this.heightProperty = new Property( 0 ); // (read-only) @public {Property.<number>}
+    this.heightProperty = new Property( 0 ); // @public (read-only) {Property.<number>}
     this.userControlledProperty = new Property( false ); // @public {Property.<boolean>}
     this.inEditModeProperty = new Property( false ); // @public {Property.<boolean>} - indicates whether this expression is being edited
     this.collectedProperty = new Property( false ); // @public {Property.<boolean>} - indicates whether this is in a collection box (for game)
