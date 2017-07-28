@@ -46,8 +46,8 @@ define( function( require ) {
 
     var self = this;
 
-    this.levelNumber = levelNumber; // {number} @public, read only
-    this.soundEnabledProperty = soundEnabledProperty; // @public {Property.<boolean>} (listen-only), used by view to enable/disable sounds
+    this.levelNumber = levelNumber; // @public (read-only) {number}
+    this.soundEnabledProperty = soundEnabledProperty; // @public  (read-only){Property.<boolean>}, used by view to enable/disable sounds
     this.currentChallengeNumber = 0; // {number} @private
 
     // @public (read-only) {EEChallengeDescriptor} - property that refers to the current challenge

@@ -70,7 +70,7 @@ define( function( require ) {
     this.createdCoinTermInitialCount = options.createdCoinTermInitialCount;
 
     this.typeID = typeID; // @public (read-only) {CoinTermID}
-    this.disposeEmitter = new Emitter(); // @public, listen only
+    this.disposeEmitter = new Emitter(); // @public (read-only)
 
     // add the individual coin term node(s)
     var coinTermNodes = [];

@@ -44,7 +44,7 @@ define( function( require ) {
   function CoinTerm( valueProperty, coinRadius, termText, termValueTextProperty, typeID, options ) {
 
     var self = this;
-    this.id = 'CT-' + ( ++creationCount ); // @public, read only, unique ID useful for debugging
+    this.id = 'CT-' + ( ++creationCount ); // @public (read-only) - unique ID useful for debugging
 
     options = _.extend( {
       initialCount: 1, // number of instances of this coin term initially combined together, can be negative
@@ -112,17 +112,17 @@ define( function( require ) {
     // non-property attributes
     //------------------------------------------------------------------------
 
-    // @public, read only, values that describe the nature of this coin term
+    // @public (read-only) - values that describe the nature of this coin term
     this.typeID = typeID;
     this.valueProperty = valueProperty;
     this.termText = termText;
     this.coinRadius = coinRadius;
     this.initiallyOnCard = options.initiallyOnCard;
 
-    // @public, read only, indicates that the value will never change, will be displayed differently in the view
+    // @public (read-only) - indicates that the value will never change, will be displayed differently in the view
     this.isConstant = typeID === CoinTermTypeID.CONSTANT;
 
-    // @public, listen only, a property which contains the text that should be shown when displaying term value
+    // @public (read-only) - a property which contains the text that should be shown when displaying term value
     this.termValueTextProperty = termValueTextProperty;
 
     // @public (read-only) {Array.<number>} - tracks what this coin term is composed of and what it can be broken down into
