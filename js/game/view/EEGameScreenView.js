@@ -44,9 +44,9 @@ define( function( require ) {
     } );
 
     // create the icons used on the level selection buttons
-    var levelSelectionButtonIcons = [];
+    var levelSelectionItemNodeIcons = [];
     _.times( EEGameModel.NUMBER_OF_LEVELS, function( level ) {
-      levelSelectionButtonIcons.push( EEGameLevelIconFactory.createIcon( level ) );
+      levelSelectionItemNodeIcons.push( EEGameLevelIconFactory.createIcon( level ) );
     } );
 
     // add the node that allows the user to choose a game level to play
@@ -54,7 +54,7 @@ define( function( require ) {
       function( level ) { gameModel.selectLevel( level ); },
       function() { gameModel.reset(); },
       gameModel.soundEnabledProperty,
-      levelSelectionButtonIcons,
+      levelSelectionItemNodeIcons,
       levelScoreProperties,
       {
         layoutBoundsProperty: this.visibleBoundsProperty,
