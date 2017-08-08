@@ -201,6 +201,19 @@ define( function( require ) {
      */
     hideBreakApartButton: function() {
       if ( this.breakApartButton ) {
+
+        // TODO: This code is temporary in order to track down an error that occurs during automated testing, see
+        // https://github.com/phetsims/expression-exchange/issues/127.
+        assert && assert(
+          !this.breakApartButton.bounds.isEmpty(),
+          'break apart button bounds are empty, this.breakApartButton.bounds = ', this.breakApartButton.bounds
+        );
+        assert && assert(
+          this.breakApartButton.bounds.isFinite(),
+          'break apart button bounds are not finite, this.breakApartButton.bounds = ', this.breakApartButton.bounds
+        );
+        // TODO: JSONEnd of temporary code.
+
         this.breakApartButton.center = Vector2.ZERO; // position within coin term so bounds aren't affected
         this.breakApartButton.visible = false;
       }
