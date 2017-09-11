@@ -11,8 +11,8 @@ define( function( require ) {
   var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var Emitter = require( 'AXON/Emitter' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
   var Vector2 = require( 'DOT/Vector2' );

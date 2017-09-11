@@ -12,9 +12,9 @@ define( function( require ) {
 
   // modules
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
-  var Term = require( 'EXPRESSION_EXCHANGE/game/model/Term' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var Term = require( 'EXPRESSION_EXCHANGE/game/model/Term' );
 
   /**
    * @param {string} expressionString

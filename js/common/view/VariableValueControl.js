@@ -9,8 +9,8 @@ define( function( require ) {
   // modules
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
-  var ResetButton = require( 'SCENERY_PHET/buttons/ResetButton' );
   var LeftRightNumberSpinner = require( 'EXPRESSION_EXCHANGE/common/view/LeftRightNumberSpinner' );
+  var ResetButton = require( 'SCENERY_PHET/buttons/ResetButton' );
   var VBox = require( 'SCENERY/nodes/VBox' );
 
   /**

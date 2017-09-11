@@ -10,8 +10,8 @@ define( function( require ) {
 
   // modules
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionDescription = require( 'EXPRESSION_EXCHANGE/game/model/ExpressionDescription' );
+  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
   // The challenge set, organized as a 2D array where the first dimension is level, the second is challenge number.
   // The challenge descriptions are organized as a set of expressions that the user should construct and collect and

@@ -22,36 +22,36 @@ define( function( require ) {
   // images - use mipmaps normally, but use regular images when memory needs to be conserved
   var useMipmaps = !platform.mobileSafari;
   if ( useMipmaps ) {
-    var coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
     var coinXBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-back.png' );
-    var coinXSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared.png' );
+    var coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
     var coinXSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-back.png' );
-    var coinXSquaredYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
+    var coinXSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared.png' );
     var coinXSquaredYSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared-back.png' );
-    var coinXYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy.png' );
+    var coinXSquaredYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
     var coinXYBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy-back.png' );
-    var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
+    var coinXYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy.png' );
     var coinYBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-back.png' );
-    var coinYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
+    var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
     var coinYSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared-back.png' );
-    var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
+    var coinYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
     var coinZBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z-back.png' );
+    var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
   }
   else {
-    coinXFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-x.png' );
     coinXBackImage = require( 'image!EXPRESSION_EXCHANGE/coin-x-back.png' );
-    coinXSquaredFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-x-squared.png' );
+    coinXFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-x.png' );
     coinXSquaredBackImage = require( 'image!EXPRESSION_EXCHANGE/coin-x-squared-back.png' );
-    coinXSquaredYSquaredFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
+    coinXSquaredFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-x-squared.png' );
     coinXSquaredYSquaredBackImage = require( 'image!EXPRESSION_EXCHANGE/coin-x-squared-y-squared-back.png' );
-    coinXYFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-xy.png' );
+    coinXSquaredYSquaredFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
     coinXYBackImage = require( 'image!EXPRESSION_EXCHANGE/coin-xy-back.png' );
-    coinYFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-y.png' );
+    coinXYFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-xy.png' );
     coinYBackImage = require( 'image!EXPRESSION_EXCHANGE/coin-y-back.png' );
-    coinYSquaredFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-y-squared.png' );
+    coinYFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-y.png' );
     coinYSquaredBackImage = require( 'image!EXPRESSION_EXCHANGE/coin-y-squared-back.png' );
-    coinZFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-z.png' );
+    coinYSquaredFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-y-squared.png' );
     coinZBackImage = require( 'image!EXPRESSION_EXCHANGE/coin-z-back.png' );
+    coinZFrontImage = require( 'image!EXPRESSION_EXCHANGE/coin-z.png' );
   }
 
   // constants

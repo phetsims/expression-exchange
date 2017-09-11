@@ -16,8 +16,8 @@ define( function( require ) {
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var Screen = require( 'JOIST/Screen' );
   var RichText = require( 'SCENERY/nodes/RichText' );
+  var Screen = require( 'JOIST/Screen' );
   var Text = require( 'SCENERY/nodes/Text' );
 
   // constants

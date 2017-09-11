@@ -15,8 +15,8 @@ define( function( require ) {
   var AnimationSpec = require( 'EXPRESSION_EXCHANGE/common/model/AnimationSpec' );
   var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
   var Easing = require( 'TWIXT/Easing' );
-  var Emitter = require( 'AXON/Emitter' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  var Emitter = require( 'AXON/Emitter' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
