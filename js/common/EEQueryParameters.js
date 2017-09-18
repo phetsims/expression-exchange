@@ -1,4 +1,4 @@
-// Copyright 2016, University of Colorado Boulder
+// Copyright 2016-2017, University of Colorado Boulder
 
 /**
  * Query parameters supported by this simulation.
@@ -12,9 +12,6 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
   var EEQueryParameters = QueryStringMachine.getAll( {
-
-    // turn on logging of coin term and expression creation and removal
-    enableLogging: { type: 'flag' },
 
     // control whether expression width is always adjusted or whether it sometimes remains constant
     adjustExpressionWidth: { type: 'flag' },

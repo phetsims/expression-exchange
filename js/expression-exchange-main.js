@@ -32,15 +32,6 @@ define( function( require ) {
     }
   };
 
-  // Add support for logging if specified.  This is intended for debug of things like coin term and expression creation
-  // and removal, so it doesn't need to be enabled before the module loading (RequireJS) phase.
-  if ( EEQueryParameters.enableLogging ) {
-    console.log( 'enabling log' );
-    expressionExchange.log = function( message ) {
-      console.log( '%clog: ' + message, 'color: #009900' ); // green
-    };
-  }
-
   // launch the sim
   SimLauncher.launch( function() {
     var sim = new Sim(

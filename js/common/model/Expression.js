@@ -1,4 +1,4 @@
-// Copyright 2016, University of Colorado Boulder
+// Copyright 2016-2017, University of Colorado Boulder
 
 /**
  * This type represents a model of an expression.  An expression is a set of coin terms all positioned in a line.  In
@@ -194,8 +194,8 @@ define( function( require ) {
     };
 
     // logging, for debug purposes
-    expressionExchange.log && expressionExchange.log( 'created ' + this.id + ' with anchor = ' + anchorCoinTerm.id +
-                                                      ' and floating = ' + floatingCoinTerm.id );
+    phet.log && phet.log( 'created ' + this.id + ' with anchor = ' + anchorCoinTerm.id +
+                          ' and floating = ' + floatingCoinTerm.id );
   }
 
   expressionExchange.register( 'Expression', Expression );
@@ -513,7 +513,7 @@ define( function( require ) {
         this.updateCoinTermShowMinusSignFlag();
       }
 
-      expressionExchange.log && expressionExchange.log( 'removed ' + coinTerm.id + ' from ' + this.id );
+      phet.log && phet.log( 'removed ' + coinTerm.id + ' from ' + this.id );
     },
 
     /**

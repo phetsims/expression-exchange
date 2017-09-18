@@ -1,4 +1,4 @@
-// Copyright 2016, University of Colorado Boulder
+// Copyright 2016-2017, University of Colorado Boulder
 
 /**
  * A model that allows users to move coin terms around, combine them into expressions, edit the expressions, change the
@@ -383,8 +383,7 @@ define( function( require ) {
     addCoinTerm: function( coinTerm ) {
       this.coinTerms.add( coinTerm );
       this.updateCoinTermCounts( coinTerm.typeID );
-      expressionExchange.log && expressionExchange.log(
-        'added ' + coinTerm.id + ', composition = [' + coinTerm.composition + ']'
+      phet.log && phet.log( 'added ' + coinTerm.id + ', composition = [' + coinTerm.composition + ']'
       );
     },
 
@@ -403,8 +402,7 @@ define( function( require ) {
         coinTerm.returnToOrigin();
       }
       else {
-
-        expressionExchange.log && expressionExchange.log( 'removed ' + coinTerm.id );
+        phet.log && phet.log( 'removed ' + coinTerm.id );
         this.coinTerms.remove( coinTerm );
         this.updateCoinTermCounts( coinTerm.typeID );
       }
@@ -490,7 +488,7 @@ define( function( require ) {
         self.removeCoinTerm( coinTerm, true );
       } );
       this.expressions.remove( expression );
-      expressionExchange.log && expressionExchange.log( 'removed ' + expression.id );
+      phet.log && phet.log( 'removed ' + expression.id );
     },
 
     // @private, remove an expression hint
@@ -773,7 +771,7 @@ define( function( require ) {
 
               // combine the dropped coin term with the one with which it overlaps
               overlappingLikeCoinTerm.absorb( addedCoinTerm, self.partialCancellationEnabled );
-              expressionExchange.log && expressionExchange.log(
+              phet.log && phet.log(
                 overlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' + overlappingLikeCoinTerm.id +
                 ' composition = ' + '[' + overlappingLikeCoinTerm.composition + ']' );
               self.removeCoinTerm( addedCoinTerm, false );
@@ -799,8 +797,7 @@ define( function( require ) {
 
             // the user is adding the coin term to an expression
             mostOverlappingExpression.addCoinTerm( addedCoinTerm );
-            expressionExchange.log && expressionExchange.log( 'added ' + addedCoinTerm.id + ' to ' +
-                                                              mostOverlappingExpression.id );
+            phet.log && phet.log( 'added ' + addedCoinTerm.id + ' to ' + mostOverlappingExpression.id );
           }
           else if ( mostOverlappingLikeCoinTerm ) {
 
@@ -808,7 +805,7 @@ define( function( require ) {
             // one with a higher count value.
             addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
               mostOverlappingLikeCoinTerm.absorb( addedCoinTerm, self.partialCancellationEnabled );
-              expressionExchange.log && expressionExchange.log(
+              phet.log && phet.log(
                 mostOverlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' +
                 mostOverlappingLikeCoinTerm.id + ' composition = ' + '[' +
                 mostOverlappingLikeCoinTerm.composition + ']' );
@@ -996,9 +993,9 @@ define( function( require ) {
                 var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
                 self.expressions.remove( addedExpression );
                 coinTermsToBeMoved.forEach( function( coinTerm ) {
-                  expressionExchange.log && expressionExchange.log( 'moving ' + coinTerm.id + ' from ' +
-                                                                    addedExpression.id + ' to ' +
-                                                                    mostOverlappingExpression.id );
+                  phet.log && phet.log( 'moving ' + coinTerm.id +
+                                        ' from ' + addedExpression.id +
+                                        ' to ' + mostOverlappingExpression.id );
                   mostOverlappingExpression.addCoinTerm( coinTerm );
                 } );
               }

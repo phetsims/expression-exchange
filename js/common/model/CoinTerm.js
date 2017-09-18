@@ -1,4 +1,4 @@
-// Copyright 2016, University of Colorado Boulder
+// Copyright 2016-2017, University of Colorado Boulder
 
 /**
  * This type represents a model of a single or combined coin which can be represented in the view as a coin image or a
@@ -161,7 +161,7 @@ define( function( require ) {
     //------------------------------------------------------------------------
 
     this.userControlledProperty.link( function( uc ) {
-      expressionExchange.log && expressionExchange.log( 'coin term ' + self.id + ' uc changed to: ' + uc );
+      phet.log && phet.log( 'coin term ' + self.id + ' uc changed to: ' + uc );
     } );
 
     // monitor the total count, start fading the existence strength if it goes to zero
