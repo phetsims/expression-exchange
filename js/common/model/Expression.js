@@ -139,6 +139,9 @@ define( function( require ) {
     // other initialization
     //------------------------------------------------------------------------
 
+    // @private
+    this.setResizeNeededFlagBound = this.setResizeNeededFlag.bind( this );
+
     // add the initial coin term
     this.addCoinTerm( anchorCoinTerm );
 
@@ -479,7 +482,7 @@ define( function( require ) {
       coinTerm.breakApartAllowedProperty.set( false );
 
       // add a listener to resize the expression if the bounds of this coin term change
-      coinTerm.localViewBoundsProperty.lazyLink( this.setResizeNeededFlag.bind( this ) );
+      coinTerm.localViewBoundsProperty.lazyLink( this.setResizeNeededFlagBound );
 
       // add a listener to update whether minus sign is shown when negative when the user moves this coin term
       var userControlledListener = this.updateCoinTermShowMinusSignFlag.bind( this );
@@ -504,7 +507,7 @@ define( function( require ) {
       coinTerm.breakApartAllowedProperty.set( true );
       coinTerm.showMinusSignWhenNegativeProperty.set( true );
       this.coinTerms.remove( coinTerm );
-      coinTerm.localViewBoundsProperty.unlink( this.setResizeNeededFlag.bind( this ) );
+      coinTerm.localViewBoundsProperty.unlink( this.setResizeNeededFlagBound );
       coinTerm.userControlledProperty.unlink( this.mapCoinTermsToUCListeners[ coinTerm.id ] );
       delete this.mapCoinTermsToUCListeners[ coinTerm.id ];
 
