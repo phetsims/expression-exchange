@@ -201,7 +201,6 @@ define( function( require ) {
       editExpressionButton.dispose();
       breakApartButton.dispose();
       expression.upperLeftCornerProperty.unlinkAttribute( translationLinkHandle );
-      expression.inProgressAnimationProperty.unlink( updateDragHandlerAttachmentState );
       expression.inEditModeProperty.unlink( updateVisibility );
       updateShapeMultilink.dispose();
       updateDragHandlerAttachmentMultilink.dispose();
