@@ -1,4 +1,4 @@
-// Copyright 2016, University of Colorado Boulder
+// Copyright 2016-2017, University of Colorado Boulder
 
 /**
  * This type represents a Scenery node that represents a hint that is presented to the user when two coins can be

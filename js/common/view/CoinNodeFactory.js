@@ -1,4 +1,4 @@
-// Copyright 2016, University of Colorado Boulder
+// Copyright 2016-2017, University of Colorado Boulder
 
 /**
  * static object that provides functions for creating nodes that represent the coins used in the simulation

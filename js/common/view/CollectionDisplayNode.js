@@ -1,4 +1,4 @@
-// Copyright 2016, University of Colorado Boulder
+// Copyright 2016-2017, University of Colorado Boulder
 
 /**
  * a node that monitors the coin terms in the model and displays a summary of what has been created (a.k.a. "collected")
