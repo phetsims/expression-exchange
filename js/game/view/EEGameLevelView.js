@@ -102,7 +102,7 @@ define( function( require ) {
     // add the refresh button
     var refreshButton = new RectangularPushButton( {
       content: new FontAwesomeNode( 'refresh', { scale: 0.7 } ),
-      baseColor: PhetColorScheme.PHET_LOGO_YELLOW,
+      baseColor: PhetColorScheme.BUTTON_YELLOW,
       xMargin: 9,
       yMargin: 7,
       listener: function() { levelModel.refresh(); },
