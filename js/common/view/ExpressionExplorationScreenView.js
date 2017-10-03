@@ -92,12 +92,15 @@ define( function( require ) {
     // let the model know the bounds of the creator box so that it can know when the user is returning coin terms
     model.creatorBoxBounds = coinTermCreatorBox.bounds;
 
+    // max size of the boxes on the left side,  multiplier empirically determined to look good
+    var leftSideBoxWidth = this.layoutBounds.width * 0.15;
+
     // create the readout that will display the total accumulated value, use max length string initially
     var totalValueText = new Text(
       StringUtils.fillIn( numberCentsPatternString, { number: 9999 } ),
       { font: new PhetFont( { size: 14 } ) }
     );
-    var totalValueReadoutWidth = totalValueText.width + 20;
+    var totalValueReadoutWidth = Math.min( totalValueText.width + 20, leftSideBoxWidth * 0.8 );
     var totalValueReadout = new Panel( totalValueText, {
       fill: 'white',
       stroke: 'black',
@@ -119,18 +122,16 @@ define( function( require ) {
       }
     );
 
-    var leftSideBoxWidth = this.layoutBounds.width * 0.15; // multiplier empirically determined
-
     // add accordion box that will contain the total value readout
     var totalValueAccordionBox = new AccordionBox( totalValueReadout, {
-      titleNode: new Text( totalString, { font: ACCORDION_BOX_TITLE_FONT, maxWidth: leftSideBoxWidth * 0.9 } ),
+      titleNode: new Text( totalString, { font: ACCORDION_BOX_TITLE_FONT, maxWidth: leftSideBoxWidth * 0.7 } ),
       fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
       left: INSET,
       top: INSET,
       cornerRadius: ACCORDION_BOX_CORNER_RADIUS,
       buttonXMargin: ACCORDION_BOX_BUTTON_X_MARGIN,
       buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
-      contentXMargin: 30, // empirically determined
+      // contentXMargin: 30, // empirically determined
       minWidth: leftSideBoxWidth,
       maxWidth: leftSideBoxWidth,
       buttonTouchAreaXDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X,
@@ -249,9 +250,12 @@ define( function( require ) {
     } );
     this.addChild( myCollectionAccordionBox );
 
+    // max size of check box text, multiplier empirically determined
+    var checkBoxTitleMaxWidth = myCollectionAccordionBox.width * 0.8;
+
     // add the checkbox that controls visibility of coin values
     var showCoinValuesCheckbox = new CheckBox(
-      new Text( coinValuesString, { font: CHECK_BOX_FONT } ),
+      new Text( coinValuesString, { font: CHECK_BOX_FONT, maxWidth: checkBoxTitleMaxWidth } ),
       model.showCoinValuesProperty,
       {
         top: coinTermCreatorBox.top,
@@ -263,7 +267,7 @@ define( function( require ) {
 
     // add the checkbox that controls visibility of variable values
     var showVariableValuesCheckbox = new CheckBox(
-      new Text( variableValuesString, { font: CHECK_BOX_FONT } ),
+      new Text( variableValuesString, { font: CHECK_BOX_FONT, maxWidth: checkBoxTitleMaxWidth } ),
       model.showVariableValuesProperty,
       {
         top: coinTermCreatorBox.top,
@@ -281,7 +285,7 @@ define( function( require ) {
 
     // add the checkbox that controls whether all coefficients (including 1) are shown
     var showAllCoefficientsCheckbox = new CheckBox(
-      new Text( allCoefficientsString, { font: CHECK_BOX_FONT } ),
+      new Text( allCoefficientsString, { font: CHECK_BOX_FONT, maxWidth: checkBoxTitleMaxWidth } ),
       model.showAllCoefficientsProperty,
       {
         top: showCoinValuesCheckbox.bottom + CHECK_BOX_VERTICAL_SPACING,
