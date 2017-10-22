@@ -98,7 +98,11 @@ define( function( require ) {
     }
 
     // add a listener that will pop this node to the front when selected by the user
-    coinTerm.userControlledProperty.onValue( true, function() { self.moveToFront(); } );
+    coinTerm.userControlledProperty.link( function( userControlled ) {
+      if ( userControlled ) {
+        self.moveToFront();
+      }
+    } );
 
     // add a listener that will pop this node to the front when another coin term is combined with it
     var totalCountListener = this.handleCombinedCountChanged.bind( this );
