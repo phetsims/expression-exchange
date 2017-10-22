@@ -149,12 +149,14 @@ define( function( require ) {
     this.addCoinTerm( floatingCoinTerm );
 
     // add a listener that will immediately finish animations for incoming coin terms if the expression is grabbed
-    this.userControlledProperty.onValue( true, function() {
-      self.coinTerms.forEach( function( coinTerm ) {
-        if ( coinTerm.inProgressAnimationProperty.get() ) {
-          coinTerm.goImmediatelyToDestination();
-        }
-      } );
+    this.userControlledProperty.link( function( userControlled ) {
+      if ( userControlled ) {
+        self.coinTerms.forEach( function( coinTerm ) {
+          if ( coinTerm.inProgressAnimationProperty.get() ) {
+            coinTerm.goImmediatelyToDestination();
+          }
+        } );
+      }
     } );
 
     // add a listener that will adjust the scale when needed, generally done when expression is collected or uncollected
