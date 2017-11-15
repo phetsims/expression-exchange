@@ -133,6 +133,11 @@ define( function( require ) {
     // internal dispose function, reference in inherit block
     this.disposeAbstractCoinTermNode = function() {
       this.clearHideButtonTimer();
+      if ( this.breakApartButton ) {
+        this.breakApartButton.buttonModel.overProperty.unlink( this.breakApartButtonOverListener );
+        this.breakApartButton.removeListener( this.breakApartButtonListener );
+        this.breakApartButton.dispose();
+      }
       coinTerm.positionProperty.unlink( handlePositionChanged );
       coinTerm.existenceStrengthProperty.unlink( existenceStrengthListener );
       coinTerm.userControlledProperty.unlink( userControlledListener );
@@ -181,7 +186,14 @@ define( function( require ) {
       var self = this;
       this.clearHideButtonTimer(); // just in case one is already running
       this.hideButtonTimer = Timer.setTimeout( function() {
-        self.hideBreakApartButton();
+
+        // Hide the break apart button, but first make sure the button hasn't already been disposed.  This is necessary
+        // because we were seeing some rare occasions where this timer was firing after this node was disposed.  This
+        // should be impossible, since the dipose function clears the time, but it was happening nonetheless, and hence
+        // this workaround.  For more info, see https://github.com/phetsims/expression-exchange/issues/127.
+        if ( !self.breakApartButton.isDisposed() ) {
+          self.hideBreakApartButton();
+        }
         self.hideButtonTimer = null;
       }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );
     },
@@ -205,19 +217,6 @@ define( function( require ) {
      */
     hideBreakApartButton: function() {
       if ( this.breakApartButton ) {
-
-        // TODO: This code is temporary in order to track down an error that occurs during automated testing, see
-        // https://github.com/phetsims/expression-exchange/issues/127.
-        assert && assert(
-          !this.breakApartButton.bounds.isEmpty(),
-          'break apart button bounds are empty, this.breakApartButton.bounds = ', this.breakApartButton.bounds
-        );
-        assert && assert(
-          this.breakApartButton.bounds.isFinite(),
-          'break apart button bounds are not finite, this.breakApartButton.bounds = ', this.breakApartButton.bounds
-        );
-        // TODO: JSONEnd of temporary code.
-
         this.breakApartButton.center = Vector2.ZERO; // position within coin term so bounds aren't affected
         this.breakApartButton.visible = false;
       }
@@ -254,7 +253,7 @@ define( function( require ) {
      */
     handleOverBreakApartButtonChanged: function( overButton ) {
 
-      // make sure the coin terms isn't user controlled (this helps prevent some multi-touch problems)
+      // make sure the coin term isn't user controlled (this helps prevent some multi-touch problems)
       if ( !this.coinTerm.userControlledProperty.get() ) {
         if ( overButton ) {
 
@@ -398,11 +397,6 @@ define( function( require ) {
      */
     dispose: function() {
       this.disposeAbstractCoinTermNode();
-      if ( this.breakApartButton ) {
-        this.breakApartButton.buttonModel.overProperty.unlink( this.breakApartButtonOverListener );
-        this.breakApartButton.removeListener( this.breakApartButtonListener );
-        this.breakApartButton.dispose();
-      }
       Node.prototype.dispose.call( this );
     }
 
