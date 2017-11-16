@@ -186,14 +186,7 @@ define( function( require ) {
       var self = this;
       this.clearHideButtonTimer(); // just in case one is already running
       this.hideButtonTimer = Timer.setTimeout( function() {
-
-        // Hide the break apart button, but first make sure the button hasn't already been disposed.  This is necessary
-        // because we were seeing some rare occasions where this timer was firing after this node was disposed.  This
-        // should be impossible, since the dipose function clears the time, but it was happening nonetheless, and hence
-        // this workaround.  For more info, see https://github.com/phetsims/expression-exchange/issues/127.
-        if ( !self.breakApartButton.isDisposed() ) {
-          self.hideBreakApartButton();
-        }
+        self.hideBreakApartButton();
         self.hideButtonTimer = null;
       }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );
     },
@@ -275,7 +268,9 @@ define( function( require ) {
      * @private
      */
     handleUserControlledChanged: function( userControlled ) {
-      if ( Math.abs( this.coinTerm.composition.length ) > 1 && this.coinTerm.breakApartAllowedProperty.get() ) {
+      if ( Math.abs( this.coinTerm.composition.length ) > 1 &&
+           this.coinTerm.breakApartAllowedProperty.get() &&
+           !this.isDisposed() ) {
 
         if ( userControlled ) {
           this.clearHideButtonTimer(); // called in case the timer was running
