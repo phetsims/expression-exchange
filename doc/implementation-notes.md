@@ -29,7 +29,7 @@ expressions, moves them around, combines them, breaks them apart, and so forth. 
 classes ExpressionNode and ExpressionOverlayNode, provide the view to the user.
 
 There is a control that exists on every screen where the user creates and manipulates expressions that allows the user
-to create coin terms by clicking and dragging.  This is similar to what has been called a "tool box" in other PhET
+to create coin terms by clicking and dragging.  This is similar to what has been called a "toolbox" in other PhET
 simulations, but since it doesn't create tools, this name didn't seem appropriate.  The term "coin term creator box"
 was a bit verbose, so the boxes are referred to in most places simply as a "creator box", e.g. the factory method
 "createExploreScreenCreatorBox".
