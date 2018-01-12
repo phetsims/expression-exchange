@@ -13,7 +13,7 @@ define( function( require ) {
   var ABSwitch = require( 'SUN/ABSwitch' );
   var AccordionBox = require( 'SUN/AccordionBox' );
   var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
-  var CheckBox = require( 'SUN/CheckBox' );
+  var Checkbox = require( 'SUN/Checkbox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
   var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
   var CollectionDisplayNode = require( 'EXPRESSION_EXCHANGE/common/view/CollectionDisplayNode' );
@@ -251,11 +251,11 @@ define( function( require ) {
     this.addChild( myCollectionAccordionBox );
 
     // max size of check box text, multiplier empirically determined
-    var checkBoxTitleMaxWidth = myCollectionAccordionBox.width * 0.8;
+    var checkboxTitleMaxWidth = myCollectionAccordionBox.width * 0.8;
 
     // add the checkbox that controls visibility of coin values
-    var showCoinValuesCheckbox = new CheckBox(
-      new Text( coinValuesString, { font: CHECK_BOX_FONT, maxWidth: checkBoxTitleMaxWidth } ),
+    var showCoinValuesCheckbox = new Checkbox(
+      new Text( coinValuesString, { font: CHECK_BOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
       model.showCoinValuesProperty,
       {
         top: coinTermCreatorBox.top,
@@ -266,8 +266,8 @@ define( function( require ) {
     this.addChild( showCoinValuesCheckbox );
 
     // add the checkbox that controls visibility of variable values
-    var showVariableValuesCheckbox = new CheckBox(
-      new Text( variableValuesString, { font: CHECK_BOX_FONT, maxWidth: checkBoxTitleMaxWidth } ),
+    var showVariableValuesCheckbox = new Checkbox(
+      new Text( variableValuesString, { font: CHECK_BOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
       model.showVariableValuesProperty,
       {
         top: coinTermCreatorBox.top,
@@ -284,8 +284,8 @@ define( function( require ) {
     } );
 
     // add the checkbox that controls whether all coefficients (including 1) are shown
-    var showAllCoefficientsCheckbox = new CheckBox(
-      new Text( allCoefficientsString, { font: CHECK_BOX_FONT, maxWidth: checkBoxTitleMaxWidth } ),
+    var showAllCoefficientsCheckbox = new Checkbox(
+      new Text( allCoefficientsString, { font: CHECK_BOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
       model.showAllCoefficientsProperty,
       {
         top: showCoinValuesCheckbox.bottom + CHECK_BOX_VERTICAL_SPACING,
@@ -297,7 +297,7 @@ define( function( require ) {
 
     // if negative values are possible, show the check box that allows them to be simplified
     if ( coinTermCreatorBox.negativeTermsPresent ) {
-      var showSubtractionCheckbox = new CheckBox(
+      var showSubtractionCheckbox = new Checkbox(
         new ShowSubtractionIcon(),
         model.simplifyNegativesProperty,
         {

@@ -11,7 +11,7 @@ define( function( require ) {
   // modules
   var AllLevelsCompletedDialog = require( 'EXPRESSION_EXCHANGE/game/view/AllLevelsCompletedDialog' );
   var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
-  var CheckBox = require( 'SUN/CheckBox' );
+  var Checkbox = require( 'SUN/Checkbox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var EERewardNode = require( 'EXPRESSION_EXCHANGE/game/view/EERewardNode' );
@@ -142,7 +142,7 @@ define( function( require ) {
 
     // add the check box that allows expressions with negative values to be simplified
     var boundsOfLowestCollectionArea = _.last( levelModel.collectionAreas ).bounds;
-    var showSubtractionCheckbox = new CheckBox(
+    var showSubtractionCheckbox = new Checkbox(
       new ShowSubtractionIcon(),
       levelModel.simplifyNegativesProperty,
       {
