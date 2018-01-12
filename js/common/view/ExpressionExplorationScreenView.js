@@ -250,7 +250,7 @@ define( function( require ) {
     } );
     this.addChild( myCollectionAccordionBox );
 
-    // max size of check box text, multiplier empirically determined
+    // max size of checkbox text, multiplier empirically determined
     var checkboxTitleMaxWidth = myCollectionAccordionBox.width * 0.8;
 
     // add the checkbox that controls visibility of coin values
@@ -295,7 +295,7 @@ define( function( require ) {
     );
     this.addChild( showAllCoefficientsCheckbox );
 
-    // if negative values are possible, show the check box that allows them to be simplified
+    // if negative values are possible, show the checkbox that allows them to be simplified
     if ( coinTermCreatorBox.negativeTermsPresent ) {
       var showSubtractionCheckbox = new Checkbox(
         new ShowSubtractionIcon(),

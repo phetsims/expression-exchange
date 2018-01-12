@@ -140,7 +140,7 @@ define( function( require ) {
       levelModel.creatorBoxBounds = coinTermCreatorBox.bounds;
     } );
 
-    // add the check box that allows expressions with negative values to be simplified
+    // add the checkbox that allows expressions with negative values to be simplified
     var boundsOfLowestCollectionArea = _.last( levelModel.collectionAreas ).bounds;
     var showSubtractionCheckbox = new Checkbox(
       new ShowSubtractionIcon(),
