@@ -19,6 +19,7 @@ define( function( require ) {
   var Property = require( 'AXON/Property' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var Timer = require( 'PHET_CORE/Timer' );
+  var Touch = require( 'SCENERY/input/Touch' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // constants
@@ -361,7 +362,7 @@ define( function( require ) {
         startDrag: function( event ) {
 
           // offset things a little in touch mode for better visibility while dragging
-          if ( event.pointer.isTouch ) {
+          if ( event.pointer instanceof Touch ) {
             var position = self.globalToParentPoint( event.pointer.point );
             var adjustedPosition = position.plusXY( 0, TOUCH_DRAG_Y_OFFSET );
             if ( dragBounds.containsPoint( adjustedPosition ) ) {
