@@ -16,6 +16,7 @@ define( function( require ) {
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
   var Matrix3 = require( 'DOT/Matrix3' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Path = require( 'SCENERY/nodes/Path' );
@@ -126,10 +127,10 @@ define( function( require ) {
           var symbolText;
           if ( simplifyNegativesProperty.value &&
                coinTermsLeftToRight[ i + 1 ].totalCountProperty.get() < 0 && !coinTermsLeftToRight[ i + 1 ].userControlledProperty.get() ) {
-            symbolText = EESharedConstants.MINUS_SIGN_UNICODE;
+            symbolText = MathSymbols.MINUS;
           }
           else {
-            symbolText = '+';
+            symbolText = MathSymbols.PLUS;
           }
 
           // add the operator

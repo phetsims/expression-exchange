@@ -13,6 +13,7 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
@@ -38,7 +39,7 @@ define( function( require ) {
     var equationNode = new Node();
     equationNode.addChild( new Text( '2', { font: NORMAL_FONT } ) );
     equationNode.addChild( new Text( '(4)', { font: ITALIC_FONT, left: equationNode.width } ) );
-    equationNode.addChild( new Text( '+', { font: NORMAL_FONT, left: equationNode.width + 25 } ) );
+    equationNode.addChild( new Text( MathSymbols.PLUS, { font: NORMAL_FONT, left: equationNode.width + 25 } ) );
     equationNode.addChild( new Text( '1', { font: NORMAL_FONT, left: equationNode.width + 25 } ) );
     equationNode.addChild( new Text( '(5)', { font: ITALIC_FONT, left: equationNode.width } ) );
 

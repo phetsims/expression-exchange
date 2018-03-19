@@ -14,6 +14,7 @@ define( function( require ) {
   var HBox = require( 'SCENERY/nodes/HBox' );
   var inherit = require( 'PHET_CORE/inherit' );
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
   var Node = require( 'SCENERY/nodes/Node' );
   var NumberSpinner = require( 'SUN/NumberSpinner' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
@@ -56,7 +57,7 @@ define( function( require ) {
       spacing: 6,
       children: [
         new Text( variableString, { font: VARIABLE_FONT } ),
-        new Text( '=', { font: EQUALS_SIGN_FONT } ),
+        new Text( MathSymbols.EQUAL_TO, { font: EQUALS_SIGN_FONT } ),
         numberSpinner ]
     } ) );
   }

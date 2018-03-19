@@ -13,6 +13,7 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var Text = require( 'SCENERY/nodes/Text' );
@@ -31,7 +32,7 @@ define( function( require ) {
     Node.call( this );
 
     // add a rectangle with the first portion of the text
-    var firstTextWithBackground = new TextWidthBackground( '+ -x' );
+    var firstTextWithBackground = new TextWidthBackground( '+ ' + MathSymbols.UNARY_MINUS + 'x' );
     this.addChild( firstTextWithBackground );
 
     // add the arrow
@@ -46,7 +47,7 @@ define( function( require ) {
     this.addChild( arrow );
 
     // add the 2nd enclosed text portion
-    this.addChild( new TextWidthBackground( '\u2212 x', { left: arrow.right + 5 } ) );
+    this.addChild( new TextWidthBackground( MathSymbols.MINUS + ' x', { left: arrow.right + 5 } ) );
   }
 
   /**

@@ -14,6 +14,7 @@ define( function( require ) {
   var HBox = require( 'SCENERY/nodes/HBox' );
   var inherit = require( 'PHET_CORE/inherit' );
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var RichText = require( 'SCENERY/nodes/RichText' );
@@ -40,7 +41,7 @@ define( function( require ) {
       children: [
         new Text( '3', { font: TEXT_FONT } ),
         new RichText( 'x<sup>2</sup>', { font: MATH_FONT, supScale: 0.5 } ),
-        new Text( ' \u2212 ', { font: TEXT_FONT } ),
+        new Text( ' ' + MathSymbols.MINUS + ' ', { font: TEXT_FONT } ),
         new RichText( 'x<sup>2</sup>', { font: MATH_FONT, supScale: 0.5 } )
       ],
       align: 'bottom'

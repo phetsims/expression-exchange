@@ -30,9 +30,6 @@ define( function( require ) {
     CONTROL_PANEL_BACKGROUND_COLOR: new Color( 'rgb( 235, 235, 235 )' ),
     CARD_BACKGROUND_COLOR: '#FFFFEE',
 
-    // operator characters
-    MINUS_SIGN_UNICODE: '\u2212',
-
     // amount of time that the popup buttons are shown
     POPUP_BUTTON_SHOW_TIME: 1.5, // in seconds,
 

@@ -14,6 +14,7 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
   var Node = require( 'SCENERY/nodes/Node' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
@@ -70,7 +71,7 @@ define( function( require ) {
       maxWidth: maxTextWidth
     } );
     if ( coinTerm.totalCountProperty.get() < 0 ) {
-      termText.text = '-' + termText.text;
+      termText.text = MathSymbols.UNARY_MINUS + termText.text;
     }
     termText.center = coinCenter;
     this.addChild( termText );
@@ -94,7 +95,7 @@ define( function( require ) {
     // update the variable text when it changes, which is triggered by changes to the underlying variable values
     coinTerm.termValueTextProperty.link( function() {
       var termValueText = coinTerm.termValueTextProperty.value;
-      var sign = coinTerm.totalCountProperty.get() > 0 ? '' : '-';
+      var sign = coinTerm.totalCountProperty.get() > 0 ? '' : MathSymbols.UNARY_MINUS;
       termWithVariableValuesText.text = sign + termValueText;
       termWithVariableValuesText.center = coinCenter;
     } );

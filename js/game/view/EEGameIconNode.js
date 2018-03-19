@@ -17,6 +17,7 @@ define( function( require ) {
   var HBox = require( 'SCENERY/nodes/HBox' );
   var HStrut = require( 'SCENERY/nodes/HStrut' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var Screen = require( 'JOIST/Screen' );
@@ -56,7 +57,7 @@ define( function( require ) {
         new Text( '2', { font: TEXT_FONT } ),
         CoinNodeFactory.createIconNode( CoinTermTypeID.X, coinRadius ),
         new HStrut( PLUS_SIGN_X_MARGIN ),
-        new Text( '+', { font: TEXT_FONT } ),
+        new Text( MathSymbols.PLUS, { font: TEXT_FONT } ),
         new HStrut( PLUS_SIGN_X_MARGIN ),
         new Text( '3', { font: TEXT_FONT } ),
         CoinNodeFactory.createIconNode( CoinTermTypeID.Y, coinRadius )

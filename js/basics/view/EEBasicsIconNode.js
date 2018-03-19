@@ -14,6 +14,7 @@ define( function( require ) {
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
+  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
   var Screen = require( 'JOIST/Screen' );
@@ -49,13 +50,11 @@ define( function( require ) {
     coin2.centerY = ICON_SIZE.height / 2;
     this.addChild( coin2 );
 
-    this.addChild( new Text( '+', {
+    this.addChild( new Text( MathSymbols.PLUS, {
       font: TEXT_FONT,
       centerX: ( coin1.centerX + coin2.centerX ) / 2,
       centerY: coin1.centerY
     } ) );
-
-
   }
 
   expressionExchange.register( 'EEBasicsIconNode', EEBasicsIconNode );

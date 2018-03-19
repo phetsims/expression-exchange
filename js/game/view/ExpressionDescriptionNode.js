@@ -12,11 +12,11 @@ define( function( require ) {
 
   // modules
   var CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var HBox = require( 'SCENERY/nodes/HBox' );
   var inherit = require( 'PHET_CORE/inherit' );
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var RichText = require( 'SCENERY/nodes/RichText' );
   var Text = require( 'SCENERY/nodes/Text' );
@@ -62,7 +62,7 @@ define( function( require ) {
 
         // add plus symbol if not at end of expression
         if ( index < expressionDescription.terms.length - 1 ) {
-          var plusSign = new Text( ' + ', { font: COIN_EXPRESSION_FONT } );
+          var plusSign = new Text( ' ' + MathSymbols.PLUS + ' ', { font: COIN_EXPRESSION_FONT } );
           self.addChild( plusSign );
         }
 
@@ -162,7 +162,7 @@ define( function( require ) {
     assert && assert( fragmentString.length, 'no expression fragment found, method should not have been called' );
 
     // replace the minus sign used in subtraction operations with the unicode character
-    fragmentString = fragmentString.replace( / - /g, ' ' + EESharedConstants.MINUS_SIGN_UNICODE + ' ' );
+    fragmentString = fragmentString.replace( / - /g, ' ' + MathSymbols.MINUS + ' ' );
 
     return {
       node: new Text( fragmentString, { font: EXPRESSION_FONT_FOR_NON_VARIABLE } ),

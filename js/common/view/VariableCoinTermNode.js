@@ -15,6 +15,7 @@ define( function( require ) {
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
   var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
@@ -233,7 +234,7 @@ define( function( require ) {
       if ( this.coinTerm.totalCountProperty.get() < 0 && !coefficientVisible &&
            this.coinTerm.showMinusSignWhenNegativeProperty.get() ) {
 
-        this.termText.text = '-' + this.coinTerm.termText;
+        this.termText.text = MathSymbols.UNARY_MINUS + this.coinTerm.termText;
       }
       else {
         this.termText.text = this.coinTerm.termText;
@@ -251,7 +252,7 @@ define( function( require ) {
       if ( this.coinTerm.totalCountProperty.get() === -1 && !showAllCoefficients &&
            this.coinTerm.showMinusSignWhenNegativeProperty.get() ) {
         // prepend a minus sign
-        termValueText = '-' + termValueText;
+        termValueText = MathSymbols.UNARY_MINUS + termValueText;
       }
 
       if ( this.termWithVariableValuesText ) {
