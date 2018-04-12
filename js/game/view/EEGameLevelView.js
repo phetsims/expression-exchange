@@ -17,16 +17,14 @@ define( function( require ) {
   var EERewardNode = require( 'EXPRESSION_EXCHANGE/game/view/EERewardNode' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
-  var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   var inherit = require( 'PHET_CORE/inherit' );
   var NextLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/NextLevelNode' );
   var Node = require( 'SCENERY/nodes/Node' );
-  var PhetColorScheme = require( 'SCENERY_PHET/PhetColorScheme' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var platform = require( 'PHET_CORE/platform' );
   var Property = require( 'AXON/Property' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
+  var RefreshButton = require( 'SCENERY_PHET/buttons/RefreshButton' );
   var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
   var Text = require( 'SCENERY/nodes/Text' );
@@ -100,9 +98,8 @@ define( function( require ) {
     middleLayer.addChild( backButton );
 
     // add the refresh button
-    var refreshButton = new RectangularPushButton( {
-      content: new FontAwesomeNode( 'refresh', { scale: 0.7 } ),
-      baseColor: PhetColorScheme.BUTTON_YELLOW,
+    var refreshButton = new RefreshButton( {
+      iconScale: 0.7,
       xMargin: 9,
       yMargin: 7,
       listener: function() { levelModel.refresh(); },
