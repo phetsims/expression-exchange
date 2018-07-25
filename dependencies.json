@@ -1,5 +1,5 @@
 {
-  "comment": "# expression-exchange 1.0.3-phetiorc.1 Wed Jul 25 2018 01:14:42 GMT-0600 (MDT)",
+  "comment": "# expression-exchange 1.0.3-phetiorc.2 Wed Jul 25 2018 04:22:42 GMT-0600 (MDT)",
   "assert": {
     "sha": "845be6b591cb746b0b05b7023208aef2e49a8855",
     "branch": "HEAD"
@@ -14,14 +14,14 @@
   },
   "chipper": {
     "sha": "89ebe24b4d5f8287cd1b76ae738e4113560f89c8",
-    "branch": "expression-exchange-1.0-phetio"
+    "branch": "HEAD"
   },
   "dot": {
     "sha": "2765eb4d9e836db1e467c9766c9f767f53659a95",
     "branch": "HEAD"
   },
   "expression-exchange": {
-    "sha": "8a939a1eb3640548ec153e2d93df2d318e6b8a2f",
+    "sha": "9c2ba62dfbbe308d7f36866c87620770ef1bac1b",
     "branch": "1.0-phetio"
   },
   "joist": {
