@@ -1,5 +1,5 @@
 {
-  "comment": "# expression-exchange 1.1.2 Thu Aug 09 2018 23:32:17 GMT-0600 (MDT)",
+  "comment": "# expression-exchange 1.1.3-rc.1 Fri Aug 10 2018 03:45:15 GMT-0600 (MDT)",
   "assert": {
     "sha": "5c3f92048a9c2ffd6df8ede54fd64f1f7a7e4ef2",
     "branch": "HEAD"
@@ -14,14 +14,14 @@
   },
   "chipper": {
     "sha": "306029cbb0fb48e43bf75f5abc6d0ab25f20006a",
-    "branch": "expression-exchange-1.1"
+    "branch": "HEAD"
   },
   "dot": {
     "sha": "3d9d2f3d627d3036c695200a4f48d00c077c5338",
     "branch": "HEAD"
   },
   "expression-exchange": {
-    "sha": "10ac71292426f88d80550104ee01b8bc0b2f1175",
+    "sha": "bd92be8bf635fbe7a3148ccf2093ebdf72a22e9e",
     "branch": "1.1"
   },
   "joist": {
@@ -38,7 +38,7 @@
   },
   "phetcommon": {
     "sha": "94d8eb414f04dad2aa402e6bb73176d5d82dc11d",
-    "branch": "expression-exchange-1.1"
+    "branch": "HEAD"
   },
   "query-string-machine": {
     "sha": "c74e454ec68033a9546b8181d4d962eb8ceef81f",
