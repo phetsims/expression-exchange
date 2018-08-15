@@ -1,5 +1,5 @@
 {
-  "comment": "# expression-exchange 1.0.4-phetiorc.1 Fri Aug 10 2018 03:44:30 GMT-0600 (MDT)",
+  "comment": "# expression-exchange 1.0.4-phetio Wed Aug 15 2018 13:38:36 GMT-0600 (MDT)",
   "assert": {
     "sha": "845be6b591cb746b0b05b7023208aef2e49a8855",
     "branch": "HEAD"
@@ -21,7 +21,7 @@
     "branch": "HEAD"
   },
   "expression-exchange": {
-    "sha": "3b91a95f8d22de17b143baf5b13c1765aed9122c",
+    "sha": "4b5a2d08dc488a081c9deea2a96b99f8eb2cdee8",
     "branch": "1.0-phetio"
   },
   "joist": {
