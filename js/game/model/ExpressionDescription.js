@@ -249,7 +249,7 @@ define( function( require ) {
        */
       coinTermMatches: function( coinTerm ) {
 
-        // there must be only a single coin term in the the description for this to be a match
+        // there must be only a single coin term in the description for this to be a match
         return this.terms.length === 1 && this.terms[ 0 ].matchesCoinTerm( coinTerm );
       }
     }

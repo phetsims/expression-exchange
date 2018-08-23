@@ -4,7 +4,7 @@
  * a Scenery node that represents a visual description of an expression, used in the game to describe what the user
  * should attempt to construct
  *
- * Note the the expression description string is re-parsed in this object because the expression description is in the
+ * Note the expression description string is re-parsed in this object because the expression description is in the
  * reduced form (no parens) and we need to handle subscripts and superscripts.
  */
 define( function( require ) {
