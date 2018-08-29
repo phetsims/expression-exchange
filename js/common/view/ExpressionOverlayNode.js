@@ -93,7 +93,6 @@ define( function( require ) {
     this.popUpButtonsNode.addInputListener( {
       enter: function() {
         if ( !expression.userControlledProperty.get() ) {
-          assert && assert( self.hideButtonsTimerCallback !== null, 'hide button timer should be running if pop up buttons are visible' );
           self.clearHideButtonsTimer();
         }
       },
