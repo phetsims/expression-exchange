@@ -18,7 +18,7 @@ define( function( require ) {
   var Node = require( 'SCENERY/nodes/Node' );
   var Property = require( 'AXON/Property' );
   var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var Timer = require( 'PHET_CORE/Timer' );
+  var timer = require( 'PHET_CORE/timer' );
   var Touch = require( 'SCENERY/input/Touch' );
   var Vector2 = require( 'DOT/Vector2' );
 
@@ -174,7 +174,7 @@ define( function( require ) {
      */
     clearHideButtonTimer: function() {
       if ( this.hideButtonTimer ) {
-        Timer.clearTimeout( this.hideButtonTimer );
+        timer.clearTimeout( this.hideButtonTimer );
         this.hideButtonTimer = null;
       }
     },
@@ -186,7 +186,7 @@ define( function( require ) {
     startHideButtonTimer: function() {
       var self = this;
       this.clearHideButtonTimer(); // just in case one is already running
-      this.hideButtonTimer = Timer.setTimeout( function() {
+      this.hideButtonTimer = timer.setTimeout( function() {
         self.hideBreakApartButton();
         self.hideButtonTimer = null;
       }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );

@@ -20,7 +20,7 @@ define( function( require ) {
   var Property = require( 'AXON/Property' );
   var Shape = require( 'KITE/Shape' );
   var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
-  var Timer = require( 'PHET_CORE/Timer' );
+  var timer = require( 'PHET_CORE/timer' );
   var Util = require( 'DOT/Util' );
   var Vector2 = require( 'DOT/Vector2' );
 
@@ -235,7 +235,7 @@ define( function( require ) {
      */
     clearHideButtonsTimer: function() {
       if ( this.hideButtonsTimerCallback ) {
-        Timer.clearTimeout( this.hideButtonsTimerCallback );
+        timer.clearTimeout( this.hideButtonsTimerCallback );
         this.hideButtonsTimerCallback = null;
       }
     },
@@ -243,7 +243,7 @@ define( function( require ) {
     startHideButtonsTimer: function() {
       var self = this;
       this.clearHideButtonsTimer(); // just in case one is already running
-      this.hideButtonsTimerCallback = Timer.setTimeout( function() {
+      this.hideButtonsTimerCallback = timer.setTimeout( function() {
         self.hidePopUpButtons();
         self.hideButtonsTimerCallback = null;
       }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );
