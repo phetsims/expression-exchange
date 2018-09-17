@@ -34,7 +34,7 @@ define( function( require ) {
     // @private {EEGameModel}
     this.gameModel = gameModel;
 
-    // create the audio play for the game sounds
+    // create the sound player for the game sounds
     var gameAudioPlayer = new GameAudioPlayer( gameModel.soundEnabledProperty );
 
     // consolidate the level scores into an array for the level selection node
