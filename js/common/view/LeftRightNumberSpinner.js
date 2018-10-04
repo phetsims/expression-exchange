@@ -19,7 +19,7 @@ define( function( require ) {
   var NumberSpinner = require( 'SUN/NumberSpinner' );
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
-  var RangeWithValue = require( 'DOT/RangeWithValue' );
+  var Range = require( 'DOT/Range' );
   var Text = require( 'SCENERY/nodes/Text' );
 
   // constants
@@ -44,7 +44,7 @@ define( function( require ) {
     }, options );
 
     // create and add the readout
-    var numberSpinner = new NumberSpinner( variableValueProperty, new Property( new RangeWithValue( options.minValue, options.maxValue ) ), {
+    var numberSpinner = new NumberSpinner( variableValueProperty, new Property( new Range( options.minValue, options.maxValue ) ), {
       arrowsPosition: 'leftRight',
       font: READOUT_FONT,
       backgroundStroke: 'black',
