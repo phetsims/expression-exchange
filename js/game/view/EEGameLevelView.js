@@ -9,7 +9,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var AllLevelsCompletedDialog = require( 'EXPRESSION_EXCHANGE/game/view/AllLevelsCompletedDialog' );
+  var AllLevelsCompletedNode = require( 'VEGAS/AllLevelsCompletedNode' );
   var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
   var Checkbox = require( 'SUN/Checkbox' );
   var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
@@ -171,7 +171,7 @@ define( function( require ) {
     notificationsLayer.addChild( this.nextLevelNode );
 
     // create the dialog that is shown when all levels reach completion
-    this.allLevelsCompletedDialog = new AllLevelsCompletedDialog( gameModel.returnToLevelSelection.bind( gameModel ), {
+    this.allLevelsCompletedDialog = new AllLevelsCompletedNode( gameModel.returnToLevelSelection.bind( gameModel ), {
       centerX: title.centerX,
       centerY: screenLayoutBounds.height * 0.4, // empirically determined
       visible: false
