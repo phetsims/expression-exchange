@@ -58,8 +58,7 @@ define( function( require ) {
       this.coinTermCreatorBox = new Carousel( creatorNodes, {
         itemsPerPage: options.itemsPerCarouselPage,
         spacing: options.itemSpacing,
-        cornerRadius: options.cornerRadius,
-        stepper: 'timer'
+        cornerRadius: options.cornerRadius
       } );
     }
     else {
