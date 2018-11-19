@@ -1,4 +1,4 @@
-// Copyright 2016-2017, University of Colorado Boulder
+// Copyright 2016-2018, University of Colorado Boulder
 
 /**
  * a node that is placed on the top layer of an expression to allow it to be dragged and to prevent input events from

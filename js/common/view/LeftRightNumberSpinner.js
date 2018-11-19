@@ -1,4 +1,4 @@
-// Copyright 2016-2017, University of Colorado Boulder
+// Copyright 2016-2018, University of Colorado Boulder
 
 /**
  * control that allows the user to adjust value of a variable using arrow buttons displayed to the left and right of
