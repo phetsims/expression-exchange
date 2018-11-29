@@ -163,7 +163,7 @@ define( function( require ) {
      */
     handleExistenceStrengthChanged: function( existenceStrength ) {
       assert && assert( existenceStrength >= 0 && existenceStrength <= 1, 'existence strength must be between 0 and 1' );
-      if ( !this.isDisposed() ) {
+      if ( !this.isDisposed ) {
         this.pickable = existenceStrength === 1; // prevent interaction with fading coin term
         this.opacity = existenceStrength;
       }
@@ -271,7 +271,7 @@ define( function( require ) {
     handleUserControlledChanged: function( userControlled ) {
       if ( Math.abs( this.coinTerm.composition.length ) > 1 &&
            this.coinTerm.breakApartAllowedProperty.get() &&
-           !this.isDisposed() ) {
+           !this.isDisposed ) {
 
         if ( userControlled ) {
           this.clearHideButtonTimer(); // called in case the timer was running
