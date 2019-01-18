@@ -116,7 +116,7 @@ define( function( require ) {
     }
 
     // update the pickability of this node
-    var pickabilityUpdaterMultilink = new Property.multilink(
+    var pickabilityUpdaterMultilink = Property.multilink(
       [ coinTerm.expressionProperty, coinTerm.inProgressAnimationProperty, coinTerm.collectedProperty ],
       updatePickability
     );
