@@ -40,8 +40,7 @@ define( function( require ) {
     COLLECTION_AREA_SIZE: new Dimension2( 220, 90 ),
 
     // misc
-    RESET_ALL_BUTTON_RADIUS: 24,
-    RESET_ALL_BUTTON_TOUCH_AREA_DILATION: 10
+    RESET_ALL_BUTTON_RADIUS: 24
   };
 
   expressionExchange.register( 'EESharedConstants', EESharedConstants );

@@ -102,8 +102,7 @@ define( function( require ) {
     // Reset button.
     var resetButton = new ResetAllButton( {
       listener: resetFunction,
-      radius: EESharedConstants.RESET_ALL_BUTTON_RADIUS,
-      touchAreaDilation: EESharedConstants.RESET_ALL_BUTTON_TOUCH_AREA_DILATION
+      radius: EESharedConstants.RESET_ALL_BUTTON_RADIUS
     } );
     this.addChild( resetButton );
 
