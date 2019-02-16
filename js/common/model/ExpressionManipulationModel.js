@@ -579,7 +579,7 @@ define( function( require ) {
      * @private
      */
     getNextOpenRetrievalSpot: function() {
-      var location = new Vector2();
+      var location = new Vector2( 0, 0 );
       var row = 0;
       var column = 0;
       var openLocationFound = false;

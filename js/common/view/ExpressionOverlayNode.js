@@ -121,8 +121,8 @@ define( function( require ) {
     } );
 
     // pre-allocated vectors, used for calculating allowable locations for the expression
-    var unboundedUpperLeftCornerPosition = new Vector2();
-    var boundedUpperLeftCornerPosition = new Vector2();
+    var unboundedUpperLeftCornerPosition = new Vector2( 0, 0 );
+    var boundedUpperLeftCornerPosition = new Vector2( 0, 0 );
 
     // add the handler that will allow the expression to be dragged and will hide and show the buttons
     var dragHandler = new SimpleDragHandler( {
