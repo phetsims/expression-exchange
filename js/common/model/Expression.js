@@ -286,7 +286,7 @@ define( function( require ) {
           // not there yet - take a step towards the destination
           var easingProportion = Easing.CUBIC_IN_OUT.value( animation.timeSoFar / animation.totalDuration );
           var nextPosition = animation.startPosition.plus(
-            animation.travelVector.withMagnitude( animation.travelVector.magnitude() * easingProportion )
+            animation.travelVector.withMagnitude( animation.travelVector.magnitude * easingProportion )
           );
           var deltaPosition = nextPosition.minus( this.upperLeftCornerProperty.get() );
           this.translate( deltaPosition );

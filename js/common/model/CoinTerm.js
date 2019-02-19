@@ -224,7 +224,7 @@ define( function( require ) {
           var easingProportion = Easing.CUBIC_IN_OUT.value( proportionCompleted );
           this.positionProperty.set(
             animation.startPosition.plus(
-              animation.travelVector.withMagnitude( animation.travelVector.magnitude() * easingProportion )
+              animation.travelVector.withMagnitude( animation.travelVector.magnitude * easingProportion )
             )
           );
         }
