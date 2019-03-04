@@ -134,8 +134,10 @@ define( function( require ) {
       // contentXMargin: 30, // empirically determined
       minWidth: leftSideBoxWidth,
       maxWidth: leftSideBoxWidth,
-      buttonTouchAreaXDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X,
-      buttonTouchAreaYDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y
+      expandCollapseButtonOptions: {
+        touchAreaXDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X,
+        touchAreaYDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y
+      }
     } );
     this.addChild( totalValueAccordionBox );
 
@@ -173,8 +175,10 @@ define( function( require ) {
       buttonYMargin: ACCORDION_BOX_BUTTON_Y_MARGIN,
       minWidth: leftSideBoxWidth,
       maxWidth: leftSideBoxWidth,
-      buttonTouchAreaXDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X,
-      buttonTouchAreaYDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y
+      expandCollapseButtonOptions: {
+        touchAreaXDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X,
+        touchAreaYDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y
+      }
     } );
     variableValuesAccordionBox.expandedProperty.value = false; // initially closed
     this.addChild( variableValuesAccordionBox );
@@ -245,8 +249,10 @@ define( function( require ) {
       contentXMargin: ACCORDION_BOX_CONTENT_X_MARGIN,
       minWidth: collectionDisplayWidth + 2 * ACCORDION_BOX_BUTTON_X_MARGIN,
       maxWidth: collectionDisplayWidth + 2 * ACCORDION_BOX_BUTTON_X_MARGIN,
-      buttonTouchAreaXDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X,
-      buttonTouchAreaYDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y
+      expandCollapseButtonOptions: {
+        touchAreaXDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X,
+        touchAreaYDilation: ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y
+      }
     } );
     this.addChild( myCollectionAccordionBox );
 
