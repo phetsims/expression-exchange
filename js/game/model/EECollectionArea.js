@@ -50,7 +50,7 @@ define( function( require ) {
 
     // @public (read-only) {Emitter} - emitter that emits an event when an at attempt is made to collect an item, and
     // includes a parameter that is true if the item was collected and false if not
-    this.collectionAttemptedEmitter = new Emitter( { validationEnabled: false } );
+    this.collectionAttemptedEmitter = new Emitter( { validators: [ { valueType: 'boolean' } ] } );
   }
 
   expressionExchange.register( 'EECollectionArea', EECollectionArea );
