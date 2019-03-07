@@ -21,6 +21,7 @@ define( function( require ) {
   var inherit = require( 'PHET_CORE/inherit' );
   var Property = require( 'AXON/Property' );
   var Vector2 = require( 'DOT/Vector2' );
+  var Vector2Property = require( 'DOT/Vector2Property' );
 
   // constants
   var COIN_TERM_FADE_TIME = 0.75; // in seconds
@@ -60,11 +61,11 @@ define( function( require ) {
     // properties
     //------------------------------------------------------------------------
 
-    // @public (read-only) {Property.<Vector2>} - set using methods below
-    this.positionProperty = new Property( options.initialPosition );
+    // @public (read-only) - set using methods below
+    this.positionProperty = new Vector2Property( options.initialPosition );
 
-    // @public (read-only) {Property.<Vector2>} - set using methods below
-    this.destinationProperty = new Property( options.initialPosition );
+    // @public (read-only) - set using methods below
+    this.destinationProperty = new Vector2Property( options.initialPosition );
 
     // @public {Property.<boolean>} - indicate whether user is currently dragging this coin
     this.userControlledProperty = new Property( false );

@@ -21,6 +21,7 @@ define( function( require ) {
   var ObservableArray = require( 'AXON/ObservableArray' );
   var Property = require( 'AXON/Property' );
   var Vector2 = require( 'DOT/Vector2' );
+  var Vector2Property = require( 'DOT/Vector2Property' );
 
   // constants
   var INTER_COIN_TERM_SPACING = 30; // in model units, empirically determined
@@ -47,7 +48,7 @@ define( function( require ) {
     // properties
     //------------------------------------------------------------------------
 
-    this.upperLeftCornerProperty = new Property( Vector2.ZERO ); // @public {Property.<Vector2>}
+    this.upperLeftCornerProperty = new Vector2Property( Vector2.ZERO ); // @public
     this.widthProperty = new Property( 0 ); // @public (read-only) {Property.<number>}
     this.heightProperty = new Property( 0 ); // @public (read-only) {Property.<number>}
     this.userControlledProperty = new Property( false ); // @public {Property.<boolean>}
