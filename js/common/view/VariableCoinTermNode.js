@@ -10,7 +10,9 @@ define( function( require ) {
 
   // modules
   var AbstractCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/AbstractCoinTermNode' );
+  var Animation = require( 'TWIXT/Animation' );
   var CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
+  var Easing = require( 'TWIXT/Easing' );
   var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   var inherit = require( 'PHET_CORE/inherit' );
@@ -325,13 +327,23 @@ define( function( require ) {
 
         var targetFlipState = showCoinValues ? 1 : 0;
 
-        // use an tween to change the flip state over time
-        this.activeFlipAnimation = new TWEEN.Tween( { flipState: this.flipStateProperty.get() } )
-          .to( { flipState: targetFlipState }, COIN_FLIP_TIME * 1000 )
-          .easing( TWEEN.Easing.Cubic.InOut )
-          .start( phet.joist.elapsedTime )
-          .onUpdate( function() { self.flipStateProperty.set( this.flipState ); } )
-          .onComplete( function() { self.activeFlipAnimation = null; } );
+        if ( self.flipStateProperty.get() !== targetFlipState ) {
+
+          // use an animation to depict the coin flip
+          this.activeFlipAnimation = new Animation( {
+            duration: COIN_FLIP_TIME,
+            easing: Easing.CUBIC_IN_OUT,
+            setValue: function( newFlipState ) {
+              self.flipStateProperty.set( newFlipState );
+            },
+            from: this.flipStateProperty.get(),
+            to: targetFlipState
+          } );
+          this.activeFlipAnimation.finishEmitter.addListener( function() {
+            self.activeFlipAnimation = null;
+          } );
+          this.activeFlipAnimation.start();
+        }
       }
       else {
 

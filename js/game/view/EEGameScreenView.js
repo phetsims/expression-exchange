@@ -9,6 +9,8 @@ define( function( require ) {
   'use strict';
 
   // modules
+  var Animation = require( 'TWIXT/Animation' );
+  var Easing = require( 'TWIXT/Easing' );
   var EEGameLevelIconFactory = require( 'EXPRESSION_EXCHANGE/game/view/EEGameLevelIconFactory' );
   var EEGameLevelView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameLevelView' );
   var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
@@ -20,7 +22,7 @@ define( function( require ) {
   var ScreenView = require( 'JOIST/ScreenView' );
 
   // constants
-  var SCREEN_CHANGE_TIME = 1000; // milliseconds
+  var SCREEN_CHANGE_TIME = 1; // seconds
 
   /**
    * @param {EEGameLevel} gameModel
@@ -110,31 +112,42 @@ define( function( require ) {
       }
 
       // move out the old node
-      new TWEEN.Tween( { x: nodeInViewport.x } )
-        .to( { x: outgoingNodeDestinationX }, SCREEN_CHANGE_TIME )
-        .easing( TWEEN.Easing.Cubic.InOut )
-        .start( phet.joist.elapsedTime )
-        .onStart( function() {
-          outgoingViewNode.inViewportProperty && outgoingViewNode.inViewportProperty.set( false );
-        } )
-        .onUpdate( function() { nodeInViewport.x = this.x; } )
-        .onComplete( function() {
-          outgoingViewNode.visible = false;
-        } );
+      var moveOutAnimation = new Animation( {
+        duration: SCREEN_CHANGE_TIME,
+        easing: Easing.CUBIC_IN_OUT,
+        setValue: function( newXPosition ) {
+          nodeInViewport.x = newXPosition;
+        },
+        from: nodeInViewport.x,
+        to: outgoingNodeDestinationX
+      } );
+      moveOutAnimation.beginEmitter.addListener( function() {
+        outgoingViewNode.inViewportProperty && outgoingViewNode.inViewportProperty.set( false );
+      } );
+      moveOutAnimation.finishEmitter.addListener( function() {
+        outgoingViewNode.visible = false;
+      } );
+      moveOutAnimation.start();
 
       // move in the new node
-      incomingViewNode.x = incomingNodeStartX;
-      incomingViewNode.visible = true;
-      new TWEEN.Tween( { x: incomingViewNode.x } )
-        .to( { x: self.layoutBounds.minX }, SCREEN_CHANGE_TIME )
-        .easing( TWEEN.Easing.Cubic.InOut )
-        .start( phet.joist.elapsedTime )
-        .onUpdate( function() { incomingViewNode.x = this.x; } )
-        .onComplete( function() {
-          nodeInViewport = incomingViewNode;
-          nodeInViewport.pickable = true;
-          nodeInViewport.inViewportProperty && nodeInViewport.inViewportProperty.set( true );
-        } );
+      var moveInAnimation = new Animation( {
+        duration: SCREEN_CHANGE_TIME,
+        easing: Easing.CUBIC_IN_OUT,
+        setValue: function( newXPosition ) {
+          incomingViewNode.x = newXPosition;
+        },
+        from: incomingNodeStartX,
+        to: self.layoutBounds.minX
+      } );
+      moveInAnimation.beginEmitter.addListener( function() {
+        incomingViewNode.visible = true;
+      } );
+      moveInAnimation.finishEmitter.addListener( function() {
+        nodeInViewport = incomingViewNode;
+        nodeInViewport.pickable = true;
+        nodeInViewport.inViewportProperty && nodeInViewport.inViewportProperty.set( true );
+      } );
+      moveInAnimation.start();
     } );
   }
 
