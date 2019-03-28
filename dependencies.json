@@ -1,5 +1,5 @@
 {
-  "comment": "# expression-exchange 1.1.5-rc.1 Wed Mar 20 2019 18:53:17 GMT-0400 (EDT)",
+  "comment": "# expression-exchange 1.1.5-rc.1 Thu Mar 28 2019 12:23:53 GMT-0400 (EDT)",
   "assert": {
     "sha": "5c3f92048a9c2ffd6df8ede54fd64f1f7a7e4ef2",
     "branch": "HEAD"
@@ -9,8 +9,8 @@
     "branch": "HEAD"
   },
   "brand": {
-    "sha": "96744c71cf837a00825128c536297469f66f6f65",
-    "branch": "HEAD"
+    "sha": "f3ccac1ac651261fb36a872b17d039cd3bb35fc2",
+    "branch": "expression-exchange-1.1"
   },
   "chipper": {
     "sha": "0f7c05ce9f0b1c47854d6acf754862bc6e0e79fc",
@@ -21,7 +21,7 @@
     "branch": "HEAD"
   },
   "expression-exchange": {
-    "sha": "1b81edc1735d00d9b047aca6a0f450d236e53d51",
+    "sha": "dfce081859dd9b887530d39c081d54384043e78f",
     "branch": "1.1"
   },
   "joist": {
