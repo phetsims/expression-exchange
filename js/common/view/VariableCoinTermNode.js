@@ -124,7 +124,7 @@ define( function( require ) {
     // tails, values in between are used to scale the coin term and thus make it look like it's flipping
     this.flipStateProperty = new Property( showCoinValuesProperty.get() ? 1 : 0 );
 
-    // @private {TWEEN} - tracks current animation
+    // @private {Animation} - tracks current animation
     this.activeFlipAnimation = null;
 
     // if anything about the coin term's values changes or any of the display mode, the representation needs to be updated
