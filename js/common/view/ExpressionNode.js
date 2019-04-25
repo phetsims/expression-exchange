@@ -24,36 +24,15 @@ define( function( require ) {
   var Property = require( 'AXON/Property' );
   var Shape = require( 'KITE/Shape' );
   var Text = require( 'SCENERY/nodes/Text' );
-  var Vector2 = require( 'DOT/Vector2' );
 
   // constants
   var BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;
-  var NUM_ZIG_ZAGS = 10;
-  var ZIG_ZAG_X_SIZE = 4; // in screen coordinates, empirically determined
+  var NUM_ZIG_ZAGS = 5;
+  var ZIG_ZAG_AMPLITUDE = 2; // in screen coordinates, empirically determined
   var HINT_OFFSET = 3; // in screen coordinates, empirically determined
   var LEFT_HINT_TRANSLATION = Matrix3.translation( -HINT_OFFSET, 0 );
   var RIGHT_HINT_TRANSLATION = Matrix3.translation( HINT_OFFSET, 0 );
   var OPERATOR_FONT = new PhetFont( 32 );
-
-  // utility function for drawing a vertical zig zag line on a shape between two endpoints
-  function addVerticalZigZagLine( shape, x1, y1, x2, y2, zigRightFirst ) {
-    assert && assert( x1 === x2, 'this function is not general enough to handle non-vertical zig-zag lines' );
-    var segmentYLength = ( y2 - y1 ) / ( NUM_ZIG_ZAGS - 1 ); // can be negative if line is headed upwards
-    var nextPoint = new Vector2( x1, y1 );
-    _.times( NUM_ZIG_ZAGS - 1, function( index ) {
-      if ( index === 0 ) {
-        // the first zig is half size so that the line stays centered around a straight line between the two points
-        nextPoint.x = nextPoint.x + ZIG_ZAG_X_SIZE / 2 * ( zigRightFirst ? 1 : -1 );
-        nextPoint.y = nextPoint.y + segmentYLength / 2;
-      }
-      else {
-        nextPoint.x = nextPoint.x + ( nextPoint.x > x1 ? -1 : 1 ) * ZIG_ZAG_X_SIZE;
-        nextPoint.y = nextPoint.y + segmentYLength;
-      }
-      shape.lineTo( nextPoint.x, nextPoint.y );
-    } );
-    shape.lineTo( x2, y2 );
-  }
 
   /**
    * @param {Expression} expression - model of an expression
@@ -100,7 +79,7 @@ define( function( require ) {
 
         // if the hint is active, the edge is zig zagged
         if ( expression.rightHintActiveProperty.get() ) {
-          addVerticalZigZagLine( backgroundShape, expressionWidth, 0, expressionWidth, expressionHeight, true );
+          backgroundShape.zigZagTo( expressionWidth, expressionHeight, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
         }
         else {
           backgroundShape.lineTo( expressionWidth, expressionHeight );
@@ -109,7 +88,7 @@ define( function( require ) {
 
         // zig zag on left side if hint is active
         if ( expression.leftHintActiveProperty.get() ) {
-          addVerticalZigZagLine( backgroundShape, 0, expressionHeight, 0, 0, true );
+          backgroundShape.zigZagTo( 0, 0, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
         }
         else {
           backgroundShape.lineTo( 0, 0 );
@@ -192,7 +171,7 @@ define( function( require ) {
         var leftHintShape = new Shape()
           .moveTo( -hintWidth, 0 )
           .lineTo( 0, 0 );
-        addVerticalZigZagLine( leftHintShape, 0, 0, 0, expressionHeight, true );
+        leftHintShape.zigZagTo( 0, expressionHeight, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
         leftHintShape
           .lineTo( -hintWidth, expressionHeight )
           .close();
@@ -206,7 +185,7 @@ define( function( require ) {
       [ expression.heightProperty, expression.widthProperty, expression.rightHintWidthProperty ],
       function( expressionHeight, expressionWidth, hintWidth ) {
         var rightHintShape = new Shape().moveTo( expressionWidth, 0 );
-        addVerticalZigZagLine( rightHintShape, expressionWidth, 0, expressionWidth, expressionHeight, true );
+        rightHintShape.zigZagTo( expressionWidth, expressionHeight, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
         rightHintShape
           .lineTo( expressionWidth + hintWidth, expressionHeight )
           .lineTo( expressionWidth + hintWidth, 0 )
@@ -240,8 +219,5 @@ define( function( require ) {
       this.disposeExpressionNode();
       Node.prototype.dispose.call( this );
     }
-  }, {
-    // statics
-    addVerticalZigZagLine: addVerticalZigZagLine // @public
   } );
 } );

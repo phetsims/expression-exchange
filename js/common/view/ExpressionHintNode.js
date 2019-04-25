@@ -13,7 +13,6 @@ define( function( require ) {
   // modules
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var ExpressionNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionNode' );
   var inherit = require( 'PHET_CORE/inherit' );
   var Node = require( 'SCENERY/nodes/Node' );
   var Path = require( 'SCENERY/nodes/Path' );
@@ -23,6 +22,8 @@ define( function( require ) {
   // constants
   var HINT_BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;
   var INSET = 10; // in screen coordinates
+  var NUM_ZIG_ZAGS = 5;
+  var ZIG_ZAG_AMPLITUDE = 2;
 
   /**
    * @param {ExpressionHint} expressionHint - model of an expression hint
@@ -74,7 +75,7 @@ define( function( require ) {
           .lineTo( 0, 0 )
           .lineTo( 0, height )
           .lineTo( leftHalfWidth, height );
-        ExpressionNode.addVerticalZigZagLine( leftHalfShape, leftHalfWidth, height, leftHalfWidth, 0, true );
+        leftHalfShape.zigZagTo( leftHalfWidth, 0, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
         leftHalfShape.close();
 
         var leftHalf = new Path( leftHalfShape, {
@@ -90,7 +91,7 @@ define( function( require ) {
           .lineTo( rightHalfWidth, 0 )
           .lineTo( rightHalfWidth, height )
           .lineTo( 0, height );
-        ExpressionNode.addVerticalZigZagLine( rightHalfShape, 0, height, 0, 0, true );
+        rightHalfShape.zigZagTo( 0, 0, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
         rightHalfShape.close();
 
         self.addChild( new Path( rightHalfShape, {
