@@ -75,7 +75,7 @@ define( function( require ) {
           .lineTo( 0, 0 )
           .lineTo( 0, height )
           .lineTo( leftHalfWidth, height );
-        leftHalfShape.zigZagTo( leftHalfWidth, 0, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
+        leftHalfShape.zigZagTo( leftHalfWidth, 0, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS, false );
         leftHalfShape.close();
 
         var leftHalf = new Path( leftHalfShape, {
@@ -91,7 +91,7 @@ define( function( require ) {
           .lineTo( rightHalfWidth, 0 )
           .lineTo( rightHalfWidth, height )
           .lineTo( 0, height );
-        rightHalfShape.zigZagTo( 0, 0, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
+        rightHalfShape.zigZagTo( 0, 0, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS, false );
         rightHalfShape.close();
 
         self.addChild( new Path( rightHalfShape, {

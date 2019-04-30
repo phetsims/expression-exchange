@@ -79,7 +79,7 @@ define( function( require ) {
 
         // if the hint is active, the edge is zig zagged
         if ( expression.rightHintActiveProperty.get() ) {
-          backgroundShape.zigZagTo( expressionWidth, expressionHeight, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
+          backgroundShape.zigZagTo( expressionWidth, expressionHeight, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS, false );
         }
         else {
           backgroundShape.lineTo( expressionWidth, expressionHeight );
@@ -88,7 +88,7 @@ define( function( require ) {
 
         // zig zag on left side if hint is active
         if ( expression.leftHintActiveProperty.get() ) {
-          backgroundShape.zigZagTo( 0, 0, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
+          backgroundShape.zigZagTo( 0, 0, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS, false );
         }
         else {
           backgroundShape.lineTo( 0, 0 );
@@ -171,7 +171,7 @@ define( function( require ) {
         var leftHintShape = new Shape()
           .moveTo( -hintWidth, 0 )
           .lineTo( 0, 0 );
-        leftHintShape.zigZagTo( 0, expressionHeight, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
+        leftHintShape.zigZagTo( 0, expressionHeight, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS, false );
         leftHintShape
           .lineTo( -hintWidth, expressionHeight )
           .close();
@@ -185,7 +185,7 @@ define( function( require ) {
       [ expression.heightProperty, expression.widthProperty, expression.rightHintWidthProperty ],
       function( expressionHeight, expressionWidth, hintWidth ) {
         var rightHintShape = new Shape().moveTo( expressionWidth, 0 );
-        rightHintShape.zigZagTo( expressionWidth, expressionHeight, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS );
+        rightHintShape.zigZagTo( expressionWidth, expressionHeight, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS, false );
         rightHintShape
           .lineTo( expressionWidth + hintWidth, expressionHeight )
           .lineTo( expressionWidth + hintWidth, 0 )
