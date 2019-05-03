@@ -750,16 +750,10 @@ define( function( require ) {
           var mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( addedCoinTerm );
           var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
 
-          if ( expressionBeingEdited ) {
+          if ( expressionBeingEdited && expressionBeingEdited.coinTerms.contains( addedCoinTerm ) ) {
 
             // An expression is being edited, so a released coin term could be either moved to a new location within an
             // expression or combined with another coin term in the expression.
-
-            // state checking
-            assert && assert(
-              expressionBeingEdited.coinTerms.contains( addedCoinTerm ),
-              'coin term being released is not in expression being edited, this should not occur'
-            );
 
             // determine if the coin term was dropped while overlapping a coin term of the same type
             var overlappingLikeCoinTerm = self.getOverlappingLikeCoinTermWithinExpression(
