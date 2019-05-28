@@ -1,5 +1,5 @@
 {
-  "comment": "# expression-exchange 1.1.6 Fri May 24 2019 14:41:59 GMT-0600 (Mountain Daylight Time)",
+  "comment": "# expression-exchange 1.1.7-rc.1 Tue May 28 2019 01:24:34 GMT-0600 (Mountain Daylight Time)",
   "assert": {
     "sha": "5c3f92048a9c2ffd6df8ede54fd64f1f7a7e4ef2",
     "branch": "HEAD"
@@ -14,14 +14,14 @@
   },
   "chipper": {
     "sha": "3eae76399d2b378e47913c48ef9fe4d949e3ebdc",
-    "branch": "expression-exchange-1.1"
+    "branch": "HEAD"
   },
   "dot": {
     "sha": "3d9d2f3d627d3036c695200a4f48d00c077c5338",
     "branch": "HEAD"
   },
   "expression-exchange": {
-    "sha": "e26dce6491f5407bd969128dd479aa452d2e1da7",
+    "sha": "174395c9be320a949dfd1349719e9b3502bd7472",
     "branch": "1.1"
   },
   "joist": {
