@@ -38,9 +38,6 @@
   "variables": {
     "value": "Variables"
   },
-  "chooseYourLevel": {
-    "value": "Choose Your Level!"
-  },
   "levelNumberPattern": {
     "value": "Level {{levelNumber}}"
   },
