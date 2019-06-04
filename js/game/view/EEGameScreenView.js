@@ -16,7 +16,7 @@ define( function( require ) {
   var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
   var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
+  var GameAudioPlayerOld = require( 'VEGAS/GameAudioPlayerOld' );
   var inherit = require( 'PHET_CORE/inherit' );
   var LevelSelectionNode = require( 'EXPRESSION_EXCHANGE/game/view/LevelSelectionNode' );
   var ScreenView = require( 'JOIST/ScreenView' );
@@ -37,7 +37,7 @@ define( function( require ) {
     this.gameModel = gameModel;
 
     // create the sound player for the game sounds
-    var gameAudioPlayer = new GameAudioPlayer( gameModel.soundEnabledProperty );
+    var gameAudioPlayer = new GameAudioPlayerOld( gameModel.soundEnabledProperty );
 
     // consolidate the level scores into an array for the level selection node
     var levelScoreProperties = [];
