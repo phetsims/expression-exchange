@@ -28,10 +28,9 @@ define( function( require ) {
   /**
    * @param {number} levelNumber
    * @param {AllowedRepresentations} allowedRepresentations
-   * @param {Property.<boolean>} soundEnabledProperty
    * @constructor
    */
-  function EEGameLevel( levelNumber, allowedRepresentations, soundEnabledProperty ) {
+  function EEGameLevel( levelNumber, allowedRepresentations ) {
 
     assert && assert(
       allowedRepresentations !== AllowedRepresentations.COINS_AND_VARIABLES,
@@ -47,7 +46,6 @@ define( function( require ) {
     var self = this;
 
     this.levelNumber = levelNumber; // @public (read-only) {number}
-    this.soundEnabledProperty = soundEnabledProperty; // @public  (read-only){Property.<boolean>}, used by view to enable/disable sounds
     this.currentChallengeNumber = 0; // {number} @private
 
     // @public (read-only) {EEChallengeDescriptor} - property that refers to the current challenge

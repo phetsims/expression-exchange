@@ -18,21 +18,16 @@ define( function( require ) {
   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
   var Property = require( 'AXON/Property' );
   var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
-  var SoundToggleButton = require( 'SCENERY_PHET/buttons/SoundToggleButton' );
   var Text = require( 'SCENERY/nodes/Text' );
   var Vector2 = require( 'DOT/Vector2' );
 
   // strings
   var chooseYourLevelString = require( 'string!VEGAS/chooseYourLevel' );
 
-  // constants
-  var CONTROL_BUTTON_TOUCH_AREA_DILATION = 4;
-
   /**
    * @param {Function} startLevelFunction - Function used to initiate a game level, will be called with a zero-based
    * index value.
    * @param {Function} resetFunction - Function to reset game and scores.
-   * @param {Property.<boolean>} soundEnabledProperty
    * @param {Array.<Node>} iconNodes - Set of iconNodes to use on the buttons, sizes should be the same, length of array
    * must match number of levels.
    * @param {Array.<Property.<number>>} scores - Current scores, used to decide which stars to illuminate on the level
@@ -40,7 +35,7 @@ define( function( require ) {
    * @param {Object} [options] - See code below for options and default values.
    * @constructor
    */
-  function LevelSelectionNode( startLevelFunction, resetFunction, soundEnabledProperty, iconNodes, scores, options ) {
+  function LevelSelectionNode( startLevelFunction, resetFunction, iconNodes, scores, options ) {
 
     Node.call( this );
 
@@ -92,13 +87,6 @@ define( function( require ) {
       this.addChild( buttons[ i ] );
     }
 
-    // sound on/off button
-    var soundToggleButton = new SoundToggleButton( soundEnabledProperty, {
-      touchAreaXDilation: CONTROL_BUTTON_TOUCH_AREA_DILATION,
-      touchAreaYDilation: CONTROL_BUTTON_TOUCH_AREA_DILATION
-    } );
-    this.addChild( soundToggleButton );
-
     // Reset button.
     var resetButton = new ResetAllButton( {
       listener: resetFunction,
@@ -124,12 +112,10 @@ define( function( require ) {
     title.centerY = buttons[ 0 ].top / 2;
 
     resetButton.bottom = initialLayoutBounds.height - options.controlsInset;
-    soundToggleButton.bottom = initialLayoutBounds.height - options.controlsInset;
 
-    // have the reset and volume buttons have floating X positions
+    // have the reset button have a floating X position
     options.layoutBoundsProperty.link( function( layoutBounds ) {
       resetButton.right = layoutBounds.maxX - options.controlsInset;
-      soundToggleButton.left = layoutBounds.minX + options.controlsInset;
     } );
   }
 

@@ -35,7 +35,6 @@ define( function( require ) {
     //------------------------------------------------------------------------
 
     // @public {Property.<boolean>}
-    this.soundEnabledProperty = new Property( true );
     this.timerEnabledProperty = new Property( true );
 
     // @public (read-only) {Property.<GameLevel>} - currently selected level, null indicates no level selected, which
@@ -57,8 +56,7 @@ define( function( require ) {
     _.times( NUMBER_OF_LEVELS, function( level ) {
       var gameLevel = new EEGameLevel(
         level,
-        level < 3 ? AllowedRepresentations.COINS_ONLY : AllowedRepresentations.VARIABLES_ONLY,
-        self.soundEnabledProperty
+        level < 3 ? AllowedRepresentations.COINS_ONLY : AllowedRepresentations.VARIABLES_ONLY
       );
       self.gameLevels.push( gameLevel );
       gameLevel.completedSinceLastClearProperty.link( function() {
@@ -128,7 +126,6 @@ define( function( require ) {
 
         // reset local properties
         this.currentLevelProperty.reset();
-        this.soundEnabledProperty.reset();
         this.timerEnabledProperty.reset();
 
         // reset each of the levels
