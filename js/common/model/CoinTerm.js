@@ -1,4 +1,4 @@
-// Copyright 2016-2017, University of Colorado Boulder
+// Copyright 2016-2019, University of Colorado Boulder
 
 /**
  * This type represents a model of a single or combined coin which can be represented in the view as a coin image or a
