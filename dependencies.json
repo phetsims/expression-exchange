@@ -1,5 +1,5 @@
 {
-  "comment": "# expression-exchange 1.1.9 Mon Aug 05 2019 15:27:29 GMT-0600 (Mountain Daylight Time)",
+  "comment": "# expression-exchange 1.1.9 Mon Aug 19 2019 13:30:17 GMT-0600 (Mountain Daylight Time)",
   "assert": {
     "sha": "5c3f92048a9c2ffd6df8ede54fd64f1f7a7e4ef2",
     "branch": "HEAD"
@@ -21,12 +21,12 @@
     "branch": "HEAD"
   },
   "expression-exchange": {
-    "sha": "8bfaa3bd4d228567bd1fbd32c10ba959a55b9b14",
+    "sha": "32404df03d037d40a56dcd583e88bb9f1d845a69",
     "branch": "1.1"
   },
   "joist": {
-    "sha": "522cbbaf4abcda6c7ac216bfeef5e884f5e98352",
-    "branch": "HEAD"
+    "sha": "d5e7d069b7e54f0a846c4ddb176c6f4a604b0ac9",
+    "branch": "expression-exchange-1.1"
   },
   "kite": {
     "sha": "c9b529a2d0df2faa24e97bcfb70653b867969b49",
@@ -53,8 +53,8 @@
     "branch": "HEAD"
   },
   "scenery-phet": {
-    "sha": "727d5bd7ac8d93a1c6e8b78b27c9fb6a8a4e783d",
-    "branch": "HEAD"
+    "sha": "d75d13bf532053827957b3ed647ba2a998d90086",
+    "branch": "expression-exchange-1.1"
   },
   "sherpa": {
     "sha": "0207b055f9cbf2666bcc3bb6ff3cbf76c2d7bb7a",
