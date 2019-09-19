@@ -4,14 +4,14 @@
  * a node that monitors the coin terms in the model and displays a summary of what has been created (a.k.a. "collected")
  * by the user
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var CoinTermIconNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermIconNode' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Node = require( 'SCENERY/nodes/Node' );
+  const CoinTermIconNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermIconNode' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Node = require( 'SCENERY/nodes/Node' );
 
   // constants
   var DEFAULT_WIDTH = 200; // empirically determined

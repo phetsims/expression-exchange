@@ -5,18 +5,18 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
-  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var Text = require( 'SCENERY/nodes/Text' );
+  const ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const Rectangle = require( 'SCENERY/nodes/Rectangle' );
+  const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
   var MATH_FONT = new MathSymbolFont( { size: 21, weight: 'bold' } );

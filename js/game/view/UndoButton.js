@@ -5,16 +5,16 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var Color = require( 'SCENERY/util/Color' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Path = require( 'SCENERY/nodes/Path' );
-  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
-  var Shape = require( 'KITE/Shape' );
+  const Color = require( 'SCENERY/util/Color' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Path = require( 'SCENERY/nodes/Path' );
+  const RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
+  const Shape = require( 'KITE/Shape' );
 
   // constants
   var MARGIN = 5;

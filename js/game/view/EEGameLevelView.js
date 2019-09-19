@@ -5,32 +5,32 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var AllLevelsCompletedNode = require( 'VEGAS/AllLevelsCompletedNode' );
-  var BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
-  var Checkbox = require( 'SUN/Checkbox' );
-  var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
-  var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
-  var EERewardNode = require( 'EXPRESSION_EXCHANGE/game/view/EERewardNode' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var NextLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/NextLevelNode' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var platform = require( 'PHET_CORE/platform' );
-  var Property = require( 'AXON/Property' );
-  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var RefreshButton = require( 'SCENERY_PHET/buttons/RefreshButton' );
-  var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
-  var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
-  var Text = require( 'SCENERY/nodes/Text' );
+  const AllLevelsCompletedNode = require( 'VEGAS/AllLevelsCompletedNode' );
+  const BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
+  const Checkbox = require( 'SUN/Checkbox' );
+  const CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
+  const EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
+  const EERewardNode = require( 'EXPRESSION_EXCHANGE/game/view/EERewardNode' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const NextLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/NextLevelNode' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const platform = require( 'PHET_CORE/platform' );
+  const Property = require( 'AXON/Property' );
+  const Rectangle = require( 'SCENERY/nodes/Rectangle' );
+  const RefreshButton = require( 'SCENERY_PHET/buttons/RefreshButton' );
+  const ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
+  const StringUtils = require( 'PHETCOMMON/util/StringUtils' );
+  const Text = require( 'SCENERY/nodes/Text' );
 
   // strings
-  var levelNumberPatternString = require( 'string!EXPRESSION_EXCHANGE/levelNumberPattern' );
+  const levelNumberPatternString = require( 'string!EXPRESSION_EXCHANGE/levelNumberPattern' );
 
   // constants
   var BUTTON_XY_TOUCH_DILATION = 4;

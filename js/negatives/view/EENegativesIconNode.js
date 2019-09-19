@@ -5,21 +5,21 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var HBox = require( 'SCENERY/nodes/HBox' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
-  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var RichText = require( 'SCENERY/nodes/RichText' );
-  var Screen = require( 'JOIST/Screen' );
-  var Text = require( 'SCENERY/nodes/Text' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const HBox = require( 'SCENERY/nodes/HBox' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const Rectangle = require( 'SCENERY/nodes/Rectangle' );
+  const RichText = require( 'SCENERY/nodes/RichText' );
+  const Screen = require( 'JOIST/Screen' );
+  const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
   var ICON_SIZE = Screen.MINIMUM_HOME_SCREEN_ICON_SIZE;

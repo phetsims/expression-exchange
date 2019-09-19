@@ -9,21 +9,21 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
-  var Matrix3 = require( 'DOT/Matrix3' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var Path = require( 'SCENERY/nodes/Path' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Property = require( 'AXON/Property' );
-  var Shape = require( 'KITE/Shape' );
-  var Text = require( 'SCENERY/nodes/Text' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
+  const Matrix3 = require( 'DOT/Matrix3' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const Path = require( 'SCENERY/nodes/Path' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const Property = require( 'AXON/Property' );
+  const Shape = require( 'KITE/Shape' );
+  const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
   var BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;

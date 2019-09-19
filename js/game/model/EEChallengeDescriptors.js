@@ -5,13 +5,13 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
-  var ExpressionDescription = require( 'EXPRESSION_EXCHANGE/game/model/ExpressionDescription' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  const ExpressionDescription = require( 'EXPRESSION_EXCHANGE/game/model/ExpressionDescription' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
   // The challenge set, organized as a 2D array where the first dimension is level, the second is challenge number.
   // The challenge descriptions are organized as a set of expressions that the user should construct and collect and

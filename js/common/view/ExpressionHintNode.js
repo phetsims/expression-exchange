@@ -7,17 +7,17 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var Path = require( 'SCENERY/nodes/Path' );
-  var Property = require( 'AXON/Property' );
-  var Shape = require( 'KITE/Shape' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const Path = require( 'SCENERY/nodes/Path' );
+  const Property = require( 'AXON/Property' );
+  const Shape = require( 'KITE/Shape' );
 
   // constants
   var HINT_BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;

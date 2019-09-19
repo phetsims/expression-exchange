@@ -3,15 +3,15 @@
 /**
  * a node that allows the user to change the values of the variables that underlie the various coin terms
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var LeftRightNumberSpinner = require( 'EXPRESSION_EXCHANGE/common/view/LeftRightNumberSpinner' );
-  var ResetButton = require( 'SCENERY_PHET/buttons/ResetButton' );
-  var VBox = require( 'SCENERY/nodes/VBox' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const LeftRightNumberSpinner = require( 'EXPRESSION_EXCHANGE/common/view/LeftRightNumberSpinner' );
+  const ResetButton = require( 'SCENERY_PHET/buttons/ResetButton' );
+  const VBox = require( 'SCENERY/nodes/VBox' );
 
   /**
    * @param {Object} [options]

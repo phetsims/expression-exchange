@@ -5,19 +5,19 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var EEBasicsScreen = require( 'EXPRESSION_EXCHANGE/basics/EEBasicsScreen' );
-  var EEExploreScreen = require( 'EXPRESSION_EXCHANGE/explore/EEExploreScreen' );
-  var EEGameScreen = require( 'EXPRESSION_EXCHANGE/game/EEGameScreen' );
-  var EENegativesScreen = require( 'EXPRESSION_EXCHANGE/negatives/EENegativesScreen' );
-  var Sim = require( 'JOIST/Sim' );
-  var SimLauncher = require( 'JOIST/SimLauncher' );
+  const EEBasicsScreen = require( 'EXPRESSION_EXCHANGE/basics/EEBasicsScreen' );
+  const EEExploreScreen = require( 'EXPRESSION_EXCHANGE/explore/EEExploreScreen' );
+  const EEGameScreen = require( 'EXPRESSION_EXCHANGE/game/EEGameScreen' );
+  const EENegativesScreen = require( 'EXPRESSION_EXCHANGE/negatives/EENegativesScreen' );
+  const Sim = require( 'JOIST/Sim' );
+  const SimLauncher = require( 'JOIST/SimLauncher' );
 
   // strings
-  var expressionExchangeTitleString = require( 'string!EXPRESSION_EXCHANGE/expression-exchange.title' );
+  const expressionExchangeTitleString = require( 'string!EXPRESSION_EXCHANGE/expression-exchange.title' );
 
   // credits
   var simOptions = {

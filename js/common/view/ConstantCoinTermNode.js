@@ -5,17 +5,17 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var AbstractCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/AbstractCoinTermNode' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Property = require( 'AXON/Property' );
-  var Text = require( 'SCENERY/nodes/Text' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
+  const AbstractCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/AbstractCoinTermNode' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const Property = require( 'AXON/Property' );
+  const Text = require( 'SCENERY/nodes/Text' );
+  const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var VALUE_FONT = new PhetFont( { size: 34 } );

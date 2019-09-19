@@ -7,20 +7,20 @@
  * Note the expression description string is re-parsed in this object because the expression description is in the
  * reduced form (no parens) and we need to handle subscripts and superscripts.
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var HBox = require( 'SCENERY/nodes/HBox' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
-  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var RichText = require( 'SCENERY/nodes/RichText' );
-  var Text = require( 'SCENERY/nodes/Text' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
+  const CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const HBox = require( 'SCENERY/nodes/HBox' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const RichText = require( 'SCENERY/nodes/RichText' );
+  const Text = require( 'SCENERY/nodes/Text' );
+  const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var COIN_ICON_RADIUS = 10;

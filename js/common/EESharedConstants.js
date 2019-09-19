@@ -4,14 +4,14 @@
  * Constants that are shared between the various portions of the Expression Exchange simulation.
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var Bounds2 = require( 'DOT/Bounds2' );
-  var Color = require( 'SCENERY/util/Color' );
-  var Dimension2 = require( 'DOT/Dimension2' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const Bounds2 = require( 'DOT/Bounds2' );
+  const Color = require( 'SCENERY/util/Color' );
+  const Dimension2 = require( 'DOT/Dimension2' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
   var EESharedConstants = {
 

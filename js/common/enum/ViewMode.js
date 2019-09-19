@@ -5,11 +5,11 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
   var ViewMode = {
     COINS: 'COINS',

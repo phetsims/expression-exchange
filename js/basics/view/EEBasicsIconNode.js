@@ -5,20 +5,20 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
-  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var Screen = require( 'JOIST/Screen' );
-  var Text = require( 'SCENERY/nodes/Text' );
+  const CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
+  const CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const Rectangle = require( 'SCENERY/nodes/Rectangle' );
+  const Screen = require( 'JOIST/Screen' );
+  const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
   var ICON_SIZE = Screen.MINIMUM_HOME_SCREEN_ICON_SIZE;

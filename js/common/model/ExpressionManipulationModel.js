@@ -8,23 +8,23 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
-  var Bounds2 = require( 'DOT/Bounds2' );
-  var CoinTermFactory = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermFactory' );
-  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var ObservableArray = require( 'AXON/ObservableArray' );
-  var Property = require( 'AXON/Property' );
-  var Vector2 = require( 'DOT/Vector2' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
+  const AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
+  const Bounds2 = require( 'DOT/Bounds2' );
+  const CoinTermFactory = require( 'EXPRESSION_EXCHANGE/common/model/CoinTermFactory' );
+  const CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const ObservableArray = require( 'AXON/ObservableArray' );
+  const Property = require( 'AXON/Property' );
+  const Vector2 = require( 'DOT/Vector2' );
+  const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var BREAK_APART_SPACING = 10;

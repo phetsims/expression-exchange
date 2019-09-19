@@ -5,19 +5,19 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
-  var DerivedProperty = require( 'AXON/DerivedProperty' );
-  var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
-  var EECollectionArea = require( 'EXPRESSION_EXCHANGE/game/model/EECollectionArea' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Property = require( 'AXON/Property' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
+  const AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
+  const DerivedProperty = require( 'AXON/DerivedProperty' );
+  const EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
+  const EECollectionArea = require( 'EXPRESSION_EXCHANGE/game/model/EECollectionArea' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Property = require( 'AXON/Property' );
+  const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var EXPRESSION_COLLECTION_AREA_X_OFFSET = 750;

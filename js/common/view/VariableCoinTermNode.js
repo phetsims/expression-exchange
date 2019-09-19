@@ -5,26 +5,26 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var AbstractCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/AbstractCoinTermNode' );
-  var Animation = require( 'TWIXT/Animation' );
-  var CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
-  var Easing = require( 'TWIXT/Easing' );
-  var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
-  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Property = require( 'AXON/Property' );
-  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var RichText = require( 'SCENERY/nodes/RichText' );
-  var Text = require( 'SCENERY/nodes/Text' );
-  var Vector2 = require( 'DOT/Vector2' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
+  const AbstractCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/AbstractCoinTermNode' );
+  const Animation = require( 'TWIXT/Animation' );
+  const CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
+  const Easing = require( 'TWIXT/Easing' );
+  const EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const Property = require( 'AXON/Property' );
+  const Rectangle = require( 'SCENERY/nodes/Rectangle' );
+  const RichText = require( 'SCENERY/nodes/RichText' );
+  const Text = require( 'SCENERY/nodes/Text' );
+  const Vector2 = require( 'DOT/Vector2' );
+  const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var COEFFICIENT_FONT = new PhetFont( { size: 34 } );

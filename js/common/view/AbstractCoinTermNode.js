@@ -5,22 +5,22 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var Bounds2 = require( 'DOT/Bounds2' );
-  var BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var MovableDragHandler = require( 'SCENERY_PHET/input/MovableDragHandler' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var Property = require( 'AXON/Property' );
-  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  var timer = require( 'AXON/timer' );
-  var Touch = require( 'SCENERY/input/Touch' );
-  var Vector2 = require( 'DOT/Vector2' );
+  const Bounds2 = require( 'DOT/Bounds2' );
+  const BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const MovableDragHandler = require( 'SCENERY_PHET/input/MovableDragHandler' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const Property = require( 'AXON/Property' );
+  const Rectangle = require( 'SCENERY/nodes/Rectangle' );
+  const timer = require( 'AXON/timer' );
+  const Touch = require( 'SCENERY/input/Touch' );
+  const Vector2 = require( 'DOT/Vector2' );
 
   // constants
   var BACKGROUND_CORNER_ROUNDING = 5;

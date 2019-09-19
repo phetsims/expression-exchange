@@ -1,22 +1,22 @@
 // Copyright 2017, University of Colorado Boulder
 
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var FaceNode = require( 'SCENERY_PHET/FaceNode' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
-  var Text = require( 'SCENERY/nodes/Text' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const FaceNode = require( 'SCENERY_PHET/FaceNode' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
+  const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
   var FACE_DIAMETER = 150; // empirically determined
 
   // strings
-  var nextString = require( 'string!EXPRESSION_EXCHANGE/next' );
+  const nextString = require( 'string!EXPRESSION_EXCHANGE/next' );
 
   /**
    * @param {Function} listener - function that gets called when 'next' button is pressed

@@ -5,21 +5,21 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var Animation = require( 'TWIXT/Animation' );
-  var Easing = require( 'TWIXT/Easing' );
-  var EEGameLevelIconFactory = require( 'EXPRESSION_EXCHANGE/game/view/EEGameLevelIconFactory' );
-  var EEGameLevelView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameLevelView' );
-  var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var LevelSelectionNode = require( 'EXPRESSION_EXCHANGE/game/view/LevelSelectionNode' );
-  var ScreenView = require( 'JOIST/ScreenView' );
+  const Animation = require( 'TWIXT/Animation' );
+  const Easing = require( 'TWIXT/Easing' );
+  const EEGameLevelIconFactory = require( 'EXPRESSION_EXCHANGE/game/view/EEGameLevelIconFactory' );
+  const EEGameLevelView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameLevelView' );
+  const EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const GameAudioPlayer = require( 'VEGAS/GameAudioPlayer' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const LevelSelectionNode = require( 'EXPRESSION_EXCHANGE/game/view/LevelSelectionNode' );
+  const ScreenView = require( 'JOIST/ScreenView' );
 
   // constants
   var SCREEN_CHANGE_TIME = 1; // seconds

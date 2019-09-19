@@ -4,18 +4,18 @@
  * model element used in the game that represents the area where an expression or coin term can be collected if it
  * matches the collection specification
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var Emitter = require( 'AXON/Emitter' );
-  var Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Property = require( 'AXON/Property' );
-  var Vector2 = require( 'DOT/Vector2' );
+  const CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const Emitter = require( 'AXON/Emitter' );
+  const Expression = require( 'EXPRESSION_EXCHANGE/common/model/Expression' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Property = require( 'AXON/Property' );
+  const Vector2 = require( 'DOT/Vector2' );
 
   // constants
   var REJECTED_ITEM_DISTANCE = 20; // empirically determined

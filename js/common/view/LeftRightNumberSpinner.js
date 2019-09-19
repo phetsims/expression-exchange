@@ -6,21 +6,21 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var HBox = require( 'SCENERY/nodes/HBox' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
-  var MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var NumberSpinner = require( 'SUN/NumberSpinner' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Property = require( 'AXON/Property' );
-  var Range = require( 'DOT/Range' );
-  var Text = require( 'SCENERY/nodes/Text' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const HBox = require( 'SCENERY/nodes/HBox' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const NumberSpinner = require( 'SUN/NumberSpinner' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const Property = require( 'AXON/Property' );
+  const Range = require( 'DOT/Range' );
+  const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
   var READOUT_FONT = new PhetFont( 16 );

@@ -6,23 +6,23 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
-  var EditExpressionButton = require( 'EXPRESSION_EXCHANGE/common/view/EditExpressionButton' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var Path = require( 'SCENERY/nodes/Path' );
-  var Property = require( 'AXON/Property' );
-  var Shape = require( 'KITE/Shape' );
-  var SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
-  var timer = require( 'AXON/timer' );
-  var Util = require( 'DOT/Util' );
-  var Vector2 = require( 'DOT/Vector2' );
+  const BreakApartButton = require( 'EXPRESSION_EXCHANGE/common/view/BreakApartButton' );
+  const EditExpressionButton = require( 'EXPRESSION_EXCHANGE/common/view/EditExpressionButton' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const Path = require( 'SCENERY/nodes/Path' );
+  const Property = require( 'AXON/Property' );
+  const Shape = require( 'KITE/Shape' );
+  const SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
+  const timer = require( 'AXON/timer' );
+  const Util = require( 'DOT/Util' );
+  const Vector2 = require( 'DOT/Vector2' );
 
   // constants
   var MIN_EXPRESSION_IN_BOUNDS_WIDTH = 70; // in screen coords, min horizontal amount of expression that must stay in bounds

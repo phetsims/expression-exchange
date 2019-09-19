@@ -6,48 +6,48 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var ABSwitch = require( 'SUN/ABSwitch' );
-  var AccordionBox = require( 'SUN/AccordionBox' );
-  var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
-  var Checkbox = require( 'SUN/Checkbox' );
-  var CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
-  var CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
-  var CollectionDisplayNode = require( 'EXPRESSION_EXCHANGE/common/view/CollectionDisplayNode' );
-  var Dimension2 = require( 'DOT/Dimension2' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
-  var Image = require( 'SCENERY/nodes/Image' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var Panel = require( 'SUN/Panel' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Property = require( 'AXON/Property' );
-  var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
-  var ScreenView = require( 'JOIST/ScreenView' );
-  var ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
-  var StringUtils = require( 'PHETCOMMON/util/StringUtils' );
-  var Text = require( 'SCENERY/nodes/Text' );
-  var VariableValueControl = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueControl' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
-  var VStrut = require( 'SCENERY/nodes/VStrut' );
+  const ABSwitch = require( 'SUN/ABSwitch' );
+  const AccordionBox = require( 'SUN/AccordionBox' );
+  const AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
+  const Checkbox = require( 'SUN/Checkbox' );
+  const CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
+  const CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
+  const CollectionDisplayNode = require( 'EXPRESSION_EXCHANGE/common/view/CollectionDisplayNode' );
+  const Dimension2 = require( 'DOT/Dimension2' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
+  const Image = require( 'SCENERY/nodes/Image' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const Panel = require( 'SUN/Panel' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const Property = require( 'AXON/Property' );
+  const ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
+  const ScreenView = require( 'JOIST/ScreenView' );
+  const ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
+  const StringUtils = require( 'PHETCOMMON/util/StringUtils' );
+  const Text = require( 'SCENERY/nodes/Text' );
+  const VariableValueControl = require( 'EXPRESSION_EXCHANGE/common/view/VariableValueControl' );
+  const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
+  const VStrut = require( 'SCENERY/nodes/VStrut' );
 
   // strings
-  var allCoefficientsString = require( 'string!EXPRESSION_EXCHANGE/allCoefficients' );
-  var coinValuesString = require( 'string!EXPRESSION_EXCHANGE/coinValues' );
-  var myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
-  var numberCentsPatternString = require( 'string!EXPRESSION_EXCHANGE/numberCentsPattern' );
-  var totalString = require( 'string!EXPRESSION_EXCHANGE/total' );
-  var variablesString = require( 'string!EXPRESSION_EXCHANGE/variables' );
-  var variableValuesString = require( 'string!EXPRESSION_EXCHANGE/variableValues' );
+  const allCoefficientsString = require( 'string!EXPRESSION_EXCHANGE/allCoefficients' );
+  const coinValuesString = require( 'string!EXPRESSION_EXCHANGE/coinValues' );
+  const myCollectionString = require( 'string!EXPRESSION_EXCHANGE/myCollection' );
+  const numberCentsPatternString = require( 'string!EXPRESSION_EXCHANGE/numberCentsPattern' );
+  const totalString = require( 'string!EXPRESSION_EXCHANGE/total' );
+  const variablesString = require( 'string!EXPRESSION_EXCHANGE/variables' );
+  const variableValuesString = require( 'string!EXPRESSION_EXCHANGE/variableValues' );
 
   // images
-  var switchCoinImage = require( 'mipmap!EXPRESSION_EXCHANGE/switch-coin.png' );
+  const switchCoinImage = require( 'mipmap!EXPRESSION_EXCHANGE/switch-coin.png' );
 
   // constants
   var ACCORDION_BOX_TITLE_FONT = new PhetFont( { size: 16, weight: 'bold' } );

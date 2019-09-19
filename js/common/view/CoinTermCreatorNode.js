@@ -9,20 +9,20 @@
  * and derive subclasses to handle sim-specific behavior, or have some sort of options that could make it work in all
  * cases.
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var Bounds2 = require( 'DOT/Bounds2' );
-  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
-  var ConstantCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/ConstantCoinTermNode' );
-  var Emitter = require( 'AXON/Emitter' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var Property = require( 'AXON/Property' );
-  var VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
-  var Vector2 = require( 'DOT/Vector2' );
+  const Bounds2 = require( 'DOT/Bounds2' );
+  const CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  const ConstantCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/ConstantCoinTermNode' );
+  const Emitter = require( 'AXON/Emitter' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const Property = require( 'AXON/Property' );
+  const VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
+  const Vector2 = require( 'DOT/Vector2' );
 
   // constants
   var STAGGER_OFFSET = 3; // in screen coordinates, empirically determined for optimal look

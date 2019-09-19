@@ -5,24 +5,24 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var LevelSelectionButton = require( 'VEGAS/LevelSelectionButton' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  var Property = require( 'AXON/Property' );
-  var ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
-  var Text = require( 'SCENERY/nodes/Text' );
-  var Vector2 = require( 'DOT/Vector2' );
+  const EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const LevelSelectionButton = require( 'VEGAS/LevelSelectionButton' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
+  const Property = require( 'AXON/Property' );
+  const ResetAllButton = require( 'SCENERY_PHET/buttons/ResetAllButton' );
+  const Text = require( 'SCENERY/nodes/Text' );
+  const Vector2 = require( 'DOT/Vector2' );
 
   // strings
-  var chooseYourLevelString = require( 'string!VEGAS/chooseYourLevel' );
+  const chooseYourLevelString = require( 'string!VEGAS/chooseYourLevel' );
 
   /**
    * @param {Function} startLevelFunction - Function used to initiate a game level, will be called with a zero-based

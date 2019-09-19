@@ -5,21 +5,21 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var EEGameIconNode = require( 'EXPRESSION_EXCHANGE/game/view/EEGameIconNode' );
-  var EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
-  var EEGameScreenView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameScreenView' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Property = require( 'AXON/Property' );
-  var Screen = require( 'JOIST/Screen' );
+  const EEGameIconNode = require( 'EXPRESSION_EXCHANGE/game/view/EEGameIconNode' );
+  const EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
+  const EEGameScreenView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameScreenView' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Property = require( 'AXON/Property' );
+  const Screen = require( 'JOIST/Screen' );
 
   // strings
-  var gameString = require( 'string!EXPRESSION_EXCHANGE/game' );
+  const gameString = require( 'string!EXPRESSION_EXCHANGE/game' );
 
   /**
    * @constructor

@@ -4,38 +4,38 @@
  * static object that provides functions for creating nodes that represent the coins used in the simulation
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var Circle = require( 'SCENERY/nodes/Circle' );
-  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
-  var Color = require( 'SCENERY/util/Color' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var Image = require( 'SCENERY/nodes/Image' );
-  var Path = require( 'SCENERY/nodes/Path' );
-  var platform = require( 'PHET_CORE/platform' );
-  var Shape = require( 'KITE/Shape' );
-  var Vector2 = require( 'DOT/Vector2' );
+  const Circle = require( 'SCENERY/nodes/Circle' );
+  const CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  const Color = require( 'SCENERY/util/Color' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const Image = require( 'SCENERY/nodes/Image' );
+  const Path = require( 'SCENERY/nodes/Path' );
+  const platform = require( 'PHET_CORE/platform' );
+  const Shape = require( 'KITE/Shape' );
+  const Vector2 = require( 'DOT/Vector2' );
 
   // images - use mipmaps normally, but use regular images when memory needs to be conserved
   var useMipmaps = !platform.mobileSafari;
   if ( useMipmaps ) {
-    var coinXBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-back.png' );
-    var coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
-    var coinXSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-back.png' );
-    var coinXSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared.png' );
-    var coinXSquaredYSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared-back.png' );
-    var coinXSquaredYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
-    var coinXYBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy-back.png' );
-    var coinXYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy.png' );
-    var coinYBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-back.png' );
-    var coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
-    var coinYSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared-back.png' );
-    var coinYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
-    var coinZBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z-back.png' );
-    var coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
+    const coinXBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-back.png' );
+    const coinXFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x.png' );
+    const coinXSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-back.png' );
+    const coinXSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared.png' );
+    const coinXSquaredYSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared-back.png' );
+    const coinXSquaredYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-x-squared-y-squared.png' );
+    const coinXYBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy-back.png' );
+    const coinXYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-xy.png' );
+    const coinYBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-back.png' );
+    const coinYFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y.png' );
+    const coinYSquaredBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared-back.png' );
+    const coinYSquaredFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-y-squared.png' );
+    const coinZBackImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z-back.png' );
+    const coinZFrontImage = require( 'mipmap!EXPRESSION_EXCHANGE/coin-z.png' );
   }
   else {
     coinXBackImage = require( 'image!EXPRESSION_EXCHANGE/coin-x-back.png' );

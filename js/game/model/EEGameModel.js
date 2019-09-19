@@ -5,17 +5,17 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
-  var EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
-  var EEGameLevel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameLevel' );
-  var EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Property = require( 'AXON/Property' );
+  const AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
+  const EEChallengeDescriptors = require( 'EXPRESSION_EXCHANGE/game/model/EEChallengeDescriptors' );
+  const EEGameLevel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameLevel' );
+  const EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Property = require( 'AXON/Property' );
 
   // constants
   var NUMBER_OF_LEVELS = EEQueryParameters.minimalGameLevels ? 2 : 8;

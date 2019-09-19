@@ -5,19 +5,19 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var Circle = require( 'SCENERY/nodes/Circle' );
-  var DerivedProperty = require( 'AXON/DerivedProperty' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var Property = require( 'AXON/Property' );
-  var RadialGradient = require( 'SCENERY/util/RadialGradient' );
-  var ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
+  const Circle = require( 'SCENERY/nodes/Circle' );
+  const DerivedProperty = require( 'AXON/DerivedProperty' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const Property = require( 'AXON/Property' );
+  const RadialGradient = require( 'SCENERY/util/RadialGradient' );
+  const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
   var COIN_HALO_COLOR = 'rgba( 255, 255, 0, 0.8 )';

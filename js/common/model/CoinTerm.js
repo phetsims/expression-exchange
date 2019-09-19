@@ -8,20 +8,20 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var AnimationSpec = require( 'EXPRESSION_EXCHANGE/common/model/AnimationSpec' );
-  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
-  var Easing = require( 'TWIXT/Easing' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var Emitter = require( 'AXON/Emitter' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Property = require( 'AXON/Property' );
-  var Vector2 = require( 'DOT/Vector2' );
-  var Vector2Property = require( 'DOT/Vector2Property' );
+  const AnimationSpec = require( 'EXPRESSION_EXCHANGE/common/model/AnimationSpec' );
+  const CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  const Easing = require( 'TWIXT/Easing' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const Emitter = require( 'AXON/Emitter' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Property = require( 'AXON/Property' );
+  const Vector2 = require( 'DOT/Vector2' );
+  const Vector2Property = require( 'DOT/Vector2Property' );
 
   // constants
   var COIN_TERM_FADE_TIME = 0.75; // in seconds

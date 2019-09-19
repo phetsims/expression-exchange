@@ -5,19 +5,19 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
-  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var FaceNode = require( 'SCENERY_PHET/FaceNode' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
-  var RewardNode = require( 'VEGAS/RewardNode' );
-  var StarNode = require( 'SCENERY_PHET/StarNode' );
-  var Text = require( 'SCENERY/nodes/Text' );
+  const CoinNodeFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinNodeFactory' );
+  const CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const FaceNode = require( 'SCENERY_PHET/FaceNode' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
+  const RewardNode = require( 'VEGAS/RewardNode' );
+  const StarNode = require( 'SCENERY_PHET/StarNode' );
+  const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
   var NUMBER_OF_NODES = 60;

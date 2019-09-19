@@ -4,15 +4,15 @@
  * button used for breaking things apart, supports a normal and color inverted appearance
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
 
   // constants
   var MARGIN = 3.5;

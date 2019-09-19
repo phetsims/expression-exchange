@@ -6,22 +6,22 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var AnimationSpec = require( 'EXPRESSION_EXCHANGE/common/model/AnimationSpec' );
-  var Bounds2 = require( 'DOT/Bounds2' );
-  var DerivedProperty = require( 'AXON/DerivedProperty' );
-  var Easing = require( 'TWIXT/Easing' );
-  var EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  var Emitter = require( 'AXON/Emitter' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var ObservableArray = require( 'AXON/ObservableArray' );
-  var Property = require( 'AXON/Property' );
-  var Vector2 = require( 'DOT/Vector2' );
-  var Vector2Property = require( 'DOT/Vector2Property' );
+  const AnimationSpec = require( 'EXPRESSION_EXCHANGE/common/model/AnimationSpec' );
+  const Bounds2 = require( 'DOT/Bounds2' );
+  const DerivedProperty = require( 'AXON/DerivedProperty' );
+  const Easing = require( 'TWIXT/Easing' );
+  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
+  const Emitter = require( 'AXON/Emitter' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const ObservableArray = require( 'AXON/ObservableArray' );
+  const Property = require( 'AXON/Property' );
+  const Vector2 = require( 'DOT/Vector2' );
+  const Vector2Property = require( 'DOT/Vector2Property' );
 
   // constants
   var INTER_COIN_TERM_SPACING = 30; // in model units, empirically determined

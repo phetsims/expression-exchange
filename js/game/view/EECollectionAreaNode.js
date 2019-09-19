@@ -3,15 +3,15 @@
 /**
  * view representation of the area where expressions can be collected, used in the game
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var ExpressionDescriptionNode = require( 'EXPRESSION_EXCHANGE/game/view/ExpressionDescriptionNode' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Node = require( 'SCENERY/nodes/Node' );
-  var Rectangle = require( 'SCENERY/nodes/Rectangle' );
+  const ExpressionDescriptionNode = require( 'EXPRESSION_EXCHANGE/game/view/ExpressionDescriptionNode' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Node = require( 'SCENERY/nodes/Node' );
+  const Rectangle = require( 'SCENERY/nodes/Rectangle' );
 
   // constants
   var CORNER_RADIUS = 4;

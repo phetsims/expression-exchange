@@ -8,16 +8,16 @@
  *
  * @author John Blanco
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
-  var CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
-  var DerivedProperty = require( 'AXON/DerivedProperty' );
-  var expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  var inherit = require( 'PHET_CORE/inherit' );
-  var Property = require( 'AXON/Property' );
+  const CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
+  const CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
+  const DerivedProperty = require( 'AXON/DerivedProperty' );
+  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const inherit = require( 'PHET_CORE/inherit' );
+  const Property = require( 'AXON/Property' );
 
   // constants
   var CONSTANT_ONE_VALUE_PROPERTY = new Property( 1 );
