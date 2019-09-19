@@ -23,8 +23,8 @@ define( require => {
   const Vector2 = require( 'DOT/Vector2' );
 
   // constants
-  var BACKGROUND_CORNER_ROUNDING = 5;
-  var TOUCH_DRAG_Y_OFFSET = -30; // empirically determined
+  const BACKGROUND_CORNER_ROUNDING = 5;
+  const TOUCH_DRAG_Y_OFFSET = -30; // empirically determined
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin term
@@ -39,7 +39,7 @@ define( require => {
       breakApartButtonMode: 'normal' // valid values are 'normal' and 'inverted'
     }, options );
 
-    var self = this;
+    const self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
     // @public (read-only) {CoinTerm}
@@ -66,7 +66,7 @@ define( require => {
     this.breakApartButtonMode = options.breakApartButtonMode;
 
     // add a listener that will adjust opacity as existence strength changes
-    var existenceStrengthListener = this.handleExistenceStrengthChanged.bind( this );
+    const existenceStrengthListener = this.handleExistenceStrengthChanged.bind( this );
     coinTerm.existenceStrengthProperty.link( existenceStrengthListener );
 
     // @private {function} - timer callback will be used to hide the break apart button if user doesn't use it
@@ -86,11 +86,11 @@ define( require => {
     coinTerm.positionProperty.link( handlePositionChanged );
 
     // add a listener for updating the break apart button state based on the user controlled state of this coin term
-    var userControlledListener = this.handleUserControlledChanged.bind( this );
+    const userControlledListener = this.handleUserControlledChanged.bind( this );
     coinTerm.userControlledProperty.lazyLink( userControlledListener );
 
     // add a listener to handle changes to the 'break apart allowed' state
-    var breakApartAllowedListener = this.handleBreakApartAllowedChanged.bind( this );
+    const breakApartAllowedListener = this.handleBreakApartAllowedChanged.bind( this );
     coinTerm.breakApartAllowedProperty.link( breakApartAllowedListener );
 
     // add a drag handler if specified
@@ -106,17 +106,17 @@ define( require => {
     } );
 
     // add a listener that will pop this node to the front when another coin term is combined with it
-    var totalCountListener = this.handleCombinedCountChanged.bind( this );
+    const totalCountListener = this.handleCombinedCountChanged.bind( this );
     coinTerm.totalCountProperty.link( totalCountListener );
 
     // function to update the pickability as the states change
     function updatePickability() {
-      var expression = coinTerm.expressionProperty.get();
+      const expression = coinTerm.expressionProperty.get();
       self.pickable = ( expression === null || expression.inEditModeProperty.get() ) && !coinTerm.inProgressAnimationProperty.get() && !coinTerm.collectedProperty.get();
     }
 
     // update the pickability of this node
-    var pickabilityUpdaterMultilink = Property.multilink(
+    const pickabilityUpdaterMultilink = Property.multilink(
       [ coinTerm.expressionProperty, coinTerm.inProgressAnimationProperty, coinTerm.collectedProperty ],
       updatePickability
     );
@@ -184,7 +184,7 @@ define( require => {
      * @private
      */
     startHideButtonTimer: function() {
-      var self = this;
+      const self = this;
       this.clearHideButtonTimer(); // just in case one is already running
       this.hideButtonTimer = timer.setTimeout( function() {
         self.hideBreakApartButton();
@@ -337,11 +337,11 @@ define( require => {
      */
     addDragHandler: function( dragBounds ) {
 
-      var self = this;
+      const self = this;
 
       // create a position property and link it to the coin term, necessary because coin term has both position and
       // destination properties, both of which must be set when dragging occurs
-      var coinTermPositionAndDestination = new Property( this.coinTerm.positionProperty.get() );
+      const coinTermPositionAndDestination = new Property( this.coinTerm.positionProperty.get() );
       coinTermPositionAndDestination.lazyLink( function( positionAndDestination ) {
         self.coinTerm.setPositionAndDestination( positionAndDestination );
       } );
@@ -363,8 +363,8 @@ define( require => {
 
           // offset things a little in touch mode for better visibility while dragging
           if ( event.pointer instanceof Touch ) {
-            var position = self.globalToParentPoint( event.pointer.point );
-            var adjustedPosition = position.plusXY( 0, TOUCH_DRAG_Y_OFFSET );
+            const position = self.globalToParentPoint( event.pointer.point );
+            const adjustedPosition = position.plusXY( 0, TOUCH_DRAG_Y_OFFSET );
             if ( dragBounds.containsPoint( adjustedPosition ) ) {
               coinTermPositionAndDestination.set( adjustedPosition );
             }

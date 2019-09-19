@@ -23,10 +23,10 @@ define( require => {
   const Property = require( 'AXON/Property' );
 
   // constants
-  var CREATION_LIMIT_FOR_EXPLORE_SCREENS = 8;
+  const CREATION_LIMIT_FOR_EXPLORE_SCREENS = 8;
 
   // descriptors for the coin term creator sets used in the explore screens
-  var EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS = {};
+  const EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS = {};
   EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS[ CoinTermCreatorSetID.BASICS ] = [
     { typeID: CoinTermTypeID.X, initialCount: 1 },
     { typeID: CoinTermTypeID.Y, initialCount: 1 },
@@ -67,8 +67,8 @@ define( require => {
     // Create a property that will control number of coin terms shown in this creator node.  For the explore screens,
     // only one is even shown, and the property goes to zero when the max number of this type have been added to the
     // model.
-    var numberToShowProperty = new Property( 1 );
-    var instanceCount = model.getCoinTermCountProperty(
+    const numberToShowProperty = new Property( 1 );
+    const instanceCount = model.getCoinTermCountProperty(
       typeID,
       createdCoinTermInitialCount > 0 ? 1 : -1,
       true
@@ -105,13 +105,13 @@ define( require => {
 
     // Create a property that will control number of coin terms shown in this creator node.  For the game screen,
     // multiple creator nodes are shown in a staggered arrangement.
-    var numberToShowProperty = new DerivedProperty(
+    const numberToShowProperty = new DerivedProperty(
       [ model.getCoinTermCountProperty( typeID, createdCoinTermInitialCount, true ) ],
       function( instanceCount ) { return numInstancesAllowed - instanceCount; }
     );
 
     // create the "creator node" for the specified coin term type
-    var coinTermCreatorNode = new CoinTermCreatorNode(
+    const coinTermCreatorNode = new CoinTermCreatorNode(
       model,
       view,
       typeID,
@@ -141,7 +141,7 @@ define( require => {
    * and dragging
    * @public
    */
-  var CoinTermCreatorBoxFactory = {
+  const CoinTermCreatorBoxFactory = {
 
     /**
      *
@@ -159,7 +159,7 @@ define( require => {
       }, options );
 
       // create the list of creator nodes from the descriptor list
-      var creatorNodes = [];
+      const creatorNodes = [];
       EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS[ creatorSetID ].forEach( function( descriptor ) {
         creatorNodes.push( makeExploreScreenCreatorNode(
           descriptor.typeID,
@@ -187,7 +187,7 @@ define( require => {
       }, options );
 
       // create the list of creator nodes from the descriptor list
-      var creatorNodes = [];
+      const creatorNodes = [];
       challengeDescriptor.carouselContents.forEach( function( descriptor ) {
         creatorNodes.push( makeGameScreenCreatorNode(
           descriptor.typeID,

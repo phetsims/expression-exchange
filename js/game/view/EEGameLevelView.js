@@ -33,7 +33,7 @@ define( require => {
   const levelNumberPatternString = require( 'string!EXPRESSION_EXCHANGE/levelNumberPattern' );
 
   // constants
-  var BUTTON_XY_TOUCH_DILATION = 4;
+  const BUTTON_XY_TOUCH_DILATION = 4;
 
   /**
    * @param {EEGameModel} gameModel - main model for the game
@@ -45,7 +45,7 @@ define( require => {
    */
   function EEGameLevelView( gameModel, levelModel, screenLayoutBounds, visibleBoundsProperty, gameAudioPlayer ) {
 
-    var self = this;
+    const self = this;
 
     Node.call( this );
 
@@ -56,28 +56,28 @@ define( require => {
     this.inViewportProperty = new Property( false );
 
     // add an invisible background rectangle so that bounds are correct, this is needed for animation of game level views
-    var background = new Rectangle( screenLayoutBounds, {
+    const background = new Rectangle( screenLayoutBounds, {
       stroke: 'transparent' // increase opacity to make the outline visible if desired (for debugging)
     } );
     this.addChild( background );
 
     // layer where everything else should appear
-    var middleLayer = new Node();
+    const middleLayer = new Node();
     this.addChild( middleLayer );
 
     // layer where the coin term nodes live
-    var coinTermLayer = new Node();
+    const coinTermLayer = new Node();
     this.addChild( coinTermLayer );
 
     // layer where the dialog-ish nodes are shown
-    var notificationsLayer = new Node();
+    const notificationsLayer = new Node();
     this.addChild( notificationsLayer );
 
     // set the bounds for coin term retrieval in the model
     levelModel.setRetrievalBounds( screenLayoutBounds );
 
     // add the level label
-    var title = new Text(
+    const title = new Text(
       StringUtils.fillIn( levelNumberPatternString, { levelNumber: ( levelModel.levelNumber + 1 ) } ),
       {
         font: new PhetFont( 20 ),
@@ -88,7 +88,7 @@ define( require => {
     middleLayer.addChild( title );
 
     // add the back button
-    var backButton = new BackButton( {
+    const backButton = new BackButton( {
       left: screenLayoutBounds.left + 30,
       top: screenLayoutBounds.top + 30,
       listener: gameModel.returnToLevelSelection.bind( gameModel ),
@@ -98,7 +98,7 @@ define( require => {
     middleLayer.addChild( backButton );
 
     // add the refresh button
-    var refreshButton = new RefreshButton( {
+    const refreshButton = new RefreshButton( {
       iconScale: 0.7,
       xMargin: 9,
       yMargin: 7,
@@ -111,7 +111,7 @@ define( require => {
     middleLayer.addChild( refreshButton );
 
     // create the expression manipulation view
-    var expressionManipulationView = new ExpressionManipulationView(
+    const expressionManipulationView = new ExpressionManipulationView(
       levelModel,
       visibleBoundsProperty,
       { coinTermBreakApartButtonMode: 'inverted' }
@@ -119,7 +119,7 @@ define( require => {
     coinTermLayer.addChild( expressionManipulationView );
 
     // add the coin term creator box
-    var coinTermCreatorBox = null;
+    let coinTermCreatorBox = null;
     levelModel.currentChallengeProperty.link( function( currentChallenge ) {
       if ( coinTermCreatorBox ) {
         middleLayer.removeChild( coinTermCreatorBox );
@@ -138,8 +138,8 @@ define( require => {
     } );
 
     // add the checkbox that allows expressions with negative values to be simplified
-    var boundsOfLowestCollectionArea = _.last( levelModel.collectionAreas ).bounds;
-    var showSubtractionCheckbox = new Checkbox(
+    const boundsOfLowestCollectionArea = _.last( levelModel.collectionAreas ).bounds;
+    const showSubtractionCheckbox = new Checkbox(
       new ShowSubtractionIcon(),
       levelModel.simplifyNegativesProperty,
       {
@@ -154,7 +154,7 @@ define( require => {
     levelModel.currentChallengeProperty.link( function( currentChallenge ) {
 
       // determine whether negative values are present in this challenge
-      var negativesExist = false;
+      let negativesExist = false;
       currentChallenge.carouselContents.forEach( function( carouselContent ) {
         if ( carouselContent.minimumDecomposition < 0 ) {
           negativesExist = true;
@@ -200,7 +200,7 @@ define( require => {
 
     // define a property that tracks whether the 'next level' node should be visible.  This is done as a separate
     // view-only property because the logic that decides whether to show it is somewhat complex.
-    var showNextLevelNodeProperty = new Property( false );
+    const showNextLevelNodeProperty = new Property( false );
 
     // show the "next level" node when this level becomes completed
     levelModel.completedSinceLastClearProperty.link( function( currentlyCompleted ) {

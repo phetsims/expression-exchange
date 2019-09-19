@@ -11,7 +11,7 @@ define( require => {
   // modules
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  var ViewMode = {
+  const ViewMode = {
     COINS: 'COINS',
     VARIABLES: 'VARIABLES'
   };

@@ -24,14 +24,14 @@ define( require => {
   const Vector2Property = require( 'DOT/Vector2Property' );
 
   // constants
-  var INTER_COIN_TERM_SPACING = 30; // in model units, empirically determined
-  var X_MARGIN = 14; // margin for coin terms, empirically determined
-  var Y_MARGIN = 12; // margin for coin terms, empirically determined
-  var ANIMATION_SPEED = 400; // in model units (which are basically screen coordinates) per second
-  var MAX_ANIMATION_TIME = 1; // seconds
+  const INTER_COIN_TERM_SPACING = 30; // in model units, empirically determined
+  const X_MARGIN = 14; // margin for coin terms, empirically determined
+  const Y_MARGIN = 12; // margin for coin terms, empirically determined
+  const ANIMATION_SPEED = 400; // in model units (which are basically screen coordinates) per second
+  const MAX_ANIMATION_TIME = 1; // seconds
 
   // class var for creating unique IDs
-  var creationCount = 0;
+  let creationCount = 0;
 
   /**
    * @param {CoinTerm} anchorCoinTerm
@@ -41,7 +41,7 @@ define( require => {
    */
   function Expression( anchorCoinTerm, floatingCoinTerm, simplifyNegativesProperty ) {
 
-    var self = this;
+    const self = this;
     this.id = 'EX-' + (++creationCount);
 
     //------------------------------------------------------------------------
@@ -214,28 +214,28 @@ define( require => {
      */
     step: function( dt ) {
 
-      var self = this;
+      const self = this;
 
       // If needed, adjust the size of the expression and the positions of the contained coin terms.  This is done here
       // in the step function so that it is only done a max of once per animation frame rather than redoing it for each
       // coin term whose bounds change.
       if ( this.resizeNeeded ) {
-        var animateUpdateMotion = !this.userControlledProperty.get() && !this.inProgressAnimationProperty.get();
+        const animateUpdateMotion = !this.userControlledProperty.get() && !this.inProgressAnimationProperty.get();
         this.updateSizeAndCoinTermPositions( animateUpdateMotion );
         this.resizeNeeded = false;
       }
 
       // determine the needed height and which hints should be active
-      var tallestCoinTermHeight = 0;
+      let tallestCoinTermHeight = 0;
       this.coinTerms.forEach( function( residentCoinTerm ) {
         tallestCoinTermHeight = Math.max( tallestCoinTermHeight, residentCoinTerm.localViewBoundsProperty.get().height );
       } );
-      var rightHintActive = false;
-      var rightHintMaxCoinWidth = 0;
-      var leftHintActive = false;
-      var leftHintMaxCoinWidth = 0;
+      let rightHintActive = false;
+      let rightHintMaxCoinWidth = 0;
+      let leftHintActive = false;
+      let leftHintMaxCoinWidth = 0;
       this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
-        var hctRelativeViewBounds = hoveringCoinTerm.localViewBoundsProperty.get();
+        const hctRelativeViewBounds = hoveringCoinTerm.localViewBoundsProperty.get();
         tallestCoinTermHeight = Math.max( tallestCoinTermHeight, hctRelativeViewBounds.height );
         if ( hoveringCoinTerm.positionProperty.get().x > self.upperLeftCornerProperty.get().x + self.widthProperty.get() / 2 ) {
 
@@ -267,7 +267,7 @@ define( require => {
       this.combineHaloActiveProperty.set( this.hoveringExpressions.length > 0 );
 
       // update the overall height of the expression if needed
-      var neededHeight = tallestCoinTermHeight + 2 * Y_MARGIN;
+      const neededHeight = tallestCoinTermHeight + 2 * Y_MARGIN;
       if ( this.heightProperty.get() !== neededHeight ) {
         this.upperLeftCornerProperty.set( this.upperLeftCornerProperty.get().minusXY(
           0,
@@ -279,17 +279,17 @@ define( require => {
 
       // Do any motion animation.  This is done last because the animation can sometimes cause the expression to be
       // removed from the model (such as when it joins another expression), and this can cause the prior steps to fail.
-      var animation = this.inProgressAnimationProperty.get();
+      const animation = this.inProgressAnimationProperty.get();
       if ( animation ) {
         animation.timeSoFar += dt;
         if ( animation.timeSoFar < animation.totalDuration ) {
 
           // not there yet - take a step towards the destination
-          var easingProportion = Easing.CUBIC_IN_OUT.value( animation.timeSoFar / animation.totalDuration );
-          var nextPosition = animation.startPosition.plus(
+          const easingProportion = Easing.CUBIC_IN_OUT.value( animation.timeSoFar / animation.totalDuration );
+          const nextPosition = animation.startPosition.plus(
             animation.travelVector.withMagnitude( animation.travelVector.magnitude * easingProportion )
           );
-          var deltaPosition = nextPosition.minus( this.upperLeftCornerProperty.get() );
+          const deltaPosition = nextPosition.minus( this.upperLeftCornerProperty.get() );
           this.translate( deltaPosition );
         }
         else {
@@ -314,8 +314,8 @@ define( require => {
      * @param {Bounds2} [boundsToSet] - optional bounds to set if caller wants to avoid an allocation
      */
     getBounds: function( boundsToSet ) {
-      var bounds = boundsToSet || new Bounds2( 0, 0, 1, 1 );
-      var upperLeftCorner = this.upperLeftCornerProperty.get();
+      const bounds = boundsToSet || new Bounds2( 0, 0, 1, 1 );
+      const upperLeftCorner = this.upperLeftCornerProperty.get();
       bounds.setMinMax(
         upperLeftCorner.x,
         upperLeftCorner.y,
@@ -345,23 +345,23 @@ define( require => {
     updateSizeAndCoinTermPositions: function( animate ) {
 
       // keep track of original size so we know when to fire event about layout changes
-      var originalWidth = this.widthProperty.get();
-      var originalHeight = this.heightProperty.get();
-      var coinTermsMoved = false;
+      const originalWidth = this.widthProperty.get();
+      const originalHeight = this.heightProperty.get();
+      let coinTermsMoved = false;
 
       // get an array of the coin terms sorted from left to right
-      var coinTermsLeftToRight = this.getCoinTermsLeftToRight();
+      const coinTermsLeftToRight = this.getCoinTermsLeftToRight();
 
-      var middleCoinTermIndex = Math.floor( ( coinTermsLeftToRight.length - 1 ) / 2 );
-      var xPos;
-      var yPos = coinTermsLeftToRight[ middleCoinTermIndex ].destinationProperty.get().y;
-      var scaledCoinTermSpacing = INTER_COIN_TERM_SPACING * this.scaleProperty.get();
+      const middleCoinTermIndex = Math.floor( ( coinTermsLeftToRight.length - 1 ) / 2 );
+      let xPos;
+      const yPos = coinTermsLeftToRight[ middleCoinTermIndex ].destinationProperty.get().y;
+      const scaledCoinTermSpacing = INTER_COIN_TERM_SPACING * this.scaleProperty.get();
 
       // adjust the positions of coin terms to the right of the middle
       for ( var i = middleCoinTermIndex + 1; i < coinTermsLeftToRight.length; i++ ) {
 
         // adjust the position of this coin term to be the correct distance from its neighbor to the left
-        var leftNeighbor = coinTermsLeftToRight[ i - 1 ];
+        const leftNeighbor = coinTermsLeftToRight[ i - 1 ];
         xPos = leftNeighbor.destinationProperty.get().x + leftNeighbor.localViewBoundsProperty.get().maxX +
                scaledCoinTermSpacing - coinTermsLeftToRight[ i ].localViewBoundsProperty.get().minX;
         if ( coinTermsLeftToRight[ i ].destinationProperty.get().x !== xPos ) {
@@ -373,7 +373,7 @@ define( require => {
       // adjust the positions of coin terms to the left of the middle
       for ( i = middleCoinTermIndex - 1; i >= 0; i-- ) {
         // adjust the position of this coin term to be the correct distance from its neighbor to the right
-        var rightNeighbor = coinTermsLeftToRight[ i + 1 ];
+        const rightNeighbor = coinTermsLeftToRight[ i + 1 ];
         xPos = rightNeighbor.destinationProperty.get().x + rightNeighbor.localViewBoundsProperty.get().minX -
                scaledCoinTermSpacing - coinTermsLeftToRight[ i ].localViewBoundsProperty.get().maxX;
         if ( coinTermsLeftToRight[ i ].positionProperty.get().x !== xPos ) {
@@ -383,15 +383,15 @@ define( require => {
       }
 
       // adjust the size and position of this expression
-      var maxHeight = 0;
-      var totalWidth = 0;
+      let maxHeight = 0;
+      let totalWidth = 0;
       coinTermsLeftToRight.forEach( function( coinTerm ) {
-        var relativeViewBounds = coinTerm.localViewBoundsProperty.get();
+        const relativeViewBounds = coinTerm.localViewBoundsProperty.get();
         maxHeight = relativeViewBounds.height > maxHeight ? relativeViewBounds.height : maxHeight;
         totalWidth += relativeViewBounds.width;
       } );
-      var scaledXMargin = X_MARGIN * this.scaleProperty.get();
-      var scaledYMargin = Y_MARGIN * this.scaleProperty.get();
+      const scaledXMargin = X_MARGIN * this.scaleProperty.get();
+      const scaledYMargin = Y_MARGIN * this.scaleProperty.get();
       this.upperLeftCornerProperty.set( new Vector2(
         coinTermsLeftToRight[ 0 ].destinationProperty.get().x +
         coinTermsLeftToRight[ 0 ].localViewBoundsProperty.get().minX - scaledXMargin,
@@ -420,8 +420,8 @@ define( require => {
 
       this.coinTerms.push( coinTerm );
 
-      var coinTermRelativeViewBounds = coinTerm.localViewBoundsProperty.get();
-      var coinTermPosition = coinTerm.positionProperty.get();
+      const coinTermRelativeViewBounds = coinTerm.localViewBoundsProperty.get();
+      const coinTermPosition = coinTerm.positionProperty.get();
 
       if ( this.coinTerms.length === 1 ) {
 
@@ -436,12 +436,12 @@ define( require => {
       else {
 
         // adjust the expression's width to accommodate the new coin term
-        var originalWidth = this.widthProperty.get();
+        const originalWidth = this.widthProperty.get();
         this.widthProperty.set( this.widthProperty.get() + INTER_COIN_TERM_SPACING + coinTermRelativeViewBounds.width );
-        var upperLeftCorner = this.upperLeftCornerProperty.get();
+        const upperLeftCorner = this.upperLeftCornerProperty.get();
 
         // figure out where the coin term should go
-        var xDestination;
+        let xDestination;
         if ( coinTermPosition.x > upperLeftCorner.x + originalWidth / 2 ) {
           // add to the right side
           xDestination = upperLeftCorner.x + this.widthProperty.get() - X_MARGIN - coinTermRelativeViewBounds.maxX;
@@ -454,7 +454,7 @@ define( require => {
           xDestination = this.upperLeftCornerProperty.get().x + X_MARGIN - coinTermRelativeViewBounds.minX;
         }
 
-        var destination = new Vector2(
+        const destination = new Vector2(
           xDestination,
           this.upperLeftCornerProperty.get().y + this.heightProperty.get() / 2
         );
@@ -488,7 +488,7 @@ define( require => {
       coinTerm.localViewBoundsProperty.lazyLink( this.setResizeNeededFlagBound );
 
       // add a listener to update whether minus sign is shown when negative when the user moves this coin term
-      var userControlledListener = this.updateCoinTermShowMinusSignFlag.bind( this );
+      const userControlledListener = this.updateCoinTermShowMinusSignFlag.bind( this );
       assert && assert( !this.mapCoinTermsToUCListeners[ coinTerm.id ], 'key should not yet exist in map' );
       this.mapCoinTermsToUCListeners[ coinTerm.id ] = userControlledListener;
       coinTerm.userControlledProperty.link( userControlledListener );
@@ -537,10 +537,10 @@ define( require => {
      */
     removeAllCoinTerms: function() {
 
-      var self = this;
+      const self = this;
 
       // make a copy of the coin terms and sort them in left to right order
-      var coinTermsLeftToRight = this.getCoinTermsLeftToRight();
+      const coinTermsLeftToRight = this.getCoinTermsLeftToRight();
 
       // remove them from this expression
       coinTermsLeftToRight.forEach( function( coinTerm ) {
@@ -562,14 +562,14 @@ define( require => {
       assert && assert( this.containsCoinTerm( coinTerm ), 'coin term is not part of this expression, can\'t be reintegrated' );
 
       // get an array of the coin terms sorted from left to right
-      var coinTermsLeftToRight = this.getCoinTermsLeftToRight();
+      const coinTermsLeftToRight = this.getCoinTermsLeftToRight();
 
       // update coin term minus sign flags
       this.updateCoinTermShowMinusSignFlag();
 
       // set the position of each coin term based on its order
-      var leftEdge = this.upperLeftCornerProperty.get().x + X_MARGIN;
-      var centerY = this.upperLeftCornerProperty.get().y + this.heightProperty.get() / 2;
+      let leftEdge = this.upperLeftCornerProperty.get().x + X_MARGIN;
+      const centerY = this.upperLeftCornerProperty.get().y + this.heightProperty.get() / 2;
       coinTermsLeftToRight.forEach( function( orderedCoinTerm ) {
         orderedCoinTerm.travelToDestination( new Vector2(
           leftEdge - orderedCoinTerm.localViewBoundsProperty.get().minX,
@@ -587,14 +587,14 @@ define( require => {
      * @private
      */
     updateCoinTermShowMinusSignFlag: function() {
-      var self = this;
-      var coinTermsLeftToRight = self.getCoinTermsLeftToRight();
-      var oneOrMoreChanged = false;
+      const self = this;
+      const coinTermsLeftToRight = self.getCoinTermsLeftToRight();
+      let oneOrMoreChanged = false;
       coinTermsLeftToRight.forEach( function( residentCoinTerm, index ) {
 
         // The minus sign is suppressed if subtraction is being shown, the coin term is not user controlled, and the
         // coin term is not the first one in the expression so that subtraction expressions will look correct.
-        var showMinusSignWhenNegative = !( self.simplifyNegativesProperty.value && index > 0 ) ||
+        const showMinusSignWhenNegative = !( self.simplifyNegativesProperty.value && index > 0 ) ||
                                         residentCoinTerm.userControlledProperty.get();
 
         if ( showMinusSignWhenNegative !== residentCoinTerm.showMinusSignWhenNegativeProperty.get() ) {
@@ -630,8 +630,8 @@ define( require => {
      * @public
      */
     travelToDestination: function( upperLeftCornerDestination ) {
-      var self = this;
-      var animationDuration = Math.min(
+      const self = this;
+      const animationDuration = Math.min(
         self.upperLeftCornerProperty.get().distance( upperLeftCornerDestination ) / ANIMATION_SPEED,
         MAX_ANIMATION_TIME
       );
@@ -675,12 +675,12 @@ define( require => {
      * @public
      */
     getCoinTermJoinZoneOverlap: function( coinTerm ) {
-      var coinTermBounds = coinTerm.getViewBounds();
-      var xOverlap = Math.max(
+      const coinTermBounds = coinTerm.getViewBounds();
+      const xOverlap = Math.max(
         0,
         Math.min( coinTermBounds.maxX, this.joinZone.maxX ) - Math.max( coinTermBounds.minX, this.joinZone.minX )
       );
-      var yOverlap = Math.max(
+      const yOverlap = Math.max(
         0,
         Math.min( coinTermBounds.maxY, this.joinZone.maxY ) - Math.max( coinTermBounds.minY, this.joinZone.minY )
       );
@@ -694,13 +694,13 @@ define( require => {
      * @public
      */
     getOverlap: function( otherEntity ) {
-      var otherExpressionBounds = otherEntity.getBounds();
-      var thisExpressionBounds = this.getBounds();
-      var xOverlap = Math.max(
+      const otherExpressionBounds = otherEntity.getBounds();
+      const thisExpressionBounds = this.getBounds();
+      const xOverlap = Math.max(
         0,
         Math.min( otherExpressionBounds.maxX, thisExpressionBounds.maxX ) - Math.max( otherExpressionBounds.minX, thisExpressionBounds.minX )
       );
-      var yOverlap = Math.max(
+      const yOverlap = Math.max(
         0,
         Math.min( otherExpressionBounds.maxY, thisExpressionBounds.maxY ) - Math.max( otherExpressionBounds.minY, thisExpressionBounds.minY )
       );
@@ -736,7 +736,7 @@ define( require => {
      * @public
      */
     removeHoveringCoinTerm: function( coinTerm ) {
-      var index = this.hoveringCoinTerms.indexOf( coinTerm );
+      const index = this.hoveringCoinTerms.indexOf( coinTerm );
       if ( index !== -1 ) {
         this.hoveringCoinTerms.splice( index, 1 );
         coinTerm.breakApartAllowedProperty.set( true );
@@ -773,7 +773,7 @@ define( require => {
      * @public
      */
     removeHoveringExpression: function( expression ) {
-      var index = this.hoveringExpressions.indexOf( expression );
+      const index = this.hoveringExpressions.indexOf( expression );
       if ( index !== -1 ) {
         this.hoveringExpressions.splice( index, 1 );
       }

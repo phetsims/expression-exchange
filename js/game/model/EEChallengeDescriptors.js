@@ -16,7 +16,7 @@ define( require => {
   // The challenge set, organized as a 2D array where the first dimension is level, the second is challenge number.
   // The challenge descriptions are organized as a set of expressions that the user should construct and collect and
   // a description of the contents of the coin term box.
-  var challengeSets = [
+  const challengeSets = [
 
     // level 1 challenges
     [
@@ -556,7 +556,7 @@ define( require => {
   /**
    * static object with methods for accessing the challenge descriptors defined above
    */
-  var EEChallengeDescriptors = {
+  const EEChallengeDescriptors = {
 
     /**
      * get a challenge descriptor for the specified level
@@ -574,7 +574,7 @@ define( require => {
      * @public
      */
     shuffleChallenges: function() {
-      for ( var i = 0; i < challengeSets.length; i++ ) {
+      for ( let i = 0; i < challengeSets.length; i++ ) {
         challengeSets[ i ] = phet.joist.random.shuffle( challengeSets[ i ] );
       }
     },

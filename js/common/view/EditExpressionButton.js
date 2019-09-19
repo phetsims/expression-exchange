@@ -14,7 +14,7 @@ define( require => {
   const RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
 
   // constants
-  var ICON = new FontAwesomeNode( 'exchange', { scale: 0.35 } ); // scale empirically determined
+  const ICON = new FontAwesomeNode( 'exchange', { scale: 0.35 } ); // scale empirically determined
 
   /**
    * @constructor
@@ -23,7 +23,7 @@ define( require => {
 
     options = _.extend( {}, options );
 
-    var iconNode = new Node( { children: [ ICON ] } );
+    const iconNode = new Node( { children: [ ICON ] } );
 
     // the following options can't be overridden
     options = _.extend( options, {

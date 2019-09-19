@@ -27,7 +27,7 @@ define( require => {
    */
   function EEExploreScreen() {
 
-    var options = {
+    const options = {
       name: exploreString,
       backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
       homeScreenIcon: new EEExploreIconNode()

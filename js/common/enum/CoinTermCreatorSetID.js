@@ -11,7 +11,7 @@ define( require => {
   // modules
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  var CoinTermCreatorSetID = {
+  const CoinTermCreatorSetID = {
     BASICS: 'BASICS',
     EXPLORE: 'EXPLORE',
     VARIABLES: 'VARIABLES'

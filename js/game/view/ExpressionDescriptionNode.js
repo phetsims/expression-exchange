@@ -23,12 +23,12 @@ define( require => {
   const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var COIN_ICON_RADIUS = 10;
-  var COIN_EXPRESSION_FONT = new PhetFont( 22 );
-  var EXPRESSION_FONT_FOR_NON_VARIABLE = new PhetFont( 22 );
-  var EXPRESSION_FONT_FOR_VARIABLES = new MathSymbolFont( 24 );
-  var SUP_SCALE = 0.65; // empirically determined to look good on the most platforms
-  var SUB_SUP_OPTIONS = { font: EXPRESSION_FONT_FOR_VARIABLES, supScale: SUP_SCALE };
+  const COIN_ICON_RADIUS = 10;
+  const COIN_EXPRESSION_FONT = new PhetFont( 22 );
+  const EXPRESSION_FONT_FOR_NON_VARIABLE = new PhetFont( 22 );
+  const EXPRESSION_FONT_FOR_VARIABLES = new MathSymbolFont( 24 );
+  const SUP_SCALE = 0.65; // empirically determined to look good on the most platforms
+  const SUB_SUP_OPTIONS = { font: EXPRESSION_FONT_FOR_VARIABLES, supScale: SUP_SCALE };
 
   /**
    * @param {ExpressionDescription} expressionDescription
@@ -39,7 +39,7 @@ define( require => {
   function ExpressionDescriptionNode( expressionDescription, viewMode, options ) {
 
     HBox.call( this, { align: 'bottom' } );
-    var self = this;
+    const self = this;
 
     if ( viewMode === ViewMode.COINS ) {
 
@@ -49,12 +49,12 @@ define( require => {
 
         // add coefficient if needed
         if ( expressionTerm.coefficient > 1 ) {
-          var coefficientNode = new Text( expressionTerm.coefficient, { font: COIN_EXPRESSION_FONT } );
+          const coefficientNode = new Text( expressionTerm.coefficient, { font: COIN_EXPRESSION_FONT } );
           self.addChild( coefficientNode );
         }
 
         // add coin icon
-        var coinIconNode = CoinNodeFactory.createIconNode(
+        const coinIconNode = CoinNodeFactory.createIconNode(
           expressionTerm.coinTermTypeID,
           COIN_ICON_RADIUS
         );
@@ -62,7 +62,7 @@ define( require => {
 
         // add plus symbol if not at end of expression
         if ( index < expressionDescription.terms.length - 1 ) {
-          var plusSign = new Text( ' ' + MathSymbols.PLUS + ' ', { font: COIN_EXPRESSION_FONT } );
+          const plusSign = new Text( ' ' + MathSymbols.PLUS + ' ', { font: COIN_EXPRESSION_FONT } );
           self.addChild( plusSign );
         }
 
@@ -74,10 +74,10 @@ define( require => {
 
       // Go through the expression string, turning the various pieces into nodes.  The 'terms' field of the expression
       // description can't be used here because it is the returned version of the expression.
-      var expressionStringIndex = 0;
+      let expressionStringIndex = 0;
 
       while ( expressionStringIndex < expressionDescription.expressionString.length ) {
-        var expressionFragmentInfo = createExpressionFragment(
+        const expressionFragmentInfo = createExpressionFragment(
           expressionDescription.expressionString,
           expressionStringIndex
         );
@@ -99,11 +99,11 @@ define( require => {
   function createVariableExpressionFragment( expressionString, startIndex ) {
 
     // error checking
-    var firstChar = expressionString.charAt( startIndex );
+    const firstChar = expressionString.charAt( startIndex );
     assert && assert( firstChar === 'x' || firstChar === 'y' || firstChar === 'z', 'unexpected first char of string' );
 
-    var node = null;
-    var charsUsed = 0;
+    let node = null;
+    let charsUsed = 0;
 
     // identify the expression to be created based on a finite set of those supported
     if ( expressionString.indexOf( 'x^2', startIndex ) === startIndex ) {
@@ -149,8 +149,8 @@ define( require => {
   }
 
   function createNonVariableExpressionFragment( expressionString, startIndex ) {
-    var fragmentString = '';
-    var index = startIndex;
+    let fragmentString = '';
+    let index = startIndex;
     while ( expressionString.charAt( index ) !== 'x' &&
             expressionString.charAt( index ) !== 'y' &&
             expressionString.charAt( index ) !== 'z' &&
@@ -176,8 +176,8 @@ define( require => {
    */
   function createExpressionFragment( expressionString, index ) {
 
-    var expressionFragment;
-    var nextChar = expressionString.charAt( index );
+    let expressionFragment;
+    const nextChar = expressionString.charAt( index );
     if ( nextChar === 'x' || nextChar === 'y' || nextChar === 'z' ) {
       expressionFragment = createVariableExpressionFragment( expressionString, index );
     }

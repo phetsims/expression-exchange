@@ -26,7 +26,7 @@ define( require => {
     this.expressionString = expressionString;
 
     // remove all spaces from the expression
-    var noWhitespaceExpressionString = expressionString.replace( /\s/g, '' );
+    const noWhitespaceExpressionString = expressionString.replace( /\s/g, '' );
 
     // @public (read-only) {Array.<Term>} - Description of the expression as an ordered set of terms that contain the
     // coefficient and the coin term ID
@@ -48,9 +48,9 @@ define( require => {
    * @returns {Array.<Term>}
    */
   function interpretExpression( expressionString, currentIndex ) {
-    var terms = [];
-    var termExtractionResult = null;
-    var subExpressionInterpretationResult = null;
+    let terms = [];
+    let termExtractionResult = null;
+    let subExpressionInterpretationResult = null;
     while ( currentIndex < expressionString.length ) {
       termExtractionResult = extractTerm( expressionString, currentIndex );
       currentIndex = termExtractionResult.newIndex;
@@ -82,7 +82,7 @@ define( require => {
         subExpressionInterpretationResult = interpretExpression( expressionString, currentIndex );
 
         // the previously extracted term is now used to multiply the extracted expression (distributive property)
-        var multipliedSubExpression = _.map( subExpressionInterpretationResult.terms, function( term ) {
+        const multipliedSubExpression = _.map( subExpressionInterpretationResult.terms, function( term ) {
           return term.times( termExtractionResult.term );
         } );
 
@@ -90,7 +90,7 @@ define( require => {
         multipliedSubExpression.forEach( function( multipliedSubExpressionTerm ) {
 
           // extract terms from the term array that match this one - there should be zero or one, no more
-          var matchingTermsArray = _.filter( terms, function( term ) {
+          const matchingTermsArray = _.filter( terms, function( term ) {
             return term.coinTermTypeID === multipliedSubExpressionTerm.coinTermTypeID;
           } );
 
@@ -98,7 +98,7 @@ define( require => {
           assert && assert( matchingTermsArray.length <= 1, 'error - terms array was not properly reduced' );
 
           if ( matchingTermsArray.length === 1 ) {
-            var matchingTerm = matchingTermsArray[ 0 ];
+            const matchingTerm = matchingTermsArray[ 0 ];
 
             matchingTerm.coefficient += multipliedSubExpressionTerm.coefficient;
             if ( matchingTerm.coefficient === 0 ) {
@@ -125,7 +125,7 @@ define( require => {
     };
   }
 
-  var stringToTermTypeMap = {
+  const stringToTermTypeMap = {
     '': CoinTermTypeID.CONSTANT,
     'x^2*y2': CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED,
     'x^2': CoinTermTypeID.X_SQUARED,
@@ -146,7 +146,7 @@ define( require => {
   function extractTerm( expressionString, index ) {
 
     // handle the sign in front of the coefficient, if present
-    var signMultiplier = 1;
+    let signMultiplier = 1;
     if ( expressionString[ index ] === '-' ) {
       signMultiplier = -1;
       index++;
@@ -155,7 +155,7 @@ define( require => {
       index++;
     }
 
-    var coefficientString = '';
+    let coefficientString = '';
 
     // pull out any numbers, and note that this assumes only integers are used as coefficients
     while ( !isNaN( parseInt( expressionString.charAt( index ), 10 ) ) ) {
@@ -163,14 +163,14 @@ define( require => {
     }
 
     // determine the numerical value of the coefficient
-    var coefficient = ( coefficientString.length > 0 ? parseInt( coefficientString, 10 ) : 1 ) * signMultiplier;
+    const coefficient = ( coefficientString.length > 0 ? parseInt( coefficientString, 10 ) : 1 ) * signMultiplier;
 
     // determine where the term ends within the expression string
-    var nextPlusSignIndex = expressionString.indexOf( '+', index );
-    var nextMinusSignIndex = expressionString.indexOf( '-', index );
-    var nextOpenParenIndex = expressionString.indexOf( '(', index );
-    var nextCloseParenIndex = expressionString.indexOf( ')', index );
-    var termEndIndex = Math.min(
+    const nextPlusSignIndex = expressionString.indexOf( '+', index );
+    const nextMinusSignIndex = expressionString.indexOf( '-', index );
+    const nextOpenParenIndex = expressionString.indexOf( '(', index );
+    const nextCloseParenIndex = expressionString.indexOf( ')', index );
+    const termEndIndex = Math.min(
       nextPlusSignIndex > 0 ? nextPlusSignIndex : Number.POSITIVE_INFINITY,
       nextMinusSignIndex > 0 ? nextMinusSignIndex : Number.POSITIVE_INFINITY,
       nextOpenParenIndex > 0 ? nextOpenParenIndex : Number.POSITIVE_INFINITY,
@@ -179,10 +179,10 @@ define( require => {
     );
 
     // extract the string that represents the term
-    var termString = expressionString.substring( index, termEndIndex ).toLowerCase();
+    const termString = expressionString.substring( index, termEndIndex ).toLowerCase();
 
     // get the coin term type
-    var coinTermTypeID = stringToTermTypeMap[ termString ];
+    const coinTermTypeID = stringToTermTypeMap[ termString ];
 
     return {
       term: new Term( coefficient, coinTermTypeID ),
@@ -204,7 +204,7 @@ define( require => {
 
         // count the totals of the coin term types in the provided expression
 
-        var expressionCoinTermCounts = {}; // maps coin term types (CoinTermTypeID) to numbers of each in the expression
+        const expressionCoinTermCounts = {}; // maps coin term types (CoinTermTypeID) to numbers of each in the expression
         expression.coinTerms.forEach( function( coinTerm ) {
           if ( expressionCoinTermCounts[ coinTerm.typeID ] ) {
             expressionCoinTermCounts[ coinTerm.typeID ] += coinTerm.totalCountProperty.get();
@@ -221,7 +221,7 @@ define( require => {
           }
         } );
 
-        var expressionCoinTermCountKeys = Object.keys( expressionCoinTermCounts );
+        const expressionCoinTermCountKeys = Object.keys( expressionCoinTermCounts );
 
         // Does the expression have the same number of coin term types as the description?
         if ( this.terms.length !== expressionCoinTermCountKeys.length ) {
@@ -229,9 +229,9 @@ define( require => {
         }
 
         // Do the counts match?  Note that this assumes the expression description is reduced.
-        for ( var i = 0; i < this.terms.length; i++ ) {
-          var termDescriptor = this.terms[ i ];
-          var expressionCount = expressionCoinTermCounts[ termDescriptor.coinTermTypeID ];
+        for ( let i = 0; i < this.terms.length; i++ ) {
+          const termDescriptor = this.terms[ i ];
+          const expressionCount = expressionCoinTermCounts[ termDescriptor.coinTermTypeID ];
           if ( !expressionCount || expressionCount !== termDescriptor.coefficient ) {
             return false;
           }

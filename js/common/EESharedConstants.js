@@ -13,7 +13,7 @@ define( require => {
   const Dimension2 = require( 'DOT/Dimension2' );
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  var EESharedConstants = {
+  const EESharedConstants = {
 
     LAYOUT_BOUNDS: new Bounds2( 0, 0, 1024, 618 ), // at the time of this writing this is the same as the default
 

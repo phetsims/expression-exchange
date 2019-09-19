@@ -50,20 +50,20 @@ define( require => {
   const switchCoinImage = require( 'mipmap!EXPRESSION_EXCHANGE/switch-coin.png' );
 
   // constants
-  var ACCORDION_BOX_TITLE_FONT = new PhetFont( { size: 16, weight: 'bold' } );
-  var ACCORDION_BOX_BUTTON_X_MARGIN = 6;
-  var ACCORDION_BOX_BUTTON_Y_MARGIN = 4;
-  var ACCORDION_BOX_CORNER_RADIUS = 7;
-  var ACCORDION_BOX_CONTENT_X_MARGIN = 15;
-  var ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X = 15;
-  var ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y = 15;
-  var CHECK_BOX_FONT = new PhetFont( { size: 16 } );
-  var CHECK_BOX_VERTICAL_SPACING = 6;
-  var INSET = 10; // inset from edges of layout bounds, in screen coords
-  var FLOATING_PANEL_INSET = 10;
-  var SWITCH_COIN_WIDTH = 30; // in view coordinates, empirically determined
-  var NARROW_COLLECTION_DISPLAY_WIDTH = 150; // in view coordinates, empirically determined
-  var WIDE_COLLECTION_DISPLAY_WIDTH = 180; // in view coordinates, empirically determined
+  const ACCORDION_BOX_TITLE_FONT = new PhetFont( { size: 16, weight: 'bold' } );
+  const ACCORDION_BOX_BUTTON_X_MARGIN = 6;
+  const ACCORDION_BOX_BUTTON_Y_MARGIN = 4;
+  const ACCORDION_BOX_CORNER_RADIUS = 7;
+  const ACCORDION_BOX_CONTENT_X_MARGIN = 15;
+  const ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X = 15;
+  const ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y = 15;
+  const CHECK_BOX_FONT = new PhetFont( { size: 16 } );
+  const CHECK_BOX_VERTICAL_SPACING = 6;
+  const INSET = 10; // inset from edges of layout bounds, in screen coords
+  const FLOATING_PANEL_INSET = 10;
+  const SWITCH_COIN_WIDTH = 30; // in view coordinates, empirically determined
+  const NARROW_COLLECTION_DISPLAY_WIDTH = 150; // in view coordinates, empirically determined
+  const WIDE_COLLECTION_DISPLAY_WIDTH = 180; // in view coordinates, empirically determined
 
   /**
    * @param {ExpressionManipulationModel} model
@@ -78,10 +78,10 @@ define( require => {
     model.setRetrievalBounds( this.layoutBounds );
 
     // create the view element where coin terms and expressions will be manipulated, but don't add it yet
-    var expressionManipulationView = new ExpressionManipulationView( model, this.visibleBoundsProperty );
+    const expressionManipulationView = new ExpressionManipulationView( model, this.visibleBoundsProperty );
 
     // create the box with the coin term creator nodes
-    var coinTermCreatorBox = CoinTermCreatorBoxFactory.createExploreScreenCreatorBox(
+    const coinTermCreatorBox = CoinTermCreatorBoxFactory.createExploreScreenCreatorBox(
       coinTermCreatorSetID,
       model,
       expressionManipulationView,
@@ -93,15 +93,15 @@ define( require => {
     model.creatorBoxBounds = coinTermCreatorBox.bounds;
 
     // max size of the boxes on the left side,  multiplier empirically determined to look good
-    var leftSideBoxWidth = this.layoutBounds.width * 0.15;
+    const leftSideBoxWidth = this.layoutBounds.width * 0.15;
 
     // create the readout that will display the total accumulated value, use max length string initially
-    var totalValueText = new Text(
+    const totalValueText = new Text(
       StringUtils.fillIn( numberCentsPatternString, { number: 9999 } ),
       { font: new PhetFont( { size: 14 } ) }
     );
-    var totalValueReadoutWidth = Math.min( totalValueText.width + 20, leftSideBoxWidth * 0.8 );
-    var totalValueReadout = new Panel( totalValueText, {
+    const totalValueReadoutWidth = Math.min( totalValueText.width + 20, leftSideBoxWidth * 0.8 );
+    const totalValueReadout = new Panel( totalValueText, {
       fill: 'white',
       stroke: 'black',
       cornerRadius: 5,
@@ -123,7 +123,7 @@ define( require => {
     );
 
     // add accordion box that will contain the total value readout
-    var totalValueAccordionBox = new AccordionBox( totalValueReadout, {
+    const totalValueAccordionBox = new AccordionBox( totalValueReadout, {
       titleNode: new Text( totalString, { font: ACCORDION_BOX_TITLE_FONT, maxWidth: leftSideBoxWidth * 0.7 } ),
       fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
       left: INSET,
@@ -142,7 +142,7 @@ define( require => {
     this.addChild( totalValueAccordionBox );
 
     // create the control that will allow the user to manipulate variable values
-    var variableValueControl;
+    let variableValueControl;
     if ( coinTermCreatorSetID === CoinTermCreatorSetID.VARIABLES ) {
 
       // the variable value control is slightly different for the advanced screen
@@ -164,7 +164,7 @@ define( require => {
     }
 
     // add the variable value control to an accordion box, and add the accordion box to the view
-    var variableValuesAccordionBox = new AccordionBox( variableValueControl, {
+    const variableValuesAccordionBox = new AccordionBox( variableValueControl, {
       titleNode: new Text( variablesString, { font: ACCORDION_BOX_TITLE_FONT, maxWidth: leftSideBoxWidth * 0.65 } ),
       fill: EESharedConstants.CONTROL_PANEL_BACKGROUND_COLOR,
       contentYMargin: 20,
@@ -191,11 +191,11 @@ define( require => {
     // if both representations are allowed, add the switch for switching between coin and term view
     if ( model.allowedRepresentations === AllowedRepresentations.COINS_AND_VARIABLES ) {
 
-      var coinImageNode = new Image( switchCoinImage, { minWidth: SWITCH_COIN_WIDTH, maxWidth: SWITCH_COIN_WIDTH } );
+      const coinImageNode = new Image( switchCoinImage, { minWidth: SWITCH_COIN_WIDTH, maxWidth: SWITCH_COIN_WIDTH } );
       coinImageNode.touchArea = coinImageNode.localBounds.dilatedXY( 15, 20 ).shiftedX( -10 );
 
       // enclose the variable text in a node so that its vertical position can be accurately set
-      var variableIconNode = new Node( {
+      const variableIconNode = new Node( {
         children: [
           new VStrut( coinImageNode.bounds.height ),
           new Text( 'x', {
@@ -224,18 +224,18 @@ define( require => {
       ) );
     }
 
-    var collectionDisplayWidth = coinTermCreatorSetID === CoinTermCreatorSetID.EXPLORE ?
+    const collectionDisplayWidth = coinTermCreatorSetID === CoinTermCreatorSetID.EXPLORE ?
                                  WIDE_COLLECTION_DISPLAY_WIDTH :
                                  NARROW_COLLECTION_DISPLAY_WIDTH;
 
     // create the "My Collection" display element
-    var myCollectionDisplay = new CollectionDisplayNode( model, coinTermCreatorBox.coinTermTypeList, {
+    const myCollectionDisplay = new CollectionDisplayNode( model, coinTermCreatorBox.coinTermTypeList, {
       width: collectionDisplayWidth,
       showNegatives: coinTermCreatorBox.negativeTermsPresent
     } );
 
     // add accordion box that will contain the collection display
-    var myCollectionAccordionBox = new AccordionBox( myCollectionDisplay, {
+    const myCollectionAccordionBox = new AccordionBox( myCollectionDisplay, {
       titleNode: new Text( myCollectionString, {
         font: ACCORDION_BOX_TITLE_FONT,
         maxWidth: collectionDisplayWidth * 0.90
@@ -257,10 +257,10 @@ define( require => {
     this.addChild( myCollectionAccordionBox );
 
     // max size of checkbox text, multiplier empirically determined
-    var checkboxTitleMaxWidth = myCollectionAccordionBox.width * 0.8;
+    const checkboxTitleMaxWidth = myCollectionAccordionBox.width * 0.8;
 
     // add the checkbox that controls visibility of coin values
-    var showCoinValuesCheckbox = new Checkbox(
+    const showCoinValuesCheckbox = new Checkbox(
       new Text( coinValuesString, { font: CHECK_BOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
       model.showCoinValuesProperty,
       {
@@ -272,7 +272,7 @@ define( require => {
     this.addChild( showCoinValuesCheckbox );
 
     // add the checkbox that controls visibility of variable values
-    var showVariableValuesCheckbox = new Checkbox(
+    const showVariableValuesCheckbox = new Checkbox(
       new Text( variableValuesString, { font: CHECK_BOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
       model.showVariableValuesProperty,
       {
@@ -290,7 +290,7 @@ define( require => {
     } );
 
     // add the checkbox that controls whether all coefficients (including 1) are shown
-    var showAllCoefficientsCheckbox = new Checkbox(
+    const showAllCoefficientsCheckbox = new Checkbox(
       new Text( allCoefficientsString, { font: CHECK_BOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
       model.showAllCoefficientsProperty,
       {
@@ -316,7 +316,7 @@ define( require => {
     }
 
     // add the 'Reset All' button
-    var resetAllButton = new ResetAllButton( {
+    const resetAllButton = new ResetAllButton( {
       listener: function() {
         model.reset();
         coinTermCreatorBox.reset();

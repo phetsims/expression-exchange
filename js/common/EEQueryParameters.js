@@ -11,7 +11,7 @@ define( require => {
   // modules
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  var EEQueryParameters = QueryStringMachine.getAll( {
+  const EEQueryParameters = QueryStringMachine.getAll( {
 
     // control whether expression width is always adjusted or whether it sometimes remains constant
     adjustExpressionWidth: { type: 'flag' },

@@ -21,9 +21,9 @@ define( require => {
   const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var ICON_SIZE = Screen.MINIMUM_HOME_SCREEN_ICON_SIZE;
-  var BACKGROUND_COLOR = EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR;
-  var TEXT_FONT = new PhetFont( 84 );
+  const ICON_SIZE = Screen.MINIMUM_HOME_SCREEN_ICON_SIZE;
+  const BACKGROUND_COLOR = EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR;
+  const TEXT_FONT = new PhetFont( 84 );
 
   /**
    * @constructor
@@ -34,7 +34,7 @@ define( require => {
     Rectangle.call( this, 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
 
     // add the nodes
-    var coin1 = CoinNodeFactory.createImageNode( CoinTermTypeID.X, ICON_SIZE.height * 0.15, true );
+    const coin1 = CoinNodeFactory.createImageNode( CoinTermTypeID.X, ICON_SIZE.height * 0.15, true );
     coin1.centerX = ICON_SIZE.width * 0.35;
     coin1.centerY = ICON_SIZE.height / 2;
     this.addChild( coin1 );
@@ -45,7 +45,7 @@ define( require => {
       centerY: coin1.centerY
     } ) );
 
-    var coin2 = CoinNodeFactory.createImageNode( CoinTermTypeID.Y, ICON_SIZE.height * 0.15, true );
+    const coin2 = CoinNodeFactory.createImageNode( CoinTermTypeID.Y, ICON_SIZE.height * 0.15, true );
     coin2.centerX = ICON_SIZE.width * 0.75;
     coin2.centerY = ICON_SIZE.height / 2;
     this.addChild( coin2 );

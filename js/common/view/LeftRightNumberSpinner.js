@@ -23,11 +23,11 @@ define( require => {
   const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var READOUT_FONT = new PhetFont( 16 );
-  var VARIABLE_FONT = new MathSymbolFont( 24 );
-  var EQUALS_SIGN_FONT = new PhetFont( 22 ); // because the equals sign in MathSymbolFont looked bad
-  var DEFAULT_MIN_VALUE = -10;
-  var DEFAULT_MAX_VALUE = 10;
+  const READOUT_FONT = new PhetFont( 16 );
+  const VARIABLE_FONT = new MathSymbolFont( 24 );
+  const EQUALS_SIGN_FONT = new PhetFont( 22 ); // because the equals sign in MathSymbolFont looked bad
+  const DEFAULT_MIN_VALUE = -10;
+  const DEFAULT_MAX_VALUE = 10;
 
   /**
    * @param {Property.<number>} variableValueProperty - property that wraps the values that will be manipulated
@@ -44,7 +44,7 @@ define( require => {
     }, options );
 
     // create and add the readout
-    var numberSpinner = new NumberSpinner( variableValueProperty, new Property( new Range( options.minValue, options.maxValue ) ), {
+    const numberSpinner = new NumberSpinner( variableValueProperty, new Property( new Range( options.minValue, options.maxValue ) ), {
       arrowsPosition: 'leftRight',
       font: READOUT_FONT,
       backgroundStroke: 'black',

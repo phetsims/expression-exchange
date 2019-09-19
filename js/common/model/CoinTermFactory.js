@@ -20,8 +20,8 @@ define( require => {
   const Property = require( 'AXON/Property' );
 
   // constants
-  var CONSTANT_ONE_VALUE_PROPERTY = new Property( 1 );
-  var CONSTANT_ONE_TEXT_VALUE_PROPERTY = new Property( '1' );
+  const CONSTANT_ONE_VALUE_PROPERTY = new Property( 1 );
+  const CONSTANT_ONE_TEXT_VALUE_PROPERTY = new Property( '1' );
 
   /**
    * @param {number} xValueProperty
@@ -125,10 +125,10 @@ define( require => {
      */
     createCoinTerm: function( typeID, options ) {
 
-      var valueProperty;
-      var coinRadius;
-      var termText;
-      var termValueTextProperty;
+      let valueProperty;
+      let coinRadius;
+      let termText;
+      let termValueTextProperty;
 
       // set up the various values and properties based on the specified type ID
       switch( typeID ) {

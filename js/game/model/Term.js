@@ -38,7 +38,7 @@ define( require => {
      * @public
      */
     times: function( term ) {
-      var result = new Term( this.coefficient * term.coefficient, null );
+      const result = new Term( this.coefficient * term.coefficient, null );
       if ( this.coinTermTypeID === CoinTermTypeID.CONSTANT ) {
         result.coinTermTypeID = term.coinTermTypeID;
       }

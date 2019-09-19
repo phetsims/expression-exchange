@@ -15,10 +15,10 @@ define( require => {
   const RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
 
   // constants
-  var MARGIN = 3.5;
-  var ICON_SCALE = 0.35;
-  var BLACK_SCISSORS_ICON = createIconNode( 'black' );
-  var YELLOW_SCISSORS_ICON = createIconNode( 'yellow' );
+  const MARGIN = 3.5;
+  const ICON_SCALE = 0.35;
+  const BLACK_SCISSORS_ICON = createIconNode( 'black' );
+  const YELLOW_SCISSORS_ICON = createIconNode( 'yellow' );
 
   /**
    * @constructor
@@ -33,8 +33,8 @@ define( require => {
     // verify options are valid
     assert && assert( options.mode === 'normal' || options.mode === 'inverted', 'invalid mode option' );
 
-    var icon = options.mode === 'normal' ? BLACK_SCISSORS_ICON : YELLOW_SCISSORS_ICON;
-    var iconNode = new Node( { children: [ icon ] } );
+    const icon = options.mode === 'normal' ? BLACK_SCISSORS_ICON : YELLOW_SCISSORS_ICON;
+    const iconNode = new Node( { children: [ icon ] } );
 
     // the following options can't be overridden, and are set here and then passed to the parent type below
     _.extend( options, {

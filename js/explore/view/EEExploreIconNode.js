@@ -21,11 +21,11 @@ define( require => {
   const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var ICON_SIZE = Screen.MINIMUM_HOME_SCREEN_ICON_SIZE;
-  var FONT_SIZE = 84;
-  var NORMAL_FONT = new PhetFont( { size: FONT_SIZE } );
-  var ITALIC_FONT = new MathSymbolFont( FONT_SIZE );
-  var BACKGROUND_COLOR = EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR;
+  const ICON_SIZE = Screen.MINIMUM_HOME_SCREEN_ICON_SIZE;
+  const FONT_SIZE = 84;
+  const NORMAL_FONT = new PhetFont( { size: FONT_SIZE } );
+  const ITALIC_FONT = new MathSymbolFont( FONT_SIZE );
+  const BACKGROUND_COLOR = EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR;
 
   /**
    * @constructor
@@ -36,7 +36,7 @@ define( require => {
     Rectangle.call( this, 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
 
     // add the nodes
-    var equationNode = new Node();
+    const equationNode = new Node();
     equationNode.addChild( new Text( '2', { font: NORMAL_FONT } ) );
     equationNode.addChild( new Text( '(4)', { font: ITALIC_FONT, left: equationNode.width } ) );
     equationNode.addChild( new Text( MathSymbols.PLUS, { font: NORMAL_FONT, left: equationNode.width + 25 } ) );

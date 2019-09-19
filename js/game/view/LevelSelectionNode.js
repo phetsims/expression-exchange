@@ -61,7 +61,7 @@ define( require => {
     );
 
     // title
-    var title = new Text( options.titleString, { font: new PhetFont( 30 ), maxWidth: options.maxTitleWidth } );
+    const title = new Text( options.titleString, { font: new PhetFont( 30 ), maxWidth: options.maxTitleWidth } );
     this.addChild( title );
 
     // add the buttons
@@ -69,8 +69,8 @@ define( require => {
       return function() { startLevelFunction( level ); };
     }
 
-    var buttons = new Array( options.numLevels );
-    for ( var i = 0; i < options.numLevels; i++ ) {
+    const buttons = new Array( options.numLevels );
+    for ( let i = 0; i < options.numLevels; i++ ) {
       buttons[ i ] = new LevelSelectionButton(
         iconNodes[ i ],
         scores[ i ],
@@ -88,22 +88,22 @@ define( require => {
     }
 
     // Reset button.
-    var resetButton = new ResetAllButton( {
+    const resetButton = new ResetAllButton( {
       listener: resetFunction,
       radius: EESharedConstants.RESET_ALL_BUTTON_RADIUS
     } );
     this.addChild( resetButton );
 
     // Layout
-    var numColumns = options.numLevels / options.numButtonRows;
-    var buttonSpacingX = buttons[ 0 ].width * 1.2; // Note: Assumes all buttons are the same size.
-    var buttonSpacingY = buttons[ 0 ].height * 1.2;  // Note: Assumes all buttons are the same size.
-    var initialLayoutBounds = options.layoutBoundsProperty.get();
-    var firstButtonOrigin = new Vector2( initialLayoutBounds.width / 2 - (numColumns - 1) * buttonSpacingX / 2,
+    const numColumns = options.numLevels / options.numButtonRows;
+    const buttonSpacingX = buttons[ 0 ].width * 1.2; // Note: Assumes all buttons are the same size.
+    const buttonSpacingY = buttons[ 0 ].height * 1.2;  // Note: Assumes all buttons are the same size.
+    const initialLayoutBounds = options.layoutBoundsProperty.get();
+    const firstButtonOrigin = new Vector2( initialLayoutBounds.width / 2 - (numColumns - 1) * buttonSpacingX / 2,
       initialLayoutBounds.height * 0.5 - ((options.numButtonRows - 1) * buttonSpacingY) / 2 );
-    for ( var row = 0; row < options.numButtonRows; row++ ) {
-      for ( var col = 0; col < numColumns; col++ ) {
-        var buttonIndex = row * numColumns + col;
+    for ( let row = 0; row < options.numButtonRows; row++ ) {
+      for ( let col = 0; col < numColumns; col++ ) {
+        const buttonIndex = row * numColumns + col;
         buttons[ buttonIndex ].centerX = firstButtonOrigin.x + col * buttonSpacingX;
         buttons[ buttonIndex ].centerY = firstButtonOrigin.y + row * buttonSpacingY;
       }

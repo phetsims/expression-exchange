@@ -25,7 +25,7 @@ define( require => {
   const Vector2 = require( 'DOT/Vector2' );
 
   // constants
-  var STAGGER_OFFSET = 3; // in screen coordinates, empirically determined for optimal look
+  const STAGGER_OFFSET = 3; // in screen coordinates, empirically determined for optimal look
 
   /**
    * @param {ExpressionManipulationModel} expressionManipulationModel - model where coin terms are to be added
@@ -64,7 +64,7 @@ define( require => {
     }, options );
 
     Node.call( this, { cursor: 'pointer' } );
-    var self = this;
+    const self = this;
 
     // @public (read-only) {number} - initial count of the coin term created by this creator node, a.k.a. the coefficient
     this.createdCoinTermInitialCount = options.createdCoinTermInitialCount;
@@ -73,15 +73,15 @@ define( require => {
     this.disposeEmitter = new Emitter(); // @public (read-only)
 
     // add the individual coin term node(s)
-    var coinTermNodes = [];
+    const coinTermNodes = [];
     _.times( options.maxNumberShown, function( index ) {
-      var coinTermNode;
-      var coinTermNodeOptions = {
+      let coinTermNode;
+      const coinTermNodeOptions = {
         addDragHandler: false,
         x: index * STAGGER_OFFSET,
         y: index * STAGGER_OFFSET
       };
-      var dummyCoinTerm = coinTermCreatorFunction( typeID, {
+      const dummyCoinTerm = coinTermCreatorFunction( typeID, {
         initialPosition: Vector2.ZERO,
         initialCount: options.createdCoinTermInitialCount,
         initiallyOnCard: options.onCard
@@ -145,14 +145,14 @@ define( require => {
         // Determine the origin position of the new element based on where the creator node is.  This is done so that
         // the position to which this element will return when it is "put away" will match the position of this creator
         // node.
-        var originPosition = expressionManipulationView.globalToLocalPoint( self.localToGlobalPoint( Vector2.ZERO ) );
+        const originPosition = expressionManipulationView.globalToLocalPoint( self.localToGlobalPoint( Vector2.ZERO ) );
 
         // Determine the initial position where this element should move to after it's created based on the location of
         // the pointer event.
-        var initialPosition = expressionManipulationView.globalToLocalPoint( event.pointer.point );
+        const initialPosition = expressionManipulationView.globalToLocalPoint( event.pointer.point );
 
         // create and add the new coin term to the model, which result in a node being created in the view
-        var createdCoinTerm = coinTermCreatorFunction( typeID, {
+        const createdCoinTerm = coinTermCreatorFunction( typeID, {
           initialPosition: originPosition,
           initialCount: options.createdCoinTermInitialCount,
           decomposable: options.createdCoinTermDecomposable,
@@ -162,7 +162,7 @@ define( require => {
         expressionManipulationModel.addCoinTerm( createdCoinTerm );
 
         // get the view node that should have appeared in the view so that events can be forwarded to its drag handler
-        var createdCoinTermView = expressionManipulationView.getViewForCoinTerm( createdCoinTerm );
+        const createdCoinTermView = expressionManipulationView.getViewForCoinTerm( createdCoinTerm );
         assert && assert( createdCoinTermView, 'unable to find coin term view' );
 
         if ( createdCoinTermView ) {

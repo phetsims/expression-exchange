@@ -20,19 +20,19 @@ define( require => {
   const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var NUMBER_OF_NODES = 60;
-  var FACE_DIAMETER = 50;
-  var COIN_RADIUS = 22;
-  var STAR_OUTER_RADIUS = 20;
-  var STAR_INNER_RADIUS = STAR_OUTER_RADIUS / 2;
-  var VARIABLE_FONT = new MathSymbolFont( 36 );
+  const NUMBER_OF_NODES = 60;
+  const FACE_DIAMETER = 50;
+  const COIN_RADIUS = 22;
+  const STAR_OUTER_RADIUS = 20;
+  const STAR_INNER_RADIUS = STAR_OUTER_RADIUS / 2;
+  const VARIABLE_FONT = new MathSymbolFont( 36 );
 
   /**
    * @constructor
    */
   function EERewardNode() {
 
-    var nodes = [];
+    const nodes = [];
 
     // add nodes that look like smiley faces, stars, and variables
     nodes.push( new FaceNode( FACE_DIAMETER ) );

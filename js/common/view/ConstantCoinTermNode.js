@@ -18,15 +18,15 @@ define( require => {
   const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var VALUE_FONT = new PhetFont( { size: 34 } );
-  var MIN_RELATIVE_BOUNDS_WIDTH = 45; // empirically determined to be similar to variable coin term widths
+  const VALUE_FONT = new PhetFont( { size: 34 } );
+  const MIN_RELATIVE_BOUNDS_WIDTH = 45; // empirically determined to be similar to variable coin term widths
 
   // The following constants control how the pointer areas (mouse and touch) are set up for the textual representation
   // of the coin term.  These are empirically determined such that they are easy for users to grab but the don't
   // protrude from expressions.
-  var POINTER_AREA_X_DILATION_AMOUNT = 15; // in screen coords
-  var POINTER_AREA_Y_DILATION_AMOUNT = 8; // in screen coords, less than X amt to avoid protruding out of expression
-  var POINTER_AREA_DOWN_SHIFT = 3; // in screen coords
+  const POINTER_AREA_X_DILATION_AMOUNT = 15; // in screen coords
+  const POINTER_AREA_Y_DILATION_AMOUNT = 8; // in screen coords, less than X amt to avoid protruding out of expression
+  const POINTER_AREA_DOWN_SHIFT = 3; // in screen coords
 
   /**
    * @param {CoinTerm} constantCoinTerm - model of a coin
@@ -38,7 +38,7 @@ define( require => {
 
     assert && assert( constantCoinTerm.isConstant, 'must use a constant coin term with this node' );
 
-    var self = this;
+    const self = this;
     AbstractCoinTermNode.call( this, constantCoinTerm, options );
 
     // As of this writing, constant coin terms are never used on a screen where a coin is shown.  There is no
@@ -52,18 +52,18 @@ define( require => {
     viewModeProperty.link( handleViewModeChanged );
 
     // add the value text
-    var valueText = new Text( '', { font: VALUE_FONT } );
+    const valueText = new Text( '', { font: VALUE_FONT } );
     this.coinAndTextRootNode.addChild( valueText );
 
     // helper function to take the view bounds information and communicate it to the model
     function updateBoundsInModel() {
 
       // make the bounds relative to (0,0), which is where the center of this node is maintained
-      var relativeVisibleBounds = self.coinAndTextRootNode.visibleLocalBounds;
+      let relativeVisibleBounds = self.coinAndTextRootNode.visibleLocalBounds;
 
       // In order to be consistent with the behavior of the variable coin terms, the bounds need to be a minimum width,
       // see https://github.com/phetsims/expression-exchange/issues/10.
-      var minBoundsWidth = MIN_RELATIVE_BOUNDS_WIDTH * constantCoinTerm.scaleProperty.get();
+      const minBoundsWidth = MIN_RELATIVE_BOUNDS_WIDTH * constantCoinTerm.scaleProperty.get();
       if ( relativeVisibleBounds.width < minBoundsWidth ) {
         relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( minBoundsWidth - relativeVisibleBounds.width ) / 2 );
       }
@@ -75,7 +75,7 @@ define( require => {
     }
 
     // update the representation when model properties that affect it change
-    var updateRepresentationMultilink = Property.multilink(
+    const updateRepresentationMultilink = Property.multilink(
       [
         constantCoinTerm.totalCountProperty,
         constantCoinTerm.showMinusSignWhenNegativeProperty,

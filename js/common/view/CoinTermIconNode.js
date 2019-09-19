@@ -23,11 +23,11 @@ define( require => {
   const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var COIN_VALUE_FONT = new PhetFont( { size: 12, weight: 'bold' } );
-  var VARIABLE_FONT = new MathSymbolFont( 18 );
-  var CONSTANT_FONT = new PhetFont( 18 );
-  var COIN_SCALING_FACTOR = 0.4; // empirically determined to yield coin icons of the desired size
-  var MAX_TERM_WIDTH_PROPORTION = 1.75; // limits how wide text can be relative to coin, empirically determined
+  const COIN_VALUE_FONT = new PhetFont( { size: 12, weight: 'bold' } );
+  const VARIABLE_FONT = new MathSymbolFont( 18 );
+  const CONSTANT_FONT = new PhetFont( 18 );
+  const COIN_SCALING_FACTOR = 0.4; // empirically determined to yield coin icons of the desired size
+  const MAX_TERM_WIDTH_PROPORTION = 1.75; // limits how wide text can be relative to coin, empirically determined
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin
@@ -42,7 +42,7 @@ define( require => {
     Node.call( this );
 
     // add the node that represents the icon
-    var coinIconNode = CoinNodeFactory.createIconNode( coinTerm.typeID, coinTerm.coinRadius * COIN_SCALING_FACTOR );
+    const coinIconNode = CoinNodeFactory.createIconNode( coinTerm.typeID, coinTerm.coinRadius * COIN_SCALING_FACTOR );
     this.addChild( coinIconNode );
 
     // control coin icon visibility
@@ -51,10 +51,10 @@ define( require => {
     } );
 
     // convenience variable for positioning the textual labels created below
-    var coinCenter = coinIconNode.center;
+    const coinCenter = coinIconNode.center;
 
     // add the coin value text
-    var coinValueText = new Text( coinTerm.valueProperty.value, { font: COIN_VALUE_FONT, center: coinCenter } );
+    const coinValueText = new Text( coinTerm.valueProperty.value, { font: COIN_VALUE_FONT, center: coinCenter } );
     this.addChild( coinValueText );
 
     // control the coin value text visibility
@@ -63,10 +63,10 @@ define( require => {
     } );
 
     // determine the max width of the textual components
-    var maxTextWidth = coinIconNode.width * MAX_TERM_WIDTH_PROPORTION;
+    const maxTextWidth = coinIconNode.width * MAX_TERM_WIDTH_PROPORTION;
 
     // add the 'term' text, e.g. xy
-    var termText = new RichText( coinTerm.termText, {
+    const termText = new RichText( coinTerm.termText, {
       font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
       maxWidth: maxTextWidth
     } );
@@ -77,7 +77,7 @@ define( require => {
     this.addChild( termText );
 
     // control the term text visibility
-    var termTextVisibleProperty = new DerivedProperty(
+    const termTextVisibleProperty = new DerivedProperty(
       [ viewModeProperty, showVariableValuesProperty ],
       function( viewMode, showVariableValues ) {
         return ( viewMode === ViewMode.VARIABLES && !showVariableValues );
@@ -86,7 +86,7 @@ define( require => {
     termTextVisibleProperty.linkAttribute( termText, 'visible' );
 
     // Add the text that includes the variable values.  This can change, so it starts off blank.
-    var termWithVariableValuesText = new RichText( ' ', {
+    const termWithVariableValuesText = new RichText( ' ', {
       font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
       maxWidth: maxTextWidth
     } );
@@ -94,8 +94,8 @@ define( require => {
 
     // update the variable text when it changes, which is triggered by changes to the underlying variable values
     coinTerm.termValueTextProperty.link( function() {
-      var termValueText = coinTerm.termValueTextProperty.value;
-      var sign = coinTerm.totalCountProperty.get() > 0 ? '' : MathSymbols.UNARY_MINUS;
+      const termValueText = coinTerm.termValueTextProperty.value;
+      const sign = coinTerm.totalCountProperty.get() > 0 ? '' : MathSymbols.UNARY_MINUS;
       termWithVariableValuesText.text = sign + termValueText;
       termWithVariableValuesText.center = coinCenter;
     } );

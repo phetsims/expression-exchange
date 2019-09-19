@@ -24,14 +24,14 @@ define( require => {
   const Vector2Property = require( 'DOT/Vector2Property' );
 
   // constants
-  var COIN_TERM_FADE_TIME = 0.75; // in seconds
-  var CLOSE_ENOUGH_TO_HOME = 1E-6; // distance at which a coin term is considered to have returned to origin
-  var CARD_PRE_FADE_TIME = 0.25; // time before card starts to fade after user grabs it, in seconds
-  var CARD_FADE_TIME = 0.5; // time for a card to fade out
-  var MAX_ANIMATION_TIME = 1; // max time for an animation to complete
+  const COIN_TERM_FADE_TIME = 0.75; // in seconds
+  const CLOSE_ENOUGH_TO_HOME = 1E-6; // distance at which a coin term is considered to have returned to origin
+  const CARD_PRE_FADE_TIME = 0.25; // time before card starts to fade after user grabs it, in seconds
+  const CARD_FADE_TIME = 0.5; // time for a card to fade out
+  const MAX_ANIMATION_TIME = 1; // max time for an animation to complete
 
   // class var for creating unique IDs
-  var creationCount = 0;
+  let creationCount = 0;
 
   /**
    * @param {Property.<number>} valueProperty - value of the coin term wrapped in a property
@@ -44,7 +44,7 @@ define( require => {
    */
   function CoinTerm( valueProperty, coinRadius, termText, termValueTextProperty, typeID, options ) {
 
-    var self = this;
+    const self = this;
     this.id = 'CT-' + ( ++creationCount ); // @public (read-only) - unique ID useful for debugging
 
     options = _.extend( {
@@ -215,14 +215,14 @@ define( require => {
     step: function( dt ) {
 
       // if there is an animation in progress, step it
-      var animation = this.inProgressAnimationProperty.get();
+      const animation = this.inProgressAnimationProperty.get();
       if ( animation ) {
         animation.timeSoFar += dt;
         if ( animation.timeSoFar < animation.totalDuration ) {
 
           // not there yet - take a step towards the destination
-          var proportionCompleted = animation.timeSoFar / animation.totalDuration;
-          var easingProportion = Easing.CUBIC_IN_OUT.value( proportionCompleted );
+          const proportionCompleted = animation.timeSoFar / animation.totalDuration;
+          const easingProportion = Easing.CUBIC_IN_OUT.value( proportionCompleted );
           this.positionProperty.set(
             animation.startPosition.plus(
               animation.travelVector.withMagnitude( animation.travelVector.magnitude * easingProportion )
@@ -279,7 +279,7 @@ define( require => {
      */
     travelToDestination: function( destination ) {
       this.destinationProperty.set( destination );
-      var currentPosition = this.positionProperty.get();
+      const currentPosition = this.positionProperty.get();
       if ( currentPosition.equals( destination ) ) {
 
         // The coin terms is already at the destination, no animation is required, but emit a notification in case the
@@ -289,7 +289,7 @@ define( require => {
       else {
 
         // calculate the time needed to get to the destination
-        var animationDuration = Math.min(
+        const animationDuration = Math.min(
           this.positionProperty.get().distance( destination ) / EESharedConstants.COIN_TERM_MOVEMENT_SPEED,
           MAX_ANIMATION_TIME
         );
@@ -355,12 +355,12 @@ define( require => {
      */
     absorb: function( coinTermToAbsorb, doPartialCancellation ) {
       assert && assert( this.typeID === coinTermToAbsorb.typeID, 'can\'t combine coin terms of different types' );
-      var self = this;
+      const self = this;
       this.totalCountProperty.value += coinTermToAbsorb.totalCountProperty.value;
 
       if ( doPartialCancellation ) {
         coinTermToAbsorb.composition.forEach( function( minDecomposableValue ) {
-          var index = self.composition.indexOf( -1 * minDecomposableValue );
+          const index = self.composition.indexOf( -1 * minDecomposableValue );
           if ( index > -1 ) {
             // cancel this value from the composition of the receiving coin term
             self.composition.splice( index, 1 );
@@ -384,11 +384,11 @@ define( require => {
      * @public
      */
     extractConstituentCoinTerms: function() {
-      var extractedCoinTerms = [];
+      const extractedCoinTerms = [];
 
       // create a coin term to reflect each one from which this one is composed
-      for ( var i = 1; i < this.composition.length; i++ ) {
-        var extractedCoinTerm = new CoinTerm(
+      for ( let i = 1; i < this.composition.length; i++ ) {
+        const extractedCoinTerm = new CoinTerm(
           this.valueProperty,
           this.coinRadius,
           this.termText,
@@ -443,7 +443,7 @@ define( require => {
      * @public
      */
     getViewBounds: function() {
-      var position = this.positionProperty.get();
+      const position = this.positionProperty.get();
       return this.localViewBoundsProperty.get().shifted( position.x, position.y );
     },
 

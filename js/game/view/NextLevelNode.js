@@ -13,7 +13,7 @@ define( require => {
   const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var FACE_DIAMETER = 150; // empirically determined
+  const FACE_DIAMETER = 150; // empirically determined
 
   // strings
   const nextString = require( 'string!EXPRESSION_EXCHANGE/next' );
@@ -27,10 +27,10 @@ define( require => {
     Node.call( this );
 
     // add the smiley face
-    var faceNode = new FaceNode( FACE_DIAMETER );
+    const faceNode = new FaceNode( FACE_DIAMETER );
     this.addChild( faceNode );
 
-    var button = new RectangularPushButton( {
+    const button = new RectangularPushButton( {
       content: new Text( nextString, { font: new PhetFont( 30 ) } ),
       centerX: faceNode.centerX,
       top: faceNode.bottom + 10,

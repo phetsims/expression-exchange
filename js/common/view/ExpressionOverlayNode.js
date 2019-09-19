@@ -25,8 +25,8 @@ define( require => {
   const Vector2 = require( 'DOT/Vector2' );
 
   // constants
-  var MIN_EXPRESSION_IN_BOUNDS_WIDTH = 70; // in screen coords, min horizontal amount of expression that must stay in bounds
-  var BUTTON_SPACING = 11; // in screen coordinates
+  const MIN_EXPRESSION_IN_BOUNDS_WIDTH = 70; // in screen coords, min horizontal amount of expression that must stay in bounds
+  const BUTTON_SPACING = 11; // in screen coordinates
 
   /**
    * @param {Expression} expression - model of an expression
@@ -36,14 +36,14 @@ define( require => {
   function ExpressionOverlayNode( expression, layoutBounds ) {
 
     Node.call( this, { pickable: true, cursor: 'pointer' } );
-    var self = this;
+    const self = this;
 
     // shape and path for the overlay
-    var expressionShapeNode = new Path( null, { fill: 'transparent' } ); // essentially invisible
+    const expressionShapeNode = new Path( null, { fill: 'transparent' } ); // essentially invisible
     this.addChild( expressionShapeNode );
 
     // update the shape if the height or width change
-    var updateShapeMultilink = Property.multilink(
+    const updateShapeMultilink = Property.multilink(
       [ expression.widthProperty, expression.heightProperty ],
       function() {
         expressionShapeNode.shape = new Shape.rect( 0, 0, expression.widthProperty.get(), expression.heightProperty.get() );
@@ -51,7 +51,7 @@ define( require => {
     );
 
     // update the expression's position as this node moves
-    var translationLinkHandle = expression.upperLeftCornerProperty.linkAttribute( this, 'translation' );
+    const translationLinkHandle = expression.upperLeftCornerProperty.linkAttribute( this, 'translation' );
 
     // become invisible if the expression goes into edit mode so that the user can interact with the coin terms within
     function updateVisibility( inEditMode ) {
@@ -65,22 +65,22 @@ define( require => {
     this.addChild( this.popUpButtonsNode );
 
     // add the button used to break apart the expression
-    var breakApartButton = new BreakApartButton();
+    const breakApartButton = new BreakApartButton();
     this.popUpButtonsNode.addChild( breakApartButton );
 
     // adjust the touch area for the break apart button so that is is easy to touch but doesn't overlap other button
-    var breakApartButtonTouchArea = breakApartButton.localBounds.copy();
+    const breakApartButtonTouchArea = breakApartButton.localBounds.copy();
     breakApartButtonTouchArea.minX = breakApartButtonTouchArea.minX - breakApartButton.width;
     breakApartButtonTouchArea.maxX = breakApartButtonTouchArea.maxX + BUTTON_SPACING * 0.3;
     breakApartButtonTouchArea.minY = breakApartButtonTouchArea.minY - breakApartButton.height;
     breakApartButton.touchArea = breakApartButtonTouchArea;
 
     // add the button used to put the expression into edit mode
-    var editExpressionButton = new EditExpressionButton( { left: breakApartButton.right + BUTTON_SPACING } );
+    const editExpressionButton = new EditExpressionButton( { left: breakApartButton.right + BUTTON_SPACING } );
     this.popUpButtonsNode.addChild( editExpressionButton );
 
     // adjust the touch area for the edit button so that is is easy to touch but doesn't overlap other button
-    var editExpressionButtonTouchArea = editExpressionButton.localBounds.copy();
+    const editExpressionButtonTouchArea = editExpressionButton.localBounds.copy();
     editExpressionButtonTouchArea.minX = editExpressionButtonTouchArea.minX - BUTTON_SPACING * 0.3;
     editExpressionButtonTouchArea.maxX = editExpressionButtonTouchArea.maxX + editExpressionButton.width;
     editExpressionButtonTouchArea.minY = editExpressionButtonTouchArea.minY - editExpressionButton.height;
@@ -121,11 +121,11 @@ define( require => {
     } );
 
     // pre-allocated vectors, used for calculating allowable locations for the expression
-    var unboundedUpperLeftCornerPosition = new Vector2( 0, 0 );
-    var boundedUpperLeftCornerPosition = new Vector2( 0, 0 );
+    const unboundedUpperLeftCornerPosition = new Vector2( 0, 0 );
+    const boundedUpperLeftCornerPosition = new Vector2( 0, 0 );
 
     // add the handler that will allow the expression to be dragged and will hide and show the buttons
-    var dragHandler = new SimpleDragHandler( {
+    const dragHandler = new SimpleDragHandler( {
 
       allowTouchSnag: true,
 
@@ -165,7 +165,7 @@ define( require => {
         }
       }
     } );
-    var dragHandlerAttached = false;
+    let dragHandlerAttached = false;
 
     // Helper function that adds the drag handler when we want this expression to be draggable and removes it when we
     // don't.  This is done instead of setting pickability because we need to prevent interaction with the coin terms
@@ -183,7 +183,7 @@ define( require => {
       }
     }
 
-    var updateDragHandlerAttachmentMultilink = Property.multilink(
+    const updateDragHandlerAttachmentMultilink = Property.multilink(
       [ expression.inProgressAnimationProperty, expression.collectedProperty ],
       updateDragHandlerAttachmentState
     );
@@ -241,7 +241,7 @@ define( require => {
     },
 
     startHideButtonsTimer: function() {
-      var self = this;
+      const self = this;
       this.clearHideButtonsTimer(); // just in case one is already running
       this.hideButtonsTimerCallback = timer.setTimeout( function() {
         self.hidePopUpButtons();

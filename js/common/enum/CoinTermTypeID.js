@@ -10,7 +10,7 @@ define( require => {
   // modules
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  var CoinTermTypeID = {
+  const CoinTermTypeID = {
     X: 'X',
     Y: 'Y',
     Z: 'Z',

@@ -18,12 +18,12 @@ define( require => {
   const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var CARD_CORNER_ROUNDING = 4;
-  var NUMBER_LABEL_FONT = new PhetFont( 26 ); // size empirically determined
-  var CARD_STAGGER_OFFSET = 1.5; // empirically determined, same in x and y directions
-  var ICON_WIDTH = 40;
-  var CARD_ICON_HEIGHT = 40;
-  var COIN_RADIUS = 20; // empirically determined
+  const CARD_CORNER_ROUNDING = 4;
+  const NUMBER_LABEL_FONT = new PhetFont( 26 ); // size empirically determined
+  const CARD_STAGGER_OFFSET = 1.5; // empirically determined, same in x and y directions
+  const ICON_WIDTH = 40;
+  const CARD_ICON_HEIGHT = 40;
+  const COIN_RADIUS = 20; // empirically determined
 
   /**
    * helper function for creating coin-image-based icons
@@ -34,10 +34,10 @@ define( require => {
   function createCoinIcon( coinTermTypeID, value ) {
 
     // create the coin image node
-    var imageNode = CoinNodeFactory.createImageNode( coinTermTypeID, COIN_RADIUS, false );
+    const imageNode = CoinNodeFactory.createImageNode( coinTermTypeID, COIN_RADIUS, false );
 
     // add the label
-    var label = new Text( value, {
+    const label = new Text( value, {
       font: NUMBER_LABEL_FONT,
       centerX: imageNode.width / 2,
       centerY: imageNode.height / 2
@@ -53,10 +53,10 @@ define( require => {
    * @returns {Node}
    */
   function createCardStackIcon( numberOnStack, numberOfAdditionalCards ) {
-    var rootNode = new Node();
-    var cardWidth = ICON_WIDTH - numberOfAdditionalCards * CARD_STAGGER_OFFSET;
-    var cardHeight = CARD_ICON_HEIGHT - numberOfAdditionalCards * CARD_STAGGER_OFFSET;
-    var cards = [];
+    const rootNode = new Node();
+    const cardWidth = ICON_WIDTH - numberOfAdditionalCards * CARD_STAGGER_OFFSET;
+    const cardHeight = CARD_ICON_HEIGHT - numberOfAdditionalCards * CARD_STAGGER_OFFSET;
+    const cards = [];
 
     // create the blank cards
     _.times( numberOfAdditionalCards + 1, function( cardNumber ) {
@@ -88,7 +88,7 @@ define( require => {
    * static factory object used to create nodes that represent coins
    * @public
    */
-  var EEGameLevelIconFactory = {
+  const EEGameLevelIconFactory = {
 
     /**
      * function to create a node for the specified game level
@@ -98,7 +98,7 @@ define( require => {
      */
     createIcon: function( gameLevel ) {
 
-      var icon;
+      let icon;
 
       switch( gameLevel ) {
 

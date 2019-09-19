@@ -20,10 +20,10 @@ define( require => {
   const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var COIN_HALO_COLOR = 'rgba( 255, 255, 0, 0.8 )';
-  var COIN_HALO_EDGE_COLOR = 'rgba( 255, 255, 0, 0 )';
-  var TERM_HALO_COLOR_CENTER = 'yellow';
-  var TERM_HALO_EDGE_COLOR = 'rgba( 255, 255, 0, 0 )';
+  const COIN_HALO_COLOR = 'rgba( 255, 255, 0, 0.8 )';
+  const COIN_HALO_EDGE_COLOR = 'rgba( 255, 255, 0, 0 )';
+  const TERM_HALO_COLOR_CENTER = 'yellow';
+  const TERM_HALO_EDGE_COLOR = 'rgba( 255, 255, 0, 0 )';
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin term
@@ -31,11 +31,11 @@ define( require => {
    * @constructor
    */
   function CoinTermHaloNode( coinTerm, viewModeProperty ) {
-    var self = this;
+    const self = this;
     Node.call( this, { pickable: true, cursor: 'pointer' } );
 
     // add the coin halo
-    var coinHalo = new Circle( coinTerm.coinRadius, {
+    const coinHalo = new Circle( coinTerm.coinRadius, {
       stroke: new RadialGradient( 0, 0, coinTerm.coinRadius, 0, 0, coinTerm.coinRadius * 1.5 ).
       addColorStop( 0, COIN_HALO_COLOR ).
       addColorStop( 1, COIN_HALO_EDGE_COLOR ),
@@ -44,14 +44,14 @@ define( require => {
     this.addChild( coinHalo );
 
     // control coin halo visibility
-    var coinHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
+    const coinHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
       function( viewMode, combineHaloActive ) {
         return ( viewMode === ViewMode.COINS ) && combineHaloActive;
       } );
-    var coinHaloVisibilityObserver = coinHaloVisibleProperty.linkAttribute( coinHalo, 'visible' );
+    const coinHaloVisibilityObserver = coinHaloVisibleProperty.linkAttribute( coinHalo, 'visible' );
 
     // add the term halo
-    var termHalo = new Circle( EESharedConstants.TERM_COMBINE_DISTANCE, {
+    const termHalo = new Circle( EESharedConstants.TERM_COMBINE_DISTANCE, {
       fill: new RadialGradient( 0, 0, 0, 0, 0, EESharedConstants.TERM_COMBINE_DISTANCE ).
       addColorStop( 0, TERM_HALO_COLOR_CENTER ).
       addColorStop( 0.5, TERM_HALO_COLOR_CENTER ).
@@ -60,7 +60,7 @@ define( require => {
     this.addChild( termHalo );
 
     // control term halo visibility
-    var termHaloVisibleMultilink = Property.multilink(
+    const termHaloVisibleMultilink = Property.multilink(
       [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
       function( viewMode, combineHaloActive ) {
         termHalo.visible = viewMode === ViewMode.VARIABLES && combineHaloActive;

@@ -20,10 +20,10 @@ define( require => {
   const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var EXPRESSION_COLLECTION_AREA_X_OFFSET = 750;
-  var EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET = 50;
-  var EXPRESSION_COLLECTION_AREA_Y_SPACING = 60;
-  var NUM_EXPRESSION_COLLECTION_AREAS = 3;
+  const EXPRESSION_COLLECTION_AREA_X_OFFSET = 750;
+  const EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET = 50;
+  const EXPRESSION_COLLECTION_AREA_Y_SPACING = 60;
+  const NUM_EXPRESSION_COLLECTION_AREAS = 3;
 
   /**
    * @param {number} levelNumber
@@ -43,7 +43,7 @@ define( require => {
       simplifyNegativesDefault: true
     } );
 
-    var self = this;
+    const self = this;
 
     this.levelNumber = levelNumber; // @public (read-only) {number}
     this.currentChallengeNumber = 0; // {number} @private
@@ -75,7 +75,7 @@ define( require => {
 
     // helper function to update the score when items are collected or un-collected
     function updateScore() {
-      var score = 0;
+      let score = 0;
       self.collectionAreas.forEach( function( collectionArea ) {
         if ( !collectionArea.isEmpty() ) {
           score++;
@@ -85,14 +85,14 @@ define( require => {
     }
 
     // create a property that indicate whether undo of collection areas should be allowed
-    var undoAllowedProperty = new DerivedProperty( [ this.scoreProperty ], function( score ) {
+    const undoAllowedProperty = new DerivedProperty( [ this.scoreProperty ], function( score ) {
       return score < NUM_EXPRESSION_COLLECTION_AREAS;
     } );
 
     // initialize the collection areas
-    var collectionAreaYPos = EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET;
+    let collectionAreaYPos = EXPRESSION_COLLECTION_AREA_INITIAL_Y_OFFSET;
     _.times( NUM_EXPRESSION_COLLECTION_AREAS, function() {
-      var collectionArea = new EECollectionArea(
+      const collectionArea = new EECollectionArea(
         EXPRESSION_COLLECTION_AREA_X_OFFSET,
         collectionAreaYPos,
         allowedRepresentations === AllowedRepresentations.COINS_ONLY ? ViewMode.COINS : ViewMode.VARIABLES,

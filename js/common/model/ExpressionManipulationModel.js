@@ -27,12 +27,12 @@ define( require => {
   const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var BREAK_APART_SPACING = 10;
-  var RETRIEVED_COIN_TERMS_X_SPACING = 100;
-  var RETRIEVED_COIN_TERMS_Y_SPACING = 60;
-  var RETRIEVED_COIN_TERM_FIRST_POSITION = new Vector2( 250, 50 ); // upper left, doesn't overlap with control panels
-  var NUM_RETRIEVED_COIN_TERM_COLUMNS = 6;
-  var MIN_RETRIEVAL_PLACEMENT_DISTANCE = 30; // empirically determined
+  const BREAK_APART_SPACING = 10;
+  const RETRIEVED_COIN_TERMS_X_SPACING = 100;
+  const RETRIEVED_COIN_TERMS_Y_SPACING = 60;
+  const RETRIEVED_COIN_TERM_FIRST_POSITION = new Vector2( 250, 50 ); // upper left, doesn't overlap with control panels
+  const NUM_RETRIEVED_COIN_TERM_COLUMNS = 6;
+  const MIN_RETRIEVAL_PLACEMENT_DISTANCE = 30; // empirically determined
 
   /**
    * @constructor
@@ -53,7 +53,7 @@ define( require => {
 
     }, options );
 
-    var initialViewMode = options.allowedRepresentations === AllowedRepresentations.VARIABLES_ONLY ?
+    const initialViewMode = options.allowedRepresentations === AllowedRepresentations.VARIABLES_ONLY ?
                           ViewMode.VARIABLES : ViewMode.COINS;
 
     // @public {Property.<ViewMode>}
@@ -78,7 +78,7 @@ define( require => {
     // @public {Property.<boolean>}
     this.simplifyNegativesProperty = new Property( options.simplifyNegativesDefault );
 
-    var self = this;
+    const self = this;
 
     // @public (read-only) {CoinTermFactory} - factory used to create coin terms
     this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
@@ -116,7 +116,7 @@ define( require => {
      * counts if they exist.
      */
     this.coinTermCounts = {};
-    var countObjectsPerCoinTermType = EESharedConstants.MAX_NON_DECOMPOSABLE_AMOUNT * 2 + 1;
+    const countObjectsPerCoinTermType = EESharedConstants.MAX_NON_DECOMPOSABLE_AMOUNT * 2 + 1;
     _.keys( CoinTermTypeID ).forEach( function( coinTermType ) {
       self.coinTermCounts[ coinTermType ] = new Array( countObjectsPerCoinTermType );
       _.times( countObjectsPerCoinTermType, function( index ) {
@@ -144,7 +144,7 @@ define( require => {
     Property.multilink(
       [ this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty, this.coinTerms.lengthProperty ],
       function() {
-        var total = 0;
+        let total = 0;
         self.coinTerms.forEach( function( coinTerm ) {
           total += coinTerm.valueProperty.value * coinTerm.totalCountProperty.get();
         } );
@@ -170,9 +170,9 @@ define( require => {
      */
     step: function( dt ) {
 
-      var self = this;
-      var userControlledCoinTerms;
-      var coinTermsWithHalos = [];
+      const self = this;
+      let userControlledCoinTerms;
+      const coinTermsWithHalos = [];
 
       // step all the coin terms
       this.coinTerms.forEach( function( coinTerm ) { coinTerm.step( dt ); } );
@@ -189,21 +189,21 @@ define( require => {
         } );
 
         // get a list of user controlled expressions, max of one on mouse based systems, any number on touch devices
-        var userControlledExpressions = _.filter( this.expressions.getArray(), function( expression ) {
+        const userControlledExpressions = _.filter( this.expressions.getArray(), function( expression ) {
           return expression.userControlledProperty.get();
         } );
 
-        var collectionAreasWhoseHalosShouldBeActive = [];
+        const collectionAreasWhoseHalosShouldBeActive = [];
 
         // Update hints for expressions and collection areas.
         userControlledExpressions.forEach( function( userControlledExpression ) {
 
-          var expressionIsOverCreatorBox = userControlledExpression.getBounds().intersectsBounds( self.creatorBoxBounds );
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( userControlledExpression );
-          var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( userControlledExpression );
-          var mostOverlappingCoinTerm = self.getFreeCoinTermMostOverlappingWithExpression( userControlledExpression );
-          var expressionOverWhichThisExpressionIsHovering = null;
-          var coinTermOverWhichThisExpressionIsHovering = null;
+          const expressionIsOverCreatorBox = userControlledExpression.getBounds().intersectsBounds( self.creatorBoxBounds );
+          const mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( userControlledExpression );
+          const mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( userControlledExpression );
+          const mostOverlappingCoinTerm = self.getFreeCoinTermMostOverlappingWithExpression( userControlledExpression );
+          let expressionOverWhichThisExpressionIsHovering = null;
+          let coinTermOverWhichThisExpressionIsHovering = null;
 
           if ( expressionIsOverCreatorBox ) {
             // The expression is at least partially over the creator box, which takes precedence over everything else,
@@ -252,15 +252,15 @@ define( require => {
 
         // check each user-controlled coin term to see if it's in a position to combine with an expression or another
         // coin term
-        var neededExpressionHints = [];
+        const neededExpressionHints = [];
         userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
 
-          var coinTermIsOverCreatorBox = userControlledCoinTerm.getViewBounds().intersectsBounds( self.creatorBoxBounds );
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( userControlledCoinTerm );
-          var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( userControlledCoinTerm );
-          var mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( userControlledCoinTerm );
-          var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( userControlledCoinTerm );
-          var expressionOverWhichCoinTermIsHovering = null;
+          const coinTermIsOverCreatorBox = userControlledCoinTerm.getViewBounds().intersectsBounds( self.creatorBoxBounds );
+          const mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( userControlledCoinTerm );
+          const mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( userControlledCoinTerm );
+          const mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( userControlledCoinTerm );
+          const joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( userControlledCoinTerm );
+          let expressionOverWhichCoinTermIsHovering = null;
 
           if ( coinTermIsOverCreatorBox ) {
             // The coin term is over the creator box, which takes precedence over everything else, so don't activate any
@@ -303,7 +303,7 @@ define( require => {
 
           // remove any expression hints that are no longer needed
           this.expressionHints.forEach( function( existingExpressionHint ) {
-            var matchFound = false;
+            let matchFound = false;
             neededExpressionHints.forEach( function( neededExpressionHint ) {
               if ( neededExpressionHint.equals( existingExpressionHint ) ) {
                 matchFound = true;
@@ -316,7 +316,7 @@ define( require => {
 
           // add any needed expression hints that are not yet on the list
           neededExpressionHints.forEach( function( neededExpressionHint ) {
-            var matchFound = false;
+            let matchFound = false;
             self.expressionHints.forEach( function( existingExpressionHint ) {
               if ( existingExpressionHint.equals( neededExpressionHint ) ) {
                 matchFound = true;
@@ -359,7 +359,7 @@ define( require => {
         // check for overlap between coins that can combine
         userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
 
-          var overlappingCoinTerm = self.getOverlappingLikeCoinTermWithinExpression(
+          const overlappingCoinTerm = self.getOverlappingLikeCoinTermWithinExpression(
             userControlledCoinTerm,
             self.expressionBeingEditedProperty.get()
           );
@@ -421,10 +421,10 @@ define( require => {
 
       // Calculate the corresponding index into the data structure - this is necessary in order to support negative
       // minimum decomposition values, e.g. -3X.
-      var countPropertyIndex = minimumDecomposition + EESharedConstants.MAX_NON_DECOMPOSABLE_AMOUNT;
+      const countPropertyIndex = minimumDecomposition + EESharedConstants.MAX_NON_DECOMPOSABLE_AMOUNT;
 
       // get the property or, if specified, create it
-      var coinTermCountProperty = this.coinTermCounts[ coinTermTypeID ][ countPropertyIndex ].countProperty;
+      let coinTermCountProperty = this.coinTermCounts[ coinTermTypeID ][ countPropertyIndex ].countProperty;
       if ( coinTermCountProperty === null && createIfUndefined ) {
 
         // the requested count property does not yet exist - create and add it
@@ -441,7 +441,7 @@ define( require => {
      */
     stopEditingExpression: function() {
 
-      var expressionBeingEdited = this.expressionBeingEditedProperty.get();
+      const expressionBeingEdited = this.expressionBeingEditedProperty.get();
       expressionBeingEdited.inEditModeProperty.set( false );
 
       // Handle the special cases where one or zero coin terms remain after combining terms, which is no longer
@@ -456,7 +456,7 @@ define( require => {
     // @private - update the count properties for the specified coin term type
     updateCoinTermCounts: function( coinTermTypeID ) {
 
-      var self = this;
+      const self = this;
 
       // zero the non-property version of the counts
       this.coinTermCounts[ coinTermTypeID ].forEach( function( countObject ) {
@@ -482,8 +482,8 @@ define( require => {
 
     // @public - remove the specified expression
     removeExpression: function( expression ) {
-      var self = this;
-      var coinTermsToRemove = expression.removeAllCoinTerms();
+      const self = this;
+      const coinTermsToRemove = expression.removeAllCoinTerms();
       coinTermsToRemove.forEach( function( coinTerm ) {
         self.removeCoinTerm( coinTerm, true );
       } );
@@ -504,8 +504,8 @@ define( require => {
      * @private
      */
     getExpressionMostOverlappingWithCoinTerm: function( coinTerm ) {
-      var maxOverlap = 0;
-      var mostOverlappingExpression = null;
+      let maxOverlap = 0;
+      let mostOverlappingExpression = null;
 
       // check each expression against the coin term to see which has max overlap
       this.expressions.forEach( function( expression ) {
@@ -530,8 +530,8 @@ define( require => {
      * @private
      */
     getFreeCoinTermMostOverlappingWithExpression: function( expression ) {
-      var maxOverlap = 0;
-      var mostOverlappingFreeCoinTerm = null;
+      let maxOverlap = 0;
+      let mostOverlappingFreeCoinTerm = null;
 
       this.coinTerms.forEach( function( coinTerm ) {
 
@@ -555,8 +555,8 @@ define( require => {
      * @private
      */
     getExpressionMostOverlappingWithExpression: function( thisExpression ) {
-      var maxOverlap = 0;
-      var mostOverlappingExpression = null;
+      let maxOverlap = 0;
+      let mostOverlappingExpression = null;
 
       // test each other expression for eligibility and overlap
       this.expressions.forEach( function( thatExpression ) {
@@ -579,15 +579,15 @@ define( require => {
      * @private
      */
     getNextOpenRetrievalSpot: function() {
-      var location = new Vector2( 0, 0 );
-      var row = 0;
-      var column = 0;
-      var openLocationFound = false;
+      const location = new Vector2( 0, 0 );
+      let row = 0;
+      let column = 0;
+      let openLocationFound = false;
       while ( !openLocationFound ) {
         location.x = RETRIEVED_COIN_TERM_FIRST_POSITION.x + column * RETRIEVED_COIN_TERMS_X_SPACING;
         location.y = RETRIEVED_COIN_TERM_FIRST_POSITION.y + row * RETRIEVED_COIN_TERMS_Y_SPACING;
-        var closeCoinTerm = false;
-        for ( var i = 0; i < this.coinTerms.length; i++ ) {
+        let closeCoinTerm = false;
+        for ( let i = 0; i < this.coinTerms.length; i++ ) {
           if ( this.coinTerms.get( i ).destinationProperty.get().distance( location ) < MIN_RETRIEVAL_PLACEMENT_DISTANCE ) {
             closeCoinTerm = true;
             break;
@@ -617,17 +617,17 @@ define( require => {
     getOpenExpressionPlacementLocation: function( expression ) {
 
       // variables that controls the search grid, empirically determined
-      var minX = 170;
-      var minY = 30;
-      var xPos = minX;
-      var yPos = minY;
-      var xIncrement = 30;
-      var yIncrement = 30;
+      const minX = 170;
+      const minY = 30;
+      let xPos = minX;
+      let yPos = minY;
+      const xIncrement = 30;
+      const yIncrement = 30;
 
       // variables used in the loop to test if a position is available
-      var position = new Vector2( xPos, minY );
-      var openPositionFound = false;
-      var proposedBounds = new Bounds2( 0, 0, 0, 0 );
+      const position = new Vector2( xPos, minY );
+      let openPositionFound = false;
+      const proposedBounds = new Bounds2( 0, 0, 0, 0 );
 
       // loop, searching for open positions
       while ( this.retrievalBounds.containsPoint( position ) && !openPositionFound ) {
@@ -640,8 +640,8 @@ define( require => {
           yPos + expression.heightProperty.get()
         );
 
-        var overlapFound = false;
-        for ( var i = 0; i < this.expressions.length && !overlapFound; i++ ) {
+        let overlapFound = false;
+        for ( let i = 0; i < this.expressions.length && !overlapFound; i++ ) {
           if ( this.expressions.get( i ).getBounds().intersectsBounds( proposedBounds ) ) {
             overlapFound = true;
           }
@@ -687,8 +687,8 @@ define( require => {
      * @private
      */
     getMostOverlappingCollectionAreaForExpression: function( expression ) {
-      var maxOverlap = 0;
-      var mostOverlappingCollectionArea = null;
+      let maxOverlap = 0;
+      let mostOverlappingCollectionArea = null;
       this.collectionAreas.forEach( function( collectionArea ) {
         if ( expression.getOverlap( collectionArea ) > maxOverlap ) {
           mostOverlappingCollectionArea = collectionArea;
@@ -704,20 +704,20 @@ define( require => {
      * @private
      */
     getMostOverlappingCollectionAreaForCoinTerm: function( coinTerm ) {
-      var maxOverlap = 0;
-      var mostOverlappingCollectionArea = null;
+      let maxOverlap = 0;
+      let mostOverlappingCollectionArea = null;
       this.collectionAreas.forEach( function( collectionArea ) {
-        var coinTermBounds = coinTerm.getViewBounds();
-        var collectionAreaBounds = collectionArea.bounds;
-        var xOverlap = Math.max(
+        const coinTermBounds = coinTerm.getViewBounds();
+        const collectionAreaBounds = collectionArea.bounds;
+        const xOverlap = Math.max(
           0,
           Math.min( coinTermBounds.maxX, collectionAreaBounds.maxX ) - Math.max( coinTermBounds.minX, collectionAreaBounds.minX )
         );
-        var yOverlap = Math.max(
+        const yOverlap = Math.max(
           0,
           Math.min( coinTermBounds.maxY, collectionAreaBounds.maxY ) - Math.max( coinTermBounds.minY, collectionAreaBounds.minY )
         );
-        var totalOverlap = xOverlap * yOverlap;
+        const totalOverlap = xOverlap * yOverlap;
         if ( totalOverlap > maxOverlap ) {
           maxOverlap = totalOverlap;
           mostOverlappingCollectionArea = collectionArea;
@@ -733,7 +733,7 @@ define( require => {
      */
     coinTermAddedListener: function( addedCoinTerm ) {
 
-      var self = this;
+      const self = this;
 
       // Add a listener that will potentially combine this coin term with expressions or other coin terms based on
       // where it is released.
@@ -743,12 +743,12 @@ define( require => {
 
           // Set a bunch of variables related to the current state of this coin term.  It's not really necessary to set
           // them all every time, but it avoids a deeply nested if-else structure.
-          var releasedOverCreatorBox = addedCoinTerm.getViewBounds().intersectsBounds( self.creatorBoxBounds );
-          var expressionBeingEdited = self.expressionBeingEditedProperty.get();
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( addedCoinTerm );
-          var mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
-          var mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( addedCoinTerm );
-          var joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
+          const releasedOverCreatorBox = addedCoinTerm.getViewBounds().intersectsBounds( self.creatorBoxBounds );
+          const expressionBeingEdited = self.expressionBeingEditedProperty.get();
+          const mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( addedCoinTerm );
+          const mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( addedCoinTerm );
+          const mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( addedCoinTerm );
+          const joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
 
           if ( expressionBeingEdited && expressionBeingEdited.coinTerms.contains( addedCoinTerm ) ) {
 
@@ -756,7 +756,7 @@ define( require => {
             // expression or combined with another coin term in the expression.
 
             // determine if the coin term was dropped while overlapping a coin term of the same type
-            var overlappingLikeCoinTerm = self.getOverlappingLikeCoinTermWithinExpression(
+            const overlappingLikeCoinTerm = self.getOverlappingLikeCoinTermWithinExpression(
               addedCoinTerm,
               expressionBeingEdited
             );
@@ -811,7 +811,7 @@ define( require => {
           else if ( joinableFreeCoinTerm ) {
 
             // The coin term was released in a place where it could join another free coin term.
-            var expressionHintToRemove;
+            let expressionHintToRemove;
             self.expressionHints.forEach( function( expressionHint ) {
               if ( expressionHint.containsCoinTerm( addedCoinTerm ) && expressionHint.containsCoinTerm( joinableFreeCoinTerm ) ) {
                 expressionHintToRemove = expressionHint;
@@ -840,9 +840,9 @@ define( require => {
           // bail if the coin term can't be decomposed
           return;
         }
-        var extractedCoinTerms = addedCoinTerm.extractConstituentCoinTerms();
-        var relativeViewBounds = addedCoinTerm.localViewBoundsProperty.get();
-        var pointToDistributeAround = addedCoinTerm.destinationProperty.get();
+        const extractedCoinTerms = addedCoinTerm.extractConstituentCoinTerms();
+        const relativeViewBounds = addedCoinTerm.localViewBoundsProperty.get();
+        let pointToDistributeAround = addedCoinTerm.destinationProperty.get();
 
         // If the total combined coin count was even, shift the distribution point a bit so that the coins end up being
         // distributed around the centerX position.
@@ -862,11 +862,11 @@ define( require => {
         }
 
         // add the extracted coin terms to the model
-        var interCoinTermDistance = relativeViewBounds.width + BREAK_APART_SPACING;
-        var nextLeftX = pointToDistributeAround.x - interCoinTermDistance;
-        var nextRightX = pointToDistributeAround.x + interCoinTermDistance;
+        const interCoinTermDistance = relativeViewBounds.width + BREAK_APART_SPACING;
+        let nextLeftX = pointToDistributeAround.x - interCoinTermDistance;
+        let nextRightX = pointToDistributeAround.x + interCoinTermDistance;
         extractedCoinTerms.forEach( function( extractedCoinTerm, index ) {
-          var destination;
+          let destination;
           self.addCoinTerm( extractedCoinTerm );
           if ( index % 2 === 0 ) {
             destination = new Vector2( nextRightX, pointToDistributeAround.y );
@@ -934,7 +934,7 @@ define( require => {
      * @private
      */
     expressionAddedListener: function( addedExpression ) {
-      var self = this;
+      const self = this;
 
       // add a listener for when the expression is released, which may cause it to be combined with another expression
       function expressionUserControlledListener( userControlled ) {
@@ -943,10 +943,10 @@ define( require => {
 
           // Set a bunch of variables related to the current state of this expression.  It's not really necessary to set
           // them all every time, but it avoids a deeply nested if-else structure.
-          var releasedOverCreatorBox = addedExpression.getBounds().intersectsBounds( self.creatorBoxBounds );
-          var mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( addedExpression );
-          var mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( addedExpression );
-          var numOverlappingCoinTerms = addedExpression.hoveringCoinTerms.length;
+          const releasedOverCreatorBox = addedExpression.getBounds().intersectsBounds( self.creatorBoxBounds );
+          const mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( addedExpression );
+          const mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( addedExpression );
+          const numOverlappingCoinTerms = addedExpression.hoveringCoinTerms.length;
 
           // state checking
           assert && assert(
@@ -973,7 +973,7 @@ define( require => {
             mostOverlappingExpression.removeHoveringExpression( addedExpression );
 
             // send the combining expression to the right side of receiving expression
-            var destinationForCombine = mostOverlappingExpression.getUpperRightCorner();
+            const destinationForCombine = mostOverlappingExpression.getUpperRightCorner();
             addedExpression.travelToDestination( destinationForCombine );
 
             // Listen for when the expression is in place and, when it is, transfer its coin terms to the receiving
@@ -984,7 +984,7 @@ define( require => {
               if ( mostOverlappingExpression.getUpperRightCorner().equals( destinationForCombine ) &&
                    self.expressions.contains( mostOverlappingExpression ) ) {
 
-                var coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
+                const coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
                 self.expressions.remove( addedExpression );
                 coinTermsToBeMoved.forEach( function( coinTerm ) {
                   phet.log && phet.log( 'moving ' + coinTerm.id +
@@ -1007,7 +1007,7 @@ define( require => {
           else if ( numOverlappingCoinTerms === 1 ) {
 
             // the expression was released over a free coin term, so have that free coin term join the expression
-            var coinTermToAddToExpression = addedExpression.hoveringCoinTerms[ 0 ];
+            const coinTermToAddToExpression = addedExpression.hoveringCoinTerms[ 0 ];
             coinTermToAddToExpression.expressionProperty.set( addedExpression ); // prevents interaction during animation
             if ( addedExpression.rightHintActiveProperty.get() ) {
 
@@ -1049,10 +1049,10 @@ define( require => {
       function expressionBreakApartListener() {
 
         // keep a reference to the center for when we spread out the coin terms
-        var expressionCenterX = addedExpression.getBounds().centerX;
+        const expressionCenterX = addedExpression.getBounds().centerX;
 
         // remove the coin terms from the expression and the expression from the model
-        var newlyFreedCoinTerms = addedExpression.removeAllCoinTerms();
+        const newlyFreedCoinTerms = addedExpression.removeAllCoinTerms();
         self.expressions.remove( addedExpression );
 
         // spread the released coin terms out horizontally
@@ -1060,8 +1060,8 @@ define( require => {
         newlyFreedCoinTerms.forEach( function( newlyFreedCoinTerm ) {
 
           // calculate a destination that will cause the coin terms to spread out from the expression center
-          var horizontalDistanceFromExpressionCenter = newlyFreedCoinTerm.positionProperty.get().x - expressionCenterX;
-          var coinTermDestination = new Vector2(
+          const horizontalDistanceFromExpressionCenter = newlyFreedCoinTerm.positionProperty.get().x - expressionCenterX;
+          let coinTermDestination = new Vector2(
             newlyFreedCoinTerm.positionProperty.get().x + horizontalDistanceFromExpressionCenter * 0.15, // spread factor empirically determined
             newlyFreedCoinTerm.positionProperty.get().y
           );
@@ -1140,7 +1140,7 @@ define( require => {
 
       // Make the combine zone wider, but vertically shorter, than the actual bounds, as this gives the most desirable
       // behavior.  The multiplier for the height was empirically determined.
-      var extendedTargetCoinTermBounds = coinTermA.getViewBounds().dilatedXY(
+      const extendedTargetCoinTermBounds = coinTermA.getViewBounds().dilatedXY(
         coinTermA.localViewBoundsProperty.get().width,
         -coinTermA.localViewBoundsProperty.get().height * 0.25
       );
@@ -1155,7 +1155,7 @@ define( require => {
      * @public
      */
     isCoinTermInExpression: function( coinTerm ) {
-      for ( var i = 0; i < this.expressions.length; i++ ) {
+      for ( let i = 0; i < this.expressions.length; i++ ) {
         if ( this.expressions.get( i ).containsCoinTerm( coinTerm ) ) {
           return true;
         }
@@ -1173,8 +1173,8 @@ define( require => {
      */
     checkForJoinableFreeCoinTerm: function( thisCoinTerm ) {
 
-      var joinableFreeCoinTerm = null;
-      var self = this;
+      let joinableFreeCoinTerm = null;
+      const self = this;
 
       this.coinTerms.forEach( function( thatCoinTerm ) {
 
@@ -1206,7 +1206,7 @@ define( require => {
      * @private
      */
     getCoinOverlapAmount: function( coinTermA, coinTermB ) {
-      var distanceBetweenCenters = coinTermA.positionProperty.get().distance( coinTermB.positionProperty.get() );
+      const distanceBetweenCenters = coinTermA.positionProperty.get().distance( coinTermB.positionProperty.get() );
       return Math.max( ( coinTermA.coinRadius + coinTermB.coinRadius ) - distanceBetweenCenters, 0 );
     },
 
@@ -1217,10 +1217,10 @@ define( require => {
      * @returns {number} amount of overlap, which is essentially an area value in view coordinates
      */
     getViewBoundsOverlapAmount: function( coinTermA, coinTermB ) {
-      var overlap = 0;
+      let overlap = 0;
 
       if ( coinTermA.getViewBounds().intersectsBounds( coinTermB.getViewBounds() ) ) {
-        var intersection = coinTermA.getViewBounds().intersection( coinTermB.getViewBounds() );
+        const intersection = coinTermA.getViewBounds().intersection( coinTermB.getViewBounds() );
         overlap = intersection.width * intersection.height;
       }
       return overlap;
@@ -1235,9 +1235,9 @@ define( require => {
      */
     getMostOverlappingLikeCoinTerm: function( thisCoinTerm ) {
       assert && assert( this.coinTerms.contains( thisCoinTerm ), 'overlap requested for something that is not in model' );
-      var self = this;
-      var mostOverlappingLikeCoinTerm = null;
-      var maxOverlapAmount = 0;
+      const self = this;
+      let mostOverlappingLikeCoinTerm = null;
+      let maxOverlapAmount = 0;
 
       this.coinTerms.forEach( function( thatCoinTerm ) {
 
@@ -1245,7 +1245,7 @@ define( require => {
         if ( thatCoinTerm.isEligibleToCombineWith( thisCoinTerm ) && !self.isCoinTermInExpression( thatCoinTerm ) ) {
 
           // calculate and compare the relative overlap amounts, done a bit differently in the different view modes
-          var overlapAmount;
+          let overlapAmount;
           if ( self.viewModeProperty.get() === ViewMode.COINS ) {
             overlapAmount = self.getCoinOverlapAmount( thisCoinTerm, thatCoinTerm );
           }
@@ -1270,12 +1270,12 @@ define( require => {
      */
     getOverlappingLikeCoinTermWithinExpression: function( coinTerm, expression ) {
 
-      var overlappingCoinTerm = null;
+      let overlappingCoinTerm = null;
 
-      for ( var i = 0; i < expression.coinTerms.length; i++ ) {
-        var potentiallyOverlappingCoinTerm = expression.coinTerms.get( i );
+      for ( let i = 0; i < expression.coinTerms.length; i++ ) {
+        const potentiallyOverlappingCoinTerm = expression.coinTerms.get( i );
         if ( potentiallyOverlappingCoinTerm.isEligibleToCombineWith( coinTerm ) ) {
-          var overlapAmount = 0;
+          let overlapAmount = 0;
           if ( this.viewModeProperty.get() === ViewMode.COINS ) {
             overlapAmount = this.getCoinOverlapAmount( coinTerm, potentiallyOverlappingCoinTerm );
           }
@@ -1307,8 +1307,8 @@ define( require => {
      * @public
      */
     isAnythingUserControlled: function() {
-      var somethingIsUserControlled = false;
-      var i;
+      let somethingIsUserControlled = false;
+      let i;
       for ( i = 0; i < this.coinTerms.length && !somethingIsUserControlled; i++ ) {
         if ( this.coinTerms.get( i ).userControlledProperty.get() ) {
           somethingIsUserControlled = true;

@@ -18,17 +18,17 @@ define( require => {
   const Property = require( 'AXON/Property' );
 
   // constants
-  var NUMBER_OF_LEVELS = EEQueryParameters.minimalGameLevels ? 2 : 8;
-  var CHALLENGES_PER_LEVEL = 3;
-  var POINTS_PER_CHALLENGE = 1;
-  var MAX_SCORE_PER_LEVEL = CHALLENGES_PER_LEVEL * POINTS_PER_CHALLENGE;
+  const NUMBER_OF_LEVELS = EEQueryParameters.minimalGameLevels ? 2 : 8;
+  const CHALLENGES_PER_LEVEL = 3;
+  const POINTS_PER_CHALLENGE = 1;
+  const MAX_SCORE_PER_LEVEL = CHALLENGES_PER_LEVEL * POINTS_PER_CHALLENGE;
 
   /**
    * @constructor
    */
   function EEGameModel() {
 
-    var self = this;
+    const self = this;
 
     //------------------------------------------------------------------------
     // properties
@@ -54,7 +54,7 @@ define( require => {
     // @public (read-only) {Array.<EEGameLevel>} - models for each of the game levels
     this.gameLevels = [];
     _.times( NUMBER_OF_LEVELS, function( level ) {
-      var gameLevel = new EEGameLevel(
+      const gameLevel = new EEGameLevel(
         level,
         level < 3 ? AllowedRepresentations.COINS_ONLY : AllowedRepresentations.VARIABLES_ONLY
       );

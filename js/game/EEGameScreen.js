@@ -26,7 +26,7 @@ define( require => {
    */
   function EEGameScreen() {
 
-    var options = {
+    const options = {
       name: gameString,
       backgroundColorProperty: new Property( EESharedConstants.GAME_SCREEN_BACKGROUND_COLOR ),
       homeScreenIcon: new EEGameIconNode()

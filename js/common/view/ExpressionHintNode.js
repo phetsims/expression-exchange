@@ -20,10 +20,10 @@ define( require => {
   const Shape = require( 'KITE/Shape' );
 
   // constants
-  var HINT_BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;
-  var INSET = 10; // in screen coordinates
-  var NUM_ZIG_ZAGS = 5;
-  var ZIG_ZAG_AMPLITUDE = 2;
+  const HINT_BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;
+  const INSET = 10; // in screen coordinates
+  const NUM_ZIG_ZAGS = 5;
+  const ZIG_ZAG_AMPLITUDE = 2;
 
   /**
    * @param {ExpressionHint} expressionHint - model of an expression hint
@@ -31,9 +31,9 @@ define( require => {
    */
   function ExpressionHintNode( expressionHint ) {
     Node.call( this, { pickable: false } );
-    var self = this;
+    const self = this;
 
-    var boundsUpdateMultilink = Property.multilink(
+    const boundsUpdateMultilink = Property.multilink(
       [
         expressionHint.anchorCoinTerm.localViewBoundsProperty,
         expressionHint.movingCoinTerm.localViewBoundsProperty
@@ -41,22 +41,22 @@ define( require => {
       function() {
 
         // convenience vars
-        var anchorCTBounds = expressionHint.anchorCoinTerm.localViewBoundsProperty.get();
-        var movingCTBounds = expressionHint.movingCoinTerm.localViewBoundsProperty.get();
+        const anchorCTBounds = expressionHint.anchorCoinTerm.localViewBoundsProperty.get();
+        const movingCTBounds = expressionHint.movingCoinTerm.localViewBoundsProperty.get();
 
         // clear out any previous hint
         self.removeAllChildren();
 
         // the hint can be on the left or right side of the 'anchor coin', depending upon where the moving coin term is
-        var anchorCoinTermOnLeft = expressionHint.movingCoinTerm.positionProperty.get().x >
+        const anchorCoinTermOnLeft = expressionHint.movingCoinTerm.positionProperty.get().x >
                                    expressionHint.anchorCoinTerm.positionProperty.get().x;
 
         // calculate size and position for each half of the hint
-        var height = Math.max( anchorCTBounds.height, movingCTBounds.height ) + 2 * INSET;
-        var top = expressionHint.anchorCoinTerm.positionProperty.get().y - height / 2;
-        var leftHalfWidth;
-        var rightHalfWidth;
-        var leftHalfCenterX;
+        const height = Math.max( anchorCTBounds.height, movingCTBounds.height ) + 2 * INSET;
+        const top = expressionHint.anchorCoinTerm.positionProperty.get().y - height / 2;
+        let leftHalfWidth;
+        let rightHalfWidth;
+        let leftHalfCenterX;
         if ( anchorCoinTermOnLeft ) {
           leftHalfWidth = anchorCTBounds.width + 2 * INSET;
           rightHalfWidth = movingCTBounds.width + 2 * INSET;
@@ -70,7 +70,7 @@ define( require => {
         }
 
         // draw rectangle on three sides with zig-zag line on remaining side
-        var leftHalfShape = new Shape()
+        const leftHalfShape = new Shape()
           .moveTo( leftHalfWidth, 0 )
           .lineTo( 0, 0 )
           .lineTo( 0, height )
@@ -78,7 +78,7 @@ define( require => {
         leftHalfShape.zigZagTo( leftHalfWidth, 0, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS, false );
         leftHalfShape.close();
 
-        var leftHalf = new Path( leftHalfShape, {
+        const leftHalf = new Path( leftHalfShape, {
           fill: HINT_BACKGROUND_COLOR,
           centerX: leftHalfCenterX,
           top: top
@@ -86,7 +86,7 @@ define( require => {
         self.addChild( leftHalf );
 
         // draw rectangle on three sides with zig-zag line on remaining side
-        var rightHalfShape = new Shape()
+        const rightHalfShape = new Shape()
           .moveTo( 0, 0 )
           .lineTo( rightHalfWidth, 0 )
           .lineTo( rightHalfWidth, height )

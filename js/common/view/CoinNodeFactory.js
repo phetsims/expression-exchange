@@ -20,7 +20,7 @@ define( require => {
   const Vector2 = require( 'DOT/Vector2' );
 
   // images - use mipmaps normally, but use regular images when memory needs to be conserved
-  var useMipmaps = !platform.mobileSafari;
+  const useMipmaps = !platform.mobileSafari;
 
   let coinXBackImage;
   let coinXFrontImage;
@@ -71,11 +71,11 @@ define( require => {
   }
 
   // constants
-  var COIN_EDGE_DARKENING_AMOUNT = 0.25;
-  var COIN_EDGE_STROKE = 0.5;
+  const COIN_EDGE_DARKENING_AMOUNT = 0.25;
+  const COIN_EDGE_STROKE = 0.5;
 
   // maps for coin images (front and back)
-  var coinFrontImages = {};
+  const coinFrontImages = {};
   coinFrontImages[ CoinTermTypeID.X ] = coinXFrontImage;
   coinFrontImages[ CoinTermTypeID.Y ] = coinYFrontImage;
   coinFrontImages[ CoinTermTypeID.Z ] = coinZFrontImage;
@@ -83,7 +83,7 @@ define( require => {
   coinFrontImages[ CoinTermTypeID.X_SQUARED ] = coinXSquaredFrontImage;
   coinFrontImages[ CoinTermTypeID.Y_SQUARED ] = coinYSquaredFrontImage;
   coinFrontImages[ CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED ] = coinXSquaredYSquaredFrontImage;
-  var coinBackImages = {};
+  const coinBackImages = {};
   coinBackImages[ CoinTermTypeID.X ] = coinXBackImage;
   coinBackImages[ CoinTermTypeID.Y ] = coinYBackImage;
   coinBackImages[ CoinTermTypeID.Z ] = coinZBackImage;
@@ -95,7 +95,7 @@ define( require => {
   // convenience function for drawing round coin shapes
   function createRoundCoinIcon( outerCircleRadius, outerCircleColor, innerCircleRadius, innerCircleColor ) {
 
-    var outerCircle = new Circle( outerCircleRadius, {
+    const outerCircle = new Circle( outerCircleRadius, {
       fill: outerCircleColor,
       stroke: outerCircleColor.colorUtilsDarker( COIN_EDGE_DARKENING_AMOUNT ),
       lineWidth: COIN_EDGE_STROKE
@@ -115,8 +115,8 @@ define( require => {
   // convenience function for drawing hexagonal coin shapes
   function createHexagonalCoinIcon( outerMaxRadius, outerCircleColor, innerCircleRadius, innerCircleColor ) {
 
-    var outerShape = new Shape();
-    var vector = Vector2.createPolar( outerMaxRadius, Math.PI * -0.25 ); // angle empirically determined to match coin image
+    const outerShape = new Shape();
+    const vector = Vector2.createPolar( outerMaxRadius, Math.PI * -0.25 ); // angle empirically determined to match coin image
     outerShape.moveToPoint( vector );
 
     _.times( 6, function() {
@@ -125,7 +125,7 @@ define( require => {
     } );
     outerShape.close();
 
-    var hexagonalCoinNode = new Path( outerShape, {
+    const hexagonalCoinNode = new Path( outerShape, {
       fill: outerCircleColor,
       stroke: outerCircleColor.colorUtilsDarker( COIN_EDGE_DARKENING_AMOUNT ),
       lineWidth: COIN_EDGE_STROKE
@@ -146,7 +146,7 @@ define( require => {
    * static factory object used to create nodes that represent coins
    * @public
    */
-  var CoinNodeFactory = {
+  const CoinNodeFactory = {
 
     /**
      * function to create a node that can be used to represents the front of the provided coin type
@@ -158,8 +158,8 @@ define( require => {
      */
     createImageNode: function( coinTermTypeID, radius, isFront ) {
 
-      var imageMap = isFront ? coinFrontImages : coinBackImages;
-      var imageNode = new Image( imageMap[ coinTermTypeID ] );
+      const imageMap = isFront ? coinFrontImages : coinBackImages;
+      const imageNode = new Image( imageMap[ coinTermTypeID ] );
 
       // scale so that the image node has the specified radius
       imageNode.scale( radius * 2 / imageNode.width );
@@ -177,7 +177,7 @@ define( require => {
     createIconNode: function( coinTermTypeID, radius, options ) {
       options = options || {};
 
-      var iconNode = null;
+      let iconNode = null;
 
       switch( coinTermTypeID ) {
 

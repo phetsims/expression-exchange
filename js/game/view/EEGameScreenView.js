@@ -22,7 +22,7 @@ define( require => {
   const ScreenView = require( 'JOIST/ScreenView' );
 
   // constants
-  var SCREEN_CHANGE_TIME = 1; // seconds
+  const SCREEN_CHANGE_TIME = 1; // seconds
 
   /**
    * @param {EEGameLevel} gameModel
@@ -30,29 +30,29 @@ define( require => {
    */
   function EEGameScreenView( gameModel ) {
 
-    var self = this;
+    const self = this;
     ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
 
     // @private {EEGameModel}
     this.gameModel = gameModel;
 
     // create the sound player for the game sounds
-    var gameAudioPlayer = new GameAudioPlayer();
+    const gameAudioPlayer = new GameAudioPlayer();
 
     // consolidate the level scores into an array for the level selection node
-    var levelScoreProperties = [];
+    const levelScoreProperties = [];
     gameModel.gameLevels.forEach( function( gameLevelModel ) {
       levelScoreProperties.push( gameLevelModel.scoreProperty );
     } );
 
     // create the icons used on the level selection buttons
-    var levelSelectionItemNodeIcons = [];
+    const levelSelectionItemNodeIcons = [];
     _.times( EEGameModel.NUMBER_OF_LEVELS, function( level ) {
       levelSelectionItemNodeIcons.push( EEGameLevelIconFactory.createIcon( level ) );
     } );
 
     // add the node that allows the user to choose a game level to play
-    var levelSelectionNode = new LevelSelectionNode(
+    const levelSelectionNode = new LevelSelectionNode(
       function( level ) { gameModel.selectLevel( level ); },
       function() { gameModel.reset(); },
       levelSelectionItemNodeIcons,
@@ -66,12 +66,12 @@ define( require => {
     this.addChild( levelSelectionNode );
 
     // currently displayed level or level selection node
-    var nodeInViewport = levelSelectionNode;
+    let nodeInViewport = levelSelectionNode;
 
     // create the game level views and add them to the main game play node
     this.gameLevelViews = [];
     gameModel.gameLevels.forEach( function( levelModel ) {
-      var gameLevelView = new EEGameLevelView(
+      const gameLevelView = new EEGameLevelView(
         gameModel,
         levelModel,
         self.layoutBounds,
@@ -86,11 +86,11 @@ define( require => {
     // hook up the animations for moving between level selection and game play
     gameModel.currentLevelProperty.lazyLink( function( newLevel, oldLevel ) {
 
-      var slideDistance = self.visibleBoundsProperty.get().width;
-      var incomingViewNode = newLevel === null ? levelSelectionNode : self.gameLevelViews[ newLevel.levelNumber ];
-      var outgoingViewNode = oldLevel === null ? levelSelectionNode : self.gameLevelViews[ oldLevel.levelNumber ];
-      var outgoingNodeDestinationX;
-      var incomingNodeStartX;
+      const slideDistance = self.visibleBoundsProperty.get().width;
+      const incomingViewNode = newLevel === null ? levelSelectionNode : self.gameLevelViews[ newLevel.levelNumber ];
+      const outgoingViewNode = oldLevel === null ? levelSelectionNode : self.gameLevelViews[ oldLevel.levelNumber ];
+      let outgoingNodeDestinationX;
+      let incomingNodeStartX;
 
       // prevent interaction during animation
       incomingViewNode.pickable = false;
@@ -111,7 +111,7 @@ define( require => {
       }
 
       // move out the old node
-      var moveOutAnimation = new Animation( {
+      const moveOutAnimation = new Animation( {
         duration: SCREEN_CHANGE_TIME,
         easing: Easing.CUBIC_IN_OUT,
         setValue: function( newXPosition ) {
@@ -129,7 +129,7 @@ define( require => {
       moveOutAnimation.start();
 
       // move in the new node
-      var moveInAnimation = new Animation( {
+      const moveInAnimation = new Animation( {
         duration: SCREEN_CHANGE_TIME,
         easing: Easing.CUBIC_IN_OUT,
         setValue: function( newXPosition ) {
@@ -160,7 +160,7 @@ define( require => {
      * @public
      */
     step: function( dt ) {
-      var currentLevel = this.gameModel.currentLevelProperty.get();
+      const currentLevel = this.gameModel.currentLevelProperty.get();
       if ( currentLevel !== null ) {
         this.gameLevelViews[ currentLevel.levelNumber ].step( dt );
       }

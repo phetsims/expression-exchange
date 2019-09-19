@@ -18,7 +18,7 @@ define( require => {
   const Vector2 = require( 'DOT/Vector2' );
 
   // constants
-  var REJECTED_ITEM_DISTANCE = 20; // empirically determined
+  const REJECTED_ITEM_DISTANCE = 20; // empirically determined
 
   /**
    * @param {number} x
@@ -69,10 +69,10 @@ define( require => {
       assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
 
       // bounds used for positioning of the expression
-      var expressionBounds;
+      let expressionBounds;
 
       // results of the attempt to collect this expression
-      var collected;
+      let collected;
 
       if ( this.isEmpty() && this.expressionDescriptionProperty.get().expressionMatches( expression ) ) {
 
@@ -115,10 +115,10 @@ define( require => {
       assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
 
       // get bounds for positioning of the coin term
-      var coinTermViewBounds = coinTerm.getViewBounds();
+      const coinTermViewBounds = coinTerm.getViewBounds();
 
       // results of the attempt to collect this expression
-      var collected;
+      let collected;
 
       if ( this.isEmpty() && this.expressionDescriptionProperty.get().coinTermMatches( coinTerm ) ) {
 
@@ -154,9 +154,9 @@ define( require => {
      * @public
      */
     ejectCollectedItem: function() {
-      var collectedItem = this.collectedItemProperty.get();
-      var collectedItemBounds;
-      var yDestination;
+      const collectedItem = this.collectedItemProperty.get();
+      let collectedItemBounds;
+      let yDestination;
 
       // the item's collected state must be updated first, since this can sometimes cause its bounds to change
       collectedItem.collectedProperty.set( false );

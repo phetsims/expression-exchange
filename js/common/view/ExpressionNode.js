@@ -26,13 +26,13 @@ define( require => {
   const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;
-  var NUM_ZIG_ZAGS = 5;
-  var ZIG_ZAG_AMPLITUDE = 2; // in screen coordinates, empirically determined
-  var HINT_OFFSET = 3; // in screen coordinates, empirically determined
-  var LEFT_HINT_TRANSLATION = Matrix3.translation( -HINT_OFFSET, 0 );
-  var RIGHT_HINT_TRANSLATION = Matrix3.translation( HINT_OFFSET, 0 );
-  var OPERATOR_FONT = new PhetFont( 32 );
+  const BACKGROUND_COLOR = EESharedConstants.EXPRESSION_BACKGROUND_COLOR;
+  const NUM_ZIG_ZAGS = 5;
+  const ZIG_ZAG_AMPLITUDE = 2; // in screen coordinates, empirically determined
+  const HINT_OFFSET = 3; // in screen coordinates, empirically determined
+  const LEFT_HINT_TRANSLATION = Matrix3.translation( -HINT_OFFSET, 0 );
+  const RIGHT_HINT_TRANSLATION = Matrix3.translation( HINT_OFFSET, 0 );
+  const OPERATOR_FONT = new PhetFont( 32 );
 
   /**
    * @param {Expression} expression - model of an expression
@@ -42,21 +42,21 @@ define( require => {
   function ExpressionNode( expression, simplifyNegativesProperty ) {
 
     Node.call( this, { pickable: false } );
-    var self = this;
+    const self = this;
 
     // shape and path used to define and display the background
-    var backgroundPath = new Path( null, { fill: BACKGROUND_COLOR, lineWidth: 5 } );
+    const backgroundPath = new Path( null, { fill: BACKGROUND_COLOR, lineWidth: 5 } );
     this.addChild( backgroundPath );
 
     // left and right 'hints' that are used to indicate to the user that a coin term can be added
-    var leftHintNode = new Path( null, { fill: BACKGROUND_COLOR } );
+    const leftHintNode = new Path( null, { fill: BACKGROUND_COLOR } );
     this.addChild( leftHintNode );
 
-    var rightHintNode = new Path( null, { fill: BACKGROUND_COLOR } );
+    const rightHintNode = new Path( null, { fill: BACKGROUND_COLOR } );
     this.addChild( rightHintNode );
 
     // layer where the plus and/or minus symbols go
-    var operatorsLayer = new Node();
+    const operatorsLayer = new Node();
     this.addChild( operatorsLayer );
 
     // function to update the background and the plus/minus symbols
@@ -67,15 +67,15 @@ define( require => {
 
       if ( expression.coinTerms.length > 0 ) {
 
-        var coinTermsLeftToRight = expression.coinTerms.getArray().slice().sort( function( ct1, ct2 ) {
+        const coinTermsLeftToRight = expression.coinTerms.getArray().slice().sort( function( ct1, ct2 ) {
           return ct1.destinationProperty.get().x - ct2.destinationProperty.get().x;
         } );
 
-        var backgroundShape = new Shape();
+        const backgroundShape = new Shape();
         backgroundShape.moveTo( 0, 0 );
         backgroundShape.lineTo( expression.widthProperty.get(), 0 );
-        var expressionWidth = expression.widthProperty.get();
-        var expressionHeight = expression.heightProperty.get();
+        const expressionWidth = expression.widthProperty.get();
+        const expressionHeight = expression.heightProperty.get();
 
         // if the hint is active, the edge is zig zagged
         if ( expression.rightHintActiveProperty.get() ) {
@@ -100,7 +100,7 @@ define( require => {
         backgroundPath.shape = backgroundShape;
 
         // add the operators
-        for ( var i = 0; i < coinTermsLeftToRight.length - 1; i++ ) {
+        for ( let i = 0; i < coinTermsLeftToRight.length - 1; i++ ) {
 
           // determine whether to show a plus sign or a minus sign
           var symbolText;
@@ -113,7 +113,7 @@ define( require => {
           }
 
           // add the operator
-          var operator = new Text( symbolText, {
+          const operator = new Text( symbolText, {
             font: OPERATOR_FONT,
             scale: expression.scaleProperty.get(),
             centerX: ( coinTermsLeftToRight[ i ].destinationProperty.get().x +
@@ -141,7 +141,7 @@ define( require => {
     } );
 
     // update the shape when hint states of the expression change
-    var updateBackgroundAndSymbolsMultilink = Property.multilink(
+    const updateBackgroundAndSymbolsMultilink = Property.multilink(
       [ expression.leftHintActiveProperty, expression.rightHintActiveProperty, simplifyNegativesProperty ],
       updateBackgroundAndSymbols
     );
@@ -154,8 +154,8 @@ define( require => {
     expression.upperLeftCornerProperty.link( updatePosition );
 
     // update the visibility of the left and right hints
-    var leftHintHandle = expression.leftHintActiveProperty.linkAttribute( leftHintNode, 'visible' );
-    var rightHintHandle = expression.rightHintActiveProperty.linkAttribute( rightHintNode, 'visible' );
+    const leftHintHandle = expression.leftHintActiveProperty.linkAttribute( leftHintNode, 'visible' );
+    const rightHintHandle = expression.rightHintActiveProperty.linkAttribute( rightHintNode, 'visible' );
 
     // turn the halo on and off based on the associated property
     function activateCombineHint( combineHintActive ) {
@@ -165,10 +165,10 @@ define( require => {
     expression.combineHaloActiveProperty.link( activateCombineHint );
 
     // update the shape of the left hint
-    var leftHintMultilink = Property.multilink(
+    const leftHintMultilink = Property.multilink(
       [ expression.heightProperty, expression.widthProperty, expression.leftHintWidthProperty ],
       function( expressionHeight, expressionWidth, hintWidth ) {
-        var leftHintShape = new Shape()
+        let leftHintShape = new Shape()
           .moveTo( -hintWidth, 0 )
           .lineTo( 0, 0 );
         leftHintShape.zigZagTo( 0, expressionHeight, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS, false );
@@ -181,10 +181,10 @@ define( require => {
     );
 
     // update the shape of the right hint
-    var rightHintMultilink = Property.multilink(
+    const rightHintMultilink = Property.multilink(
       [ expression.heightProperty, expression.widthProperty, expression.rightHintWidthProperty ],
       function( expressionHeight, expressionWidth, hintWidth ) {
-        var rightHintShape = new Shape().moveTo( expressionWidth, 0 );
+        let rightHintShape = new Shape().moveTo( expressionWidth, 0 );
         rightHintShape.zigZagTo( expressionWidth, expressionHeight, ZIG_ZAG_AMPLITUDE, NUM_ZIG_ZAGS, false );
         rightHintShape
           .lineTo( expressionWidth + hintWidth, expressionHeight )

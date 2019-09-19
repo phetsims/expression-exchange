@@ -11,7 +11,7 @@ define( require => {
   // modules
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
 
-  var AllowedRepresentations = {
+  const AllowedRepresentations = {
     COINS_ONLY: 'COINS_ONLY',
     VARIABLES_ONLY: 'VARIABLES_ONLY',
     COINS_AND_VARIABLES: 'COINS_AND_VARIABLES'

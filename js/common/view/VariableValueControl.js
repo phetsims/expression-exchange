@@ -28,12 +28,12 @@ define( require => {
     }, options );
 
     // convenience vars to make the code below more readable
-    var xValueProperty = options.xTermValueProperty;
-    var yValueProperty = options.yTermValueProperty;
-    var zValueProperty = options.zTermValueProperty;
+    const xValueProperty = options.xTermValueProperty;
+    const yValueProperty = options.yTermValueProperty;
+    const zValueProperty = options.zTermValueProperty;
 
     //  button that will be used to restore the default values
-    var restoreDefaultsButton = new ResetButton( {
+    const restoreDefaultsButton = new ResetButton( {
       baseColor: '#f5f5f5',
       arrowColor: 'black',
       radius: 16,
@@ -58,8 +58,8 @@ define( require => {
     zValueProperty && zValueProperty.link( updateRestoreButtonEnabledState );
 
     // create the tweaker controls
-    var controls = [];
-    var tweakerOptions = { minValue: options.minValue, maxValue: options.maxValue };
+    const controls = [];
+    const tweakerOptions = { minValue: options.minValue, maxValue: options.maxValue };
     xValueProperty && controls.push( new LeftRightNumberSpinner(
       xValueProperty,
       'x',

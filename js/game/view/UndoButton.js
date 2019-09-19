@@ -17,8 +17,8 @@ define( require => {
   const Shape = require( 'KITE/Shape' );
 
   // constants
-  var MARGIN = 5;
-  var ICON_HEIGHT = 17; // empirically determined, controls size of icon
+  const MARGIN = 5;
+  const ICON_HEIGHT = 17; // empirically determined, controls size of icon
 
   /**
    * @constructor
@@ -37,7 +37,7 @@ define( require => {
     assert && assert( !options.content, 'content should not be specified for this button' );
 
     // create the shape for the undo arrow
-    var undoArrowShape = new Shape()
+    const undoArrowShape = new Shape()
       .moveTo( 0, 0 )
       .lineTo( 0, ICON_HEIGHT )
       .lineTo( ICON_HEIGHT, ICON_HEIGHT )

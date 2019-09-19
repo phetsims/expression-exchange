@@ -64,7 +64,7 @@ define( require => {
     else {
 
       // everything will fit on one page, so use a panel instead of a carousel
-      var coinTermCreatorHBox = new HBox( {
+      const coinTermCreatorHBox = new HBox( {
         children: creatorNodes,
         spacing: options.itemSpacing,
         align: options.align,

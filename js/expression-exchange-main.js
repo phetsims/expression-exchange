@@ -20,7 +20,7 @@ define( require => {
   const expressionExchangeTitleString = require( 'string!EXPRESSION_EXCHANGE/expression-exchange.title' );
 
   // credits
-  var simOptions = {
+  const simOptions = {
     credits: {
       leadDesign: 'Amanda McGarry',
       softwareDevelopment: 'John Blanco',
@@ -33,7 +33,7 @@ define( require => {
 
   // launch the sim
   SimLauncher.launch( function() {
-    var sim = new Sim(
+    const sim = new Sim(
       expressionExchangeTitleString,
       [
         new EEBasicsScreen(),

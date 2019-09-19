@@ -27,20 +27,20 @@ define( require => {
   const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
   // constants
-  var COEFFICIENT_FONT = new PhetFont( { size: 34 } );
-  var COEFFICIENT_X_SPACING = 3; // in screen coords
-  var SUPERSCRIPT_SCALE = 0.65;
-  var VALUE_FONT = new PhetFont( { size: 30 } );
-  var VARIABLE_FONT = new MathSymbolFont( 36 );
-  var COIN_FLIP_TIME = 0.5; // in seconds
-  var MIN_SCALE_FOR_FLIP = 0.05;
+  const COEFFICIENT_FONT = new PhetFont( { size: 34 } );
+  const COEFFICIENT_X_SPACING = 3; // in screen coords
+  const SUPERSCRIPT_SCALE = 0.65;
+  const VALUE_FONT = new PhetFont( { size: 30 } );
+  const VARIABLE_FONT = new MathSymbolFont( 36 );
+  const COIN_FLIP_TIME = 0.5; // in seconds
+  const MIN_SCALE_FOR_FLIP = 0.05;
 
   // The following constants control how the pointer areas (mouse and touch) are set up for the textual representation
   // of the coin term.  These are empirically determined such that they are easy for users to grab but the don't
   // protrude from expressions.
-  var POINTER_AREA_X_DILATION_AMOUNT = 15; // in screen coords
-  var POINTER_AREA_Y_DILATION_AMOUNT = 8; // in screen coords, less than X amt to avoid protruding out of expression
-  var POINTER_AREA_DOWN_SHIFT = 3; // in screen coords
+  const POINTER_AREA_X_DILATION_AMOUNT = 15; // in screen coords
+  const POINTER_AREA_Y_DILATION_AMOUNT = 8; // in screen coords, less than X amt to avoid protruding out of expression
+  const POINTER_AREA_DOWN_SHIFT = 3; // in screen coords
 
   /**
    * @param {CoinTerm} coinTerm - model of a coin
@@ -79,7 +79,7 @@ define( require => {
     this.coinAndTextRootNode.addChild( this.boundsRect );
 
     // @private {Image} - add the images for the front and back of the coin
-    var coinImageNodes = [];
+    const coinImageNodes = [];
     this.coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, true );
     coinImageNodes.push( this.coinFrontImageNode );
     if ( options.supportShowValues ) {
@@ -128,7 +128,7 @@ define( require => {
     this.activeFlipAnimation = null;
 
     // if anything about the coin term's values changes or any of the display mode, the representation needs to be updated
-    var updateRepresentationMultilink = Property.multilink(
+    const updateRepresentationMultilink = Property.multilink(
       [
         viewModeProperty,
         showAllCoefficientsProperty,
@@ -175,16 +175,16 @@ define( require => {
     updateBoundsInModel: function() {
 
       // make the bounds relative to the coin term's position, which corresponds to the center of the coin
-      var relativeVisibleBounds = this.coinAndTextRootNode.visibleLocalBounds;
+      let relativeVisibleBounds = this.coinAndTextRootNode.visibleLocalBounds;
 
       // Expressions are kept the same width whether the view mode is set to coins or variables, but it is possible to
       // override this behavior using a query parameter.  This behavior is being retained in case we ever want to
       // experiment with it in the future.  See https://github.com/phetsims/expression-exchange/issues/10
       if ( !EEQueryParameters.adjustExpressionWidth ) {
 
-        var termWithVariableValuesTextWidth = this.termWithVariableValuesText ? this.termWithVariableValuesText.width : 0;
+        const termWithVariableValuesTextWidth = this.termWithVariableValuesText ? this.termWithVariableValuesText.width : 0;
 
-        var width = Math.max( this.coinImagesNode.width, this.termText.width, termWithVariableValuesTextWidth );
+        let width = Math.max( this.coinImagesNode.width, this.termText.width, termWithVariableValuesTextWidth );
 
         if ( this.coefficientText.visible || Math.abs( this.coinTerm.totalCountProperty.get() ) > 1 ) {
           width += this.coefficientText.width + COEFFICIENT_X_SPACING;
@@ -207,14 +207,14 @@ define( require => {
     updateRepresentation: function( viewMode, showAllCoefficients, showVariableValues ) {
 
       // convenience vars
-      var textBaseline = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET;
-      var scale = this.coinTerm.scaleProperty.get(); // for convenience
+      const textBaseline = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET;
+      const scale = this.coinTerm.scaleProperty.get(); // for convenience
 
       // control front coin image visibility
       this.coinImagesNode.visible = viewMode === ViewMode.COINS;
 
       // adjust the size of the coin term images
-      var desiredCoinImageWidth = this.coinTerm.coinRadius * 2 * scale;
+      const desiredCoinImageWidth = this.coinTerm.coinRadius * 2 * scale;
       if ( Math.abs( this.coinImagesNode.width - desiredCoinImageWidth ) > 1E-4 ) {
         this.coinImagesNode.setScaleMagnitude( 1 );
         this.coinImagesNode.setScaleMagnitude( desiredCoinImageWidth / this.coinImagesNode.width );
@@ -229,7 +229,7 @@ define( require => {
       }
 
       // determine if the coefficient is visible, since this will be used several times below
-      var coefficientVisible = Math.abs( this.coinTerm.totalCountProperty.get() ) !== 1 || showAllCoefficients;
+      const coefficientVisible = Math.abs( this.coinTerm.totalCountProperty.get() ) !== 1 || showAllCoefficients;
 
       // update the term text, which only changes if it switches from positive to negative
       this.termText.setScaleMagnitude( scale );
@@ -250,7 +250,7 @@ define( require => {
       this.termText.visible = viewMode === ViewMode.VARIABLES && !showVariableValues;
 
       // term value text, which shows the variable values and operators such as exponents
-      var termValueText = this.coinTerm.termValueTextProperty.value;
+      let termValueText = this.coinTerm.termValueTextProperty.value;
       if ( this.coinTerm.totalCountProperty.get() === -1 && !showAllCoefficients &&
            this.coinTerm.showMinusSignWhenNegativeProperty.get() ) {
         // prepend a minus sign
@@ -292,7 +292,7 @@ define( require => {
       }
 
       // update the card background
-      var targetCardHeight = viewMode === ViewMode.COINS ?
+      const targetCardHeight = viewMode === ViewMode.COINS ?
                              AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_COIN_MODE :
                              AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_TEXT_MODE;
       this.cardLikeBackground.setRectBounds( this.coinAndTextRootNode.visibleLocalBounds.dilatedXY(
@@ -318,14 +318,14 @@ define( require => {
      */
     updateCoinFlipAnimations: function( showCoinValues ) {
 
-      var self = this;
+      const self = this;
 
       if ( this.viewModeProperty.get() === ViewMode.COINS ) {
         if ( this.activeFlipAnimation ) {
           this.activeFlipAnimation.stop();
         }
 
-        var targetFlipState = showCoinValues ? 1 : 0;
+        const targetFlipState = showCoinValues ? 1 : 0;
 
         if ( self.flipStateProperty.get() !== targetFlipState ) {
 
@@ -363,9 +363,9 @@ define( require => {
 
       // Use the y scale as the 'full scale' value.  This assumes that the two images are the same size, that they are
       // equal in width and height when unscaled, and that the Y dimension is not being scaled.
-      var fullScale = this.coinFrontImageNode.getScaleVector().y;
+      const fullScale = this.coinFrontImageNode.getScaleVector().y;
 
-      var centerX = this.coinTerm.coinRadius;
+      const centerX = this.coinTerm.coinRadius;
 
       // set the width of the front image
       this.coinFrontImageNode.setScaleMagnitude(

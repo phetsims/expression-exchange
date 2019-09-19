@@ -19,9 +19,9 @@ define( require => {
   const Text = require( 'SCENERY/nodes/Text' );
 
   // constants
-  var MATH_FONT = new MathSymbolFont( { size: 21, weight: 'bold' } );
-  var RECTANGLE_BACKGROUND_COLOR = 'rgba( 255, 255, 255, 0.6 )';
-  var RECT_CORNER_RADIUS = 6;
+  const MATH_FONT = new MathSymbolFont( { size: 21, weight: 'bold' } );
+  const RECTANGLE_BACKGROUND_COLOR = 'rgba( 255, 255, 255, 0.6 )';
+  const RECT_CORNER_RADIUS = 6;
 
   /**
    * @constructor
@@ -32,11 +32,11 @@ define( require => {
     Node.call( this );
 
     // add a rectangle with the first portion of the text
-    var firstTextWithBackground = new TextWidthBackground( '+ ' + MathSymbols.UNARY_MINUS + 'x' );
+    const firstTextWithBackground = new TextWidthBackground( '+ ' + MathSymbols.UNARY_MINUS + 'x' );
     this.addChild( firstTextWithBackground );
 
     // add the arrow
-    var arrow = new ArrowNode( 0, 0, 15, 0, {
+    const arrow = new ArrowNode( 0, 0, 15, 0, {
       left: firstTextWithBackground.right + 5,
       centerY: firstTextWithBackground.height / 2,
       stroke: null,
@@ -59,7 +59,7 @@ define( require => {
   function TextWidthBackground( text, options ) {
 
     // create the textual node
-    var textNode = new Text( text, { font: MATH_FONT } );
+    const textNode = new Text( text, { font: MATH_FONT } );
 
     // create the background, which is a rounded rectangle (the width and height multipliers were empirically determined)
     Rectangle.call( this, 0, 0, textNode.width * 1.4, textNode.height * 1.1, {

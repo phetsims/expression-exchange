@@ -32,7 +32,7 @@ define( require => {
    */
   function ExpressionManipulationView( model, visibleBoundsProperty, options ) {
 
-    var self = this;
+    const self = this;
     options = _.extend( {
       coinTermBreakApartButtonMode: 'normal' // passed through to the coin terms
     }, options );
@@ -45,25 +45,25 @@ define( require => {
     } );
 
     // add the node that will act as the layer where the expression backgrounds and expression hints will come and go
-    var expressionLayer = new Node();
+    const expressionLayer = new Node();
     this.addChild( expressionLayer );
 
     // add the node that will act as the layer where the coin term halos will come and go
-    var coinHaloLayer = new Node();
+    const coinHaloLayer = new Node();
     this.addChild( coinHaloLayer );
 
     // add the node that will act as the layer where the coin terms will come and go
-    var coinTermLayer = new Node();
+    const coinTermLayer = new Node();
     this.coinTermLayer = coinTermLayer; // @private, used by a method
     this.addChild( coinTermLayer );
 
     // add the node that will act as the layer where the expression overlays will come and go
-    var expressionOverlayLayer = new Node();
+    const expressionOverlayLayer = new Node();
     this.addChild( expressionOverlayLayer );
 
     // add the buttons for ejecting expressions from the collection area, must be above the expressions in the z-order
     model.collectionAreas.forEach( function( collectionArea ) {
-      var undoButton = new UndoButton( {
+      const undoButton = new UndoButton( {
         listener: function() { collectionArea.ejectCollectedItem(); },
         leftTop: collectionArea.bounds.leftTop
       } );
@@ -79,8 +79,8 @@ define( require => {
     } );
 
     // add the node that will act as the barrier to interaction with other expressions when editing an expression
-    var barrierRectangleBounds = null;
-    var barrierRectanglePath = new Path( null, {
+    let barrierRectangleBounds = null;
+    const barrierRectanglePath = new Path( null, {
       fill: 'rgba( 100, 100, 100, 0.5 )',
       visible: false, // initially invisible, will become visible when editing an expression
       cursor: 'pointer'
@@ -88,7 +88,7 @@ define( require => {
     this.addChild( barrierRectanglePath );
 
     // add a listener to the barrier rectangle that will exit the expression editing mode when clicked upon
-    var barrierRectangleArmedForRemoval = false;
+    let barrierRectangleArmedForRemoval = false;
     barrierRectanglePath.addInputListener( {
 
       down: function() {
@@ -107,9 +107,9 @@ define( require => {
 
     // define a function that will update the shape of the barrier rectangle
     function updateBarrierRectangle() {
-      var barrierRectangleShape = Shape.bounds( barrierRectangleBounds );
+      const barrierRectangleShape = Shape.bounds( barrierRectangleBounds );
       if ( model.expressionBeingEditedProperty.get() ) {
-        var barrierRectangleHoleBounds = model.expressionBeingEditedProperty.get().getBounds();
+        const barrierRectangleHoleBounds = model.expressionBeingEditedProperty.get().getBounds();
         // note - must travel counterclockwise to create a hole
         barrierRectangleShape.moveTo( barrierRectangleHoleBounds.minX, barrierRectangleHoleBounds.minY );
         barrierRectangleShape.lineTo( barrierRectangleHoleBounds.minX, barrierRectangleHoleBounds.maxY );
@@ -129,7 +129,7 @@ define( require => {
     } );
 
     // show the barrier rectangle when an expression is being edited
-    var updateHoleMultilink = null;
+    let updateHoleMultilink = null;
     model.expressionBeingEditedProperty.link( function( currentExpressionBeingEdited, previousExpressionBeingEdited ) {
 
       // if there is an expression being edited, the barrier rectangle should be visible
@@ -162,7 +162,7 @@ define( require => {
     model.coinTerms.addItemAddedListener( function( addedCoinTerm ) {
 
       // add the appropriate representation for the coin term
-      var coinTermNode;
+      let coinTermNode;
       if ( addedCoinTerm.isConstant ) {
         coinTermNode = new ConstantCoinTermNode(
           addedCoinTerm,
@@ -192,7 +192,7 @@ define( require => {
       coinTermLayer.addChild( coinTermNode );
 
       // add the coin halo
-      var coinTermHaloNode = new CoinTermHaloNode( addedCoinTerm, model.viewModeProperty );
+      const coinTermHaloNode = new CoinTermHaloNode( addedCoinTerm, model.viewModeProperty );
       coinHaloLayer.addChild( coinTermHaloNode );
 
       // set up a listener to remove the nodes when the corresponding coin is removed from the model
@@ -210,10 +210,10 @@ define( require => {
     // add and remove expressions and expression overlays as they come and go
     model.expressions.addItemAddedListener( function( addedExpression ) {
 
-      var expressionNode = new ExpressionNode( addedExpression, model.simplifyNegativesProperty );
+      const expressionNode = new ExpressionNode( addedExpression, model.simplifyNegativesProperty );
       expressionLayer.addChild( expressionNode );
 
-      var expressionOverlayNode = new ExpressionOverlayNode( addedExpression, visibleBoundsProperty.get() );
+      const expressionOverlayNode = new ExpressionOverlayNode( addedExpression, visibleBoundsProperty.get() );
       expressionOverlayLayer.addChild( expressionOverlayNode );
 
       // set up a listener to remove these nodes when the corresponding expression is removed from the model
@@ -231,7 +231,7 @@ define( require => {
     // add and remove expression hints as they come and go
     model.expressionHints.addItemAddedListener( function( addedExpressionHint ) {
 
-      var expressionHintNode = new ExpressionHintNode( addedExpressionHint, model.viewModeProperty );
+      const expressionHintNode = new ExpressionHintNode( addedExpressionHint, model.viewModeProperty );
       expressionLayer.addChild( expressionHintNode );
 
       // set up a listener to remove the hint node when the corresponding hint is removed from the model
@@ -256,7 +256,7 @@ define( require => {
      * @public
      */
     getViewForCoinTerm: function( coinTerm ) {
-      var coinTermView = _.find( this.coinTermLayer.children, function( coinTermNode ) {
+      const coinTermView = _.find( this.coinTermLayer.children, function( coinTermNode ) {
         return coinTermNode.coinTerm === coinTerm;
       } );
       return coinTermView;
