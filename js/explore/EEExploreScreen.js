@@ -1,4 +1,4 @@
-// Copyright 2016-2017, University of Colorado Boulder
+// Copyright 2016-2019, University of Colorado Boulder
 
 /**
  * The 'Explore' screen in the Expression Exchange simulation. Conforms to the contract specified in joist/Screen.

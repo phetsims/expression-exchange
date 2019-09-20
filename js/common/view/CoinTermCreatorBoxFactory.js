@@ -1,4 +1,4 @@
-// Copyright 2017, University of Colorado Boulder
+// Copyright 2017-2019, University of Colorado Boulder
 
 /**
  * A static factory object that provide methods for creating the 'boxes', which are either a panel or a carousel, that
