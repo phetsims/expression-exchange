@@ -57,8 +57,8 @@ define( require => {
   const ACCORDION_BOX_CONTENT_X_MARGIN = 15;
   const ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_X = 15;
   const ACCORDION_BOX_BUTTON_TOUCH_AREA_DILATION_Y = 15;
-  const CHECK_BOX_FONT = new PhetFont( { size: 16 } );
-  const CHECK_BOX_VERTICAL_SPACING = 6;
+  const CHECKBOX_FONT = new PhetFont( { size: 16 } );
+  const CHECKBOX_VERTICAL_SPACING = 6;
   const INSET = 10; // inset from edges of layout bounds, in screen coords
   const FLOATING_PANEL_INSET = 10;
   const SWITCH_COIN_WIDTH = 30; // in view coordinates, empirically determined
@@ -261,7 +261,7 @@ define( require => {
 
     // add the checkbox that controls visibility of coin values
     const showCoinValuesCheckbox = new Checkbox(
-      new Text( coinValuesString, { font: CHECK_BOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
+      new Text( coinValuesString, { font: CHECKBOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
       model.showCoinValuesProperty,
       {
         top: coinTermCreatorBox.top,
@@ -273,7 +273,7 @@ define( require => {
 
     // add the checkbox that controls visibility of variable values
     const showVariableValuesCheckbox = new Checkbox(
-      new Text( variableValuesString, { font: CHECK_BOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
+      new Text( variableValuesString, { font: CHECKBOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
       model.showVariableValuesProperty,
       {
         top: coinTermCreatorBox.top,
@@ -291,10 +291,10 @@ define( require => {
 
     // add the checkbox that controls whether all coefficients (including 1) are shown
     const showAllCoefficientsCheckbox = new Checkbox(
-      new Text( allCoefficientsString, { font: CHECK_BOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
+      new Text( allCoefficientsString, { font: CHECKBOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
       model.showAllCoefficientsProperty,
       {
-        top: showCoinValuesCheckbox.bottom + CHECK_BOX_VERTICAL_SPACING,
+        top: showCoinValuesCheckbox.bottom + CHECKBOX_VERTICAL_SPACING,
         left: myCollectionAccordionBox.left,
         maxWidth: myCollectionAccordionBox.width
       }
@@ -307,7 +307,7 @@ define( require => {
         new ShowSubtractionIcon(),
         model.simplifyNegativesProperty,
         {
-          top: showAllCoefficientsCheckbox.bottom + CHECK_BOX_VERTICAL_SPACING,
+          top: showAllCoefficientsCheckbox.bottom + CHECKBOX_VERTICAL_SPACING,
           left: myCollectionAccordionBox.left,
           maxWidth: myCollectionAccordionBox.width
         }
