@@ -1,5 +1,5 @@
 {
-  "comment": "# expression-exchange 1.1.12 Tue Oct 15 2019 13:38:09 GMT-0600 (Mountain Daylight Time)",
+  "comment": "# expression-exchange 1.1.13-rc.1 Tue Oct 15 2019 18:10:18 GMT-0600 (Mountain Daylight Time)",
   "assert": {
     "sha": "5c3f92048a9c2ffd6df8ede54fd64f1f7a7e4ef2",
     "branch": "HEAD"
@@ -21,7 +21,7 @@
     "branch": "HEAD"
   },
   "expression-exchange": {
-    "sha": "6d2250a1f239e03e4ecb0aae5dd127583d6b278f",
+    "sha": "ed210f5b6d0af976112a40d8a37e8051da9a4ca1",
     "branch": "1.1"
   },
   "joist": {
@@ -34,7 +34,7 @@
   },
   "phet-core": {
     "sha": "ad879daf640f5c1ff2c5284163a45c6faf098afd",
-    "branch": "expression-exchange-1.1"
+    "branch": "HEAD"
   },
   "phetcommon": {
     "sha": "1d0096f9d987661ac3d029d0a61f32c28177f6ca",
