@@ -15,6 +15,7 @@ define( require => {
   const inherit = require( 'PHET_CORE/inherit' );
   const MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
+  const merge = require( 'PHET_CORE/merge' );
   const Node = require( 'SCENERY/nodes/Node' );
   const NumberSpinner = require( 'SUN/NumberSpinner' );
   const PhetFont = require( 'SCENERY_PHET/PhetFont' );
@@ -38,7 +39,7 @@ define( require => {
   function LeftRightNumberSpinner( variableValueProperty, variableString, options ) {
     Node.call( this );
 
-    options = _.extend( {
+    options = merge( {
       minValue: DEFAULT_MIN_VALUE,
       maxValue: DEFAULT_MAX_VALUE
     }, options );

@@ -14,6 +14,7 @@ define( require => {
   const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   const inherit = require( 'PHET_CORE/inherit' );
+  const merge = require( 'PHET_CORE/merge' );
   const MovableDragHandler = require( 'SCENERY_PHET/input/MovableDragHandler' );
   const Node = require( 'SCENERY/nodes/Node' );
   const Property = require( 'AXON/Property' );
@@ -33,7 +34,7 @@ define( require => {
    */
   function AbstractCoinTermNode( coinTerm, options ) {
 
-    options = _.extend( {
+    options = merge( {
       addDragHandler: true,
       dragBounds: Bounds2.EVERYTHING,
       breakApartButtonMode: 'normal' // valid values are 'normal' and 'inverted'

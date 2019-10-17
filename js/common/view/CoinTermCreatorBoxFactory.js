@@ -20,6 +20,7 @@ define( require => {
   const DerivedProperty = require( 'AXON/DerivedProperty' );
   const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+  const merge = require( 'PHET_CORE/merge' );
   const Property = require( 'AXON/Property' );
 
   // constants
@@ -153,7 +154,7 @@ define( require => {
      */
     createExploreScreenCreatorBox: function( creatorSetID, model, view, options ) {
 
-      options = _.extend( {
+      options = merge( {
         itemsPerCarouselPage: creatorSetID === CoinTermCreatorSetID.VARIABLES ? 4 : 3,
         itemSpacing: creatorSetID === CoinTermCreatorSetID.VARIABLES ? 35 : 40
       }, options );
@@ -181,7 +182,7 @@ define( require => {
      * @public
      */
     createGameScreenCreatorBox: function( challengeDescriptor, model, view, options ) {
-      options = _.extend( {
+      options = merge( {
         itemSpacing: 30,
         align: 'top'
       }, options );

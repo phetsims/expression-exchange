@@ -19,6 +19,7 @@ define( require => {
   const Emitter = require( 'AXON/Emitter' );
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   const inherit = require( 'PHET_CORE/inherit' );
+  const merge = require( 'PHET_CORE/merge' );
   const Node = require( 'SCENERY/nodes/Node' );
   const Property = require( 'AXON/Property' );
   const VariableCoinTermNode = require( 'EXPRESSION_EXCHANGE/common/view/VariableCoinTermNode' );
@@ -43,7 +44,7 @@ define( require => {
                                 coinTermCreatorFunction,
                                 options ) {
 
-    options = _.extend( {
+    options = merge( {
 
       dragBounds: Bounds2.EVERYTHING,
 

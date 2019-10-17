@@ -12,6 +12,7 @@ define( require => {
   const Color = require( 'SCENERY/util/Color' );
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   const inherit = require( 'PHET_CORE/inherit' );
+  const merge = require( 'PHET_CORE/merge' );
   const Path = require( 'SCENERY/nodes/Path' );
   const RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
   const Shape = require( 'KITE/Shape' );
@@ -26,7 +27,7 @@ define( require => {
    */
   function UndoButton( options ) {
 
-    options = _.extend( {
+    options = merge( {
       xMargin: MARGIN,
       yMargin: MARGIN,
       baseColor: new Color( 'yellow' ),

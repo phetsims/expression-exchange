@@ -14,6 +14,7 @@ define( require => {
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   const inherit = require( 'PHET_CORE/inherit' );
   const LevelSelectionButton = require( 'VEGAS/LevelSelectionButton' );
+  const merge = require( 'PHET_CORE/merge' );
   const Node = require( 'SCENERY/nodes/Node' );
   const PhetFont = require( 'SCENERY_PHET/PhetFont' );
   const Property = require( 'AXON/Property' );
@@ -39,7 +40,7 @@ define( require => {
 
     Node.call( this );
 
-    options = _.extend( {
+    options = merge( {
 
       // defaults
       numLevels: EEGameModel.NUMBER_OF_LEVELS,

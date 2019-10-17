@@ -17,6 +17,7 @@ define( require => {
   const ExpressionNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionNode' );
   const ExpressionOverlayNode = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionOverlayNode' );
   const inherit = require( 'PHET_CORE/inherit' );
+  const merge = require( 'PHET_CORE/merge' );
   const Node = require( 'SCENERY/nodes/Node' );
   const Path = require( 'SCENERY/nodes/Path' );
   const Property = require( 'AXON/Property' );
@@ -33,7 +34,7 @@ define( require => {
   function ExpressionManipulationView( model, visibleBoundsProperty, options ) {
 
     const self = this;
-    options = _.extend( {
+    options = merge( {
       coinTermBreakApartButtonMode: 'normal' // passed through to the coin terms
     }, options );
 

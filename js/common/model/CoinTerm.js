@@ -19,6 +19,7 @@ define( require => {
   const Emitter = require( 'AXON/Emitter' );
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   const inherit = require( 'PHET_CORE/inherit' );
+  const merge = require( 'PHET_CORE/merge' );
   const Property = require( 'AXON/Property' );
   const Vector2 = require( 'DOT/Vector2' );
   const Vector2Property = require( 'DOT/Vector2Property' );
@@ -47,7 +48,7 @@ define( require => {
     const self = this;
     this.id = 'CT-' + ( ++creationCount ); // @public (read-only) - unique ID useful for debugging
 
-    options = _.extend( {
+    options = merge( {
       initialCount: 1, // number of instances of this coin term initially combined together, can be negative
       initialPosition: Vector2.ZERO,
       initiallyOnCard: false,

@@ -21,6 +21,7 @@ define( require => {
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   const ExpressionHint = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionHint' );
   const inherit = require( 'PHET_CORE/inherit' );
+  const merge = require( 'PHET_CORE/merge' );
   const ObservableArray = require( 'AXON/ObservableArray' );
   const Property = require( 'AXON/Property' );
   const Vector2 = require( 'DOT/Vector2' );
@@ -40,7 +41,7 @@ define( require => {
    */
   function ExpressionManipulationModel( options ) {
 
-    options = _.extend( {
+    options = merge( {
 
       // defines whether to present just coins, just variables, or both to the user
       allowedRepresentations: AllowedRepresentations.COINS_AND_VARIABLES,

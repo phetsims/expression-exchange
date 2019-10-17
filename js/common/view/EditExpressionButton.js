@@ -10,6 +10,7 @@ define( require => {
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   const FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
   const inherit = require( 'PHET_CORE/inherit' );
+  const merge = require( 'PHET_CORE/merge' );
   const Node = require( 'SCENERY/nodes/Node' );
   const RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
 
@@ -21,12 +22,12 @@ define( require => {
    */
   function EditExpressionButton( options ) {
 
-    options = _.extend( {}, options );
+    options = merge( {}, options );
 
     const iconNode = new Node( { children: [ ICON ] } );
 
     // the following options can't be overridden
-    options = _.extend( options, {
+    options = merge( options, {
       content: iconNode,
       xMargin: 3, // empirically determined
       yMargin: 5.5, // empirically determined

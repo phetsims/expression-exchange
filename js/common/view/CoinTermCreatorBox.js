@@ -16,6 +16,7 @@ define( require => {
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   const HBox = require( 'SCENERY/nodes/HBox' );
   const inherit = require( 'PHET_CORE/inherit' );
+  const merge = require( 'PHET_CORE/merge' );
   const Node = require( 'SCENERY/nodes/Node' );
   const Panel = require( 'SUN/Panel' );
 
@@ -28,7 +29,7 @@ define( require => {
 
     Node.call( this );
 
-    options = _.extend( {
+    options = merge( {
       itemsPerCarouselPage: 3,
       itemSpacing: 20, // empirically determined to work for most cases in this sim
       cornerRadius: 4,

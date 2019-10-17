@@ -11,6 +11,7 @@ define( require => {
   const CoinTermIconNode = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermIconNode' );
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   const inherit = require( 'PHET_CORE/inherit' );
+  const merge = require( 'PHET_CORE/merge' );
   const Node = require( 'SCENERY/nodes/Node' );
 
   // constants
@@ -29,7 +30,7 @@ define( require => {
    */
   function CollectionDisplayNode( model, displayList, options ) {
 
-    options = _.extend( {
+    options = merge( {
 
       // width of the panel, adjustable to accommodate different sites of coin terms whose individual widths can vary
       width: DEFAULT_WIDTH,

@@ -18,6 +18,7 @@ define( require => {
   const inherit = require( 'PHET_CORE/inherit' );
   const MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
   const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
+  const merge = require( 'PHET_CORE/merge' );
   const PhetFont = require( 'SCENERY_PHET/PhetFont' );
   const Property = require( 'AXON/Property' );
   const Rectangle = require( 'SCENERY/nodes/Rectangle' );
@@ -58,7 +59,7 @@ define( require => {
                                  showAllCoefficientsProperty,
                                  options ) {
 
-    options = _.extend( {
+    options = merge( {
 
       // this value can be set to false in order to conserve nodes, and therefore memory, if this node will never need
       // to show the value of the coin term

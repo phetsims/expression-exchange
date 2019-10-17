@@ -10,6 +10,7 @@ define( require => {
   const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
   const inherit = require( 'PHET_CORE/inherit' );
   const LeftRightNumberSpinner = require( 'EXPRESSION_EXCHANGE/common/view/LeftRightNumberSpinner' );
+  const merge = require( 'PHET_CORE/merge' );
   const ResetButton = require( 'SCENERY_PHET/buttons/ResetButton' );
   const VBox = require( 'SCENERY/nodes/VBox' );
 
@@ -19,7 +20,7 @@ define( require => {
    */
   function VariableValueControl( options ) {
 
-    options = _.extend( {
+    options = merge( {
       xTermValueProperty: null,
       yTermValueProperty: null,
       zTermValueProperty: null,
