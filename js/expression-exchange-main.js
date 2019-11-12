@@ -27,8 +27,7 @@ define( require => {
       graphicArts: 'Mariah Hermsmeyer',
       team: 'Ariel Paul, Kathy Perkins, David Webb',
       qualityAssurance: 'Steele Dalton, Alex Dornan, Ethan Johnson'
-    },
-    supportsSound: true
+    }
   };
 
   // launch the sim
