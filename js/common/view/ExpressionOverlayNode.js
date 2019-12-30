@@ -21,7 +21,7 @@ define( require => {
   const Shape = require( 'KITE/Shape' );
   const SimpleDragHandler = require( 'SCENERY/input/SimpleDragHandler' );
   const timer = require( 'AXON/timer' );
-  const Util = require( 'DOT/Util' );
+  const Utils = require( 'DOT/Utils' );
   const Vector2 = require( 'DOT/Vector2' );
 
   // constants
@@ -144,12 +144,12 @@ define( require => {
 
         // set the expression position, but bound it so the user doesn't drag it completely out of the usable area
         expression.setPositionAndDestination( new Vector2(
-          Util.clamp(
+          Utils.clamp(
             unboundedUpperLeftCornerPosition.x,
             layoutBounds.minX - expression.widthProperty.get() + MIN_EXPRESSION_IN_BOUNDS_WIDTH,
             layoutBounds.maxX - MIN_EXPRESSION_IN_BOUNDS_WIDTH
           ),
-          Util.clamp(
+          Utils.clamp(
             unboundedUpperLeftCornerPosition.y,
             layoutBounds.minY,
             layoutBounds.maxY - expression.heightProperty.get()
