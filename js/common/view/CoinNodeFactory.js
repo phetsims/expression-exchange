@@ -251,5 +251,4 @@ define( require => {
   expressionExchange.register( 'CoinNodeFactory', CoinNodeFactory );
 
   return CoinNodeFactory;
-
 } );
