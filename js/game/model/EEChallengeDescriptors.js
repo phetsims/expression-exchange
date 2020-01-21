@@ -586,5 +586,4 @@ define( require => {
   expressionExchange.register( 'EEChallengeDescriptors', EEChallengeDescriptors );
 
   return EEChallengeDescriptors;
-
 } );

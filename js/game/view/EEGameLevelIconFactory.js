@@ -146,5 +146,4 @@ define( require => {
   expressionExchange.register( 'EEGameLevelIconFactory', EEGameLevelIconFactory );
 
   return EEGameLevelIconFactory;
-
 } );

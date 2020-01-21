@@ -22,5 +22,4 @@ define( require => {
   expressionExchange.register( 'ViewMode', ViewMode );
 
   return ViewMode;
-
 } );

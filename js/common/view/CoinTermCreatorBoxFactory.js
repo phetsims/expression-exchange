@@ -209,5 +209,4 @@ define( require => {
   expressionExchange.register( 'CoinTermCreatorBoxFactory', CoinTermCreatorBoxFactory );
 
   return CoinTermCreatorBoxFactory;
-
 } );

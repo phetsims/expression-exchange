@@ -23,5 +23,4 @@ define( require => {
   expressionExchange.register( 'AllowedRepresentations', AllowedRepresentations );
 
   return AllowedRepresentations;
-
 } );
