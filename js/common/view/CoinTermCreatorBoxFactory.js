@@ -177,7 +177,7 @@ define( require => {
      * @param {EEChallengeDescriptor} challengeDescriptor
      * @param {ExpressionManipulationModel} model
      * @param {ExpressionManipulationView} view
-     * @param {Object} options
+     * @param {Object} [options]
      * @returns {CoinTermCreatorBox}
      * @public
      */
