@@ -110,5 +110,13 @@
     "projectURL": "http://phet.colorado.edu",
     "license": "contact phethelp@colorado.edu",
     "notes": "created by Mariah Hermsmeyer"
+  },
+  "switch-coin.png": {
+    "text": [
+      "Copyright 20016 University of Colorado Boulder"
+    ],
+    "projectURL": "http://phet.colorado.edu",
+    "license": "contact phethelp@colorado.edu",
+    "notes": "created by Mariah Hermsmeyer"
   }
 }
