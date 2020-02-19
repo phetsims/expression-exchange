@@ -24,6 +24,7 @@ define( require => {
   const merge = require( 'PHET_CORE/merge' );
   const ObservableArray = require( 'AXON/ObservableArray' );
   const Property = require( 'AXON/Property' );
+  const StringProperty = require( 'AXON/StringProperty' );
   const Vector2 = require( 'DOT/Vector2' );
   const ViewMode = require( 'EXPRESSION_EXCHANGE/common/enum/ViewMode' );
 
@@ -58,7 +59,7 @@ define( require => {
                           ViewMode.VARIABLES : ViewMode.COINS;
 
     // @public {Property.<ViewMode>}
-    this.viewModeProperty = new Property( initialViewMode );
+    this.viewModeProperty = new StringProperty( initialViewMode );
 
     // @public {Property.<boolean>}
     this.showCoinValuesProperty = new Property( false );

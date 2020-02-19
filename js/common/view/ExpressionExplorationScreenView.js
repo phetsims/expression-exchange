@@ -215,9 +215,11 @@ define( require => {
         ViewMode.VARIABLES,
         variableIconNode,
         {
-          switchSize: new Dimension2( 40, 20 ),
-          thumbTouchAreaXDilation: 5,
-          thumbTouchAreaYDilation: 5,
+          toggleSwitchOptions: {
+            size: new Dimension2( 40, 20 ),
+            thumbTouchAreaXDilation: 5,
+            thumbTouchAreaYDilation: 5
+          },
           top: coinTermCreatorBox.bottom + 10,
           centerX: coinTermCreatorBox.centerX
         }
