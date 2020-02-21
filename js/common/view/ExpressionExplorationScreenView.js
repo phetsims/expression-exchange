@@ -227,8 +227,8 @@ define( require => {
     }
 
     const collectionDisplayWidth = coinTermCreatorSetID === CoinTermCreatorSetID.EXPLORE ?
-                                 WIDE_COLLECTION_DISPLAY_WIDTH :
-                                 NARROW_COLLECTION_DISPLAY_WIDTH;
+                                   WIDE_COLLECTION_DISPLAY_WIDTH :
+                                   NARROW_COLLECTION_DISPLAY_WIDTH;
 
     // create the "My Collection" display element
     const myCollectionDisplay = new CollectionDisplayNode( model, coinTermCreatorBox.coinTermTypeList, {

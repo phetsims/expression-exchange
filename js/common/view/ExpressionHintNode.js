@@ -49,7 +49,7 @@ define( require => {
 
         // the hint can be on the left or right side of the 'anchor coin', depending upon where the moving coin term is
         const anchorCoinTermOnLeft = expressionHint.movingCoinTerm.positionProperty.get().x >
-                                   expressionHint.anchorCoinTerm.positionProperty.get().x;
+                                     expressionHint.anchorCoinTerm.positionProperty.get().x;
 
         // calculate size and position for each half of the hint
         const height = Math.max( anchorCTBounds.height, movingCTBounds.height ) + 2 * INSET;
@@ -65,7 +65,7 @@ define( require => {
         else { // anchor coin term is on the right
           leftHalfWidth = movingCTBounds.width + 2 * INSET;
           rightHalfWidth = anchorCTBounds.width + 2 * INSET;
-          leftHalfCenterX =                                                                 expressionHint.anchorCoinTerm.positionProperty.get().x + anchorCTBounds.centerX
+          leftHalfCenterX = expressionHint.anchorCoinTerm.positionProperty.get().x + anchorCTBounds.centerX
                             - anchorCTBounds.width / 2 - INSET - movingCTBounds.width / 2 - INSET;
         }
 

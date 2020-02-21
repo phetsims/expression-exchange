@@ -294,8 +294,8 @@ define( require => {
 
       // update the card background
       const targetCardHeight = viewMode === ViewMode.COINS ?
-                             AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_COIN_MODE :
-                             AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_TEXT_MODE;
+                               AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_COIN_MODE :
+                               AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_TEXT_MODE;
       this.cardLikeBackground.setRectBounds( this.coinAndTextRootNode.visibleLocalBounds.dilatedXY(
         AbstractCoinTermNode.BACKGROUND_CARD_X_MARGIN,
         ( targetCardHeight - this.coinAndTextRootNode.visibleLocalBounds.height ) / 2

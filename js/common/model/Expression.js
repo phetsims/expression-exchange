@@ -42,7 +42,7 @@ define( require => {
   function Expression( anchorCoinTerm, floatingCoinTerm, simplifyNegativesProperty ) {
 
     const self = this;
-    this.id = 'EX-' + (++creationCount);
+    this.id = 'EX-' + ( ++creationCount );
 
     //------------------------------------------------------------------------
     // properties
@@ -595,7 +595,7 @@ define( require => {
         // The minus sign is suppressed if subtraction is being shown, the coin term is not user controlled, and the
         // coin term is not the first one in the expression so that subtraction expressions will look correct.
         const showMinusSignWhenNegative = !( self.simplifyNegativesProperty.value && index > 0 ) ||
-                                        residentCoinTerm.userControlledProperty.get();
+                                          residentCoinTerm.userControlledProperty.get();
 
         if ( showMinusSignWhenNegative !== residentCoinTerm.showMinusSignWhenNegativeProperty.get() ) {
           residentCoinTerm.showMinusSignWhenNegativeProperty.set( showMinusSignWhenNegative );

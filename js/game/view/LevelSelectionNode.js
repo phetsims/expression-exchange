@@ -100,8 +100,8 @@ define( require => {
     const buttonSpacingX = buttons[ 0 ].width * 1.2; // Note: Assumes all buttons are the same size.
     const buttonSpacingY = buttons[ 0 ].height * 1.2;  // Note: Assumes all buttons are the same size.
     const initialLayoutBounds = options.layoutBoundsProperty.get();
-    const firstButtonOrigin = new Vector2( initialLayoutBounds.width / 2 - (numColumns - 1) * buttonSpacingX / 2,
-      initialLayoutBounds.height * 0.5 - ((options.numButtonRows - 1) * buttonSpacingY) / 2 );
+    const firstButtonOrigin = new Vector2( initialLayoutBounds.width / 2 - ( numColumns - 1 ) * buttonSpacingX / 2,
+      initialLayoutBounds.height * 0.5 - ( ( options.numButtonRows - 1 ) * buttonSpacingY ) / 2 );
     for ( let row = 0; row < options.numButtonRows; row++ ) {
       for ( let col = 0; col < numColumns; col++ ) {
         const buttonIndex = row * numColumns + col;

@@ -44,11 +44,12 @@ define( require => {
     // As of this writing, constant coin terms are never used on a screen where a coin is shown.  There is no
     // fundamental reason why not, that's just how the design worked out.  This node therefore does not support
     // depicting constant coin terms as coins, so it throws an error if the view mode gets set to "COINS".
-    function handleViewModeChanged( viewMode ){
-      if ( viewMode === ViewMode.COINS ){
+    function handleViewModeChanged( viewMode ) {
+      if ( viewMode === ViewMode.COINS ) {
         throw new Error( 'coin view mode not supported' );
       }
     }
+
     viewModeProperty.link( handleViewModeChanged );
 
     // add the value text
@@ -116,7 +117,7 @@ define( require => {
       }
     );
 
-    this.disposeConstantCoinTermNode = function(){
+    this.disposeConstantCoinTermNode = function() {
       viewModeProperty.unlink( handleViewModeChanged );
       updateRepresentationMultilink.dispose();
     };
@@ -127,7 +128,7 @@ define( require => {
   return inherit( AbstractCoinTermNode, ConstantCoinTermNode, {
 
     // @public
-    dispose: function(){
+    dispose: function() {
       this.disposeConstantCoinTermNode();
       AbstractCoinTermNode.prototype.dispose.call( this );
     }

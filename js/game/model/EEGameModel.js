@@ -95,7 +95,7 @@ define( require => {
        */
       nextLevel: function() {
         this.currentLevelProperty.set(
-          this.gameLevels[ ( this.currentLevelProperty.get().levelNumber + 1  ) % NUMBER_OF_LEVELS ]
+          this.gameLevels[ ( this.currentLevelProperty.get().levelNumber + 1 ) % NUMBER_OF_LEVELS ]
         );
       },
 

@@ -56,7 +56,7 @@ define( require => {
     }, options );
 
     const initialViewMode = options.allowedRepresentations === AllowedRepresentations.VARIABLES_ONLY ?
-                          ViewMode.VARIABLES : ViewMode.COINS;
+                            ViewMode.VARIABLES : ViewMode.COINS;
 
     // @public {Property.<ViewMode>}
     this.viewModeProperty = new StringProperty( initialViewMode );

@@ -36,9 +36,7 @@ define( require => {
 
     // add the coin halo
     const coinHalo = new Circle( coinTerm.coinRadius, {
-      stroke: new RadialGradient( 0, 0, coinTerm.coinRadius, 0, 0, coinTerm.coinRadius * 1.5 ).
-      addColorStop( 0, COIN_HALO_COLOR ).
-      addColorStop( 1, COIN_HALO_EDGE_COLOR ),
+      stroke: new RadialGradient( 0, 0, coinTerm.coinRadius, 0, 0, coinTerm.coinRadius * 1.5 ).addColorStop( 0, COIN_HALO_COLOR ).addColorStop( 1, COIN_HALO_EDGE_COLOR ),
       lineWidth: 16 // empirically determined
     } );
     this.addChild( coinHalo );
@@ -52,10 +50,7 @@ define( require => {
 
     // add the term halo
     const termHalo = new Circle( EESharedConstants.TERM_COMBINE_DISTANCE, {
-      fill: new RadialGradient( 0, 0, 0, 0, 0, EESharedConstants.TERM_COMBINE_DISTANCE ).
-      addColorStop( 0, TERM_HALO_COLOR_CENTER ).
-      addColorStop( 0.5, TERM_HALO_COLOR_CENTER ).
-      addColorStop( 1, TERM_HALO_EDGE_COLOR )
+      fill: new RadialGradient( 0, 0, 0, 0, 0, EESharedConstants.TERM_COMBINE_DISTANCE ).addColorStop( 0, TERM_HALO_COLOR_CENTER ).addColorStop( 0.5, TERM_HALO_COLOR_CENTER ).addColorStop( 1, TERM_HALO_EDGE_COLOR )
     } );
     this.addChild( termHalo );
 
@@ -68,12 +63,13 @@ define( require => {
     );
 
     // move this node as the model representation moves
-    function handlePositionChanged( position ){
+    function handlePositionChanged( position ) {
       self.center = position;
     }
+
     coinTerm.positionProperty.link( handlePositionChanged );
 
-    this.disposeCoinTermHaloNode = function(){
+    this.disposeCoinTermHaloNode = function() {
       coinHaloVisibleProperty.unlinkAttribute( coinHaloVisibilityObserver );
       coinHaloVisibleProperty.dispose();
       termHaloVisibleMultilink.dispose();
@@ -86,7 +82,7 @@ define( require => {
   return inherit( Node, CoinTermHaloNode, {
 
     // @public
-    dispose: function(){
+    dispose: function() {
       this.disposeCoinTermHaloNode();
       Node.prototype.dispose.call( this );
     }
