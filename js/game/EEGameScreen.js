@@ -5,41 +5,38 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const EEGameIconNode = require( 'EXPRESSION_EXCHANGE/game/view/EEGameIconNode' );
-  const EEGameModel = require( 'EXPRESSION_EXCHANGE/game/model/EEGameModel' );
-  const EEGameScreenView = require( 'EXPRESSION_EXCHANGE/game/view/EEGameScreenView' );
-  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  const inherit = require( 'PHET_CORE/inherit' );
-  const Property = require( 'AXON/Property' );
-  const Screen = require( 'JOIST/Screen' );
+import Property from '../../../axon/js/Property.js';
+import Screen from '../../../joist/js/Screen.js';
+import inherit from '../../../phet-core/js/inherit.js';
+import EESharedConstants from '../common/EESharedConstants.js';
+import expressionExchangeStrings from '../expression-exchange-strings.js';
+import expressionExchange from '../expressionExchange.js';
+import EEGameModel from './model/EEGameModel.js';
+import EEGameIconNode from './view/EEGameIconNode.js';
+import EEGameScreenView from './view/EEGameScreenView.js';
 
-  // strings
-  const gameString = require( 'string!EXPRESSION_EXCHANGE/game' );
+const gameString = expressionExchangeStrings.game;
 
-  /**
-   * @constructor
-   */
-  function EEGameScreen() {
+/**
+ * @constructor
+ */
+function EEGameScreen() {
 
-    const options = {
-      name: gameString,
-      backgroundColorProperty: new Property( EESharedConstants.GAME_SCREEN_BACKGROUND_COLOR ),
-      homeScreenIcon: new EEGameIconNode()
-    };
+  const options = {
+    name: gameString,
+    backgroundColorProperty: new Property( EESharedConstants.GAME_SCREEN_BACKGROUND_COLOR ),
+    homeScreenIcon: new EEGameIconNode()
+  };
 
-    Screen.call( this,
-      function() { return new EEGameModel(); },
-      function( model ) { return new EEGameScreenView( model ); },
-      options
-    );
-  }
+  Screen.call( this,
+    function() { return new EEGameModel(); },
+    function( model ) { return new EEGameScreenView( model ); },
+    options
+  );
+}
 
-  expressionExchange.register( 'EEGameScreen', EEGameScreen );
+expressionExchange.register( 'EEGameScreen', EEGameScreen );
 
-  return inherit( Screen, EEGameScreen );
-} );
+inherit( Screen, EEGameScreen );
+export default EEGameScreen;

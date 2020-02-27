@@ -6,64 +6,61 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  const HBox = require( 'SCENERY/nodes/HBox' );
-  const inherit = require( 'PHET_CORE/inherit' );
-  const MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
-  const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
-  const merge = require( 'PHET_CORE/merge' );
-  const Node = require( 'SCENERY/nodes/Node' );
-  const NumberSpinner = require( 'SUN/NumberSpinner' );
-  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  const Property = require( 'AXON/Property' );
-  const Range = require( 'DOT/Range' );
-  const Text = require( 'SCENERY/nodes/Text' );
+import Property from '../../../../axon/js/Property.js';
+import Range from '../../../../dot/js/Range.js';
+import inherit from '../../../../phet-core/js/inherit.js';
+import merge from '../../../../phet-core/js/merge.js';
+import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
+import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
+import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
+import HBox from '../../../../scenery/js/nodes/HBox.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
+import Text from '../../../../scenery/js/nodes/Text.js';
+import NumberSpinner from '../../../../sun/js/NumberSpinner.js';
+import expressionExchange from '../../expressionExchange.js';
 
-  // constants
-  const READOUT_FONT = new PhetFont( 16 );
-  const VARIABLE_FONT = new MathSymbolFont( 24 );
-  const EQUALS_SIGN_FONT = new PhetFont( 22 ); // because the equals sign in MathSymbolFont looked bad
-  const DEFAULT_MIN_VALUE = -10;
-  const DEFAULT_MAX_VALUE = 10;
+// constants
+const READOUT_FONT = new PhetFont( 16 );
+const VARIABLE_FONT = new MathSymbolFont( 24 );
+const EQUALS_SIGN_FONT = new PhetFont( 22 ); // because the equals sign in MathSymbolFont looked bad
+const DEFAULT_MIN_VALUE = -10;
+const DEFAULT_MAX_VALUE = 10;
 
-  /**
-   * @param {Property.<number>} variableValueProperty - property that wraps the values that will be manipulated
-   * @param {string} variableString - the variable text displayed in the control
-   * @param {Object} [options]
-   * @constructor
-   */
-  function LeftRightNumberSpinner( variableValueProperty, variableString, options ) {
-    Node.call( this );
+/**
+ * @param {Property.<number>} variableValueProperty - property that wraps the values that will be manipulated
+ * @param {string} variableString - the variable text displayed in the control
+ * @param {Object} [options]
+ * @constructor
+ */
+function LeftRightNumberSpinner( variableValueProperty, variableString, options ) {
+  Node.call( this );
 
-    options = merge( {
-      minValue: DEFAULT_MIN_VALUE,
-      maxValue: DEFAULT_MAX_VALUE
-    }, options );
+  options = merge( {
+    minValue: DEFAULT_MIN_VALUE,
+    maxValue: DEFAULT_MAX_VALUE
+  }, options );
 
-    // create and add the readout
-    const numberSpinner = new NumberSpinner( variableValueProperty, new Property( new Range( options.minValue, options.maxValue ) ), {
-      arrowsPosition: 'leftRight',
-      font: READOUT_FONT,
-      backgroundStroke: 'black',
-      cornerRadius: 4,
-      valueAlign: 'right'
-    } );
+  // create and add the readout
+  const numberSpinner = new NumberSpinner( variableValueProperty, new Property( new Range( options.minValue, options.maxValue ) ), {
+    arrowsPosition: 'leftRight',
+    font: READOUT_FONT,
+    backgroundStroke: 'black',
+    cornerRadius: 4,
+    valueAlign: 'right'
+  } );
 
-    // create an HBox that will hold the variable, the equals sign, and the number spinner
-    this.addChild( new HBox( {
-      spacing: 6,
-      children: [
-        new Text( variableString, { font: VARIABLE_FONT } ),
-        new Text( MathSymbols.EQUAL_TO, { font: EQUALS_SIGN_FONT } ),
-        numberSpinner ]
-    } ) );
-  }
+  // create an HBox that will hold the variable, the equals sign, and the number spinner
+  this.addChild( new HBox( {
+    spacing: 6,
+    children: [
+      new Text( variableString, { font: VARIABLE_FONT } ),
+      new Text( MathSymbols.EQUAL_TO, { font: EQUALS_SIGN_FONT } ),
+      numberSpinner ]
+  } ) );
+}
 
-  expressionExchange.register( 'LeftRightNumberSpinner', LeftRightNumberSpinner );
+expressionExchange.register( 'LeftRightNumberSpinner', LeftRightNumberSpinner );
 
-  return inherit( Node, LeftRightNumberSpinner );
-} );
+inherit( Node, LeftRightNumberSpinner );
+export default LeftRightNumberSpinner;

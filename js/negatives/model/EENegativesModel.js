@@ -5,29 +5,26 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
-  const CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  const ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
-  const inherit = require( 'PHET_CORE/inherit' );
+import inherit from '../../../../phet-core/js/inherit.js';
+import AllowedRepresentations from '../../common/enum/AllowedRepresentations.js';
+import CoinTermCreatorSetID from '../../common/enum/CoinTermCreatorSetID.js';
+import ExpressionManipulationModel from '../../common/model/ExpressionManipulationModel.js';
+import expressionExchange from '../../expressionExchange.js';
 
-  /**
-   * @constructor
-   */
-  function EENegativesModel() {
+/**
+ * @constructor
+ */
+function EENegativesModel() {
 
-    ExpressionManipulationModel.call( this, {
-      coinTermCollection: CoinTermCreatorSetID.VARIABLES,
-      allowedRepresentations: AllowedRepresentations.VARIABLES_ONLY
-    } );
+  ExpressionManipulationModel.call( this, {
+    coinTermCollection: CoinTermCreatorSetID.VARIABLES,
+    allowedRepresentations: AllowedRepresentations.VARIABLES_ONLY
+  } );
 
-  }
+}
 
-  expressionExchange.register( 'EENegativesModel', EENegativesModel );
+expressionExchange.register( 'EENegativesModel', EENegativesModel );
 
-  return inherit( ExpressionManipulationModel, EENegativesModel );
-} );
+inherit( ExpressionManipulationModel, EENegativesModel );
+export default EENegativesModel;

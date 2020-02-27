@@ -8,199 +8,195 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const CoinTerm = require( 'EXPRESSION_EXCHANGE/common/model/CoinTerm' );
-  const CoinTermTypeID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermTypeID' );
-  const DerivedProperty = require( 'AXON/DerivedProperty' );
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  const inherit = require( 'PHET_CORE/inherit' );
-  const Property = require( 'AXON/Property' );
+import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
+import Property from '../../../../axon/js/Property.js';
+import inherit from '../../../../phet-core/js/inherit.js';
+import expressionExchange from '../../expressionExchange.js';
+import CoinTermTypeID from '../enum/CoinTermTypeID.js';
+import CoinTerm from './CoinTerm.js';
 
-  // constants
-  const CONSTANT_ONE_VALUE_PROPERTY = new Property( 1 );
-  const CONSTANT_ONE_TEXT_VALUE_PROPERTY = new Property( '1' );
+// constants
+const CONSTANT_ONE_VALUE_PROPERTY = new Property( 1 );
+const CONSTANT_ONE_TEXT_VALUE_PROPERTY = new Property( '1' );
+
+/**
+ * @param {number} xValueProperty
+ * @param {number} yValueProperty
+ * @param {number} zValueProperty
+ * @constructor
+ */
+function CoinTermFactory( xValueProperty, yValueProperty, zValueProperty ) {
+
+  // @private - values of the variables
+  this.xValueProperty = xValueProperty;
+  this.yValueProperty = yValueProperty;
+  this.zValueProperty = zValueProperty;
+
+  // @private {Property.<string>} - string representations of the variables
+  this.xValueStringProperty = new DerivedProperty( [ xValueProperty ], function( value ) {
+    return '(' + value.toString() + ')';
+  } );
+  this.yValueStringProperty = new DerivedProperty( [ yValueProperty ], function( value ) {
+    return '(' + value.toString() + ')';
+  } );
+  this.zValueStringProperty = new DerivedProperty( [ zValueProperty ], function( value ) {
+    return '(' + value.toString() + ')';
+  } );
+
+  // @private, value property for x times y
+  this.xTimesYValueProperty = new DerivedProperty(
+    [ this.xValueProperty, this.yValueProperty ],
+    function( xValue, yValue ) {
+      return xValue * yValue;
+    }
+  );
+
+  // @private, the string depicted for x times y when 'variable values' is enabled
+  this.xTimesYValueStringProperty = new DerivedProperty(
+    [ this.xValueProperty, this.yValueProperty ],
+    function( xValue, yValue ) {
+      return '(' + xValue.toString() + ')(' + yValue.toString() + ')';
+    }
+  );
+
+  // @private, value property for x squared
+  this.xSquaredValueProperty = new DerivedProperty(
+    [ this.xValueProperty ],
+    function( xValue ) {
+      return xValue * xValue;
+    }
+  );
+
+  // @private, the string depicted for x squared when 'variable values' is enabled
+  this.xSquaredValueStringProperty = new DerivedProperty(
+    [ this.xValueProperty ],
+    function( xValue ) {
+      return '(' + xValue.toString() + ')' + '<sup>2</sup>';
+    }
+  );
+
+  // @private, value property for y squared
+  this.ySquaredValueProperty = new DerivedProperty(
+    [ this.yValueProperty ],
+    function( yValue ) {
+      return yValue * yValue;
+    }
+  );
+
+  // @private, the string depicted for y squared when 'variable values' is enabled
+  this.ySquaredValueStringProperty = new DerivedProperty(
+    [ this.yValueProperty ],
+    function( yValue ) {
+      return '(' + yValue.toString() + ')' + '<sup>2</sup>';
+    }
+  );
+
+  // @private, value property for x squared times y squared
+  this.xSquaredTimesYSquaredValueProperty = new DerivedProperty(
+    [ this.xValueProperty, this.yValueProperty ],
+    function( xValue, yValue ) {
+      return xValue * xValue * yValue * yValue;
+    }
+  );
+
+  // @private, the string depicted for y squared when 'variable values' is enabled
+  this.xSquaredTimesYSquaredValueStringProperty = new DerivedProperty(
+    [ this.xValueProperty, this.yValueProperty ],
+    function( xValue, yValue ) {
+      return '(' + xValue.toString() + ')' + '<sup>2</sup>' + '(' + yValue.toString() + ')' + '<sup>2</sup>';
+    }
+  );
+}
+
+expressionExchange.register( 'CoinTermFactory', CoinTermFactory );
+
+export default inherit( Object, CoinTermFactory, {
 
   /**
-   * @param {number} xValueProperty
-   * @param {number} yValueProperty
-   * @param {number} zValueProperty
-   * @constructor
+   * create a coin term of the specified type
+   * @param {CoinTermTypeID} typeID
+   * @param {Object} [options] - see CoinTerm constructor
+   * @returns {CoinTerm}
+   * @public
    */
-  function CoinTermFactory( xValueProperty, yValueProperty, zValueProperty ) {
+  createCoinTerm: function( typeID, options ) {
 
-    // @private - values of the variables
-    this.xValueProperty = xValueProperty;
-    this.yValueProperty = yValueProperty;
-    this.zValueProperty = zValueProperty;
+    let valueProperty;
+    let coinRadius;
+    let termText;
+    let termValueTextProperty;
 
-    // @private {Property.<string>} - string representations of the variables
-    this.xValueStringProperty = new DerivedProperty( [ xValueProperty ], function( value ) {
-      return '(' + value.toString() + ')';
-    } );
-    this.yValueStringProperty = new DerivedProperty( [ yValueProperty ], function( value ) {
-      return '(' + value.toString() + ')';
-    } );
-    this.zValueStringProperty = new DerivedProperty( [ zValueProperty ], function( value ) {
-      return '(' + value.toString() + ')';
-    } );
+    // set up the various values and properties based on the specified type ID
+    switch( typeID ) {
 
-    // @private, value property for x times y
-    this.xTimesYValueProperty = new DerivedProperty(
-      [ this.xValueProperty, this.yValueProperty ],
-      function( xValue, yValue ) {
-        return xValue * yValue;
-      }
-    );
+      case CoinTermTypeID.X:
+        valueProperty = this.xValueProperty;
+        coinRadius = 22;
+        termText = 'x';
+        termValueTextProperty = this.xValueStringProperty;
+        break;
 
-    // @private, the string depicted for x times y when 'variable values' is enabled
-    this.xTimesYValueStringProperty = new DerivedProperty(
-      [ this.xValueProperty, this.yValueProperty ],
-      function( xValue, yValue ) {
-        return '(' + xValue.toString() + ')(' + yValue.toString() + ')';
-      }
-    );
+      case CoinTermTypeID.Y:
+        valueProperty = this.yValueProperty;
+        coinRadius = 22;
+        termText = 'y';
+        termValueTextProperty = this.yValueStringProperty;
+        break;
 
-    // @private, value property for x squared
-    this.xSquaredValueProperty = new DerivedProperty(
-      [ this.xValueProperty ],
-      function( xValue ) {
-        return xValue * xValue;
-      }
-    );
+      case CoinTermTypeID.Z:
+        valueProperty = this.zValueProperty;
+        coinRadius = 25;
+        termText = 'z';
+        termValueTextProperty = this.zValueStringProperty;
+        break;
 
-    // @private, the string depicted for x squared when 'variable values' is enabled
-    this.xSquaredValueStringProperty = new DerivedProperty(
-      [ this.xValueProperty ],
-      function( xValue ) {
-        return '(' + xValue.toString() + ')' + '<sup>2</sup>';
-      }
-    );
+      case CoinTermTypeID.X_TIMES_Y:
+        valueProperty = this.xTimesYValueProperty;
+        coinRadius = 25;
+        termText = 'xy';
+        termValueTextProperty = this.xTimesYValueStringProperty;
+        break;
 
-    // @private, value property for y squared
-    this.ySquaredValueProperty = new DerivedProperty(
-      [ this.yValueProperty ],
-      function( yValue ) {
-        return yValue * yValue;
-      }
-    );
+      case CoinTermTypeID.X_SQUARED:
+        valueProperty = this.xSquaredValueProperty;
+        coinRadius = 27;
+        termText = 'x<sup>2</sup>';
+        termValueTextProperty = this.xSquaredValueStringProperty;
+        break;
 
-    // @private, the string depicted for y squared when 'variable values' is enabled
-    this.ySquaredValueStringProperty = new DerivedProperty(
-      [ this.yValueProperty ],
-      function( yValue ) {
-        return '(' + yValue.toString() + ')' + '<sup>2</sup>';
-      }
-    );
+      case CoinTermTypeID.Y_SQUARED:
+        valueProperty = this.ySquaredValueProperty;
+        coinRadius = 27;
+        termText = 'y<sup>2</sup>';
+        termValueTextProperty = this.ySquaredValueStringProperty;
+        break;
 
-    // @private, value property for x squared times y squared
-    this.xSquaredTimesYSquaredValueProperty = new DerivedProperty(
-      [ this.xValueProperty, this.yValueProperty ],
-      function( xValue, yValue ) {
-        return xValue * xValue * yValue * yValue;
-      }
-    );
+      case CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED:
+        valueProperty = this.xSquaredTimesYSquaredValueProperty;
+        coinRadius = 28;
+        termText = 'x<sup>2</sup>y<sup>2</sup>';
+        termValueTextProperty = this.xSquaredTimesYSquaredValueStringProperty;
+        break;
 
-    // @private, the string depicted for y squared when 'variable values' is enabled
-    this.xSquaredTimesYSquaredValueStringProperty = new DerivedProperty(
-      [ this.xValueProperty, this.yValueProperty ],
-      function( xValue, yValue ) {
-        return '(' + xValue.toString() + ')' + '<sup>2</sup>' + '(' + yValue.toString() + ')' + '<sup>2</sup>';
-      }
+      case CoinTermTypeID.CONSTANT:
+        valueProperty = CONSTANT_ONE_VALUE_PROPERTY;
+        coinRadius = 20; // fairly arbitrary, since this should never end up being depicted as a coin
+        termText = '1';
+        termValueTextProperty = CONSTANT_ONE_TEXT_VALUE_PROPERTY;
+        break;
+
+      default:
+        assert && assert( false, 'Unrecognized type ID for coin term, = ' + typeID );
+    }
+
+    return new CoinTerm(
+      valueProperty,
+      coinRadius,
+      termText,
+      termValueTextProperty,
+      typeID,
+      options
     );
   }
-
-  expressionExchange.register( 'CoinTermFactory', CoinTermFactory );
-
-  return inherit( Object, CoinTermFactory, {
-
-    /**
-     * create a coin term of the specified type
-     * @param {CoinTermTypeID} typeID
-     * @param {Object} [options] - see CoinTerm constructor
-     * @returns {CoinTerm}
-     * @public
-     */
-    createCoinTerm: function( typeID, options ) {
-
-      let valueProperty;
-      let coinRadius;
-      let termText;
-      let termValueTextProperty;
-
-      // set up the various values and properties based on the specified type ID
-      switch( typeID ) {
-
-        case CoinTermTypeID.X:
-          valueProperty = this.xValueProperty;
-          coinRadius = 22;
-          termText = 'x';
-          termValueTextProperty = this.xValueStringProperty;
-          break;
-
-        case CoinTermTypeID.Y:
-          valueProperty = this.yValueProperty;
-          coinRadius = 22;
-          termText = 'y';
-          termValueTextProperty = this.yValueStringProperty;
-          break;
-
-        case CoinTermTypeID.Z:
-          valueProperty = this.zValueProperty;
-          coinRadius = 25;
-          termText = 'z';
-          termValueTextProperty = this.zValueStringProperty;
-          break;
-
-        case CoinTermTypeID.X_TIMES_Y:
-          valueProperty = this.xTimesYValueProperty;
-          coinRadius = 25;
-          termText = 'xy';
-          termValueTextProperty = this.xTimesYValueStringProperty;
-          break;
-
-        case CoinTermTypeID.X_SQUARED:
-          valueProperty = this.xSquaredValueProperty;
-          coinRadius = 27;
-          termText = 'x<sup>2</sup>';
-          termValueTextProperty = this.xSquaredValueStringProperty;
-          break;
-
-        case CoinTermTypeID.Y_SQUARED:
-          valueProperty = this.ySquaredValueProperty;
-          coinRadius = 27;
-          termText = 'y<sup>2</sup>';
-          termValueTextProperty = this.ySquaredValueStringProperty;
-          break;
-
-        case CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED:
-          valueProperty = this.xSquaredTimesYSquaredValueProperty;
-          coinRadius = 28;
-          termText = 'x<sup>2</sup>y<sup>2</sup>';
-          termValueTextProperty = this.xSquaredTimesYSquaredValueStringProperty;
-          break;
-
-        case CoinTermTypeID.CONSTANT:
-          valueProperty = CONSTANT_ONE_VALUE_PROPERTY;
-          coinRadius = 20; // fairly arbitrary, since this should never end up being depicted as a coin
-          termText = '1';
-          termValueTextProperty = CONSTANT_ONE_TEXT_VALUE_PROPERTY;
-          break;
-
-        default:
-          assert && assert( false, 'Unrecognized type ID for coin term, = ' + typeID );
-      }
-
-      return new CoinTerm(
-        valueProperty,
-        coinRadius,
-        termText,
-        termValueTextProperty,
-        typeID,
-        options
-      );
-    }
-  } );
 } );

@@ -5,48 +5,45 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const AllowedRepresentations = require( 'EXPRESSION_EXCHANGE/common/enum/AllowedRepresentations' );
-  const CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
-  const EENegativesIconNode = require( 'EXPRESSION_EXCHANGE/negatives/view/EENegativesIconNode' );
-  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  const ExpressionExplorationScreenView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionExplorationScreenView' );
-  const ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
-  const inherit = require( 'PHET_CORE/inherit' );
-  const Property = require( 'AXON/Property' );
-  const Screen = require( 'JOIST/Screen' );
+import Property from '../../../axon/js/Property.js';
+import Screen from '../../../joist/js/Screen.js';
+import inherit from '../../../phet-core/js/inherit.js';
+import EESharedConstants from '../common/EESharedConstants.js';
+import AllowedRepresentations from '../common/enum/AllowedRepresentations.js';
+import CoinTermCreatorSetID from '../common/enum/CoinTermCreatorSetID.js';
+import ExpressionManipulationModel from '../common/model/ExpressionManipulationModel.js';
+import ExpressionExplorationScreenView from '../common/view/ExpressionExplorationScreenView.js';
+import expressionExchangeStrings from '../expression-exchange-strings.js';
+import expressionExchange from '../expressionExchange.js';
+import EENegativesIconNode from './view/EENegativesIconNode.js';
 
-  // strings
-  const negativesString = require( 'string!EXPRESSION_EXCHANGE/negatives' );
+const negativesString = expressionExchangeStrings.negatives;
 
-  /**
-   * @constructor
-   */
-  function EENegativesScreen() {
+/**
+ * @constructor
+ */
+function EENegativesScreen() {
 
-    const options = {
-      name: negativesString,
-      backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
-      homeScreenIcon: new EENegativesIconNode()
-    };
+  const options = {
+    name: negativesString,
+    backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
+    homeScreenIcon: new EENegativesIconNode()
+  };
 
-    Screen.call(
-      this,
-      function() {
-        return new ExpressionManipulationModel( {
-          allowedRepresentations: AllowedRepresentations.VARIABLES_ONLY
-        } );
-      },
-      function( model ) { return new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.VARIABLES ); },
-      options
-    );
-  }
+  Screen.call(
+    this,
+    function() {
+      return new ExpressionManipulationModel( {
+        allowedRepresentations: AllowedRepresentations.VARIABLES_ONLY
+      } );
+    },
+    function( model ) { return new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.VARIABLES ); },
+    options
+  );
+}
 
-  expressionExchange.register( 'EENegativesScreen', EENegativesScreen );
+expressionExchange.register( 'EENegativesScreen', EENegativesScreen );
 
-  return inherit( Screen, EENegativesScreen );
-} );
+inherit( Screen, EENegativesScreen );
+export default EENegativesScreen;

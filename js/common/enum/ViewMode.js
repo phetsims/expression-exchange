@@ -5,21 +5,17 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+import expressionExchange from '../../expressionExchange.js';
 
-  const ViewMode = {
-    COINS: 'COINS',
-    VARIABLES: 'VARIABLES'
-  };
+const ViewMode = {
+  COINS: 'COINS',
+  VARIABLES: 'VARIABLES'
+};
 
-  // verify that enum is immutable, without the runtime penalty in production code
-  if ( assert ) { Object.freeze( ViewMode ); }
+// verify that enum is immutable, without the runtime penalty in production code
+if ( assert ) { Object.freeze( ViewMode ); }
 
-  expressionExchange.register( 'ViewMode', ViewMode );
+expressionExchange.register( 'ViewMode', ViewMode );
 
-  return ViewMode;
-} );
+export default ViewMode;

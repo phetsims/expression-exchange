@@ -5,79 +5,76 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const ArrowNode = require( 'SCENERY_PHET/ArrowNode' );
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  const inherit = require( 'PHET_CORE/inherit' );
-  const MathSymbolFont = require( 'SCENERY_PHET/MathSymbolFont' );
-  const MathSymbols = require( 'SCENERY_PHET/MathSymbols' );
-  const Node = require( 'SCENERY/nodes/Node' );
-  const Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  const Text = require( 'SCENERY/nodes/Text' );
+import inherit from '../../../../phet-core/js/inherit.js';
+import ArrowNode from '../../../../scenery-phet/js/ArrowNode.js';
+import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
+import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
+import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
+import Text from '../../../../scenery/js/nodes/Text.js';
+import expressionExchange from '../../expressionExchange.js';
 
-  // constants
-  const MATH_FONT = new MathSymbolFont( { size: 21, weight: 'bold' } );
-  const RECTANGLE_BACKGROUND_COLOR = 'rgba( 255, 255, 255, 0.6 )';
-  const RECT_CORNER_RADIUS = 6;
+// constants
+const MATH_FONT = new MathSymbolFont( { size: 21, weight: 'bold' } );
+const RECTANGLE_BACKGROUND_COLOR = 'rgba( 255, 255, 255, 0.6 )';
+const RECT_CORNER_RADIUS = 6;
 
-  /**
-   * @constructor
-   */
-  function ShowSubtractionIcon() {
+/**
+ * @constructor
+ */
+function ShowSubtractionIcon() {
 
-    // create the background
-    Node.call( this );
+  // create the background
+  Node.call( this );
 
-    // add a rectangle with the first portion of the text
-    const firstTextWithBackground = new TextWidthBackground( '+ ' + MathSymbols.UNARY_MINUS + 'x' );
-    this.addChild( firstTextWithBackground );
+  // add a rectangle with the first portion of the text
+  const firstTextWithBackground = new TextWidthBackground( '+ ' + MathSymbols.UNARY_MINUS + 'x' );
+  this.addChild( firstTextWithBackground );
 
-    // add the arrow
-    const arrow = new ArrowNode( 0, 0, 15, 0, {
-      left: firstTextWithBackground.right + 5,
-      centerY: firstTextWithBackground.height / 2,
-      stroke: null,
-      fill: 'rgb( 150, 0, 0 )',
-      tailWidth: 3,
-      headHeight: 7
-    } );
-    this.addChild( arrow );
+  // add the arrow
+  const arrow = new ArrowNode( 0, 0, 15, 0, {
+    left: firstTextWithBackground.right + 5,
+    centerY: firstTextWithBackground.height / 2,
+    stroke: null,
+    fill: 'rgb( 150, 0, 0 )',
+    tailWidth: 3,
+    headHeight: 7
+  } );
+  this.addChild( arrow );
 
-    // add the 2nd enclosed text portion
-    this.addChild( new TextWidthBackground( MathSymbols.MINUS + ' x', { left: arrow.right + 5 } ) );
-  }
+  // add the 2nd enclosed text portion
+  this.addChild( new TextWidthBackground( MathSymbols.MINUS + ' x', { left: arrow.right + 5 } ) );
+}
 
-  /**
-   * inner class for the background box used for the textual portions of the icon
-   * @param {string} text
-   * @param {Object} [options]
-   * @constructor
-   */
-  function TextWidthBackground( text, options ) {
+/**
+ * inner class for the background box used for the textual portions of the icon
+ * @param {string} text
+ * @param {Object} [options]
+ * @constructor
+ */
+function TextWidthBackground( text, options ) {
 
-    // create the textual node
-    const textNode = new Text( text, { font: MATH_FONT } );
+  // create the textual node
+  const textNode = new Text( text, { font: MATH_FONT } );
 
-    // create the background, which is a rounded rectangle (the width and height multipliers were empirically determined)
-    Rectangle.call( this, 0, 0, textNode.width * 1.4, textNode.height * 1.1, {
-      fill: RECTANGLE_BACKGROUND_COLOR,
-      cornerRadius: RECT_CORNER_RADIUS
-    } );
+  // create the background, which is a rounded rectangle (the width and height multipliers were empirically determined)
+  Rectangle.call( this, 0, 0, textNode.width * 1.4, textNode.height * 1.1, {
+    fill: RECTANGLE_BACKGROUND_COLOR,
+    cornerRadius: RECT_CORNER_RADIUS
+  } );
 
-    // position and add the text node
-    textNode.center = this.center;
-    this.addChild( textNode );
+  // position and add the text node
+  textNode.center = this.center;
+  this.addChild( textNode );
 
-    // pass through any options to the parent type
-    this.mutate( options );
-  }
+  // pass through any options to the parent type
+  this.mutate( options );
+}
 
-  inherit( Rectangle, TextWidthBackground );
+inherit( Rectangle, TextWidthBackground );
 
-  expressionExchange.register( 'ShowSubtractionIcon', ShowSubtractionIcon );
+expressionExchange.register( 'ShowSubtractionIcon', ShowSubtractionIcon );
 
-  return inherit( Node, ShowSubtractionIcon );
-} );
+inherit( Node, ShowSubtractionIcon );
+export default ShowSubtractionIcon;

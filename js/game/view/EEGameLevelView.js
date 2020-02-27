@@ -5,285 +5,281 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const AllLevelsCompletedNode = require( 'VEGAS/AllLevelsCompletedNode' );
-  const BackButton = require( 'SCENERY_PHET/buttons/BackButton' );
-  const Checkbox = require( 'SUN/Checkbox' );
-  const CoinTermCreatorBoxFactory = require( 'EXPRESSION_EXCHANGE/common/view/CoinTermCreatorBoxFactory' );
-  const EEQueryParameters = require( 'EXPRESSION_EXCHANGE/common/EEQueryParameters' );
-  const EERewardNode = require( 'EXPRESSION_EXCHANGE/game/view/EERewardNode' );
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  const ExpressionManipulationView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionManipulationView' );
-  const inherit = require( 'PHET_CORE/inherit' );
-  const NextLevelNode = require( 'EXPRESSION_EXCHANGE/game/view/NextLevelNode' );
-  const Node = require( 'SCENERY/nodes/Node' );
-  const PhetFont = require( 'SCENERY_PHET/PhetFont' );
-  const platform = require( 'PHET_CORE/platform' );
-  const Property = require( 'AXON/Property' );
-  const Rectangle = require( 'SCENERY/nodes/Rectangle' );
-  const RefreshButton = require( 'SCENERY_PHET/buttons/RefreshButton' );
-  const ShowSubtractionIcon = require( 'EXPRESSION_EXCHANGE/common/view/ShowSubtractionIcon' );
-  const StringUtils = require( 'PHETCOMMON/util/StringUtils' );
-  const Text = require( 'SCENERY/nodes/Text' );
+import Property from '../../../../axon/js/Property.js';
+import inherit from '../../../../phet-core/js/inherit.js';
+import platform from '../../../../phet-core/js/platform.js';
+import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
+import BackButton from '../../../../scenery-phet/js/buttons/BackButton.js';
+import RefreshButton from '../../../../scenery-phet/js/buttons/RefreshButton.js';
+import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
+import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
+import Text from '../../../../scenery/js/nodes/Text.js';
+import Checkbox from '../../../../sun/js/Checkbox.js';
+import AllLevelsCompletedNode from '../../../../vegas/js/AllLevelsCompletedNode.js';
+import EEQueryParameters from '../../common/EEQueryParameters.js';
+import CoinTermCreatorBoxFactory from '../../common/view/CoinTermCreatorBoxFactory.js';
+import ExpressionManipulationView from '../../common/view/ExpressionManipulationView.js';
+import ShowSubtractionIcon from '../../common/view/ShowSubtractionIcon.js';
+import expressionExchangeStrings from '../../expression-exchange-strings.js';
+import expressionExchange from '../../expressionExchange.js';
+import EERewardNode from './EERewardNode.js';
+import NextLevelNode from './NextLevelNode.js';
 
-  // strings
-  const levelNumberPatternString = require( 'string!EXPRESSION_EXCHANGE/levelNumberPattern' );
+const levelNumberPatternString = expressionExchangeStrings.levelNumberPattern;
 
-  // constants
-  const BUTTON_XY_TOUCH_DILATION = 4;
+// constants
+const BUTTON_XY_TOUCH_DILATION = 4;
 
-  /**
-   * @param {EEGameModel} gameModel - main model for the game
-   * @param {EEGameLevel} levelModel - model for the level depicted by this view object
-   * @param {Bounds2} screenLayoutBounds
-   * @param {Property.<Bounds2>} visibleBoundsProperty
-   * @param {GameAudioPlayer} gameAudioPlayer
-   * @constructor
-   */
-  function EEGameLevelView( gameModel, levelModel, screenLayoutBounds, visibleBoundsProperty, gameAudioPlayer ) {
+/**
+ * @param {EEGameModel} gameModel - main model for the game
+ * @param {EEGameLevel} levelModel - model for the level depicted by this view object
+ * @param {Bounds2} screenLayoutBounds
+ * @param {Property.<Bounds2>} visibleBoundsProperty
+ * @param {GameAudioPlayer} gameAudioPlayer
+ * @constructor
+ */
+function EEGameLevelView( gameModel, levelModel, screenLayoutBounds, visibleBoundsProperty, gameAudioPlayer ) {
 
-    const self = this;
+  const self = this;
 
-    Node.call( this );
+  Node.call( this );
 
-    // @public {Property.<boolean>} - a property that is externally set to true when this node is in the view port and
-    // available for interaction with the user.  This is done in the view rather than in the model because the model has
-    // no awareness of the slide in/out animations, and clocking the reward node during those animations caused
-    // performance issues, and this property can be used to only clock when this is in the viewport.
-    this.inViewportProperty = new Property( false );
+  // @public {Property.<boolean>} - a property that is externally set to true when this node is in the view port and
+  // available for interaction with the user.  This is done in the view rather than in the model because the model has
+  // no awareness of the slide in/out animations, and clocking the reward node during those animations caused
+  // performance issues, and this property can be used to only clock when this is in the viewport.
+  this.inViewportProperty = new Property( false );
 
-    // add an invisible background rectangle so that bounds are correct, this is needed for animation of game level views
-    const background = new Rectangle( screenLayoutBounds, {
-      stroke: 'transparent' // increase opacity to make the outline visible if desired (for debugging)
-    } );
-    this.addChild( background );
+  // add an invisible background rectangle so that bounds are correct, this is needed for animation of game level views
+  const background = new Rectangle( screenLayoutBounds, {
+    stroke: 'transparent' // increase opacity to make the outline visible if desired (for debugging)
+  } );
+  this.addChild( background );
 
-    // layer where everything else should appear
-    const middleLayer = new Node();
-    this.addChild( middleLayer );
+  // layer where everything else should appear
+  const middleLayer = new Node();
+  this.addChild( middleLayer );
 
-    // layer where the coin term nodes live
-    const coinTermLayer = new Node();
-    this.addChild( coinTermLayer );
+  // layer where the coin term nodes live
+  const coinTermLayer = new Node();
+  this.addChild( coinTermLayer );
 
-    // layer where the dialog-ish nodes are shown
-    const notificationsLayer = new Node();
-    this.addChild( notificationsLayer );
+  // layer where the dialog-ish nodes are shown
+  const notificationsLayer = new Node();
+  this.addChild( notificationsLayer );
 
-    // set the bounds for coin term retrieval in the model
-    levelModel.setRetrievalBounds( screenLayoutBounds );
+  // set the bounds for coin term retrieval in the model
+  levelModel.setRetrievalBounds( screenLayoutBounds );
 
-    // add the level label
-    const title = new Text(
-      StringUtils.fillIn( levelNumberPatternString, { levelNumber: ( levelModel.levelNumber + 1 ) } ),
-      {
-        font: new PhetFont( 20 ),
-        centerX: screenLayoutBounds.width * 0.4,
-        top: 20
-      }
-    );
-    middleLayer.addChild( title );
+  // add the level label
+  const title = new Text(
+    StringUtils.fillIn( levelNumberPatternString, { levelNumber: ( levelModel.levelNumber + 1 ) } ),
+    {
+      font: new PhetFont( 20 ),
+      centerX: screenLayoutBounds.width * 0.4,
+      top: 20
+    }
+  );
+  middleLayer.addChild( title );
 
-    // add the back button
-    const backButton = new BackButton( {
-      left: screenLayoutBounds.left + 30,
-      top: screenLayoutBounds.top + 30,
-      listener: gameModel.returnToLevelSelection.bind( gameModel ),
-      touchAreaXDilation: BUTTON_XY_TOUCH_DILATION,
-      touchAreaYDilation: BUTTON_XY_TOUCH_DILATION
-    } );
-    middleLayer.addChild( backButton );
+  // add the back button
+  const backButton = new BackButton( {
+    left: screenLayoutBounds.left + 30,
+    top: screenLayoutBounds.top + 30,
+    listener: gameModel.returnToLevelSelection.bind( gameModel ),
+    touchAreaXDilation: BUTTON_XY_TOUCH_DILATION,
+    touchAreaYDilation: BUTTON_XY_TOUCH_DILATION
+  } );
+  middleLayer.addChild( backButton );
 
-    // add the refresh button
-    const refreshButton = new RefreshButton( {
-      iconScale: 0.7,
-      xMargin: 9,
-      yMargin: 7,
-      listener: function() { levelModel.refresh(); },
-      left: backButton.left,
-      top: backButton.bottom + 8,
-      touchAreaXDilation: BUTTON_XY_TOUCH_DILATION,
-      touchAreaYDilation: BUTTON_XY_TOUCH_DILATION
-    } );
-    middleLayer.addChild( refreshButton );
+  // add the refresh button
+  const refreshButton = new RefreshButton( {
+    iconScale: 0.7,
+    xMargin: 9,
+    yMargin: 7,
+    listener: function() { levelModel.refresh(); },
+    left: backButton.left,
+    top: backButton.bottom + 8,
+    touchAreaXDilation: BUTTON_XY_TOUCH_DILATION,
+    touchAreaYDilation: BUTTON_XY_TOUCH_DILATION
+  } );
+  middleLayer.addChild( refreshButton );
 
-    // create the expression manipulation view
-    const expressionManipulationView = new ExpressionManipulationView(
+  // create the expression manipulation view
+  const expressionManipulationView = new ExpressionManipulationView(
+    levelModel,
+    visibleBoundsProperty,
+    { coinTermBreakApartButtonMode: 'inverted' }
+  );
+  coinTermLayer.addChild( expressionManipulationView );
+
+  // add the coin term creator box
+  let coinTermCreatorBox = null;
+  levelModel.currentChallengeProperty.link( function( currentChallenge ) {
+    if ( coinTermCreatorBox ) {
+      middleLayer.removeChild( coinTermCreatorBox );
+      coinTermCreatorBox.dispose();
+    }
+    coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
+      currentChallenge,
       levelModel,
-      visibleBoundsProperty,
-      { coinTermBreakApartButtonMode: 'inverted' }
+      expressionManipulationView,
+      { centerX: title.centerX, bottom: screenLayoutBounds.bottom - 40 }
     );
-    coinTermLayer.addChild( expressionManipulationView );
+    middleLayer.addChild( coinTermCreatorBox );
 
-    // add the coin term creator box
-    let coinTermCreatorBox = null;
-    levelModel.currentChallengeProperty.link( function( currentChallenge ) {
-      if ( coinTermCreatorBox ) {
-        middleLayer.removeChild( coinTermCreatorBox );
-        coinTermCreatorBox.dispose();
-      }
-      coinTermCreatorBox = CoinTermCreatorBoxFactory.createGameScreenCreatorBox(
-        currentChallenge,
-        levelModel,
-        expressionManipulationView,
-        { centerX: title.centerX, bottom: screenLayoutBounds.bottom - 40 }
-      );
-      middleLayer.addChild( coinTermCreatorBox );
+    // let the model know where the creator box is so that it knows when the user returns coin terms
+    levelModel.creatorBoxBounds = coinTermCreatorBox.bounds;
+  } );
 
-      // let the model know where the creator box is so that it knows when the user returns coin terms
-      levelModel.creatorBoxBounds = coinTermCreatorBox.bounds;
-    } );
-
-    // add the checkbox that allows expressions with negative values to be simplified
-    const boundsOfLowestCollectionArea = _.last( levelModel.collectionAreas ).bounds;
-    const showSubtractionCheckbox = new Checkbox(
-      new ShowSubtractionIcon(),
-      levelModel.simplifyNegativesProperty,
-      {
-        left: boundsOfLowestCollectionArea.left,
-        top: boundsOfLowestCollectionArea.bottom + 20,
-        maxWidth: boundsOfLowestCollectionArea.minX
-      }
-    );
-    middleLayer.addChild( showSubtractionCheckbox );
-
-    // only show the checkbox for simplifying expressions with negative values if some are present in the challenge
-    levelModel.currentChallengeProperty.link( function( currentChallenge ) {
-
-      // determine whether negative values are present in this challenge
-      let negativesExist = false;
-      currentChallenge.carouselContents.forEach( function( carouselContent ) {
-        if ( carouselContent.minimumDecomposition < 0 ) {
-          negativesExist = true;
-        }
-      } );
-      showSubtractionCheckbox.visible = negativesExist;
-    } );
-
-    // add the node for moving to the next level, only shown when all challenges on this level have been answered
-    this.nextLevelNode = new NextLevelNode( gameModel.nextLevel.bind( gameModel ), {
-      centerX: title.centerX,
-      centerY: screenLayoutBounds.height * 0.33 // multiplier empirically determined
-    } );
-    notificationsLayer.addChild( this.nextLevelNode );
-
-    // create the dialog that is shown when all levels reach completion
-    this.allLevelsCompletedDialog = new AllLevelsCompletedNode( gameModel.returnToLevelSelection.bind( gameModel ), {
-      centerX: title.centerX,
-      centerY: screenLayoutBounds.height * 0.4, // empirically determined
-      visible: false
-    } );
-    notificationsLayer.addChild( this.allLevelsCompletedDialog );
-
-    // helper function for showing the reward node
-    function showRewardNode() {
-      if ( !self.rewardNode && !platform.mobileSafari ) {
-        self.rewardNode = new EERewardNode();
-        background.addChild( self.rewardNode );
-      }
-      if ( self.rewardNode ) {
-        self.rewardNode.visible = true;
-      }
+  // add the checkbox that allows expressions with negative values to be simplified
+  const boundsOfLowestCollectionArea = _.last( levelModel.collectionAreas ).bounds;
+  const showSubtractionCheckbox = new Checkbox(
+    new ShowSubtractionIcon(),
+    levelModel.simplifyNegativesProperty,
+    {
+      left: boundsOfLowestCollectionArea.left,
+      top: boundsOfLowestCollectionArea.bottom + 20,
+      maxWidth: boundsOfLowestCollectionArea.minX
     }
+  );
+  middleLayer.addChild( showSubtractionCheckbox );
 
-    // the reward node is removed rather then hidden in order to conserve memory
-    function removeRewardNode() {
-      if ( self.rewardNode ) {
-        background.removeChild( self.rewardNode );
-        self.rewardNode.dispose();
-        self.rewardNode = null;
+  // only show the checkbox for simplifying expressions with negative values if some are present in the challenge
+  levelModel.currentChallengeProperty.link( function( currentChallenge ) {
+
+    // determine whether negative values are present in this challenge
+    let negativesExist = false;
+    currentChallenge.carouselContents.forEach( function( carouselContent ) {
+      if ( carouselContent.minimumDecomposition < 0 ) {
+        negativesExist = true;
       }
+    } );
+    showSubtractionCheckbox.visible = negativesExist;
+  } );
+
+  // add the node for moving to the next level, only shown when all challenges on this level have been answered
+  this.nextLevelNode = new NextLevelNode( gameModel.nextLevel.bind( gameModel ), {
+    centerX: title.centerX,
+    centerY: screenLayoutBounds.height * 0.33 // multiplier empirically determined
+  } );
+  notificationsLayer.addChild( this.nextLevelNode );
+
+  // create the dialog that is shown when all levels reach completion
+  this.allLevelsCompletedDialog = new AllLevelsCompletedNode( gameModel.returnToLevelSelection.bind( gameModel ), {
+    centerX: title.centerX,
+    centerY: screenLayoutBounds.height * 0.4, // empirically determined
+    visible: false
+  } );
+  notificationsLayer.addChild( this.allLevelsCompletedDialog );
+
+  // helper function for showing the reward node
+  function showRewardNode() {
+    if ( !self.rewardNode && !platform.mobileSafari ) {
+      self.rewardNode = new EERewardNode();
+      background.addChild( self.rewardNode );
     }
-
-    // define a property that tracks whether the 'next level' node should be visible.  This is done as a separate
-    // view-only property because the logic that decides whether to show it is somewhat complex.
-    const showNextLevelNodeProperty = new Property( false );
-
-    // show the "next level" node when this level becomes completed
-    levelModel.completedSinceLastClearProperty.link( function( currentlyCompleted ) {
-      showNextLevelNodeProperty.set( currentlyCompleted && !gameModel.allLevelsCompletedProperty.get() );
-
-      // if the appropriate query param is set, show the reward node every time this level is successfully completed
-      if ( EEQueryParameters.showRewardNodeEveryLevel ) {
-        if ( currentlyCompleted ) {
-          showRewardNode();
-        }
-        else {
-          removeRewardNode();
-        }
-      }
-    } );
-
-    showNextLevelNodeProperty.linkAttribute( this.nextLevelNode, 'visible' );
-
-    gameModel.allLevelsCompletedProperty.link( function( allLevelsCompleted, allLevelsWereCompleted ) {
-
-      // when all levels become completed, we no longer show the "Next Level" nodes, see
-      // https://github.com/phetsims/expression-exchange/issues/108 for more information about why
-      if ( allLevelsCompleted ) {
-        showNextLevelNodeProperty.set( false );
-
-        if ( self.inViewportProperty.get() ) {
-
-          // show the 'all levels completed' dialog
-          self.allLevelsCompletedDialog.visible = true;
-
-          // show the reward node
-          showRewardNode();
-
-          // play the sound that indicates all levels have been completed
-          gameAudioPlayer.gameOverPerfectScore();
-        }
-      }
-
-      // this handles the case where the user presses the refresh button while in the "all levels completed" state
-      if ( !allLevelsCompleted && allLevelsWereCompleted && self.inViewportProperty.get() ) {
-        self.allLevelsCompletedDialog.visible = false;
-        removeRewardNode();
-        gameModel.clearAllLevelsCompleted();
-      }
-    } );
-
-    // when this node leaves the view port, check whether all levels had been completed and, if so, hide the associated
-    // celebratory nodes and reset the flag in the model.
-    this.inViewportProperty.link( function( inViewPort, wasInViewPort ) {
-      if ( !inViewPort && wasInViewPort && gameModel.allLevelsCompletedProperty.get() ) {
-        removeRewardNode();
-        self.allLevelsCompletedDialog.visible = false;
-        gameModel.clearAllLevelsCompleted();
-      }
-    } );
-
-    // hook up listeners to the collection areas to play the appropriate sounds upon collection or rejection of a user-
-    // submitted answer
-    levelModel.collectionAreas.forEach( function( collectionArea ) {
-      collectionArea.collectionAttemptedEmitter.addListener( function( itemCollected ) {
-        if ( itemCollected ) {
-          gameAudioPlayer.correctAnswer();
-        }
-        else if ( !itemCollected && collectionArea.isEmpty() ) {
-          gameAudioPlayer.wrongAnswer();
-        }
-      } );
-    } );
+    if ( self.rewardNode ) {
+      self.rewardNode.visible = true;
+    }
   }
 
-  expressionExchange.register( 'EEGameLevelView', EEGameLevelView );
+  // the reward node is removed rather then hidden in order to conserve memory
+  function removeRewardNode() {
+    if ( self.rewardNode ) {
+      background.removeChild( self.rewardNode );
+      self.rewardNode.dispose();
+      self.rewardNode = null;
+    }
+  }
 
-  return inherit( Node, EEGameLevelView, {
+  // define a property that tracks whether the 'next level' node should be visible.  This is done as a separate
+  // view-only property because the logic that decides whether to show it is somewhat complex.
+  const showNextLevelNodeProperty = new Property( false );
 
-    /**
-     * @param {number} dt
-     * @public
-     */
-    step: function( dt ) {
-      if ( this.inViewportProperty.get() && this.rewardNode && this.rewardNode.visible ) {
-        this.rewardNode.step( Math.min( dt, 1 ) );
+  // show the "next level" node when this level becomes completed
+  levelModel.completedSinceLastClearProperty.link( function( currentlyCompleted ) {
+    showNextLevelNodeProperty.set( currentlyCompleted && !gameModel.allLevelsCompletedProperty.get() );
+
+    // if the appropriate query param is set, show the reward node every time this level is successfully completed
+    if ( EEQueryParameters.showRewardNodeEveryLevel ) {
+      if ( currentlyCompleted ) {
+        showRewardNode();
+      }
+      else {
+        removeRewardNode();
+      }
+    }
+  } );
+
+  showNextLevelNodeProperty.linkAttribute( this.nextLevelNode, 'visible' );
+
+  gameModel.allLevelsCompletedProperty.link( function( allLevelsCompleted, allLevelsWereCompleted ) {
+
+    // when all levels become completed, we no longer show the "Next Level" nodes, see
+    // https://github.com/phetsims/expression-exchange/issues/108 for more information about why
+    if ( allLevelsCompleted ) {
+      showNextLevelNodeProperty.set( false );
+
+      if ( self.inViewportProperty.get() ) {
+
+        // show the 'all levels completed' dialog
+        self.allLevelsCompletedDialog.visible = true;
+
+        // show the reward node
+        showRewardNode();
+
+        // play the sound that indicates all levels have been completed
+        gameAudioPlayer.gameOverPerfectScore();
       }
     }
 
+    // this handles the case where the user presses the refresh button while in the "all levels completed" state
+    if ( !allLevelsCompleted && allLevelsWereCompleted && self.inViewportProperty.get() ) {
+      self.allLevelsCompletedDialog.visible = false;
+      removeRewardNode();
+      gameModel.clearAllLevelsCompleted();
+    }
   } );
+
+  // when this node leaves the view port, check whether all levels had been completed and, if so, hide the associated
+  // celebratory nodes and reset the flag in the model.
+  this.inViewportProperty.link( function( inViewPort, wasInViewPort ) {
+    if ( !inViewPort && wasInViewPort && gameModel.allLevelsCompletedProperty.get() ) {
+      removeRewardNode();
+      self.allLevelsCompletedDialog.visible = false;
+      gameModel.clearAllLevelsCompleted();
+    }
+  } );
+
+  // hook up listeners to the collection areas to play the appropriate sounds upon collection or rejection of a user-
+  // submitted answer
+  levelModel.collectionAreas.forEach( function( collectionArea ) {
+    collectionArea.collectionAttemptedEmitter.addListener( function( itemCollected ) {
+      if ( itemCollected ) {
+        gameAudioPlayer.correctAnswer();
+      }
+      else if ( !itemCollected && collectionArea.isEmpty() ) {
+        gameAudioPlayer.wrongAnswer();
+      }
+    } );
+  } );
+}
+
+expressionExchange.register( 'EEGameLevelView', EEGameLevelView );
+
+export default inherit( Node, EEGameLevelView, {
+
+  /**
+   * @param {number} dt
+   * @public
+   */
+  step: function( dt ) {
+    if ( this.inViewportProperty.get() && this.rewardNode && this.rewardNode.visible ) {
+      this.rewardNode.step( Math.min( dt, 1 ) );
+    }
+  }
+
 } );

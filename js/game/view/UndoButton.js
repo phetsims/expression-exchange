@@ -5,57 +5,54 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const Color = require( 'SCENERY/util/Color' );
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  const inherit = require( 'PHET_CORE/inherit' );
-  const merge = require( 'PHET_CORE/merge' );
-  const Path = require( 'SCENERY/nodes/Path' );
-  const RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
-  const Shape = require( 'KITE/Shape' );
+import Shape from '../../../../kite/js/Shape.js';
+import inherit from '../../../../phet-core/js/inherit.js';
+import merge from '../../../../phet-core/js/merge.js';
+import Path from '../../../../scenery/js/nodes/Path.js';
+import Color from '../../../../scenery/js/util/Color.js';
+import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
+import expressionExchange from '../../expressionExchange.js';
 
-  // constants
-  const MARGIN = 5;
-  const ICON_HEIGHT = 17; // empirically determined, controls size of icon
+// constants
+const MARGIN = 5;
+const ICON_HEIGHT = 17; // empirically determined, controls size of icon
 
-  /**
-   * @constructor
-   * @param {Object} [options]
-   */
-  function UndoButton( options ) {
+/**
+ * @constructor
+ * @param {Object} [options]
+ */
+function UndoButton( options ) {
 
-    options = merge( {
-      xMargin: MARGIN,
-      yMargin: MARGIN,
-      baseColor: new Color( 'yellow' ),
-      cursor: 'pointer',
-      arrowFill: 'black'
-    }, options );
+  options = merge( {
+    xMargin: MARGIN,
+    yMargin: MARGIN,
+    baseColor: new Color( 'yellow' ),
+    cursor: 'pointer',
+    arrowFill: 'black'
+  }, options );
 
-    assert && assert( !options.content, 'content should not be specified for this button' );
+  assert && assert( !options.content, 'content should not be specified for this button' );
 
-    // create the shape for the undo arrow
-    const undoArrowShape = new Shape()
-      .moveTo( 0, 0 )
-      .lineTo( 0, ICON_HEIGHT )
-      .lineTo( ICON_HEIGHT, ICON_HEIGHT )
-      .lineTo( ICON_HEIGHT * 0.7, ICON_HEIGHT * 0.7 )
-      .quadraticCurveTo( ICON_HEIGHT * 1.25, -ICON_HEIGHT * 0.1, ICON_HEIGHT * 2, ICON_HEIGHT * 0.75 )
-      .quadraticCurveTo( ICON_HEIGHT * 1.25, -ICON_HEIGHT * 0.5, ICON_HEIGHT * 0.3, ICON_HEIGHT * 0.3 )
-      .close();
+  // create the shape for the undo arrow
+  const undoArrowShape = new Shape()
+    .moveTo( 0, 0 )
+    .lineTo( 0, ICON_HEIGHT )
+    .lineTo( ICON_HEIGHT, ICON_HEIGHT )
+    .lineTo( ICON_HEIGHT * 0.7, ICON_HEIGHT * 0.7 )
+    .quadraticCurveTo( ICON_HEIGHT * 1.25, -ICON_HEIGHT * 0.1, ICON_HEIGHT * 2, ICON_HEIGHT * 0.75 )
+    .quadraticCurveTo( ICON_HEIGHT * 1.25, -ICON_HEIGHT * 0.5, ICON_HEIGHT * 0.3, ICON_HEIGHT * 0.3 )
+    .close();
 
-    // set up the content node
-    options.content = new Path( undoArrowShape, {
-      fill: options.arrowFill
-    } );
+  // set up the content node
+  options.content = new Path( undoArrowShape, {
+    fill: options.arrowFill
+  } );
 
-    RectangularPushButton.call( this, options );
-  }
+  RectangularPushButton.call( this, options );
+}
 
-  expressionExchange.register( 'UndoButton', UndoButton );
+expressionExchange.register( 'UndoButton', UndoButton );
 
-  return inherit( RectangularPushButton, UndoButton );
-} );
+inherit( RectangularPushButton, UndoButton );
+export default UndoButton;

@@ -5,42 +5,39 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const CoinTermCreatorSetID = require( 'EXPRESSION_EXCHANGE/common/enum/CoinTermCreatorSetID' );
-  const EEExploreIconNode = require( 'EXPRESSION_EXCHANGE/explore/view/EEExploreIconNode' );
-  const EESharedConstants = require( 'EXPRESSION_EXCHANGE/common/EESharedConstants' );
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  const ExpressionExplorationScreenView = require( 'EXPRESSION_EXCHANGE/common/view/ExpressionExplorationScreenView' );
-  const ExpressionManipulationModel = require( 'EXPRESSION_EXCHANGE/common/model/ExpressionManipulationModel' );
-  const inherit = require( 'PHET_CORE/inherit' );
-  const Property = require( 'AXON/Property' );
-  const Screen = require( 'JOIST/Screen' );
+import Property from '../../../axon/js/Property.js';
+import Screen from '../../../joist/js/Screen.js';
+import inherit from '../../../phet-core/js/inherit.js';
+import EESharedConstants from '../common/EESharedConstants.js';
+import CoinTermCreatorSetID from '../common/enum/CoinTermCreatorSetID.js';
+import ExpressionManipulationModel from '../common/model/ExpressionManipulationModel.js';
+import ExpressionExplorationScreenView from '../common/view/ExpressionExplorationScreenView.js';
+import expressionExchangeStrings from '../expression-exchange-strings.js';
+import expressionExchange from '../expressionExchange.js';
+import EEExploreIconNode from './view/EEExploreIconNode.js';
 
-  // strings
-  const exploreString = require( 'string!EXPRESSION_EXCHANGE/explore' );
+const exploreString = expressionExchangeStrings.explore;
 
-  /**
-   * @constructor
-   */
-  function EEExploreScreen() {
+/**
+ * @constructor
+ */
+function EEExploreScreen() {
 
-    const options = {
-      name: exploreString,
-      backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
-      homeScreenIcon: new EEExploreIconNode()
-    };
+  const options = {
+    name: exploreString,
+    backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
+    homeScreenIcon: new EEExploreIconNode()
+  };
 
-    Screen.call( this,
-      function() { return new ExpressionManipulationModel(); },
-      function( model ) { return new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.EXPLORE ); },
-      options
-    );
-  }
+  Screen.call( this,
+    function() { return new ExpressionManipulationModel(); },
+    function( model ) { return new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.EXPLORE ); },
+    options
+  );
+}
 
-  expressionExchange.register( 'EEExploreScreen', EEExploreScreen );
+expressionExchange.register( 'EEExploreScreen', EEExploreScreen );
 
-  return inherit( Screen, EEExploreScreen );
-} );
+inherit( Screen, EEExploreScreen );
+export default EEExploreScreen;

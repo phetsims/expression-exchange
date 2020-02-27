@@ -5,25 +5,21 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
+import expressionExchange from '../expressionExchange.js';
 
-  const EEQueryParameters = QueryStringMachine.getAll( {
+const EEQueryParameters = QueryStringMachine.getAll( {
 
-    // control whether expression width is always adjusted or whether it sometimes remains constant
-    adjustExpressionWidth: { type: 'flag' },
+  // control whether expression width is always adjusted or whether it sometimes remains constant
+  adjustExpressionWidth: { type: 'flag' },
 
-    // show the reward screen every time a level is completed instead of when ALL levels are completed
-    showRewardNodeEveryLevel: { type: 'flag' },
+  // show the reward screen every time a level is completed instead of when ALL levels are completed
+  showRewardNodeEveryLevel: { type: 'flag' },
 
-    // reduce the number of game levels, useful for testing "all levels completed" behavior
-    minimalGameLevels: { type: 'flag' }
-  } );
-
-  expressionExchange.register( 'EEQueryParameters', EEQueryParameters );
-
-  return EEQueryParameters;
+  // reduce the number of game levels, useful for testing "all levels completed" behavior
+  minimalGameLevels: { type: 'flag' }
 } );
+
+expressionExchange.register( 'EEQueryParameters', EEQueryParameters );
+
+export default EEQueryParameters;

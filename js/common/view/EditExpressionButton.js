@@ -3,56 +3,52 @@
 /**
  * button used for putting expressions into edit mode
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  const FontAwesomeNode = require( 'SUN/FontAwesomeNode' );
-  const inherit = require( 'PHET_CORE/inherit' );
-  const merge = require( 'PHET_CORE/merge' );
-  const Node = require( 'SCENERY/nodes/Node' );
-  const RectangularPushButton = require( 'SUN/buttons/RectangularPushButton' );
+import inherit from '../../../../phet-core/js/inherit.js';
+import merge from '../../../../phet-core/js/merge.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
+import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
+import FontAwesomeNode from '../../../../sun/js/FontAwesomeNode.js';
+import expressionExchange from '../../expressionExchange.js';
 
-  // constants
-  const ICON = new FontAwesomeNode( 'exchange', { scale: 0.35 } ); // scale empirically determined
+// constants
+const ICON = new FontAwesomeNode( 'exchange', { scale: 0.35 } ); // scale empirically determined
+
+/**
+ * @constructor
+ */
+function EditExpressionButton( options ) {
+
+  options = merge( {}, options );
+
+  const iconNode = new Node( { children: [ ICON ] } );
+
+  // the following options can't be overridden
+  options = merge( options, {
+    content: iconNode,
+    xMargin: 3, // empirically determined
+    yMargin: 5.5, // empirically determined
+    baseColor: 'white',
+    cursor: 'pointer'
+  } );
+
+  RectangularPushButton.call( this, options );
+
+  this.disposeEditExpressionButton = function() {
+    iconNode.dispose();
+  };
+}
+
+expressionExchange.register( 'EditExpressionButton', EditExpressionButton );
+
+export default inherit( RectangularPushButton, EditExpressionButton, {
 
   /**
-   * @constructor
+   * @public
    */
-  function EditExpressionButton( options ) {
-
-    options = merge( {}, options );
-
-    const iconNode = new Node( { children: [ ICON ] } );
-
-    // the following options can't be overridden
-    options = merge( options, {
-      content: iconNode,
-      xMargin: 3, // empirically determined
-      yMargin: 5.5, // empirically determined
-      baseColor: 'white',
-      cursor: 'pointer'
-    } );
-
-    RectangularPushButton.call( this, options );
-
-    this.disposeEditExpressionButton = function() {
-      iconNode.dispose();
-    };
+  dispose: function() {
+    this.disposeEditExpressionButton();
+    RectangularPushButton.prototype.dispose.call( this );
   }
 
-  expressionExchange.register( 'EditExpressionButton', EditExpressionButton );
-
-  return inherit( RectangularPushButton, EditExpressionButton, {
-
-    /**
-     * @public
-     */
-    dispose: function() {
-      this.disposeEditExpressionButton();
-      RectangularPushButton.prototype.dispose.call( this );
-    }
-
-  } );
 } );

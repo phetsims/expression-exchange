@@ -5,35 +5,32 @@
  *
  * @author John Blanco
  */
-define( require => {
-  'use strict';
 
-  // modules
-  const expressionExchange = require( 'EXPRESSION_EXCHANGE/expressionExchange' );
-  const inherit = require( 'PHET_CORE/inherit' );
+import inherit from '../../../../phet-core/js/inherit.js';
+import expressionExchange from '../../expressionExchange.js';
 
-  /**
-   * @param {Vector2} startPosition - the location from which the animation should begin
-   * @param {Vector2} travelVector - the path from the start to the destination
-   * @param {number} totalDuration - in seconds, amount of time that the animation should take
-   * @constructor
-   */
-  function AnimationSpec( startPosition, travelVector, totalDuration ) {
+/**
+ * @param {Vector2} startPosition - the location from which the animation should begin
+ * @param {Vector2} travelVector - the path from the start to the destination
+ * @param {number} totalDuration - in seconds, amount of time that the animation should take
+ * @constructor
+ */
+function AnimationSpec( startPosition, travelVector, totalDuration ) {
 
-    // @public (read-only) {Vector2}
-    this.startPosition = startPosition;
+  // @public (read-only) {Vector2}
+  this.startPosition = startPosition;
 
-    // @public (read-only) {Vector2}
-    this.travelVector = travelVector;
+  // @public (read-only) {Vector2}
+  this.travelVector = travelVector;
 
-    // @public (read-only) {number}
-    this.totalDuration = totalDuration;
+  // @public (read-only) {number}
+  this.totalDuration = totalDuration;
 
-    // @public (read-only) {number} - time that has passed since the animation was initiated
-    this.timeSoFar = 0;
-  }
+  // @public (read-only) {number} - time that has passed since the animation was initiated
+  this.timeSoFar = 0;
+}
 
-  expressionExchange.register( 'AnimationSpec', AnimationSpec );
+expressionExchange.register( 'AnimationSpec', AnimationSpec );
 
-  return inherit( Object, AnimationSpec );
-} );
+inherit( Object, AnimationSpec );
+export default AnimationSpec;
