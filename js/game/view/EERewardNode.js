@@ -1,4 +1,4 @@
-// Copyright 2017-2019, University of Colorado Boulder
+// Copyright 2017-2020, University of Colorado Boulder
 /**
  * The reward that is displayed when all levels have been correctly completed.  For testing, the simulation can be run
  * with the 'reward' query parameter to show the reward each time a level is successfully completed.

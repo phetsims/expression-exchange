@@ -1,4 +1,4 @@
-// Copyright 2016-2019, University of Colorado Boulder
+// Copyright 2016-2020, University of Colorado Boulder
 
 /**
  * base type for the nodes that represent coin terms in the view, this exists primarily to avoid code duplication
