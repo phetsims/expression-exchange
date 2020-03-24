@@ -12,6 +12,7 @@
   "phet": {
     "requirejsNamespace": "EXPRESSION_EXCHANGE",
     "phetLibs": [
+      "twixt",
       "vegas",
       "vibe"
     ],
