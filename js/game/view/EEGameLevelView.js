@@ -22,7 +22,7 @@ import EEQueryParameters from '../../common/EEQueryParameters.js';
 import CoinTermCreatorBoxFactory from '../../common/view/CoinTermCreatorBoxFactory.js';
 import ExpressionManipulationView from '../../common/view/ExpressionManipulationView.js';
 import ShowSubtractionIcon from '../../common/view/ShowSubtractionIcon.js';
-import expressionExchangeStrings from '../../expression-exchange-strings.js';
+import expressionExchangeStrings from '../../expressionExchangeStrings.js';
 import expressionExchange from '../../expressionExchange.js';
 import EERewardNode from './EERewardNode.js';
 import NextLevelNode from './NextLevelNode.js';

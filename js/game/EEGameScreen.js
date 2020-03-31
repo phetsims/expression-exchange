@@ -10,7 +10,7 @@ import Property from '../../../axon/js/Property.js';
 import Screen from '../../../joist/js/Screen.js';
 import inherit from '../../../phet-core/js/inherit.js';
 import EESharedConstants from '../common/EESharedConstants.js';
-import expressionExchangeStrings from '../expression-exchange-strings.js';
+import expressionExchangeStrings from '../expressionExchangeStrings.js';
 import expressionExchange from '../expressionExchange.js';
 import EEGameModel from './model/EEGameModel.js';
 import EEGameIconNode from './view/EEGameIconNode.js';

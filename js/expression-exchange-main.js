@@ -10,7 +10,7 @@ import Sim from '../../joist/js/Sim.js';
 import SimLauncher from '../../joist/js/SimLauncher.js';
 import EEBasicsScreen from './basics/EEBasicsScreen.js';
 import EEExploreScreen from './explore/EEExploreScreen.js';
-import expressionExchangeStrings from './expression-exchange-strings.js';
+import expressionExchangeStrings from './expressionExchangeStrings.js';
 import EEGameScreen from './game/EEGameScreen.js';
 import EENegativesScreen from './negatives/EENegativesScreen.js';
 

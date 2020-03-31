@@ -7,7 +7,7 @@ import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
-import expressionExchangeStrings from '../../expression-exchange-strings.js';
+import expressionExchangeStrings from '../../expressionExchangeStrings.js';
 import expressionExchange from '../../expressionExchange.js';
 
 // constants

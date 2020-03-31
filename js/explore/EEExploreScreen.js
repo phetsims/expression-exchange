@@ -13,7 +13,7 @@ import EESharedConstants from '../common/EESharedConstants.js';
 import CoinTermCreatorSetID from '../common/enum/CoinTermCreatorSetID.js';
 import ExpressionManipulationModel from '../common/model/ExpressionManipulationModel.js';
 import ExpressionExplorationScreenView from '../common/view/ExpressionExplorationScreenView.js';
-import expressionExchangeStrings from '../expression-exchange-strings.js';
+import expressionExchangeStrings from '../expressionExchangeStrings.js';
 import expressionExchange from '../expressionExchange.js';
 import EEExploreIconNode from './view/EEExploreIconNode.js';
 
