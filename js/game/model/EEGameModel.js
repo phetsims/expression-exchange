@@ -64,7 +64,7 @@ function EEGameModel() {
 
 expressionExchange.register( 'EEGameModel', EEGameModel );
 
-export default inherit( Object, EEGameModel, {
+inherit( Object, EEGameModel, {
 
     /**
      * step the model
@@ -139,3 +139,5 @@ export default inherit( Object, EEGameModel, {
     NUMBER_OF_LEVELS: NUMBER_OF_LEVELS,
     POINTS_PER_CHALLENGE: POINTS_PER_CHALLENGE
   } );
+
+export default EEGameModel;

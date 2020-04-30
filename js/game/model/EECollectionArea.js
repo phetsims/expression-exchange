@@ -52,7 +52,7 @@ function EECollectionArea( x, y, viewMode, undoAllowedProperty ) {
 
 expressionExchange.register( 'EECollectionArea', EECollectionArea );
 
-export default inherit( Object, EECollectionArea, {
+inherit( Object, EECollectionArea, {
 
   /**
    * Test the provided expression and, if it matches the spec, capture it by moving it into the center of this
@@ -202,3 +202,5 @@ export default inherit( Object, EECollectionArea, {
   }
 
 } );
+
+export default EECollectionArea;

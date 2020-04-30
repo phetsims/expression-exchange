@@ -111,7 +111,7 @@ function CoinTermFactory( xValueProperty, yValueProperty, zValueProperty ) {
 
 expressionExchange.register( 'CoinTermFactory', CoinTermFactory );
 
-export default inherit( Object, CoinTermFactory, {
+inherit( Object, CoinTermFactory, {
 
   /**
    * create a coin term of the specified type
@@ -200,3 +200,5 @@ export default inherit( Object, CoinTermFactory, {
     );
   }
 } );
+
+export default CoinTermFactory;

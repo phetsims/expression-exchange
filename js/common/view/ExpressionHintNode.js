@@ -106,7 +106,7 @@ function ExpressionHintNode( expressionHint ) {
 
 expressionExchange.register( 'ExpressionHintNode', ExpressionHintNode );
 
-export default inherit( Node, ExpressionHintNode, {
+inherit( Node, ExpressionHintNode, {
 
   // @public
   dispose: function() {
@@ -114,3 +114,5 @@ export default inherit( Node, ExpressionHintNode, {
     Node.prototype.dispose.call( this );
   }
 } );
+
+export default ExpressionHintNode;

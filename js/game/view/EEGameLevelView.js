@@ -270,7 +270,7 @@ function EEGameLevelView( gameModel, levelModel, screenLayoutBounds, visibleBoun
 
 expressionExchange.register( 'EEGameLevelView', EEGameLevelView );
 
-export default inherit( Node, EEGameLevelView, {
+inherit( Node, EEGameLevelView, {
 
   /**
    * @param {number} dt
@@ -283,3 +283,5 @@ export default inherit( Node, EEGameLevelView, {
   }
 
 } );
+
+export default EEGameLevelView;

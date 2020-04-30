@@ -163,7 +163,7 @@ function VariableCoinTermNode( coinTerm,
 
 expressionExchange.register( 'VariableCoinTermNode', VariableCoinTermNode );
 
-export default inherit( AbstractCoinTermNode, VariableCoinTermNode, {
+inherit( AbstractCoinTermNode, VariableCoinTermNode, {
 
   // helper function to take the view bounds information and communicates it to the model
   /**
@@ -397,3 +397,5 @@ export default inherit( AbstractCoinTermNode, VariableCoinTermNode, {
     AbstractCoinTermNode.prototype.dispose.call( this );
   }
 } );
+
+export default VariableCoinTermNode;

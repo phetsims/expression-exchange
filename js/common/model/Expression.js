@@ -203,7 +203,7 @@ function Expression( anchorCoinTerm, floatingCoinTerm, simplifyNegativesProperty
 
 expressionExchange.register( 'Expression', Expression );
 
-export default inherit( Object, Expression, {
+inherit( Object, Expression, {
 
   /**
    * step this expression in time, which will cause it to make any updates in its state that are needed
@@ -801,3 +801,5 @@ export default inherit( Object, Expression, {
     this.resizeNeeded = true;
   }
 } );
+
+export default Expression;

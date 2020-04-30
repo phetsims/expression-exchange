@@ -30,7 +30,7 @@ function ExpressionHint( anchorCoinTerm, movingCoinTerm ) {
 
 expressionExchange.register( 'ExpressionHint', ExpressionHint );
 
-export default inherit( Object, ExpressionHint, {
+inherit( Object, ExpressionHint, {
 
   /**
    * returns true if this expression hint includes the provided coin term
@@ -64,3 +64,5 @@ export default inherit( Object, ExpressionHint, {
     this.movingCoinTerm.breakApartAllowedProperty.set( true );
   }
 } );
+
+export default ExpressionHint;

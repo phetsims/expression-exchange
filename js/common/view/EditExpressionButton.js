@@ -41,7 +41,7 @@ function EditExpressionButton( options ) {
 
 expressionExchange.register( 'EditExpressionButton', EditExpressionButton );
 
-export default inherit( RectangularPushButton, EditExpressionButton, {
+inherit( RectangularPushButton, EditExpressionButton, {
 
   /**
    * @public
@@ -52,3 +52,5 @@ export default inherit( RectangularPushButton, EditExpressionButton, {
   }
 
 } );
+
+export default EditExpressionButton;

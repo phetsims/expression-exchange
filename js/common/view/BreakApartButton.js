@@ -66,7 +66,7 @@ function createIconNode( color ) {
 
 expressionExchange.register( 'BreakApartButton', BreakApartButton );
 
-export default inherit( RectangularPushButton, BreakApartButton, {
+inherit( RectangularPushButton, BreakApartButton, {
 
   /**
    * @public
@@ -76,3 +76,5 @@ export default inherit( RectangularPushButton, BreakApartButton, {
     RectangularPushButton.prototype.dispose.call( this );
   }
 } );
+
+export default BreakApartButton;

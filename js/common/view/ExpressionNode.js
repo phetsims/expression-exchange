@@ -210,10 +210,12 @@ function ExpressionNode( expression, simplifyNegativesProperty ) {
 
 expressionExchange.register( 'ExpressionNode', ExpressionNode );
 
-export default inherit( Node, ExpressionNode, {
+inherit( Node, ExpressionNode, {
   // @public
   dispose: function() {
     this.disposeExpressionNode();
     Node.prototype.dispose.call( this );
   }
 } );
+
+export default ExpressionNode;

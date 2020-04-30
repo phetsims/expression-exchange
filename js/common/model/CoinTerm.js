@@ -204,7 +204,7 @@ function CoinTerm( valueProperty, coinRadius, termText, termValueTextProperty, t
 
 expressionExchange.register( 'CoinTerm', CoinTerm );
 
-export default inherit( Object, CoinTerm, {
+inherit( Object, CoinTerm, {
 
   /**
    * step function, used for animations
@@ -453,3 +453,5 @@ export default inherit( Object, CoinTerm, {
     return this.existenceStrengthProperty.get() < 1;
   }
 } );
+
+export default CoinTerm;

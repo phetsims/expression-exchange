@@ -122,7 +122,7 @@ function ConstantCoinTermNode( constantCoinTerm, viewModeProperty, options ) {
 
 expressionExchange.register( 'ConstantCoinTermNode', ConstantCoinTermNode );
 
-export default inherit( AbstractCoinTermNode, ConstantCoinTermNode, {
+inherit( AbstractCoinTermNode, ConstantCoinTermNode, {
 
   // @public
   dispose: function() {
@@ -130,3 +130,5 @@ export default inherit( AbstractCoinTermNode, ConstantCoinTermNode, {
     AbstractCoinTermNode.prototype.dispose.call( this );
   }
 } );
+
+export default ConstantCoinTermNode;

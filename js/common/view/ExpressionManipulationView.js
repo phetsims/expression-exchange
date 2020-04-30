@@ -245,7 +245,7 @@ function ExpressionManipulationView( model, visibleBoundsProperty, options ) {
 
 expressionExchange.register( 'ExpressionManipulationView', ExpressionManipulationView );
 
-export default inherit( Node, ExpressionManipulationView, {
+inherit( Node, ExpressionManipulationView, {
 
   /**
    * get the view node for the provided coin term model element
@@ -261,3 +261,5 @@ export default inherit( Node, ExpressionManipulationView, {
   }
 
 } );
+
+export default ExpressionManipulationView;

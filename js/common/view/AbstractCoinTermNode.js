@@ -151,7 +151,7 @@ function AbstractCoinTermNode( coinTerm, options ) {
 
 expressionExchange.register( 'AbstractCoinTermNode', AbstractCoinTermNode );
 
-export default inherit( Node, AbstractCoinTermNode, {
+inherit( Node, AbstractCoinTermNode, {
 
   // add a listener that will update the opacity based on the coin term's existence strength
   /**
@@ -411,3 +411,5 @@ export default inherit( Node, AbstractCoinTermNode, {
   BACKGROUND_CARD_X_MARGIN: 15
 
 } );
+
+export default AbstractCoinTermNode;

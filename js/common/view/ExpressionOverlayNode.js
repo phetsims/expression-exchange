@@ -205,7 +205,7 @@ function ExpressionOverlayNode( expression, layoutBounds ) {
 
 expressionExchange.register( 'ExpressionOverlayNode', ExpressionOverlayNode );
 
-export default inherit( Node, ExpressionOverlayNode, {
+inherit( Node, ExpressionOverlayNode, {
 
   /**
    * @param {number} xLocation
@@ -252,3 +252,5 @@ export default inherit( Node, ExpressionOverlayNode, {
     Node.prototype.dispose.call( this );
   }
 } );
+
+export default ExpressionOverlayNode;

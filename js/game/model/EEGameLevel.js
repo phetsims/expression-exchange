@@ -110,7 +110,7 @@ function EEGameLevel( levelNumber, allowedRepresentations ) {
 
 expressionExchange.register( 'EEGameLevel', EEGameLevel );
 
-export default inherit( ExpressionManipulationModel, EEGameLevel, {
+inherit( ExpressionManipulationModel, EEGameLevel, {
 
   /**
    * @public
@@ -147,3 +147,5 @@ export default inherit( ExpressionManipulationModel, EEGameLevel, {
     ) );
   }
 } );
+
+export default EEGameLevel;

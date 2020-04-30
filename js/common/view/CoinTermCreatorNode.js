@@ -198,7 +198,7 @@ function CoinTermCreatorNode( expressionManipulationModel,
 
 expressionExchange.register( 'CoinTermCreatorNode', CoinTermCreatorNode );
 
-export default inherit( Node, CoinTermCreatorNode, {
+inherit( Node, CoinTermCreatorNode, {
 
   /**
    * @public
@@ -208,3 +208,5 @@ export default inherit( Node, CoinTermCreatorNode, {
     Node.prototype.dispose.call( this );
   }
 } );
+
+export default CoinTermCreatorNode;

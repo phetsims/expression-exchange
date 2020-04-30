@@ -76,7 +76,7 @@ function CoinTermHaloNode( coinTerm, viewModeProperty ) {
 
 expressionExchange.register( 'CoinTermHaloNode', CoinTermHaloNode );
 
-export default inherit( Node, CoinTermHaloNode, {
+inherit( Node, CoinTermHaloNode, {
 
   // @public
   dispose: function() {
@@ -84,3 +84,5 @@ export default inherit( Node, CoinTermHaloNode, {
     Node.prototype.dispose.call( this );
   }
 } );
+
+export default CoinTermHaloNode;

@@ -88,7 +88,7 @@ function CoinTermCreatorBox( creatorNodes, options ) {
 
 expressionExchange.register( 'CoinTermCreatorBox', CoinTermCreatorBox );
 
-export default inherit( Node, CoinTermCreatorBox, {
+inherit( Node, CoinTermCreatorBox, {
 
   reset: function() {
     this.coinTermCreatorBox.reset && this.coinTermCreatorBox.reset();
@@ -102,3 +102,5 @@ export default inherit( Node, CoinTermCreatorBox, {
     Node.prototype.dispose.call( this );
   }
 } );
+
+export default CoinTermCreatorBox;

@@ -149,7 +149,7 @@ function EEGameScreenView( gameModel ) {
 
 expressionExchange.register( 'EEGameScreenView', EEGameScreenView );
 
-export default inherit( ScreenView, EEGameScreenView, {
+inherit( ScreenView, EEGameScreenView, {
 
   /**
    * step the view, needed for animations
@@ -164,3 +164,5 @@ export default inherit( ScreenView, EEGameScreenView, {
   }
 
 } );
+
+export default EEGameScreenView;

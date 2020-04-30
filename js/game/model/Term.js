@@ -26,7 +26,7 @@ function Term( coefficient, coinTermTypeID ) {
 
 expressionExchange.register( 'Term', Term );
 
-export default inherit( Object, Term, {
+inherit( Object, Term, {
 
   /**
    * multiply this term by the provide term
@@ -72,3 +72,5 @@ export default inherit( Object, Term, {
     return this.coinTermTypeID === coinTerm.typeID && this.coefficient === coinTerm.totalCountProperty.get();
   }
 } );
+
+export default Term;

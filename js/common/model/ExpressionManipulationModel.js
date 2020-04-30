@@ -160,7 +160,7 @@ function ExpressionManipulationModel( options ) {
 
 expressionExchange.register( 'ExpressionManipulationModel', ExpressionManipulationModel );
 
-export default inherit( Object, ExpressionManipulationModel, {
+inherit( Object, ExpressionManipulationModel, {
 
   /**
    * main step function for this model, should only be called by the framework
@@ -1322,3 +1322,5 @@ export default inherit( Object, ExpressionManipulationModel, {
   }
 
 } );
+
+export default ExpressionManipulationModel;

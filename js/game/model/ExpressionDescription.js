@@ -189,7 +189,7 @@ function extractTerm( expressionString, index ) {
 
 expressionExchange.register( 'ExpressionDescription', ExpressionDescription );
 
-export default inherit( Object, ExpressionDescription, {
+inherit( Object, ExpressionDescription, {
 
     /**
      * compares the content of a user-created expression with this description, returns true if they are equivalent
@@ -251,3 +251,5 @@ export default inherit( Object, ExpressionDescription, {
     }
   }
 );
+
+export default ExpressionDescription;
