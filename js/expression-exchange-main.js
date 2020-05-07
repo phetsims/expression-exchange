@@ -7,7 +7,7 @@
  */
 
 import Sim from '../../joist/js/Sim.js';
-import SimLauncher from '../../joist/js/SimLauncher.js';
+import simLauncher from '../../joist/js/simLauncher.js';
 import EEBasicsScreen from './basics/EEBasicsScreen.js';
 import EEExploreScreen from './explore/EEExploreScreen.js';
 import expressionExchangeStrings from './expressionExchangeStrings.js';
@@ -28,7 +28,7 @@ const simOptions = {
 };
 
 // launch the sim
-SimLauncher.launch( function() {
+simLauncher.launch( function() {
   const sim = new Sim(
     expressionExchangeTitleString,
     [
