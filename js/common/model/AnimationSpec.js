@@ -10,7 +10,7 @@ import inherit from '../../../../phet-core/js/inherit.js';
 import expressionExchange from '../../expressionExchange.js';
 
 /**
- * @param {Vector2} startPosition - the location from which the animation should begin
+ * @param {Vector2} startPosition - the position from which the animation should begin
  * @param {Vector2} travelVector - the path from the start to the destination
  * @param {number} totalDuration - in seconds, amount of time that the animation should take
  * @constructor

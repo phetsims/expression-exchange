@@ -145,7 +145,7 @@ function CoinTermCreatorNode( expressionManipulationModel,
       // node.
       const originPosition = expressionManipulationView.globalToLocalPoint( self.localToGlobalPoint( Vector2.ZERO ) );
 
-      // Determine the initial position where this element should move to after it's created based on the location of
+      // Determine the initial position where this element should move to after it's created based on the position of
       // the pointer event.
       const initialPosition = expressionManipulationView.globalToLocalPoint( event.pointer.point );
 

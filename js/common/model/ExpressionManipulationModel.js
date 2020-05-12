@@ -573,27 +573,27 @@ inherit( Object, ExpressionManipulationModel, {
   },
 
   /**
-   * Get the next location where a retrieved coin term (i.e. one that ended up out of bounds) can be placed.
+   * Get the next position where a retrieved coin term (i.e. one that ended up out of bounds) can be placed.
    * @returns {Vector2}
    * @private
    */
   getNextOpenRetrievalSpot: function() {
-    const location = new Vector2( 0, 0 );
+    const position = new Vector2( 0, 0 );
     let row = 0;
     let column = 0;
-    let openLocationFound = false;
-    while ( !openLocationFound ) {
-      location.x = RETRIEVED_COIN_TERM_FIRST_POSITION.x + column * RETRIEVED_COIN_TERMS_X_SPACING;
-      location.y = RETRIEVED_COIN_TERM_FIRST_POSITION.y + row * RETRIEVED_COIN_TERMS_Y_SPACING;
+    let openPositionFound = false;
+    while ( !openPositionFound ) {
+      position.x = RETRIEVED_COIN_TERM_FIRST_POSITION.x + column * RETRIEVED_COIN_TERMS_X_SPACING;
+      position.y = RETRIEVED_COIN_TERM_FIRST_POSITION.y + row * RETRIEVED_COIN_TERMS_Y_SPACING;
       let closeCoinTerm = false;
       for ( let i = 0; i < this.coinTerms.length; i++ ) {
-        if ( this.coinTerms.get( i ).destinationProperty.get().distance( location ) < MIN_RETRIEVAL_PLACEMENT_DISTANCE ) {
+        if ( this.coinTerms.get( i ).destinationProperty.get().distance( position ) < MIN_RETRIEVAL_PLACEMENT_DISTANCE ) {
           closeCoinTerm = true;
           break;
         }
       }
       if ( closeCoinTerm ) {
-        // move to next location
+        // move to next position
         column++;
         if ( column >= NUM_RETRIEVED_COIN_TERM_COLUMNS ) {
           row++;
@@ -601,19 +601,19 @@ inherit( Object, ExpressionManipulationModel, {
         }
       }
       else {
-        openLocationFound = true;
+        openPositionFound = true;
       }
     }
-    return location;
+    return position;
   },
 
   /**
-   * find a location where the provided expression won't overlap with others - this is only approximate, and doesn't
+   * find a position where the provided expression won't overlap with others - this is only approximate, and doesn't
    * work perfectly in situations where there are lots of expressions in the play area
    * @returns {Vector2}
    * @private
    */
-  getOpenExpressionPlacementLocation: function( expression ) {
+  getOpenExpressionPlacementPosition: function(expression ) {
 
     // variables that controls the search grid, empirically determined
     const minX = 170;
@@ -751,7 +751,7 @@ inherit( Object, ExpressionManipulationModel, {
 
         if ( expressionBeingEdited && expressionBeingEdited.coinTerms.contains( addedCoinTerm ) ) {
 
-          // An expression is being edited, so a released coin term could be either moved to a new location within an
+          // An expression is being edited, so a released coin term could be either moved to a new position within an
           // expression or combined with another coin term in the expression.
 
           // determine if the coin term was dropped while overlapping a coin term of the same type
@@ -771,7 +771,7 @@ inherit( Object, ExpressionManipulationModel, {
           }
           else {
 
-            // the coin term has been dropped at some potentially new location withing the expression
+            // the coin term has been dropped at some potentially new position withing the expression
             expressionBeingEdited.reintegrateCoinTerm( addedCoinTerm );
           }
         }
@@ -960,7 +960,7 @@ inherit( Object, ExpressionManipulationModel, {
         }
         else if ( mostOverlappingCollectionArea ) {
 
-          // The expression was released in a location that at least partially overlaps a collection area.  The
+          // The expression was released in a position that at least partially overlaps a collection area.  The
           // collection area must decide whether to collect or reject the expression.
           mostOverlappingCollectionArea.collectOrRejectExpression( addedExpression );
         }
@@ -995,9 +995,9 @@ inherit( Object, ExpressionManipulationModel, {
             else {
 
               // The destination was reached, but the expression that this one was joining has moved, so the wedding
-              // is off.  If this one is now out of bounds, move it to a reachable location.
+              // is off.  If this one is now out of bounds, move it to a reachable position.
               if ( !self.retrievalBounds.intersectsBounds( addedExpression.getBounds() ) ) {
-                addedExpression.travelToDestination( self.getOpenExpressionPlacementLocation( addedExpression ) );
+                addedExpression.travelToDestination( self.getOpenExpressionPlacementPosition( addedExpression ) );
               }
             }
             addedExpression.destinationReachedEmitter.removeListener( destinationReachedListener );

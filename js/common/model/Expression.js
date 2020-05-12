@@ -121,7 +121,7 @@ function Expression( anchorCoinTerm, floatingCoinTerm, simplifyNegativesProperty
   // join this one
   this.joinZone = new Bounds2( 0, 0, 0, 0 );
 
-  // update the join zone as the size and/or location of the expression changes
+  // update the join zone as the size and/or position of the expression changes
   Property.multilink(
     [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
     function( upperLeftCorner, width, height ) {
@@ -404,7 +404,7 @@ inherit( Object, Expression, {
   },
 
   /**
-   * add the specified coin term to this expression, moving it to the correct location
+   * add the specified coin term to this expression, moving it to the correct position
    * @param {CoinTerm} coinTerm
    * @public
    */
@@ -459,7 +459,7 @@ inherit( Object, Expression, {
       // decide whether or not to animate to the destination
       if ( !this.userControlledProperty.get() && !this.inProgressAnimationProperty.get() ) {
 
-        // animate to the new location
+        // animate to the new position
         coinTerm.travelToDestination( destination );
       }
       else {

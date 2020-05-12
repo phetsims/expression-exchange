@@ -117,7 +117,7 @@ function ExpressionOverlayNode( expression, layoutBounds ) {
     }
   } );
 
-  // pre-allocated vectors, used for calculating allowable locations for the expression
+  // pre-allocated vectors, used for calculating allowable positions for the expression
   const unboundedUpperLeftCornerPosition = new Vector2( 0, 0 );
   const boundedUpperLeftCornerPosition = new Vector2( 0, 0 );
 
@@ -208,17 +208,16 @@ expressionExchange.register( 'ExpressionOverlayNode', ExpressionOverlayNode );
 inherit( Node, ExpressionOverlayNode, {
 
   /**
-   * @param {number} xLocation
+   * @param {number} xPosition
    * @private
    */
-  showPopUpButtons: function( xLocation ) {
+  showPopUpButtons: function( xPosition ) {
     this.popUpButtonsNode.visible = true;
-    this.popUpButtonsNode.centerX = xLocation;
+    this.popUpButtonsNode.centerX = xPosition;
     this.popUpButtonsNode.bottom = -2;
   },
 
   /**
-   * @param {number} xLocation
    * @private
    */
   hidePopUpButtons: function() {
