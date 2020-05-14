@@ -10,13 +10,16 @@ import expressionExchange from '../expressionExchange.js';
 
 const EEQueryParameters = QueryStringMachine.getAll( {
 
-  // control whether expression width is always adjusted or whether it sometimes remains constant
+  // Controls whether expression width is always adjusted or whether it sometimes remains constant.
+  // For internal use only.
   adjustExpressionWidth: { type: 'flag' },
 
-  // show the reward screen every time a level is completed instead of when ALL levels are completed
+  // Shows the reward screen every time a level is completed instead of when ALL levels are completed.
+  // For internal use only.
   showRewardNodeEveryLevel: { type: 'flag' },
 
-  // reduce the number of game levels, useful for testing "all levels completed" behavior
+  // Reduces the number of game levels, useful for testing "all levels completed" behavior.
+  // For internal use only.
   minimalGameLevels: { type: 'flag' }
 } );
 
