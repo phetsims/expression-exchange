@@ -8,13 +8,14 @@
 
 import Property from '../../../axon/js/Property.js';
 import Screen from '../../../joist/js/Screen.js';
+import ScreenIcon from '../../../joist/js/ScreenIcon.js';
 import inherit from '../../../phet-core/js/inherit.js';
 import EESharedConstants from '../common/EESharedConstants.js';
 import CoinTermCreatorSetID from '../common/enum/CoinTermCreatorSetID.js';
 import ExpressionManipulationModel from '../common/model/ExpressionManipulationModel.js';
 import ExpressionExplorationScreenView from '../common/view/ExpressionExplorationScreenView.js';
-import expressionExchangeStrings from '../expressionExchangeStrings.js';
 import expressionExchange from '../expressionExchange.js';
+import expressionExchangeStrings from '../expressionExchangeStrings.js';
 import EEExploreIconNode from './view/EEExploreIconNode.js';
 
 const exploreString = expressionExchangeStrings.explore;
@@ -27,7 +28,10 @@ function EEExploreScreen() {
   const options = {
     name: exploreString,
     backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
-    homeScreenIcon: new EEExploreIconNode()
+    homeScreenIcon: new ScreenIcon( new EEExploreIconNode(), {
+      maxIconWidthProportion: 1,
+      maxIconHeightProportion: 1
+    } )
   };
 
   Screen.call( this,

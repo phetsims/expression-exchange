@@ -8,14 +8,15 @@
 
 import Property from '../../../axon/js/Property.js';
 import Screen from '../../../joist/js/Screen.js';
+import ScreenIcon from '../../../joist/js/ScreenIcon.js';
 import inherit from '../../../phet-core/js/inherit.js';
 import EESharedConstants from '../common/EESharedConstants.js';
 import AllowedRepresentations from '../common/enum/AllowedRepresentations.js';
 import CoinTermCreatorSetID from '../common/enum/CoinTermCreatorSetID.js';
 import ExpressionManipulationModel from '../common/model/ExpressionManipulationModel.js';
 import ExpressionExplorationScreenView from '../common/view/ExpressionExplorationScreenView.js';
-import expressionExchangeStrings from '../expressionExchangeStrings.js';
 import expressionExchange from '../expressionExchange.js';
+import expressionExchangeStrings from '../expressionExchangeStrings.js';
 import EENegativesIconNode from './view/EENegativesIconNode.js';
 
 const negativesString = expressionExchangeStrings.negatives;
@@ -28,7 +29,10 @@ function EENegativesScreen() {
   const options = {
     name: negativesString,
     backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
-    homeScreenIcon: new EENegativesIconNode()
+    homeScreenIcon: new ScreenIcon( new EENegativesIconNode(), {
+      maxIconWidthProportion: 1,
+      maxIconHeightProportion: 1
+    } )
   };
 
   Screen.call(
