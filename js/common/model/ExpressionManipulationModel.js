@@ -749,7 +749,7 @@ inherit( Object, ExpressionManipulationModel, {
         const mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( addedCoinTerm );
         const joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( addedCoinTerm );
 
-        if ( expressionBeingEdited && expressionBeingEdited.coinTerms.contains( addedCoinTerm ) ) {
+        if ( expressionBeingEdited && expressionBeingEdited.coinTerms.includes( addedCoinTerm ) ) {
 
           // An expression is being edited, so a released coin term could be either moved to a new position within an
           // expression or combined with another coin term in the expression.
@@ -981,7 +981,7 @@ inherit( Object, ExpressionManipulationModel, {
 
             // destination reached, combine with other expression, but ONLY if it hasn't moved or been removed
             if ( mostOverlappingExpression.getUpperRightCorner().equals( destinationForCombine ) &&
-                 self.expressions.contains( mostOverlappingExpression ) ) {
+                 self.expressions.includes( mostOverlappingExpression ) ) {
 
               const coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
               self.expressions.remove( addedExpression );
@@ -1233,7 +1233,7 @@ inherit( Object, ExpressionManipulationModel, {
    * @private
    */
   getMostOverlappingLikeCoinTerm: function( thisCoinTerm ) {
-    assert && assert( this.coinTerms.contains( thisCoinTerm ), 'overlap requested for something that is not in model' );
+    assert && assert( this.coinTerms.includes( thisCoinTerm ), 'overlap requested for something that is not in model' );
     const self = this;
     let mostOverlappingLikeCoinTerm = null;
     let maxOverlapAmount = 0;
