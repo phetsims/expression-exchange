@@ -45,9 +45,9 @@ function LeftRightNumberSpinner( variableValueProperty, variableString, options 
   const numberSpinner = new NumberSpinner( variableValueProperty, new Property( new Range( options.minValue, options.maxValue ) ), {
     arrowsPosition: 'leftRight',
     numberDisplayOptions: {
-      align: 'right',
+      xMargin: 5,
+      yMargin: 3,
       cornerRadius: 4,
-      backgroundStroke: 'black',
       textOptions: {
         font: READOUT_FONT
       }
