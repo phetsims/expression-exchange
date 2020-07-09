@@ -44,10 +44,14 @@ function LeftRightNumberSpinner( variableValueProperty, variableString, options 
   // create and add the readout
   const numberSpinner = new NumberSpinner( variableValueProperty, new Property( new Range( options.minValue, options.maxValue ) ), {
     arrowsPosition: 'leftRight',
-    font: READOUT_FONT,
-    backgroundStroke: 'black',
-    cornerRadius: 4,
-    valueAlign: 'right'
+    numberDisplayOptions: {
+      xMargin: 5,
+      yMargin: 3,
+      cornerRadius: 4,
+      textOptions: {
+        font: READOUT_FONT
+      }
+    }
   } );
 
   // create an HBox that will hold the variable, the equals sign, and the number spinner
