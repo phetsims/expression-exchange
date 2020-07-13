@@ -11,7 +11,6 @@ import inherit from '../../../../phet-core/js/inherit.js';
 import Animation from '../../../../twixt/js/Animation.js';
 import Easing from '../../../../twixt/js/Easing.js';
 import GameAudioPlayer from '../../../../vegas/js/GameAudioPlayer.js';
-import EESharedConstants from '../../common/EESharedConstants.js';
 import expressionExchange from '../../expressionExchange.js';
 import EEGameModel from '../model/EEGameModel.js';
 import EEGameLevelIconFactory from './EEGameLevelIconFactory.js';
@@ -28,7 +27,7 @@ const SCREEN_CHANGE_TIME = 1; // seconds
 function EEGameScreenView( gameModel ) {
 
   const self = this;
-  ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
+  ScreenView.call( this );
 
   // @private {EEGameModel}
   this.gameModel = gameModel;

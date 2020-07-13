@@ -5,14 +5,11 @@
  * @author John Blanco
  */
 
-import Bounds2 from '../../../dot/js/Bounds2.js';
 import Dimension2 from '../../../dot/js/Dimension2.js';
 import Color from '../../../scenery/js/util/Color.js';
 import expressionExchange from '../expressionExchange.js';
 
 const EESharedConstants = {
-
-  LAYOUT_BOUNDS: new Bounds2( 0, 0, 1024, 618 ), // at the time of this writing this is the same as the default
 
   // radius at which terms can be combined
   TERM_COMBINE_DISTANCE: 35,

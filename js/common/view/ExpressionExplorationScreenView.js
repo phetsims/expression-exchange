@@ -24,8 +24,8 @@ import AccordionBox from '../../../../sun/js/AccordionBox.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
 import Panel from '../../../../sun/js/Panel.js';
 import switchCoinImage from '../../../mipmaps/switch-coin_png.js';
-import expressionExchangeStrings from '../../expressionExchangeStrings.js';
 import expressionExchange from '../../expressionExchange.js';
+import expressionExchangeStrings from '../../expressionExchangeStrings.js';
 import EESharedConstants from '../EESharedConstants.js';
 import AllowedRepresentations from '../enum/AllowedRepresentations.js';
 import CoinTermCreatorSetID from '../enum/CoinTermCreatorSetID.js';
@@ -68,7 +68,7 @@ const WIDE_COLLECTION_DISPLAY_WIDTH = 180; // in view coordinates, empirically d
  */
 function ExpressionExplorationScreenView( model, coinTermCreatorSetID ) {
 
-  ScreenView.call( this, { layoutBounds: EESharedConstants.LAYOUT_BOUNDS } );
+  ScreenView.call( this );
 
   // set the bounds used to decide when coin terms need to be "pulled back"
   model.setRetrievalBounds( this.layoutBounds );
