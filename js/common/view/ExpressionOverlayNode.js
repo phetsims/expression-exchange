@@ -13,7 +13,7 @@ import Utils from '../../../../dot/js/Utils.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Shape from '../../../../kite/js/Shape.js';
 import inherit from '../../../../phet-core/js/inherit.js';
-import SimpleDragHandler from '../../../../scenery/js/input/SimpleDragHandler.js';
+import DragListener from '../../../../scenery/js/listeners/DragListener.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import expressionExchange from '../../expressionExchange.js';
@@ -118,26 +118,28 @@ function ExpressionOverlayNode( expression, layoutBounds ) {
   } );
 
   // pre-allocated vectors, used for calculating allowable positions for the expression
-  const unboundedUpperLeftCornerPosition = new Vector2( 0, 0 );
-  const boundedUpperLeftCornerPosition = new Vector2( 0, 0 );
+  const unboundedUpperLeftCornerPosition = Vector2.ZERO.copy();
+  const boundedUpperLeftCornerPosition = Vector2.ZERO.copy();
+  const dragOffset = Vector2.ZERO.copy();
 
   // add the handler that will allow the expression to be dragged and will hide and show the buttons
-  const dragHandler = new SimpleDragHandler( {
+  const dragListener = new DragListener( {
 
     allowTouchSnag: true,
 
-    start: function( event ) {
+    start: event => {
       expression.userControlledProperty.set( true );
-      unboundedUpperLeftCornerPosition.set( expression.upperLeftCornerProperty.get() );
+      unboundedUpperLeftCornerPosition.set( expression.upperLeftCornerProperty.value );
       boundedUpperLeftCornerPosition.set( unboundedUpperLeftCornerPosition );
-      self.clearHideButtonsTimer(); // in case it's running
-      self.showPopUpButtons( self.globalToLocalPoint( event.pointer.point ).x );
+      dragOffset.set( this.globalToParentPoint( event.pointer.point ).minus( expression.upperLeftCornerProperty.value ) );
+      this.clearHideButtonsTimer(); // in case it's running
+      this.showPopUpButtons( this.globalToLocalPoint( event.pointer.point ).x );
     },
 
-    translate: function( translationParams ) {
+    drag: event => {
 
       // figure out where the expression would go if unbounded
-      unboundedUpperLeftCornerPosition.add( translationParams.delta );
+      unboundedUpperLeftCornerPosition.set( this.globalToParentPoint( event.pointer.point ).minus( dragOffset ) );
 
       // set the expression position, but bound it so the user doesn't drag it completely out of the usable area
       expression.setPositionAndDestination( new Vector2(
@@ -154,11 +156,11 @@ function ExpressionOverlayNode( expression, layoutBounds ) {
       ) );
     },
 
-    end: function() {
+    end: () => {
       expression.userControlledProperty.set( false );
       assert && assert( self.hideButtonsTimerCallback === null, 'a timer for hiding the buttons was running at end of drag' );
       if ( breakApartButton.visible ) {
-        self.startHideButtonsTimer();
+        this.startHideButtonsTimer();
       }
     }
   } );
@@ -169,12 +171,12 @@ function ExpressionOverlayNode( expression, layoutBounds ) {
   // underneath this overlay node.
   function updateDragHandlerAttachmentState( inProgressAnimation, collected ) {
     if ( !dragHandlerAttached && inProgressAnimation === null && !collected ) {
-      expressionShapeNode.addInputListener( dragHandler );
+      expressionShapeNode.addInputListener( dragListener );
       dragHandlerAttached = true;
       self.cursor = 'pointer';
     }
     else if ( dragHandlerAttached && ( inProgressAnimation || collected ) ) {
-      expressionShapeNode.removeInputListener( dragHandler );
+      expressionShapeNode.removeInputListener( dragListener );
       dragHandlerAttached = false;
       self.cursor = null;
     }
