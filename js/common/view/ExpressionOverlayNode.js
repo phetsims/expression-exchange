@@ -180,6 +180,7 @@ function ExpressionOverlayNode( expression, layoutBounds ) {
       dragHandlerAttached = false;
       self.cursor = null;
     }
+    dragListener.clearOverPointers();
   }
 
   const updateDragHandlerAttachmentMultilink = Property.multilink(
