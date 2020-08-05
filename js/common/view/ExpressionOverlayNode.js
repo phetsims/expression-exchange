@@ -177,10 +177,10 @@ function ExpressionOverlayNode( expression, layoutBounds ) {
     }
     else if ( dragHandlerAttached && ( inProgressAnimation || collected ) ) {
       expressionShapeNode.removeInputListener( dragListener );
+      dragListener.clearOverPointers(); // done so that state errors don't occur when added back, see #146
       dragHandlerAttached = false;
       self.cursor = null;
     }
-    dragListener.clearOverPointers();
   }
 
   const updateDragHandlerAttachmentMultilink = Property.multilink(
