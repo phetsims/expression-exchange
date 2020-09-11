@@ -8,7 +8,7 @@
  */
 
 import Property from '../../../../axon/js/Property.js';
-import timer from '../../../../axon/js/timer.js';
+import stepTimer from '../../../../axon/js/stepTimer.js';
 import Utils from '../../../../dot/js/Utils.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Shape from '../../../../kite/js/Shape.js';
@@ -234,7 +234,7 @@ inherit( Node, ExpressionOverlayNode, {
    */
   clearHideButtonsTimer: function() {
     if ( this.hideButtonsTimerCallback ) {
-      timer.clearTimeout( this.hideButtonsTimerCallback );
+      stepTimer.clearTimeout( this.hideButtonsTimerCallback );
       this.hideButtonsTimerCallback = null;
     }
   },
@@ -242,7 +242,7 @@ inherit( Node, ExpressionOverlayNode, {
   startHideButtonsTimer: function() {
     const self = this;
     this.clearHideButtonsTimer(); // just in case one is already running
-    this.hideButtonsTimerCallback = timer.setTimeout( function() {
+    this.hideButtonsTimerCallback = stepTimer.setTimeout( function() {
       self.hidePopUpButtons();
       self.hideButtonsTimerCallback = null;
     }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );

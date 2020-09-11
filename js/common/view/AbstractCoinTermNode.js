@@ -7,7 +7,7 @@
  */
 
 import Property from '../../../../axon/js/Property.js';
-import timer from '../../../../axon/js/timer.js';
+import stepTimer from '../../../../axon/js/stepTimer.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import inherit from '../../../../phet-core/js/inherit.js';
@@ -172,7 +172,7 @@ inherit( Node, AbstractCoinTermNode, {
    */
   clearHideButtonTimer: function() {
     if ( this.hideButtonTimer ) {
-      timer.clearTimeout( this.hideButtonTimer );
+      stepTimer.clearTimeout( this.hideButtonTimer );
       this.hideButtonTimer = null;
     }
   },
@@ -184,7 +184,7 @@ inherit( Node, AbstractCoinTermNode, {
   startHideButtonTimer: function() {
     const self = this;
     this.clearHideButtonTimer(); // just in case one is already running
-    this.hideButtonTimer = timer.setTimeout( function() {
+    this.hideButtonTimer = stepTimer.setTimeout( function() {
       self.hideBreakApartButton();
       self.hideButtonTimer = null;
     }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );
