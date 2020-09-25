@@ -9,7 +9,6 @@
 import Property from '../../../axon/js/Property.js';
 import Screen from '../../../joist/js/Screen.js';
 import ScreenIcon from '../../../joist/js/ScreenIcon.js';
-import inherit from '../../../phet-core/js/inherit.js';
 import EESharedConstants from '../common/EESharedConstants.js';
 import CoinTermCreatorSetID from '../common/enum/CoinTermCreatorSetID.js';
 import ExpressionManipulationModel from '../common/model/ExpressionManipulationModel.js';
@@ -18,30 +17,25 @@ import expressionExchange from '../expressionExchange.js';
 import expressionExchangeStrings from '../expressionExchangeStrings.js';
 import EEExploreIconNode from './view/EEExploreIconNode.js';
 
-const exploreString = expressionExchangeStrings.explore;
+class EEExploreScreen extends Screen {
+  constructor() {
 
-/**
- * @constructor
- */
-function EEExploreScreen() {
+    const options = {
+      name: expressionExchangeStrings.explore,
+      backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
+      homeScreenIcon: new ScreenIcon( new EEExploreIconNode(), {
+        maxIconWidthProportion: 1,
+        maxIconHeightProportion: 1
+      } )
+    };
 
-  const options = {
-    name: exploreString,
-    backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
-    homeScreenIcon: new ScreenIcon( new EEExploreIconNode(), {
-      maxIconWidthProportion: 1,
-      maxIconHeightProportion: 1
-    } )
-  };
-
-  Screen.call( this,
-    function() { return new ExpressionManipulationModel(); },
-    function( model ) { return new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.EXPLORE ); },
-    options
-  );
+    super(
+      function() { return new ExpressionManipulationModel(); },
+      function( model ) { return new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.EXPLORE ); },
+      options
+    );
+  }
 }
 
 expressionExchange.register( 'EEExploreScreen', EEExploreScreen );
-
-inherit( Screen, EEExploreScreen );
 export default EEExploreScreen;
