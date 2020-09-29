@@ -5,7 +5,6 @@
  * @author John Blanco
  */
 
-import inherit from '../../../../phet-core/js/inherit.js';
 import merge from '../../../../phet-core/js/merge.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
@@ -18,36 +17,48 @@ const ICON_SCALE = 0.35;
 const BLACK_SCISSORS_ICON = createIconNode( 'black' );
 const YELLOW_SCISSORS_ICON = createIconNode( 'yellow' );
 
-/**
- * @constructor
- * @param {Object} [options]
- */
-function BreakApartButton( options ) {
+class BreakApartButton extends RectangularPushButton {
 
-  options = merge( {
-    mode: 'normal' // valid values are 'normal' and 'inverted'
-  }, options );
+  /**
+   * @param {Object} [options]
+   */
+  constructor( options ) {
 
-  // verify options are valid
-  assert && assert( options.mode === 'normal' || options.mode === 'inverted', 'invalid mode option' );
+    options = merge( {
+      mode: 'normal' // valid values are 'normal' and 'inverted'
+    }, options );
 
-  const icon = options.mode === 'normal' ? BLACK_SCISSORS_ICON : YELLOW_SCISSORS_ICON;
-  const iconNode = new Node( { children: [ icon ] } );
+    // verify options are valid
+    assert && assert( options.mode === 'normal' || options.mode === 'inverted', 'invalid mode option' );
 
-  // the following options can't be overridden, and are set here and then passed to the parent type below
-  merge( options, {
-    xMargin: MARGIN,
-    yMargin: MARGIN,
-    baseColor: options.mode === 'normal' ? 'yellow' : 'black',
-    cursor: 'pointer',
-    content: iconNode
-  } );
+    const icon = options.mode === 'normal' ? BLACK_SCISSORS_ICON : YELLOW_SCISSORS_ICON;
+    const iconNode = new Node( { children: [ icon ] } );
 
-  RectangularPushButton.call( this, options );
+    // the following options can't be overridden, and are set here and then passed to the parent type below
+    merge( options, {
+      xMargin: MARGIN,
+      yMargin: MARGIN,
+      baseColor: options.mode === 'normal' ? 'yellow' : 'black',
+      cursor: 'pointer',
+      content: iconNode
+    } );
 
-  this.disposeBreakApartButton = function() {
-    iconNode.dispose();
-  };
+    super( options );
+
+    // @private
+    this.disposeBreakApartButton = () => {
+      iconNode.dispose();
+    };
+  }
+
+  /**
+   * @public
+   * @override
+   */
+  dispose() {
+    this.disposeBreakApartButton();
+    super.dispose();
+  }
 }
 
 /**
@@ -65,16 +76,4 @@ function createIconNode( color ) {
 }
 
 expressionExchange.register( 'BreakApartButton', BreakApartButton );
-
-inherit( RectangularPushButton, BreakApartButton, {
-
-  /**
-   * @public
-   */
-  dispose: function() {
-    this.disposeBreakApartButton();
-    RectangularPushButton.prototype.dispose.call( this );
-  }
-} );
-
 export default BreakApartButton;

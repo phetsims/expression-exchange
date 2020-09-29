@@ -4,7 +4,6 @@
  * button used for putting expressions into edit mode
  */
 
-import inherit from '../../../../phet-core/js/inherit.js';
 import merge from '../../../../phet-core/js/merge.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
@@ -14,43 +13,43 @@ import expressionExchange from '../../expressionExchange.js';
 // constants
 const ICON = new FontAwesomeNode( 'exchange', { scale: 0.35 } ); // scale empirically determined
 
-/**
- * @constructor
- */
-function EditExpressionButton( options ) {
+class EditExpressionButton extends RectangularPushButton {
 
-  options = merge( {}, options );
+  /**
+   * @param {Object} [options]
+   */
+  constructor( options ) {
 
-  const iconNode = new Node( { children: [ ICON ] } );
+    options = merge( {}, options );
 
-  // the following options can't be overridden
-  options = merge( options, {
-    content: iconNode,
-    xMargin: 3, // empirically determined
-    yMargin: 5.5, // empirically determined
-    baseColor: 'white',
-    cursor: 'pointer'
-  } );
+    const iconNode = new Node( { children: [ ICON ] } );
 
-  RectangularPushButton.call( this, options );
+    // the following options can't be overridden
+    options = merge( options, {
+      content: iconNode,
+      xMargin: 3, // empirically determined
+      yMargin: 5.5, // empirically determined
+      baseColor: 'white',
+      cursor: 'pointer'
+    } );
 
-  this.disposeEditExpressionButton = function() {
-    iconNode.dispose();
-  };
-}
+    super( options );
 
-expressionExchange.register( 'EditExpressionButton', EditExpressionButton );
-
-inherit( RectangularPushButton, EditExpressionButton, {
+    // @private
+    this.disposeEditExpressionButton = () => {
+      iconNode.dispose();
+    };
+  }
 
   /**
    * @public
+   * @override
    */
-  dispose: function() {
+  dispose() {
     this.disposeEditExpressionButton();
-    RectangularPushButton.prototype.dispose.call( this );
+    super.dispose();
   }
+}
 
-} );
-
+expressionExchange.register( 'EditExpressionButton', EditExpressionButton );
 export default EditExpressionButton;
