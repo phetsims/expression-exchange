@@ -9,7 +9,7 @@
  * @author John Blanco
  */
 
-import ObservableArray from '../../../../axon/js/ObservableArray.js';
+import createObservableArray from '../../../../axon/js/createObservableArray.js';
 import Property from '../../../../axon/js/Property.js';
 import StringProperty from '../../../../axon/js/StringProperty.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
@@ -86,13 +86,13 @@ function ExpressionManipulationModel( options ) {
   this.allowedRepresentations = options.allowedRepresentations;
 
   // @public (read/listen-only) {ObservableArray.<CoinTerm>} - list of all coin terms in the model
-  this.coinTerms = new ObservableArray();
+  this.coinTerms = createObservableArray();
 
   // @public (read/listen-only) {ObservableArray.<Expression>} - list of expressions in the model
-  this.expressions = new ObservableArray();
+  this.expressions = createObservableArray();
 
   // @public (read/listen-only) {ObservableArray.<ExpressionHint} - list of expression hints in the model
-  this.expressionHints = new ObservableArray();
+  this.expressionHints = createObservableArray();
 
   // @public (read-only) {Bounds2} - coin terms and expression that end up outside these bounds are moved back inside
   this.retrievalBounds = Bounds2.EVERYTHING;

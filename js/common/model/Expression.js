@@ -9,7 +9,7 @@
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Emitter from '../../../../axon/js/Emitter.js';
-import ObservableArray from '../../../../axon/js/ObservableArray.js';
+import createObservableArray from '../../../../axon/js/createObservableArray.js';
 import Property from '../../../../axon/js/Property.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
@@ -79,7 +79,7 @@ function Expression( anchorCoinTerm, floatingCoinTerm, simplifyNegativesProperty
   //------------------------------------------------------------------------
 
   // @public (read/listen-only) {ObservableArray.<CoinTerm>} - items should be added and removed via methods
-  this.coinTerms = new ObservableArray();
+  this.coinTerms = createObservableArray();
 
   //------------------------------------------------------------------------
   // emitters
