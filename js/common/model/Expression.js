@@ -78,7 +78,7 @@ function Expression( anchorCoinTerm, floatingCoinTerm, simplifyNegativesProperty
   // observable arrays
   //------------------------------------------------------------------------
 
-  // @public (read/listen-only) {ObservableArray.<CoinTerm>} - items should be added and removed via methods
+  // @public (read/listen-only) {ObservableArrayDef.<CoinTerm>} - items should be added and removed via methods
   this.coinTerms = createObservableArray();
 
   //------------------------------------------------------------------------

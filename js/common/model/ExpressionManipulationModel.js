@@ -85,13 +85,13 @@ function ExpressionManipulationModel( options ) {
   // @public (read-only) {AllowedRepresentations} - options that control what is available to the user to manipulate
   this.allowedRepresentations = options.allowedRepresentations;
 
-  // @public (read/listen-only) {ObservableArray.<CoinTerm>} - list of all coin terms in the model
+  // @public (read/listen-only) {ObservableArrayDef.<CoinTerm>} - list of all coin terms in the model
   this.coinTerms = createObservableArray();
 
-  // @public (read/listen-only) {ObservableArray.<Expression>} - list of expressions in the model
+  // @public (read/listen-only) {ObservableArrayDef.<Expression>} - list of expressions in the model
   this.expressions = createObservableArray();
 
-  // @public (read/listen-only) {ObservableArray.<ExpressionHint} - list of expression hints in the model
+  // @public (read/listen-only) {ObservableArrayDef.<ExpressionHint} - list of expression hints in the model
   this.expressionHints = createObservableArray();
 
   // @public (read-only) {Bounds2} - coin terms and expression that end up outside these bounds are moved back inside
