@@ -64,7 +64,7 @@ function ExpressionNode( expression, simplifyNegativesProperty ) {
 
     if ( expression.coinTerms.length > 0 ) {
 
-      const coinTermsLeftToRight = expression.coinTerms.getArray().slice().sort( function( ct1, ct2 ) {
+      const coinTermsLeftToRight = expression.coinTerms.slice().sort( function( ct1, ct2 ) {
         return ct1.destinationProperty.get().x - ct2.destinationProperty.get().x;
       } );
 

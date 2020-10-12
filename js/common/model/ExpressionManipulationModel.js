@@ -188,7 +188,7 @@ inherit( Object, ExpressionManipulationModel, {
       } );
 
       // get a list of user controlled expressions, max of one on mouse based systems, any number on touch devices
-      const userControlledExpressions = _.filter( this.expressions.getArray(), function( expression ) {
+      const userControlledExpressions = _.filter( this.expressions, function( expression ) {
         return expression.userControlledProperty.get();
       } );
 
@@ -245,7 +245,7 @@ inherit( Object, ExpressionManipulationModel, {
       } );
 
       // get a list of all user controlled coin terms, max of one coin on mouse-based systems, any number on touch devices
-      userControlledCoinTerms = _.filter( this.coinTerms.getArray(), function( coin ) {
+      userControlledCoinTerms = _.filter( this.coinTerms, function( coin ) {
         return coin.userControlledProperty.get();
       } );
 
@@ -351,7 +351,7 @@ inherit( Object, ExpressionManipulationModel, {
       // coins is tested so that their halos can be activated.
 
       // get a list of all user controlled coins, max of one coin on mouse-based systems, any number on touch devices
-      userControlledCoinTerms = _.filter( this.coinTerms.getArray(), function( coinTerm ) {
+      userControlledCoinTerms = _.filter( this.coinTerms, function( coinTerm ) {
         return coinTerm.userControlledProperty.get();
       } );
 

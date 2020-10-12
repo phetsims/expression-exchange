@@ -327,7 +327,7 @@ inherit( Object, Expression, {
    * @private
    */
   getCoinTermsLeftToRight: function() {
-    return this.coinTerms.getArray().slice( 0 ).sort( function( ct1, ct2 ) {
+    return this.coinTerms.slice( 0 ).sort( function( ct1, ct2 ) {
       return ct1.destinationProperty.get().x - ct2.destinationProperty.get().x;
     } );
   },
