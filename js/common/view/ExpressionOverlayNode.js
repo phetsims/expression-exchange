@@ -43,7 +43,7 @@ function ExpressionOverlayNode( expression, layoutBounds ) {
   const updateShapeMultilink = Property.multilink(
     [ expression.widthProperty, expression.heightProperty ],
     function() {
-      expressionShapeNode.shape = new Shape.rect( 0, 0, expression.widthProperty.get(), expression.heightProperty.get() );
+      expressionShapeNode.shape = Shape.rect( 0, 0, expression.widthProperty.get(), expression.heightProperty.get() );
     }
   );
 
