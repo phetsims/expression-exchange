@@ -7,14 +7,13 @@
  * @author John Blanco
  */
 
+import createObservableArray from '../../../../axon/js/createObservableArray.js';
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Emitter from '../../../../axon/js/Emitter.js';
-import createObservableArray from '../../../../axon/js/createObservableArray.js';
 import Property from '../../../../axon/js/Property.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Vector2Property from '../../../../dot/js/Vector2Property.js';
-import inherit from '../../../../phet-core/js/inherit.js';
 import Easing from '../../../../twixt/js/Easing.js';
 import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
@@ -30,188 +29,182 @@ const MAX_ANIMATION_TIME = 1; // seconds
 // class var for creating unique IDs
 let creationCount = 0;
 
-/**
- * @param {CoinTerm} anchorCoinTerm
- * @param {CoinTerm} floatingCoinTerm
- * @param {Property.<boolean>} simplifyNegativesProperty
- * @constructor
- */
-function Expression( anchorCoinTerm, floatingCoinTerm, simplifyNegativesProperty ) {
+class Expression {
 
-  const self = this;
-  this.id = 'EX-' + ( ++creationCount );
+  /**
+   * @param {CoinTerm} anchorCoinTerm
+   * @param {CoinTerm} floatingCoinTerm
+   * @param {Property.<boolean>} simplifyNegativesProperty
+   */
+  constructor( anchorCoinTerm, floatingCoinTerm, simplifyNegativesProperty ) {
 
-  //------------------------------------------------------------------------
-  // properties
-  //------------------------------------------------------------------------
+    const self = this;
+    this.id = 'EX-' + ( ++creationCount );
 
-  this.upperLeftCornerProperty = new Vector2Property( Vector2.ZERO ); // @public
-  this.widthProperty = new Property( 0 ); // @public (read-only) {Property.<number>}
-  this.heightProperty = new Property( 0 ); // @public (read-only) {Property.<number>}
-  this.userControlledProperty = new Property( false ); // @public {Property.<boolean>}
-  this.inEditModeProperty = new Property( false ); // @public {Property.<boolean>} - indicates whether this expression is being edited
-  this.collectedProperty = new Property( false ); // @public {Property.<boolean>} - indicates whether this is in a collection box (for game)
+    //------------------------------------------------------------------------
+    // properties
+    //------------------------------------------------------------------------
 
-  // @public (read-only) {Property.<AnimationSpec>} - tracks the current in-progress animation, if any
-  this.inProgressAnimationProperty = new Property( null );
+    this.upperLeftCornerProperty = new Vector2Property( Vector2.ZERO ); // @public
+    this.widthProperty = new Property( 0 ); // @public (read-only) {Property.<number>}
+    this.heightProperty = new Property( 0 ); // @public (read-only) {Property.<number>}
+    this.userControlledProperty = new Property( false ); // @public {Property.<boolean>}
+    this.inEditModeProperty = new Property( false ); // @public {Property.<boolean>} - indicates whether this expression is being edited
+    this.collectedProperty = new Property( false ); // @public {Property.<boolean>} - indicates whether this is in a collection box (for game)
 
-  // @public (read-only) {Property.<boolean>} indicates whether the 'combine halo' should be visible
-  this.combineHaloActiveProperty = new Property( false );
+    // @public (read-only) {Property.<AnimationSpec>} - tracks the current in-progress animation, if any
+    this.inProgressAnimationProperty = new Property( null );
 
-  // @public (read-only) - size and state of the hints that can appear at left and right of the expression
-  this.leftHintActiveProperty = new Property( false );
-  this.leftHintWidthProperty = new Property( 0 );
-  this.rightHintActiveProperty = new Property( false );
-  this.rightHintWidthProperty = new Property( 0 );
+    // @public (read-only) {Property.<boolean>} indicates whether the 'combine halo' should be visible
+    this.combineHaloActiveProperty = new Property( false );
 
-  // @private, used to update whether or not coin terms should show minus sign when negative
-  this.simplifyNegativesProperty = simplifyNegativesProperty;
+    // @public (read-only) - size and state of the hints that can appear at left and right of the expression
+    this.leftHintActiveProperty = new Property( false );
+    this.leftHintWidthProperty = new Property( 0 );
+    this.rightHintActiveProperty = new Property( false );
+    this.rightHintWidthProperty = new Property( 0 );
 
-  // @public (read-only) - scale, used to shrink the expression when it is collected or uncollected
-  this.scaleProperty = new DerivedProperty( [ this.collectedProperty ], function( collected ) {
-    return collected ?
-           Math.min( EESharedConstants.COLLECTION_AREA_SIZE.width / self.widthProperty.get(), 1 ) * 0.9 :
-           1;
-  } );
+    // @private, used to update whether or not coin terms should show minus sign when negative
+    this.simplifyNegativesProperty = simplifyNegativesProperty;
 
-  //------------------------------------------------------------------------
-  // observable arrays
-  //------------------------------------------------------------------------
+    // @public (read-only) - scale, used to shrink the expression when it is collected or uncollected
+    this.scaleProperty = new DerivedProperty( [ this.collectedProperty ], collected => collected ?
+                                                                                       Math.min( EESharedConstants.COLLECTION_AREA_SIZE.width / this.widthProperty.get(), 1 ) * 0.9 :
+                                                                                       1 );
 
-  // @public (read/listen-only) {ObservableArrayDef.<CoinTerm>} - items should be added and removed via methods
-  this.coinTerms = createObservableArray();
+    //------------------------------------------------------------------------
+    // observable arrays
+    //------------------------------------------------------------------------
 
-  //------------------------------------------------------------------------
-  // emitters
-  //------------------------------------------------------------------------
+    // @public (read/listen-only) {ObservableArrayDef.<CoinTerm>} - items should be added and removed via methods
+    this.coinTerms = createObservableArray();
 
-  // @public (read-only) {Emitter} - emits an event when an animation finishes and the destination is reached
-  this.destinationReachedEmitter = new Emitter();
+    //------------------------------------------------------------------------
+    // emitters
+    //------------------------------------------------------------------------
 
-  // @public (read-only) {Emitter} - emits an event when the size of the expression or the relative positions of the coins
-  // change, generally used by the view so that it knows when to update, does NOT fire for position-only changes
-  // or for activation/deactivation of hints
-  this.layoutChangedEmitter = new Emitter();
+    // @public (read-only) {Emitter} - emits an event when an animation finishes and the destination is reached
+    this.destinationReachedEmitter = new Emitter();
 
-  // @public (read-only) {Emitter} - emits an event when this expression should be broken apart
-  this.breakApartEmitter = new Emitter();
+    // @public (read-only) {Emitter} - emits an event when the size of the expression or the relative positions of the coins
+    // change, generally used by the view so that it knows when to update, does NOT fire for position-only changes
+    // or for activation/deactivation of hints
+    this.layoutChangedEmitter = new Emitter();
 
-  //------------------------------------------------------------------------
-  // non-observable attributes
-  //------------------------------------------------------------------------
+    // @public (read-only) {Emitter} - emits an event when this expression should be broken apart
+    this.breakApartEmitter = new Emitter();
 
-  // @private {Array.<CoinTerm>} - tracks coin terms that are hovering over this expression but are being controlled by
-  // the user so are not yet part of the expression.  This is used to activate and size the hints.  Coin terms should
-  // be added and removed via methods.
-  this.hoveringCoinTerms = [];
+    //------------------------------------------------------------------------
+    // non-observable attributes
+    //------------------------------------------------------------------------
 
-  // @private {Array.<Expression>} - tracks expressions that are hovering over this expression and would be combined
-  // with this one if released by the user.  This is used to activate the 'halo' that indicates that potential
-  // combination.
-  this.hoveringExpressions = [];
+    // @private {Array.<CoinTerm>} - tracks coin terms that are hovering over this expression but are being controlled by
+    // the user so are not yet part of the expression.  This is used to activate and size the hints.  Coin terms should
+    // be added and removed via methods.
+    this.hoveringCoinTerms = [];
 
-  // @private {boolean} - tracks whether the expression should be resized on the next step
-  this.resizeNeeded = false;
+    // @private {Array.<Expression>} - tracks expressions that are hovering over this expression and would be combined
+    // with this one if released by the user.  This is used to activate the 'halo' that indicates that potential
+    // combination.
+    this.hoveringExpressions = [];
 
-  // @private {CoinTerm.id} => {Function} - map used to track user controlled listeners that are added to coin terms
-  // that join this expression
-  this.mapCoinTermsToUCListeners = {};
+    // @private {boolean} - tracks whether the expression should be resized on the next step
+    this.resizeNeeded = false;
 
-  // @private {Bounds2} - bounds that will be used to decide if coin terms or other expressions are in a position to
-  // join this one
-  this.joinZone = new Bounds2( 0, 0, 0, 0 );
+    // @private {CoinTerm.id} => {Function} - map used to track user controlled listeners that are added to coin terms
+    // that join this expression
+    this.mapCoinTermsToUCListeners = {};
 
-  // update the join zone as the size and/or position of the expression changes
-  Property.multilink(
-    [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
-    function( upperLeftCorner, width, height ) {
-      self.joinZone.setMinMax(
-        upperLeftCorner.x - height,
-        upperLeftCorner.y,
-        upperLeftCorner.x + width + height,
-        upperLeftCorner.y + height );
-    }
-  );
+    // @private {Bounds2} - bounds that will be used to decide if coin terms or other expressions are in a position to
+    // join this one
+    this.joinZone = new Bounds2( 0, 0, 0, 0 );
 
-  //------------------------------------------------------------------------
-  // other initialization
-  //------------------------------------------------------------------------
-
-  // @private
-  this.setResizeNeededFlagBound = this.setResizeNeededFlag.bind( this );
-
-  // add the initial coin term
-  this.addCoinTerm( anchorCoinTerm );
-
-  // add the second coin term
-  this.addCoinTerm( floatingCoinTerm );
-
-  // add a listener that will immediately finish animations for incoming coin terms if the expression is grabbed
-  this.userControlledProperty.link( function( userControlled ) {
-    if ( userControlled ) {
-      self.coinTerms.forEach( function( coinTerm ) {
-        if ( coinTerm.inProgressAnimationProperty.get() ) {
-          coinTerm.goImmediatelyToDestination();
-        }
-      } );
-    }
-  } );
-
-  // add a listener that will adjust the scale when needed, generally done when expression is collected or uncollected
-  this.scaleProperty.lazyLink( function( scale, previousScale ) {
-
-    // state checking
-    assert && assert( scale <= 1, 'scaling up beyond 1 is not supported' );
-    assert && assert(
-      ( scale <= 1 && previousScale === 1 ) || ( scale === 1 && previousScale <= 1 ),
-      'expressions only scale down from 1 or up to 1, anything else is unexpected'
+    // update the join zone as the size and/or position of the expression changes
+    Property.multilink(
+      [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
+      ( upperLeftCorner, width, height ) => {
+        this.joinZone.setMinMax(
+          upperLeftCorner.x - height,
+          upperLeftCorner.y,
+          upperLeftCorner.x + width + height,
+          upperLeftCorner.y + height );
+      }
     );
 
-    // set the scale of each constituent coin term
-    self.coinTerms.forEach( function( coinTerm ) {
-      coinTerm.scaleProperty.set( scale );
+    //------------------------------------------------------------------------
+    // other initialization
+    //------------------------------------------------------------------------
+
+    // @private
+    this.setResizeNeededFlagBound = this.setResizeNeededFlag.bind( this );
+
+    // add the initial coin term
+    this.addCoinTerm( anchorCoinTerm );
+
+    // add the second coin term
+    this.addCoinTerm( floatingCoinTerm );
+
+    // add a listener that will immediately finish animations for incoming coin terms if the expression is grabbed
+    this.userControlledProperty.link( userControlled => {
+      if ( userControlled ) {
+        this.coinTerms.forEach( coinTerm => {
+          if ( coinTerm.inProgressAnimationProperty.get() ) {
+            coinTerm.goImmediatelyToDestination();
+          }
+        } );
+      }
     } );
 
-    // Setting the scale of the resident coin terms will often set the 'resizeNeeded' flag, which is intended to be
-    // handled during the next call to the step function.  This is done for efficiency, since we don't want to resize
-    // the expression on every single coin term size change.  However, this approach is problematic in the case of
-    // scale changes because expressions are often scaled when collected and then immediately moved into or out of a
-    // collection area, and if the expression's bounds aren't accurate, the placement of the expression (generally
-    // animated) gets screwed up.  Because of this, we handle the resizing immediately when the scale changes.
-    if ( self.resizeNeeded ) {
-      self.updateSizeAndCoinTermPositions( false );
-      self.resizeNeeded = false;
+    // add a listener that will adjust the scale when needed, generally done when expression is collected or uncollected
+    this.scaleProperty.lazyLink( ( scale, previousScale ) => {
+
+      // state checking
+      assert && assert( scale <= 1, 'scaling up beyond 1 is not supported' );
+      assert && assert(
+        ( scale <= 1 && previousScale === 1 ) || ( scale === 1 && previousScale <= 1 ),
+        'expressions only scale down from 1 or up to 1, anything else is unexpected'
+      );
+
+      // set the scale of each constituent coin term
+      this.coinTerms.forEach( coinTerm => {
+        coinTerm.scaleProperty.set( scale );
+      } );
+
+      // Setting the scale of the resident coin terms will often set the 'resizeNeeded' flag, which is intended to be
+      // handled during the next call to the step function.  This is done for efficiency, since we don't want to resize
+      // the expression on every single coin term size change.  However, this approach is problematic in the case of
+      // scale changes because expressions are often scaled when collected and then immediately moved into or out of a
+      // collection area, and if the expression's bounds aren't accurate, the placement of the expression (generally
+      // animated) gets screwed up.  Because of this, we handle the resizing immediately when the scale changes.
+      if ( this.resizeNeeded ) {
+        this.updateSizeAndCoinTermPositions( false );
+        this.resizeNeeded = false;
+      }
+    } );
+
+    // monitor the setting for whether negatives are simplified and update the contained coin terms when it changes
+    function updateCoinTermMinusSignFlags() {
+      self.updateCoinTermShowMinusSignFlag();
     }
-  } );
 
-  // monitor the setting for whether negatives are simplified and update the contained coin terms when it changes
-  function updateCoinTermMinusSignFlags() {
-    self.updateCoinTermShowMinusSignFlag();
+    simplifyNegativesProperty.link( updateCoinTermMinusSignFlags );
+
+    // create a dispose function
+    this.disposeExpression = () => {
+      simplifyNegativesProperty.unlink( updateCoinTermMinusSignFlags );
+    };
+
+    // logging, for debug purposes
+    phet.log && phet.log( 'created ' + this.id + ' with anchor = ' + anchorCoinTerm.id +
+                          ' and floating = ' + floatingCoinTerm.id );
   }
-
-  simplifyNegativesProperty.link( updateCoinTermMinusSignFlags );
-
-  // create a dispose function
-  this.disposeExpression = function() {
-    simplifyNegativesProperty.unlink( updateCoinTermMinusSignFlags );
-  };
-
-  // logging, for debug purposes
-  phet.log && phet.log( 'created ' + this.id + ' with anchor = ' + anchorCoinTerm.id +
-                        ' and floating = ' + floatingCoinTerm.id );
-}
-
-expressionExchange.register( 'Expression', Expression );
-
-inherit( Object, Expression, {
 
   /**
    * step this expression in time, which will cause it to make any updates in its state that are needed
    * @param dt
+   * @public
    */
-  step: function( dt ) {
-
-    const self = this;
+  step( dt ) {
 
     // If needed, adjust the size of the expression and the positions of the contained coin terms.  This is done here
     // in the step function so that it is only done a max of once per animation frame rather than redoing it for each
@@ -224,17 +217,17 @@ inherit( Object, Expression, {
 
     // determine the needed height and which hints should be active
     let tallestCoinTermHeight = 0;
-    this.coinTerms.forEach( function( residentCoinTerm ) {
+    this.coinTerms.forEach( residentCoinTerm => {
       tallestCoinTermHeight = Math.max( tallestCoinTermHeight, residentCoinTerm.localViewBoundsProperty.get().height );
     } );
     let rightHintActive = false;
     let rightHintMaxCoinWidth = 0;
     let leftHintActive = false;
     let leftHintMaxCoinWidth = 0;
-    this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
+    this.hoveringCoinTerms.forEach( hoveringCoinTerm => {
       const hctRelativeViewBounds = hoveringCoinTerm.localViewBoundsProperty.get();
       tallestCoinTermHeight = Math.max( tallestCoinTermHeight, hctRelativeViewBounds.height );
-      if ( hoveringCoinTerm.positionProperty.get().x > self.upperLeftCornerProperty.get().x + self.widthProperty.get() / 2 ) {
+      if ( hoveringCoinTerm.positionProperty.get().x > this.upperLeftCornerProperty.get().x + this.widthProperty.get() / 2 ) {
 
         // coin is over right half of the expression
         rightHintActive = true;
@@ -297,20 +290,21 @@ inherit( Object, Expression, {
         this.destinationReachedEmitter.emit();
       }
     }
-  },
+  }
 
   /**
    * @public
    */
-  dispose: function() {
+  dispose() {
     this.disposeExpression();
-  },
+  }
 
   /**
    * get the current bounds of this expression
    * @param {Bounds2} [boundsToSet] - optional bounds to set if caller wants to avoid an allocation
+   * @public
    */
-  getBounds: function( boundsToSet ) {
+  getBounds( boundsToSet ) {
     const bounds = boundsToSet || new Bounds2( 0, 0, 1, 1 );
     const upperLeftCorner = this.upperLeftCornerProperty.get();
     bounds.setMinMax(
@@ -320,17 +314,15 @@ inherit( Object, Expression, {
       upperLeftCorner.y + this.heightProperty.get()
     );
     return bounds;
-  },
+  }
 
   /**
    * get a list of the coin terms ordered from left to right based on their position in the expression
    * @private
    */
-  getCoinTermsLeftToRight: function() {
-    return this.coinTerms.slice( 0 ).sort( function( ct1, ct2 ) {
-      return ct1.destinationProperty.get().x - ct2.destinationProperty.get().x;
-    } );
-  },
+  getCoinTermsLeftToRight() {
+    return this.coinTerms.slice( 0 ).sort( ( ct1, ct2 ) => ct1.destinationProperty.get().x - ct2.destinationProperty.get().x );
+  }
 
   /**
    * Size the expression and, if necessary, move the contained coin terms so that all coin terms are appropriately
@@ -339,7 +331,7 @@ inherit( Object, Expression, {
    * @param {boolean} animate
    * @private
    */
-  updateSizeAndCoinTermPositions: function( animate ) {
+  updateSizeAndCoinTermPositions( animate ) {
 
     // keep track of original size so we know when to fire event about layout changes
     const originalWidth = this.widthProperty.get();
@@ -382,7 +374,7 @@ inherit( Object, Expression, {
     // adjust the size and position of this expression
     let maxHeight = 0;
     let totalWidth = 0;
-    coinTermsLeftToRight.forEach( function( coinTerm ) {
+    coinTermsLeftToRight.forEach( coinTerm => {
       const relativeViewBounds = coinTerm.localViewBoundsProperty.get();
       maxHeight = relativeViewBounds.height > maxHeight ? relativeViewBounds.height : maxHeight;
       totalWidth += relativeViewBounds.width;
@@ -401,14 +393,14 @@ inherit( Object, Expression, {
     if ( this.widthProperty.get() !== originalWidth || this.heightProperty.get() !== originalHeight || coinTermsMoved ) {
       this.layoutChangedEmitter.emit();
     }
-  },
+  }
 
   /**
    * add the specified coin term to this expression, moving it to the correct position
    * @param {CoinTerm} coinTerm
    * @public
    */
-  addCoinTerm: function( coinTerm ) {
+  addCoinTerm( coinTerm ) {
 
     assert && assert( !this.coinTerms.includes( coinTerm ), 'coin term is already present in expression' );
 
@@ -495,14 +487,14 @@ inherit( Object, Expression, {
 
     // trigger an event so that the view is sure to be updated
     this.layoutChangedEmitter.emit();
-  },
+  }
 
   /**
    * remove a coin term from this expression
    * @param {CoinTerm} coinTerm
    * @public
    */
-  removeCoinTerm: function( coinTerm ) {
+  removeCoinTerm( coinTerm ) {
     coinTerm.expressionProperty.set( null );
     coinTerm.breakApartAllowedProperty.set( true );
     coinTerm.showMinusSignWhenNegativeProperty.set( true );
@@ -517,36 +509,34 @@ inherit( Object, Expression, {
     }
 
     phet.log && phet.log( 'removed ' + coinTerm.id + ' from ' + this.id );
-  },
+  }
 
   /**
    * @param {CoinTerm} coinTerm
    * @private
    */
-  containsCoinTerm: function( coinTerm ) {
+  containsCoinTerm( coinTerm ) {
     return this.coinTerms.includes( coinTerm );
-  },
+  }
 
   /**
    * remove all coin terms
    * @returns {Array.<CoinTerm>} a simple array with all coin terms, sorted in left-to-right order
    * @public
    */
-  removeAllCoinTerms: function() {
-
-    const self = this;
+  removeAllCoinTerms() {
 
     // make a copy of the coin terms and sort them in left to right order
     const coinTermsLeftToRight = this.getCoinTermsLeftToRight();
 
     // remove them from this expression
-    coinTermsLeftToRight.forEach( function( coinTerm ) {
-      self.removeCoinTerm( coinTerm );
+    coinTermsLeftToRight.forEach( coinTerm => {
+      this.removeCoinTerm( coinTerm );
     } );
 
     // return the sorted array
     return coinTermsLeftToRight;
-  },
+  }
 
   /**
    * add back a coin term that is already part of this expression, but something about it (most likely its position)
@@ -554,7 +544,7 @@ inherit( Object, Expression, {
    * @param {CoinTerm} coinTerm
    * @public
    */
-  reintegrateCoinTerm: function( coinTerm ) {
+  reintegrateCoinTerm( coinTerm ) {
 
     assert && assert( this.containsCoinTerm( coinTerm ), 'coin term is not part of this expression, can\'t be reintegrated' );
 
@@ -567,7 +557,7 @@ inherit( Object, Expression, {
     // set the position of each coin term based on its order
     let leftEdge = this.upperLeftCornerProperty.get().x + X_MARGIN;
     const centerY = this.upperLeftCornerProperty.get().y + this.heightProperty.get() / 2;
-    coinTermsLeftToRight.forEach( function( orderedCoinTerm ) {
+    coinTermsLeftToRight.forEach( orderedCoinTerm => {
       orderedCoinTerm.travelToDestination( new Vector2(
         leftEdge - orderedCoinTerm.localViewBoundsProperty.get().minX,
         centerY
@@ -577,21 +567,20 @@ inherit( Object, Expression, {
 
     // trigger an event so that the view is sure to be updated
     this.layoutChangedEmitter.emit();
-  },
+  }
 
   /**
    * update the contained coin terms for whether they should show minus sign when negative, supports subtraction mode
    * @private
    */
-  updateCoinTermShowMinusSignFlag: function() {
-    const self = this;
-    const coinTermsLeftToRight = self.getCoinTermsLeftToRight();
+  updateCoinTermShowMinusSignFlag() {
+    const coinTermsLeftToRight = this.getCoinTermsLeftToRight();
     let oneOrMoreChanged = false;
-    coinTermsLeftToRight.forEach( function( residentCoinTerm, index ) {
+    coinTermsLeftToRight.forEach( ( residentCoinTerm, index ) => {
 
       // The minus sign is suppressed if subtraction is being shown, the coin term is not user controlled, and the
       // coin term is not the first one in the expression so that subtraction expressions will look correct.
-      const showMinusSignWhenNegative = !( self.simplifyNegativesProperty.value && index > 0 ) ||
+      const showMinusSignWhenNegative = !( this.simplifyNegativesProperty.value && index > 0 ) ||
                                         residentCoinTerm.userControlledProperty.get();
 
       if ( showMinusSignWhenNegative !== residentCoinTerm.showMinusSignWhenNegativeProperty.get() ) {
@@ -603,39 +592,38 @@ inherit( Object, Expression, {
     if ( oneOrMoreChanged ) {
       this.layoutChangedEmitter.emit();
     }
-  },
+  }
 
   /**
    * move, a.k.a. translate, by the specified amount and move the coin terms too
    * @param {Vector2} deltaPosition
    * @private
    */
-  translate: function( deltaPosition ) {
+  translate( deltaPosition ) {
 
     // move the coin terms
-    this.coinTerms.forEach( function( coinTerm ) {
+    this.coinTerms.forEach( coinTerm => {
       coinTerm.setPositionAndDestination( coinTerm.positionProperty.get().plus( deltaPosition ) );
     } );
 
     // move the outline shape
     this.upperLeftCornerProperty.set( this.upperLeftCornerProperty.get().plus( deltaPosition ) );
-  },
+  }
 
   /**
    * move to the specified destination, but do so a step at a time rather than all at once
    * @param {Vector2} upperLeftCornerDestination
    * @public
    */
-  travelToDestination: function( upperLeftCornerDestination ) {
-    const self = this;
+  travelToDestination( upperLeftCornerDestination ) {
     const animationDuration = Math.min(
-      self.upperLeftCornerProperty.get().distance( upperLeftCornerDestination ) / ANIMATION_SPEED,
+      this.upperLeftCornerProperty.get().distance( upperLeftCornerDestination ) / ANIMATION_SPEED,
       MAX_ANIMATION_TIME
     );
     if ( animationDuration === 0 ) {
 
       // already there, so emit a notification and call it good
-      self.destinationReachedEmitter.emit();
+      this.destinationReachedEmitter.emit();
     }
     else {
 
@@ -646,24 +634,24 @@ inherit( Object, Expression, {
         animationDuration
       ) );
     }
-  },
+  }
 
   /**
    * set both the position and destination of the upper left corner immediately, i.e. without animation
    * @param {Vector2} upperLeftCornerDestination
    * @public
    */
-  setPositionAndDestination: function( upperLeftCornerDestination ) {
+  setPositionAndDestination( upperLeftCornerDestination ) {
     this.translate( upperLeftCornerDestination.minus( this.upperLeftCornerProperty.get() ) );
-  },
+  }
 
   /**
    * initiate a break apart, which just emits an event and counts on parent model to handle
    * @public
    */
-  breakApart: function() {
+  breakApart() {
     this.breakApartEmitter.emit();
-  },
+  }
 
   /**
    * get the amount of overlap between the provided coin term's bounds and this expression's "join zone"
@@ -671,7 +659,7 @@ inherit( Object, Expression, {
    * @returns {number} the area of the overlap
    * @public
    */
-  getCoinTermJoinZoneOverlap: function( coinTerm ) {
+  getCoinTermJoinZoneOverlap( coinTerm ) {
     const coinTermBounds = coinTerm.getViewBounds();
     const xOverlap = Math.max(
       0,
@@ -682,7 +670,7 @@ inherit( Object, Expression, {
       Math.min( coinTermBounds.maxY, this.joinZone.maxY ) - Math.max( coinTermBounds.minY, this.joinZone.minY )
     );
     return xOverlap * yOverlap;
-  },
+  }
 
   /**
    * get the amount of overlap between the provided expression and this expression
@@ -690,7 +678,7 @@ inherit( Object, Expression, {
    * @returns {number} the area of the overlap
    * @public
    */
-  getOverlap: function( otherEntity ) {
+  getOverlap( otherEntity ) {
     const otherExpressionBounds = otherEntity.getBounds();
     const thisExpressionBounds = this.getBounds();
     const xOverlap = Math.max(
@@ -702,16 +690,16 @@ inherit( Object, Expression, {
       Math.min( otherExpressionBounds.maxY, thisExpressionBounds.maxY ) - Math.max( otherExpressionBounds.minY, thisExpressionBounds.minY )
     );
     return xOverlap * yOverlap;
-  },
+  }
 
   /**
    * get the upper right corner of this expression
    * @returns {Vector2}
    * @public
    */
-  getUpperRightCorner: function() {
+  getUpperRightCorner() {
     return this.upperLeftCornerProperty.get().plusXY( this.widthProperty.get(), 0 );
-  },
+  }
 
   /**
    * Add a coin term to the list of those that are hovering over this expression.  This is a no-op if the coin term is
@@ -719,12 +707,12 @@ inherit( Object, Expression, {
    * @param {CoinTerm} coinTerm
    * @public
    */
-  addHoveringCoinTerm: function( coinTerm ) {
+  addHoveringCoinTerm( coinTerm ) {
     if ( this.hoveringCoinTerms.indexOf( coinTerm ) === -1 ) {
       this.hoveringCoinTerms.push( coinTerm );
       coinTerm.breakApartAllowedProperty.set( false );
     }
-  },
+  }
 
   /**
    * Remove a coin term from the list of those that are hovering over this expression.  This is a no-op if the coin
@@ -732,24 +720,24 @@ inherit( Object, Expression, {
    * @param {CoinTerm} coinTerm
    * @public
    */
-  removeHoveringCoinTerm: function( coinTerm ) {
+  removeHoveringCoinTerm( coinTerm ) {
     const index = this.hoveringCoinTerms.indexOf( coinTerm );
     if ( index !== -1 ) {
       this.hoveringCoinTerms.splice( index, 1 );
       coinTerm.breakApartAllowedProperty.set( true );
     }
-  },
+  }
 
   /**
    * clear the list of coin terms that are currently hovering over this expression
    * @public
    */
-  clearHoveringCoinTerms: function() {
-    this.hoveringCoinTerms.forEach( function( hoveringCoinTerm ) {
+  clearHoveringCoinTerms() {
+    this.hoveringCoinTerms.forEach( hoveringCoinTerm => {
       hoveringCoinTerm.breakApartAllowedProperty.set( true );
     } );
     this.hoveringCoinTerms.length = 0;
-  },
+  }
 
   /**
    * Add an expression to the list of those that are hovering over this expression.  This is a no-op if the expression
@@ -757,11 +745,11 @@ inherit( Object, Expression, {
    * @param {Expression} expression
    * @public
    */
-  addHoveringExpression: function( expression ) {
+  addHoveringExpression( expression ) {
     if ( this.hoveringExpressions.indexOf( expression ) === -1 ) {
       this.hoveringExpressions.push( expression );
     }
-  },
+  }
 
   /**
    * Remove an expression from the list of those that are hovering over this expression.  This is a no-op if the
@@ -769,37 +757,40 @@ inherit( Object, Expression, {
    * @param {Expression} expression
    * @public
    */
-  removeHoveringExpression: function( expression ) {
+  removeHoveringExpression( expression ) {
     const index = this.hoveringExpressions.indexOf( expression );
     if ( index !== -1 ) {
       this.hoveringExpressions.splice( index, 1 );
     }
-  },
+  }
 
   /**
    * clear the list of other expressions that are currently hovering over this expression
    * @public
    */
-  clearHoveringExpressions: function() {
+  clearHoveringExpressions() {
     this.hoveringExpressions.length = 0;
-  },
+  }
 
   /**
    * returns true if the given coin term is on the list of those hovering over the expression
    * @param {CoinTerm} coinTerm
    * @returns {boolean}
+   * @private
    */
-  isCoinTermHovering: function( coinTerm ) {
+  isCoinTermHovering( coinTerm ) {
     return this.hoveringCoinTerms.indexOf( coinTerm ) > -1;
-  },
+  }
 
   /**
    * set the resize needed flag, used to hook up listeners
    * @private
    */
-  setResizeNeededFlag: function() {
+  setResizeNeededFlag() {
     this.resizeNeeded = true;
   }
-} );
+}
+
+expressionExchange.register( 'Expression', Expression );
 
 export default Expression;

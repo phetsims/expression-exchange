@@ -19,6 +19,7 @@ import expressionExchangeStrings from '../expressionExchangeStrings.js';
 import EENegativesIconNode from './view/EENegativesIconNode.js';
 
 class EENegativesScreen extends Screen {
+
   constructor() {
 
     const options = {
@@ -31,12 +32,10 @@ class EENegativesScreen extends Screen {
     };
 
     super(
-      function() {
-        return new ExpressionManipulationModel( {
-          allowedRepresentations: AllowedRepresentations.VARIABLES_ONLY
-        } );
-      },
-      function( model ) { return new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.VARIABLES ); },
+      () => new ExpressionManipulationModel( {
+        allowedRepresentations: AllowedRepresentations.VARIABLES_ONLY
+      } ),
+      model => new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.VARIABLES ),
       options
     );
   }

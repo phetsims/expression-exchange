@@ -8,7 +8,6 @@
  * reduced form (no parens) and we need to handle subscripts and superscripts.
  */
 
-import inherit from '../../../../phet-core/js/inherit.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
@@ -27,66 +26,67 @@ const EXPRESSION_FONT_FOR_VARIABLES = new MathSymbolFont( 24 );
 const SUP_SCALE = 0.65; // empirically determined to look good on the most platforms
 const SUB_SUP_OPTIONS = { font: EXPRESSION_FONT_FOR_VARIABLES, supScale: SUP_SCALE };
 
-/**
- * @param {ExpressionDescription} expressionDescription
- * @param {ViewMode} viewMode
- * @param {Object} [options]
- * @constructor
- */
-function ExpressionDescriptionNode( expressionDescription, viewMode, options ) {
+class ExpressionDescriptionNode extends HBox {
 
-  HBox.call( this, { align: 'bottom' } );
-  const self = this;
+  /**
+   * @param {ExpressionDescription} expressionDescription
+   * @param {ViewMode} viewMode
+   * @param {Object} [options]
+   */
+  constructor( expressionDescription, viewMode, options ) {
 
-  if ( viewMode === ViewMode.COINS ) {
+    super( { align: 'bottom' } );
 
-    this.setAlign( 'center' );
+    if ( viewMode === ViewMode.COINS ) {
 
-    expressionDescription.terms.forEach( function( expressionTerm, index ) {
+      this.setAlign( 'center' );
 
-      // add coefficient if needed
-      if ( expressionTerm.coefficient > 1 ) {
-        const coefficientNode = new Text( expressionTerm.coefficient, { font: COIN_EXPRESSION_FONT } );
-        self.addChild( coefficientNode );
-      }
+      expressionDescription.terms.forEach( ( expressionTerm, index ) => {
 
-      // add coin icon
-      const coinIconNode = CoinNodeFactory.createIconNode(
-        expressionTerm.coinTermTypeID,
-        COIN_ICON_RADIUS
-      );
-      self.addChild( coinIconNode );
+        // add coefficient if needed
+        if ( expressionTerm.coefficient > 1 ) {
+          const coefficientNode = new Text( expressionTerm.coefficient, { font: COIN_EXPRESSION_FONT } );
+          this.addChild( coefficientNode );
+        }
 
-      // add plus symbol if not at end of expression
-      if ( index < expressionDescription.terms.length - 1 ) {
-        const plusSign = new Text( ' ' + MathSymbols.PLUS + ' ', { font: COIN_EXPRESSION_FONT } );
-        self.addChild( plusSign );
-      }
+        // add coin icon
+        const coinIconNode = CoinNodeFactory.createIconNode(
+          expressionTerm.coinTermTypeID,
+          COIN_ICON_RADIUS
+        );
+        this.addChild( coinIconNode );
 
-    } );
-  }
-  else if ( viewMode === ViewMode.VARIABLES ) {
+        // add plus symbol if not at end of expression
+        if ( index < expressionDescription.terms.length - 1 ) {
+          const plusSign = new Text( ' ' + MathSymbols.PLUS + ' ', { font: COIN_EXPRESSION_FONT } );
+          this.addChild( plusSign );
+        }
 
-    this.setAlign( 'bottom' );
-
-    // Go through the expression string, turning the various pieces into nodes.  The 'terms' field of the expression
-    // description can't be used here because it is the returned version of the expression.
-    let expressionStringIndex = 0;
-
-    while ( expressionStringIndex < expressionDescription.expressionString.length ) {
-      const expressionFragmentInfo = createExpressionFragment(
-        expressionDescription.expressionString,
-        expressionStringIndex
-      );
-      self.addChild( expressionFragmentInfo.node );
-      expressionStringIndex += expressionFragmentInfo.charsUsed;
+      } );
     }
-  }
-  else {
-    assert && assert( false, 'unrecognized representation type' );
-  }
+    else if ( viewMode === ViewMode.VARIABLES ) {
 
-  this.mutate( options );
+      this.setAlign( 'bottom' );
+
+      // Go through the expression string, turning the various pieces into nodes.  The 'terms' field of the expression
+      // description can't be used here because it is the returned version of the expression.
+      let expressionStringIndex = 0;
+
+      while ( expressionStringIndex < expressionDescription.expressionString.length ) {
+        const expressionFragmentInfo = createExpressionFragment(
+          expressionDescription.expressionString,
+          expressionStringIndex
+        );
+        this.addChild( expressionFragmentInfo.node );
+        expressionStringIndex += expressionFragmentInfo.charsUsed;
+      }
+    }
+    else {
+      assert && assert( false, 'unrecognized representation type' );
+    }
+
+    this.mutate( options );
+  }
 }
 
 /*
@@ -186,5 +186,4 @@ function createExpressionFragment( expressionString, index ) {
 
 expressionExchange.register( 'ExpressionDescriptionNode', ExpressionDescriptionNode );
 
-inherit( HBox, ExpressionDescriptionNode );
 export default ExpressionDescriptionNode;

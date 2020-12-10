@@ -8,7 +8,6 @@
 
 import Property from '../../../../axon/js/Property.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
-import inherit from '../../../../phet-core/js/inherit.js';
 import merge from '../../../../phet-core/js/merge.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
@@ -40,137 +39,129 @@ const POINTER_AREA_X_DILATION_AMOUNT = 15; // in screen coords
 const POINTER_AREA_Y_DILATION_AMOUNT = 8; // in screen coords, less than X amt to avoid protruding out of expression
 const POINTER_AREA_DOWN_SHIFT = 3; // in screen coords
 
-/**
- * @param {CoinTerm} coinTerm - model of a coin
- * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
- * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
- * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
- * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
- * @param {Object} [options]
- * @constructor
- */
-function VariableCoinTermNode( coinTerm,
-                               viewModeProperty,
-                               showCoinValuesProperty,
-                               showVariableValuesProperty,
-                               showAllCoefficientsProperty,
-                               options ) {
+class VariableCoinTermNode extends AbstractCoinTermNode {
 
-  options = merge( {
+  /**
+   * @param {CoinTerm} coinTerm - model of a coin
+   * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
+   * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
+   * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
+   * @param {Property.<boolean>} showAllCoefficientsProperty - controls whether 1 is shown for non-combined coins
+   * @param {Object} [options]
+   */
+  constructor( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty, showAllCoefficientsProperty, options ) {
 
-    // this value can be set to false in order to conserve nodes, and therefore memory, if this node will never need
-    // to show the value of the coin term
-    supportShowValues: true
-  }, options );
+    options = merge( {
 
-  AbstractCoinTermNode.call( this, coinTerm, options );
+      // this value can be set to false in order to conserve nodes, and therefore memory, if this node will never need
+      // to show the value of the coin term
+      supportShowValues: true
+    }, options );
 
-  // @private {CoinTerm} - make the coin term available to methods
-  this.coinTerm = coinTerm;
+    super( coinTerm, options );
 
-  // @private {Property.<ViewMode>} - make the view mode available to methods
-  this.viewModeProperty = viewModeProperty;
+    // @private {CoinTerm} - make the coin term available to methods
+    this.coinTerm = coinTerm;
 
-  // @private {Rectangle} - an invisible node used to make sure text is rendered without bounds issues, see
-  // https://github.com/phetsims/expression-exchange/issues/26
-  this.boundsRect = new Rectangle( 0, 0, 1, 1, { fill: 'transparent' } );
-  this.coinAndTextRootNode.addChild( this.boundsRect );
+    // @private {Property.<ViewMode>} - make the view mode available to methods
+    this.viewModeProperty = viewModeProperty;
 
-  // @private {Image} - add the images for the front and back of the coin
-  const coinImageNodes = [];
-  this.coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, true );
-  coinImageNodes.push( this.coinFrontImageNode );
-  if ( options.supportShowValues ) {
-    this.coinBackImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, false );
-    coinImageNodes.push( this.coinBackImageNode );
-  }
+    // @private {Rectangle} - an invisible node used to make sure text is rendered without bounds issues, see
+    // https://github.com/phetsims/expression-exchange/issues/26
+    this.boundsRect = new Rectangle( 0, 0, 1, 1, { fill: 'transparent' } );
+    this.coinAndTextRootNode.addChild( this.boundsRect );
 
-  // @private - add a parent node that contains the two coin images, and also maintains consistent bounds, necessary
-  // to prevent a bunch of bounds change notification when the coin term is flipped
-  this.coinImagesNode = new Rectangle( 0, 0, coinTerm.coinRadius * 2, coinTerm.coinRadius * 2, {
-    fill: 'transparent', // invisible
-    children: coinImageNodes,
-    x: -coinTerm.coinRadius,
-    y: -coinTerm.coinRadius
-  } );
-  this.coinAndTextRootNode.addChild( this.coinImagesNode );
-
-  // @private - add the coin value text
-  if ( options.supportShowValues ) {
-    this.coinValueText = new Text( '', { font: VALUE_FONT } );
-    this.coinImagesNode.addChild( this.coinValueText );
-  }
-
-  // @private - add the 'term' text, e.g. xy
-  this.termText = new RichText( 'temp', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
-  this.coinAndTextRootNode.addChild( this.termText );
-
-  if ( options.supportShowValues ) {
-
-    // @private - Add the text that includes the variable values.  This can change, so it starts off blank.
-    this.termWithVariableValuesText = new RichText( ' ', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
-    this.coinAndTextRootNode.addChild( this.termWithVariableValuesText );
-  }
-
-  // @private - add the coefficient value
-  this.coefficientText = new Text( '', {
-    font: COEFFICIENT_FONT
-  } );
-  this.coinAndTextRootNode.addChild( this.coefficientText );
-
-  // @private {Property.<number>} - view-specific property for controlling the coin flip animation, 0 = heads, 1 =
-  // tails, values in between are used to scale the coin term and thus make it look like it's flipping
-  this.flipStateProperty = new Property( showCoinValuesProperty.get() ? 1 : 0 );
-
-  // @private {Animation} - tracks current animation
-  this.activeFlipAnimation = null;
-
-  // if anything about the coin term's values changes or any of the display mode, the representation needs to be updated
-  const updateRepresentationMultilink = Property.multilink(
-    [
-      viewModeProperty,
-      showAllCoefficientsProperty,
-      showVariableValuesProperty,
-      showCoinValuesProperty,
-      coinTerm.totalCountProperty,
-      coinTerm.valueProperty,
-      coinTerm.termValueTextProperty,
-      coinTerm.showMinusSignWhenNegativeProperty,
-      coinTerm.cardOpacityProperty,
-      coinTerm.scaleProperty
-    ],
-    this.updateRepresentation.bind( this )
-  );
-
-  if ( options.supportShowValues ) {
-
-    // hook up the listener that will step the changes to the flip state when the 'show values' state changes
-    var flipStateAnimator = this.updateCoinFlipAnimations.bind( this );
-    showCoinValuesProperty.link( flipStateAnimator );
-
-    // adjust the coin images when the flipped state changes
-    this.flipStateProperty.link( this.updateFlipAppearance.bind( this ) );
-  }
-
-  // @private
-  this.disposeVariableCoinTermNode = function() {
-    updateRepresentationMultilink.dispose();
-    if ( flipStateAnimator ) {
-      showCoinValuesProperty.unlink( flipStateAnimator );
+    // @private {Image} - add the images for the front and back of the coin
+    const coinImageNodes = [];
+    this.coinFrontImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, true );
+    coinImageNodes.push( this.coinFrontImageNode );
+    if ( options.supportShowValues ) {
+      this.coinBackImageNode = CoinNodeFactory.createImageNode( coinTerm.typeID, coinTerm.coinRadius, false );
+      coinImageNodes.push( this.coinBackImageNode );
     }
-  };
-}
 
-expressionExchange.register( 'VariableCoinTermNode', VariableCoinTermNode );
+    // @private - add a parent node that contains the two coin images, and also maintains consistent bounds, necessary
+    // to prevent a bunch of bounds change notification when the coin term is flipped
+    this.coinImagesNode = new Rectangle( 0, 0, coinTerm.coinRadius * 2, coinTerm.coinRadius * 2, {
+      fill: 'transparent', // invisible
+      children: coinImageNodes,
+      x: -coinTerm.coinRadius,
+      y: -coinTerm.coinRadius
+    } );
+    this.coinAndTextRootNode.addChild( this.coinImagesNode );
 
-inherit( AbstractCoinTermNode, VariableCoinTermNode, {
+    // @private - add the coin value text
+    if ( options.supportShowValues ) {
+      this.coinValueText = new Text( '', { font: VALUE_FONT } );
+      this.coinImagesNode.addChild( this.coinValueText );
+    }
+
+    // @private - add the 'term' text, e.g. xy
+    this.termText = new RichText( 'temp', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
+    this.coinAndTextRootNode.addChild( this.termText );
+
+    if ( options.supportShowValues ) {
+
+      // @private - Add the text that includes the variable values.  This can change, so it starts off blank.
+      this.termWithVariableValuesText = new RichText( ' ', { font: VARIABLE_FONT, supScale: SUPERSCRIPT_SCALE } );
+      this.coinAndTextRootNode.addChild( this.termWithVariableValuesText );
+    }
+
+    // @private - add the coefficient value
+    this.coefficientText = new Text( '', {
+      font: COEFFICIENT_FONT
+    } );
+    this.coinAndTextRootNode.addChild( this.coefficientText );
+
+    // @private {Property.<number>} - view-specific property for controlling the coin flip animation, 0 = heads, 1 =
+    // tails, values in between are used to scale the coin term and thus make it look like it's flipping
+    this.flipStateProperty = new Property( showCoinValuesProperty.get() ? 1 : 0 );
+
+    // @private {Animation} - tracks current animation
+    this.activeFlipAnimation = null;
+
+    // if anything about the coin term's values changes or any of the display mode, the representation needs to be updated
+    const updateRepresentationMultilink = Property.multilink(
+      [
+        viewModeProperty,
+        showAllCoefficientsProperty,
+        showVariableValuesProperty,
+        showCoinValuesProperty,
+        coinTerm.totalCountProperty,
+        coinTerm.valueProperty,
+        coinTerm.termValueTextProperty,
+        coinTerm.showMinusSignWhenNegativeProperty,
+        coinTerm.cardOpacityProperty,
+        coinTerm.scaleProperty
+      ],
+      this.updateRepresentation.bind( this )
+    );
+
+    if ( options.supportShowValues ) {
+
+      // hook up the listener that will step the changes to the flip state when the 'show values' state changes
+      var flipStateAnimator = this.updateCoinFlipAnimations.bind( this );
+      showCoinValuesProperty.link( flipStateAnimator );
+
+      // adjust the coin images when the flipped state changes
+      this.flipStateProperty.link( this.updateFlipAppearance.bind( this ) );
+    }
+
+    // @private
+    this.disposeVariableCoinTermNode = () => {
+      updateRepresentationMultilink.dispose();
+      if ( flipStateAnimator ) {
+        showCoinValuesProperty.unlink( flipStateAnimator );
+      }
+    };
+  }
 
   // helper function to take the view bounds information and communicates it to the model
   /**
    * update the bounds used by the model to position and align coin terms
    * @private
    */
-  updateBoundsInModel: function() {
+  updateBoundsInModel() {
 
     // make the bounds relative to the coin term's position, which corresponds to the center of the coin
     let relativeVisibleBounds = this.coinAndTextRootNode.visibleLocalBounds;
@@ -196,13 +187,13 @@ inherit( AbstractCoinTermNode, VariableCoinTermNode, {
     if ( !this.coinTerm.localViewBoundsProperty.get() || !this.coinTerm.localViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
       this.coinTerm.localViewBoundsProperty.set( relativeVisibleBounds );
     }
-  },
+  }
 
   /**
    * function that updates all nodes that comprise this composite node
    * @private
    */
-  updateRepresentation: function( viewMode, showAllCoefficients, showVariableValues ) {
+  updateRepresentation( viewMode, showAllCoefficients, showVariableValues ) {
 
     // convenience vars
     const textBaseline = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET;
@@ -308,15 +299,14 @@ inherit( AbstractCoinTermNode, VariableCoinTermNode, {
 
     // update the bounds that are registered with the model
     this.updateBoundsInModel();
-  },
+  }
 
   /**
    * update the coin flip animation, used to show or hide the coin values
    * @param {boolean} showCoinValues
+   * @private
    */
-  updateCoinFlipAnimations: function( showCoinValues ) {
-
-    const self = this;
+  updateCoinFlipAnimations( showCoinValues ) {
 
     if ( this.viewModeProperty.get() === ViewMode.COINS ) {
       if ( this.activeFlipAnimation ) {
@@ -325,20 +315,20 @@ inherit( AbstractCoinTermNode, VariableCoinTermNode, {
 
       const targetFlipState = showCoinValues ? 1 : 0;
 
-      if ( self.flipStateProperty.get() !== targetFlipState ) {
+      if ( this.flipStateProperty.get() !== targetFlipState ) {
 
         // use an animation to depict the coin flip
         this.activeFlipAnimation = new Animation( {
           duration: COIN_FLIP_TIME,
           easing: Easing.CUBIC_IN_OUT,
-          setValue: function( newFlipState ) {
-            self.flipStateProperty.set( newFlipState );
+          setValue: newFlipState => {
+            this.flipStateProperty.set( newFlipState );
           },
           from: this.flipStateProperty.get(),
           to: targetFlipState
         } );
-        this.activeFlipAnimation.finishEmitter.addListener( function() {
-          self.activeFlipAnimation = null;
+        this.activeFlipAnimation.finishEmitter.addListener( () => {
+          this.activeFlipAnimation = null;
         } );
         this.activeFlipAnimation.start();
       }
@@ -348,14 +338,15 @@ inherit( AbstractCoinTermNode, VariableCoinTermNode, {
       // do the change immediately, heads if NOT showing coin values, tails if we are
       this.flipStateProperty.set( showCoinValues ? 1 : 0 );
     }
-  },
+  }
 
   /**
    * update the scale and visibility of the images in order to make it look like the coin is flipping, works in
    * conjunction with the "flipState" variable to perform the flip animation
    * @param {number} flipState
+   * @private
    */
-  updateFlipAppearance: function( flipState ) {
+  updateFlipAppearance( flipState ) {
 
     assert && assert( this.coinBackImageNode, 'options were not correctly set on this node to support coin flip' );
 
@@ -387,15 +378,17 @@ inherit( AbstractCoinTermNode, VariableCoinTermNode, {
     this.coinFrontImageNode.visible = flipState <= 0.5;
     this.coinBackImageNode.visible = flipState >= 0.5;
     this.coinValueText.visible = this.coinBackImageNode.visible;
-  },
+  }
 
   /**
    * @public
    */
-  dispose: function() {
+  dispose() {
     this.disposeVariableCoinTermNode();
-    AbstractCoinTermNode.prototype.dispose.call( this );
+    super.dispose();
   }
-} );
+}
+
+expressionExchange.register( 'VariableCoinTermNode', VariableCoinTermNode );
 
 export default VariableCoinTermNode;

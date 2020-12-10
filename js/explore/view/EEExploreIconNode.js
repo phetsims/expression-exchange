@@ -7,7 +7,6 @@
  */
 
 import Screen from '../../../../joist/js/Screen.js';
-import inherit from '../../../../phet-core/js/inherit.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
@@ -24,30 +23,31 @@ const NORMAL_FONT = new PhetFont( { size: FONT_SIZE } );
 const ITALIC_FONT = new MathSymbolFont( FONT_SIZE );
 const BACKGROUND_COLOR = EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR;
 
-/**
- * @constructor
- */
-function EEExploreIconNode() {
+class EEExploreIconNode extends Rectangle {
 
-  // create the background
-  Rectangle.call( this, 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
+  /**
+   */
+  constructor() {
 
-  // add the nodes
-  const equationNode = new Node();
-  equationNode.addChild( new Text( '2', { font: NORMAL_FONT } ) );
-  equationNode.addChild( new Text( '(4)', { font: ITALIC_FONT, left: equationNode.width } ) );
-  equationNode.addChild( new Text( MathSymbols.PLUS, { font: NORMAL_FONT, left: equationNode.width + 25 } ) );
-  equationNode.addChild( new Text( '1', { font: NORMAL_FONT, left: equationNode.width + 25 } ) );
-  equationNode.addChild( new Text( '(5)', { font: ITALIC_FONT, left: equationNode.width } ) );
+    // create the background
+    super( 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
 
-  // position the equation
-  equationNode.centerX = ICON_SIZE.width / 2;
-  equationNode.centerY = ICON_SIZE.height * 0.45;
+    // add the nodes
+    const equationNode = new Node();
+    equationNode.addChild( new Text( '2', { font: NORMAL_FONT } ) );
+    equationNode.addChild( new Text( '(4)', { font: ITALIC_FONT, left: equationNode.width } ) );
+    equationNode.addChild( new Text( MathSymbols.PLUS, { font: NORMAL_FONT, left: equationNode.width + 25 } ) );
+    equationNode.addChild( new Text( '1', { font: NORMAL_FONT, left: equationNode.width + 25 } ) );
+    equationNode.addChild( new Text( '(5)', { font: ITALIC_FONT, left: equationNode.width } ) );
 
-  this.addChild( equationNode );
+    // position the equation
+    equationNode.centerX = ICON_SIZE.width / 2;
+    equationNode.centerY = ICON_SIZE.height * 0.45;
+
+    this.addChild( equationNode );
+  }
 }
 
 expressionExchange.register( 'EEExploreIconNode', EEExploreIconNode );
 
-inherit( Rectangle, EEExploreIconNode );
 export default EEExploreIconNode;

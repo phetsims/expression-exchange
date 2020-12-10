@@ -10,7 +10,6 @@ import Property from '../../../../axon/js/Property.js';
 import stepTimer from '../../../../axon/js/stepTimer.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
-import inherit from '../../../../phet-core/js/inherit.js';
 import merge from '../../../../phet-core/js/merge.js';
 import MovableDragHandler from '../../../../scenery-phet/js/input/MovableDragHandler.js';
 import Touch from '../../../../scenery/js/input/Touch.js';
@@ -24,134 +23,130 @@ import BreakApartButton from './BreakApartButton.js';
 const BACKGROUND_CORNER_ROUNDING = 5;
 const TOUCH_DRAG_Y_OFFSET = -30; // empirically determined
 
-/**
- * @param {CoinTerm} coinTerm - model of a coin term
- * @param {Object} [options]
- * @constructor
- */
-function AbstractCoinTermNode( coinTerm, options ) {
+class AbstractCoinTermNode extends Node {
 
-  options = merge( {
-    addDragHandler: true,
-    dragBounds: Bounds2.EVERYTHING,
-    breakApartButtonMode: 'normal' // valid values are 'normal' and 'inverted'
-  }, options );
+  /**
+   * @param {CoinTerm} coinTerm - model of a coin term
+   * @param {Object} [options]
+   */
+  constructor( coinTerm, options ) {
 
-  const self = this;
-  Node.call( this, { pickable: true, cursor: 'pointer' } );
+    options = merge( {
+      addDragHandler: true,
+      dragBounds: Bounds2.EVERYTHING,
+      breakApartButtonMode: 'normal' // valid values are 'normal' and 'inverted'
+    }, options );
 
-  // @public (read-only) {CoinTerm}
-  this.coinTerm = coinTerm;
+    super( { pickable: true, cursor: 'pointer' } );
 
-  // @protected {Rectangle}
-  // Add the card-like background, initially tiny, will be set in subclasses by function that updates the
-  // representation.
-  this.cardLikeBackground = new Rectangle( -1, -1, 2, 2, {
-    fill: EESharedConstants.CARD_BACKGROUND_COLOR,
-    stroke: 'black',
-    cornerRadius: BACKGROUND_CORNER_ROUNDING,
-    visible: false
-  } );
-  this.addChild( this.cardLikeBackground );
+    // @public (read-only) {CoinTerm}
+    this.coinTerm = coinTerm;
 
-  // @protected {Node}
-  // Add a root node so that the bounds can be easily monitored for changes in size without getting triggered by
-  // changes in position.
-  this.coinAndTextRootNode = new Node();
-  this.addChild( this.coinAndTextRootNode );
+    // @protected {Rectangle}
+    // Add the card-like background, initially tiny, will be set in subclasses by function that updates the
+    // representation.
+    this.cardLikeBackground = new Rectangle( -1, -1, 2, 2, {
+      fill: EESharedConstants.CARD_BACKGROUND_COLOR,
+      stroke: 'black',
+      cornerRadius: BACKGROUND_CORNER_ROUNDING,
+      visible: false
+    } );
+    this.addChild( this.cardLikeBackground );
 
-  // @private {String} - make option visible to methods
-  this.breakApartButtonMode = options.breakApartButtonMode;
+    // @protected {Node}
+    // Add a root node so that the bounds can be easily monitored for changes in size without getting triggered by
+    // changes in position.
+    this.coinAndTextRootNode = new Node();
+    this.addChild( this.coinAndTextRootNode );
 
-  // add a listener that will adjust opacity as existence strength changes
-  const existenceStrengthListener = this.handleExistenceStrengthChanged.bind( this );
-  coinTerm.existenceStrengthProperty.link( existenceStrengthListener );
+    // @private {String} - make option visible to methods
+    this.breakApartButtonMode = options.breakApartButtonMode;
 
-  // @private {function} - timer callback will be used to hide the break apart button if user doesn't use it
-  this.hideButtonTimer = null;
+    // add a listener that will adjust opacity as existence strength changes
+    const existenceStrengthListener = this.handleExistenceStrengthChanged.bind( this );
+    coinTerm.existenceStrengthProperty.link( existenceStrengthListener );
 
-  // @private {BreakApartButton} - the button that will allow composite coins to be decomposed, added lazily in order
-  // to conserve memory
-  this.breakApartButton = null;
+    // @private {function} - timer callback will be used to hide the break apart button if user doesn't use it
+    this.hideButtonTimer = null;
 
-  // move this node as the model representation moves
-  function handlePositionChanged( position ) {
+    // @private {BreakApartButton} - the button that will allow composite coins to be decomposed, added lazily in order
+    // to conserve memory
+    this.breakApartButton = null;
 
-    // the intent here is to position the center of the coin at the position, NOT the center of the node
-    self.translation = position;
+    // move this node as the model representation moves
+    const handlePositionChanged = position => {
+
+      // the intent here is to position the center of the coin at the position, NOT the center of the node
+      this.translation = position;
+    };
+
+    coinTerm.positionProperty.link( handlePositionChanged );
+
+    // add a listener for updating the break apart button state based on the user controlled state of this coin term
+    const userControlledListener = this.handleUserControlledChanged.bind( this );
+    coinTerm.userControlledProperty.lazyLink( userControlledListener );
+
+    // add a listener to handle changes to the 'break apart allowed' state
+    const breakApartAllowedListener = this.handleBreakApartAllowedChanged.bind( this );
+    coinTerm.breakApartAllowedProperty.link( breakApartAllowedListener );
+
+    // add a drag handler if specified
+    if ( options.addDragHandler ) {
+      this.addDragHandler( options.dragBounds );
+    }
+
+    // add a listener that will pop this node to the front when selected by the user
+    coinTerm.userControlledProperty.link( userControlled => {
+      if ( userControlled ) {
+        this.moveToFront();
+      }
+    } );
+
+    // add a listener that will pop this node to the front when another coin term is combined with it
+    const totalCountListener = this.handleCombinedCountChanged.bind( this );
+    coinTerm.totalCountProperty.link( totalCountListener );
+
+    // function to update the pickability as the states change
+    const updatePickability = () => {
+      const expression = coinTerm.expressionProperty.get();
+      this.pickable = ( expression === null || expression.inEditModeProperty.get() ) && !coinTerm.inProgressAnimationProperty.get() && !coinTerm.collectedProperty.get();
+    };
+
+    // update the pickability of this node
+    const pickabilityUpdaterMultilink = Property.multilink(
+      [ coinTerm.expressionProperty, coinTerm.inProgressAnimationProperty, coinTerm.collectedProperty ],
+      updatePickability
+    );
+
+    // allow the coin term to be pickable if the expression that it is in transitions into edit mode
+    coinTerm.expressionProperty.link( ( expression, previousExpression ) => {
+      if ( expression ) {
+        expression.inEditModeProperty.link( updatePickability );
+      }
+      else if ( previousExpression ) {
+        previousExpression.inEditModeProperty.unlink( updatePickability );
+      }
+    } );
+
+    // @private - internal dispose function
+    this.disposeAbstractCoinTermNode = () => {
+      this.clearHideButtonTimer();
+      if ( this.breakApartButton ) {
+        this.breakApartButton.buttonModel.overProperty.unlink( this.breakApartButtonOverListener );
+        this.breakApartButton.removeListener( this.breakApartButtonListener );
+        this.breakApartButton.dispose();
+      }
+      coinTerm.positionProperty.unlink( handlePositionChanged );
+      coinTerm.existenceStrengthProperty.unlink( existenceStrengthListener );
+      coinTerm.userControlledProperty.unlink( userControlledListener );
+      coinTerm.breakApartAllowedProperty.unlink( breakApartAllowedListener );
+      coinTerm.totalCountProperty.unlink( totalCountListener );
+      pickabilityUpdaterMultilink.dispose();
+      this.removeAllChildren();
+    };
+
+    this.mutate( options );
   }
-
-  coinTerm.positionProperty.link( handlePositionChanged );
-
-  // add a listener for updating the break apart button state based on the user controlled state of this coin term
-  const userControlledListener = this.handleUserControlledChanged.bind( this );
-  coinTerm.userControlledProperty.lazyLink( userControlledListener );
-
-  // add a listener to handle changes to the 'break apart allowed' state
-  const breakApartAllowedListener = this.handleBreakApartAllowedChanged.bind( this );
-  coinTerm.breakApartAllowedProperty.link( breakApartAllowedListener );
-
-  // add a drag handler if specified
-  if ( options.addDragHandler ) {
-    this.addDragHandler( options.dragBounds );
-  }
-
-  // add a listener that will pop this node to the front when selected by the user
-  coinTerm.userControlledProperty.link( function( userControlled ) {
-    if ( userControlled ) {
-      self.moveToFront();
-    }
-  } );
-
-  // add a listener that will pop this node to the front when another coin term is combined with it
-  const totalCountListener = this.handleCombinedCountChanged.bind( this );
-  coinTerm.totalCountProperty.link( totalCountListener );
-
-  // function to update the pickability as the states change
-  function updatePickability() {
-    const expression = coinTerm.expressionProperty.get();
-    self.pickable = ( expression === null || expression.inEditModeProperty.get() ) && !coinTerm.inProgressAnimationProperty.get() && !coinTerm.collectedProperty.get();
-  }
-
-  // update the pickability of this node
-  const pickabilityUpdaterMultilink = Property.multilink(
-    [ coinTerm.expressionProperty, coinTerm.inProgressAnimationProperty, coinTerm.collectedProperty ],
-    updatePickability
-  );
-
-  // allow the coin term to be pickable if the expression that it is in transitions into edit mode
-  coinTerm.expressionProperty.link( function( expression, previousExpression ) {
-    if ( expression ) {
-      expression.inEditModeProperty.link( updatePickability );
-    }
-    else if ( previousExpression ) {
-      previousExpression.inEditModeProperty.unlink( updatePickability );
-    }
-  } );
-
-  // internal dispose function, reference in inherit block
-  this.disposeAbstractCoinTermNode = function() {
-    this.clearHideButtonTimer();
-    if ( this.breakApartButton ) {
-      this.breakApartButton.buttonModel.overProperty.unlink( this.breakApartButtonOverListener );
-      this.breakApartButton.removeListener( this.breakApartButtonListener );
-      this.breakApartButton.dispose();
-    }
-    coinTerm.positionProperty.unlink( handlePositionChanged );
-    coinTerm.existenceStrengthProperty.unlink( existenceStrengthListener );
-    coinTerm.userControlledProperty.unlink( userControlledListener );
-    coinTerm.breakApartAllowedProperty.unlink( breakApartAllowedListener );
-    coinTerm.totalCountProperty.unlink( totalCountListener );
-    pickabilityUpdaterMultilink.dispose();
-    self.removeAllChildren();
-  };
-
-  this.mutate( options );
-}
-
-expressionExchange.register( 'AbstractCoinTermNode', AbstractCoinTermNode );
-
-inherit( Node, AbstractCoinTermNode, {
 
   // add a listener that will update the opacity based on the coin term's existence strength
   /**
@@ -159,66 +154,65 @@ inherit( Node, AbstractCoinTermNode, {
    * @param existenceStrength
    * @private
    */
-  handleExistenceStrengthChanged: function( existenceStrength ) {
+  handleExistenceStrengthChanged( existenceStrength ) {
     assert && assert( existenceStrength >= 0 && existenceStrength <= 1, 'existence strength must be between 0 and 1' );
     if ( !this.isDisposed ) {
       this.pickable = existenceStrength === 1; // prevent interaction with fading coin term
       this.opacity = existenceStrength;
     }
-  },
+  }
 
   /**
    * @private
    */
-  clearHideButtonTimer: function() {
+  clearHideButtonTimer() {
     if ( this.hideButtonTimer ) {
       stepTimer.clearTimeout( this.hideButtonTimer );
       this.hideButtonTimer = null;
     }
-  },
+  }
 
   /**
    * start the timer for hiding the break-apart button
    * @private
    */
-  startHideButtonTimer: function() {
-    const self = this;
+  startHideButtonTimer() {
     this.clearHideButtonTimer(); // just in case one is already running
-    this.hideButtonTimer = stepTimer.setTimeout( function() {
-      self.hideBreakApartButton();
-      self.hideButtonTimer = null;
+    this.hideButtonTimer = stepTimer.setTimeout( () => {
+      this.hideBreakApartButton();
+      this.hideButtonTimer = null;
     }, EESharedConstants.POPUP_BUTTON_SHOW_TIME * 1000 );
-  },
+  }
 
   /**
    * position and show the break apart button
    * @private
    */
-  showBreakApartButton: function() {
+  showBreakApartButton() {
     if ( !this.breakApartButton ) {
       this.addBreakApartButton();
     }
     this.breakApartButton.centerX = 0;
     this.breakApartButton.bottom = this.coinAndTextRootNode.visibleLocalBounds.minY - 3; // just above the coin term
     this.breakApartButton.visible = true;
-  },
+  }
 
   /**
    * position the break apart button such that the bounds are within the bounds of the coin term node and hide it
    * @private
    */
-  hideBreakApartButton: function() {
+  hideBreakApartButton() {
     if ( this.breakApartButton ) {
       this.breakApartButton.center = Vector2.ZERO; // position within coin term so bounds aren't affected
       this.breakApartButton.visible = false;
     }
-  },
+  }
 
   /**
    * add the break apart button, generally not done until needed in order to conserve memory
    * @private
    */
-  addBreakApartButton: function() {
+  addBreakApartButton() {
 
     this.breakApartButton = new BreakApartButton( { visible: false, mode: this.breakApartButtonMode } );
 
@@ -236,14 +230,14 @@ inherit( Node, AbstractCoinTermNode, {
     // add a listener for changes to the 'break apart allowed' state
     this.breakApartButtonOverListener = this.handleOverBreakApartButtonChanged.bind( this ); // @private, needed for disposal
     this.breakApartButton.buttonModel.overProperty.lazyLink( this.breakApartButtonOverListener );
-  },
+  }
 
   /**
    * listener for the 'over' state of the break-apart button
    * @param {boolean} overButton
    * @private
    */
-  handleOverBreakApartButtonChanged: function( overButton ) {
+  handleOverBreakApartButtonChanged( overButton ) {
 
     // make sure the coin term isn't user controlled (this helps prevent some multi-touch problems)
     if ( !this.coinTerm.userControlledProperty.get() ) {
@@ -259,14 +253,14 @@ inherit( Node, AbstractCoinTermNode, {
         this.startHideButtonTimer();
       }
     }
-  },
+  }
 
   /**
    * listener that updates the state of the break-apart button when the user controlled state of the coin term changes
    * @param {boolean} userControlled
    * @private
    */
-  handleUserControlledChanged: function( userControlled ) {
+  handleUserControlledChanged( userControlled ) {
     if ( Math.abs( this.coinTerm.composition.length ) > 1 &&
          this.coinTerm.breakApartAllowedProperty.get() &&
          !this.isDisposed ) {
@@ -281,26 +275,27 @@ inherit( Node, AbstractCoinTermNode, {
         this.startHideButtonTimer();
       }
     }
-  },
+  }
 
   /**
    * listener that updates the state of the break-apart button when the breakApartAllowed state changes
    * @param {boolean} breakApartAllowed
    * @private
    */
-  handleBreakApartAllowedChanged: function( breakApartAllowed ) {
+  handleBreakApartAllowedChanged( breakApartAllowed ) {
     if ( this.breakApartButton && this.breakApartButton.visible && !breakApartAllowed ) {
       this.clearHideButtonTimer();
       this.hideBreakApartButton();
     }
-  },
+  }
 
   /**
    * listener for handling changes to the combined count (i.e. the number of coin terms combined together)
    * @param {number} newCount
    * @param {number} oldCount
+   * @private
    */
-  handleCombinedCountChanged: function( newCount, oldCount ) {
+  handleCombinedCountChanged( newCount, oldCount ) {
     if ( newCount > oldCount ) {
       this.moveToFront();
     }
@@ -311,13 +306,13 @@ inherit( Node, AbstractCoinTermNode, {
       // https://github.com/phetsims/expression-exchange/issues/29
       this.hideBreakApartButton();
     }
-  },
+  }
 
   /**
    * handler for pressing of the break apart button
    * @private
    */
-  handleBreakApartButtonPressed: function() {
+  handleBreakApartButtonPressed() {
 
     this.coinTerm.breakApart();
 
@@ -326,22 +321,20 @@ inherit( Node, AbstractCoinTermNode, {
 
     // cancel timer if running
     this.clearHideButtonTimer();
-  },
+  }
 
   /**
    * add a drag handler
    * {Bounds2} dragBounds
    * @private
    */
-  addDragHandler: function( dragBounds ) {
-
-    const self = this;
+  addDragHandler( dragBounds ) {
 
     // create a position property and link it to the coin term, necessary because coin term has both position and
     // destination properties, both of which must be set when dragging occurs
     const coinTermPositionAndDestination = new Property( this.coinTerm.positionProperty.get() );
-    coinTermPositionAndDestination.lazyLink( function( positionAndDestination ) {
-      self.coinTerm.setPositionAndDestination( positionAndDestination );
+    coinTermPositionAndDestination.lazyLink( positionAndDestination => {
+      this.coinTerm.setPositionAndDestination( positionAndDestination );
     } );
 
     // @public - drag handler, public in support of event forwarding from creator nodes
@@ -357,11 +350,11 @@ inherit( Node, AbstractCoinTermNode, {
       // forwarding
       targetNode: this,
 
-      startDrag: function( event ) {
+      startDrag: event => {
 
         // offset things a little in touch mode for better visibility while dragging
         if ( event.pointer instanceof Touch ) {
-          const position = self.globalToParentPoint( event.pointer.point );
+          const position = this.globalToParentPoint( event.pointer.point );
           const adjustedPosition = position.plusXY( 0, TOUCH_DRAG_Y_OFFSET );
           if ( dragBounds.containsPoint( adjustedPosition ) ) {
             coinTermPositionAndDestination.set( adjustedPosition );
@@ -371,45 +364,46 @@ inherit( Node, AbstractCoinTermNode, {
           }
         }
         else {
-          coinTermPositionAndDestination.set( self.coinTerm.positionProperty.get() );
+          coinTermPositionAndDestination.set( this.coinTerm.positionProperty.get() );
         }
-        self.coinTerm.userControlledProperty.set( true );
+        this.coinTerm.userControlledProperty.set( true );
       },
 
-      endDrag: function() {
-        self.coinTerm.userControlledProperty.set( false );
+      endDrag: () => {
+        this.coinTerm.userControlledProperty.set( false );
       }
     } );
 
     // Add the listener that will allow the user to drag the coin around.  This is added only to the node that
     // contains the term elements, not the button, so that the button won't affect userControlled or be draggable.
     this.coinAndTextRootNode.addInputListener( this.dragHandler );
-  },
+  }
 
   /**
    * @public
    */
-  dispose: function() {
+  dispose() {
     this.disposeAbstractCoinTermNode();
-    Node.prototype.dispose.call( this );
+    super.dispose();
   }
 
-}, {
+}
 
-  // statics
 
-  // @public {number} - To look correct in equations, the text all needs to be on the same baseline.  The value was
-  // empirically determined and may need to change if font sizes change.
-  TEXT_BASELINE_Y_OFFSET: 12,
+// statics
 
-  // @public {number} - Height of the background cards - these are fixed so that stacks of them that are side-by-side
-  // look good.  The values were empirically determined.
-  BACKGROUND_CARD_HEIGHT_TEXT_MODE: 70,
-  BACKGROUND_CARD_HEIGHT_COIN_MODE: 70,
+// @public {number} - To look correct in equations, the text all needs to be on the same baseline.  The value was
+// empirically determined and may need to change if font sizes change.
+AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET = 12;
 
-  // @public {number} - horizontal margin for card background
-  BACKGROUND_CARD_X_MARGIN: 15
+// @public {number} - Height of the background cards - these are fixed so that stacks of them that are side-by-side
+// look good.  The values were empirically determined.
+AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_TEXT_MODE = 70;
+AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_COIN_MODE = 70;
 
-} );
+// @public {number} - horizontal margin for card background
+AbstractCoinTermNode.BACKGROUND_CARD_X_MARGIN = 15;
+
+expressionExchange.register( 'AbstractCoinTermNode', AbstractCoinTermNode );
 
 export default AbstractCoinTermNode;

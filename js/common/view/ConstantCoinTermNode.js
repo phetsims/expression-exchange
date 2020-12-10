@@ -7,7 +7,6 @@
  */
 
 import Property from '../../../../axon/js/Property.js';
-import inherit from '../../../../phet-core/js/inherit.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import expressionExchange from '../../expressionExchange.js';
@@ -25,110 +24,108 @@ const POINTER_AREA_X_DILATION_AMOUNT = 15; // in screen coords
 const POINTER_AREA_Y_DILATION_AMOUNT = 8; // in screen coords, less than X amt to avoid protruding out of expression
 const POINTER_AREA_DOWN_SHIFT = 3; // in screen coords
 
-/**
- * @param {CoinTerm} constantCoinTerm - model of a coin
- * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
- * @param {Object} [options]
- * @constructor
- */
-function ConstantCoinTermNode( constantCoinTerm, viewModeProperty, options ) {
+class ConstantCoinTermNode extends AbstractCoinTermNode {
 
-  assert && assert( constantCoinTerm.isConstant, 'must use a constant coin term with this node' );
+  /**
+   * @param {CoinTerm} constantCoinTerm - model of a coin
+   * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
+   * @param {Object} [options]
+   */
+  constructor( constantCoinTerm, viewModeProperty, options ) {
 
-  const self = this;
-  AbstractCoinTermNode.call( this, constantCoinTerm, options );
+    assert && assert( constantCoinTerm.isConstant, 'must use a constant coin term with this node' );
 
-  // As of this writing, constant coin terms are never used on a screen where a coin is shown.  There is no
-  // fundamental reason why not, that's just how the design worked out.  This node therefore does not support
-  // depicting constant coin terms as coins, so it throws an error if the view mode gets set to "COINS".
-  function handleViewModeChanged( viewMode ) {
-    if ( viewMode === ViewMode.COINS ) {
-      throw new Error( 'coin view mode not supported' );
-    }
-  }
+    super( constantCoinTerm, options );
 
-  viewModeProperty.link( handleViewModeChanged );
-
-  // add the value text
-  const valueText = new Text( '', { font: VALUE_FONT } );
-  this.coinAndTextRootNode.addChild( valueText );
-
-  // helper function to take the view bounds information and communicate it to the model
-  function updateBoundsInModel() {
-
-    // make the bounds relative to (0,0), which is where the center of this node is maintained
-    let relativeVisibleBounds = self.coinAndTextRootNode.visibleLocalBounds;
-
-    // In order to be consistent with the behavior of the variable coin terms, the bounds need to be a minimum width,
-    // see https://github.com/phetsims/expression-exchange/issues/10.
-    const minBoundsWidth = MIN_RELATIVE_BOUNDS_WIDTH * constantCoinTerm.scaleProperty.get();
-    if ( relativeVisibleBounds.width < minBoundsWidth ) {
-      relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( minBoundsWidth - relativeVisibleBounds.width ) / 2 );
-    }
-
-    // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
-    if ( !constantCoinTerm.localViewBoundsProperty.get() || !constantCoinTerm.localViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
-      constantCoinTerm.localViewBoundsProperty.set( relativeVisibleBounds );
-    }
-  }
-
-  // update the representation when model properties that affect it change
-  const updateRepresentationMultilink = Property.multilink(
-    [
-      constantCoinTerm.totalCountProperty,
-      constantCoinTerm.showMinusSignWhenNegativeProperty,
-      constantCoinTerm.cardOpacityProperty,
-      constantCoinTerm.scaleProperty
-    ],
-    function() {
-
-      // update value text
-      valueText.setScaleMagnitude( constantCoinTerm.scaleProperty.get() );
-      if ( constantCoinTerm.showMinusSignWhenNegativeProperty.get() ) {
-        valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value;
+    // As of this writing, constant coin terms are never used on a screen where a coin is shown.  There is no
+    // fundamental reason why not, that's just how the design worked out.  This node therefore does not support
+    // depicting constant coin terms as coins, so it throws an error if the view mode gets set to "COINS".
+    const handleViewModeChanged = viewMode => {
+      if ( viewMode === ViewMode.COINS ) {
+        throw new Error( 'coin view mode not supported' );
       }
-      else {
-        valueText.text = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value );
+    };
+
+    viewModeProperty.link( handleViewModeChanged );
+
+    // add the value text
+    const valueText = new Text( '', { font: VALUE_FONT } );
+    this.coinAndTextRootNode.addChild( valueText );
+
+    // helper function to take the view bounds information and communicate it to the model
+    const updateBoundsInModel = () => {
+
+      // make the bounds relative to (0,0), which is where the center of this node is maintained
+      let relativeVisibleBounds = this.coinAndTextRootNode.visibleLocalBounds;
+
+      // In order to be consistent with the behavior of the variable coin terms, the bounds need to be a minimum width,
+      // see https://github.com/phetsims/expression-exchange/issues/10.
+      const minBoundsWidth = MIN_RELATIVE_BOUNDS_WIDTH * constantCoinTerm.scaleProperty.get();
+      if ( relativeVisibleBounds.width < minBoundsWidth ) {
+        relativeVisibleBounds = relativeVisibleBounds.dilatedX( ( minBoundsWidth - relativeVisibleBounds.width ) / 2 );
       }
 
-      // update relative position
-      valueText.centerX = 0;
-      valueText.y = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET * constantCoinTerm.scaleProperty.get();
+      // only update if the bounds have changed in order to avoid unnecessary updates in other portions of the code
+      if ( !constantCoinTerm.localViewBoundsProperty.get() || !constantCoinTerm.localViewBoundsProperty.get().equals( relativeVisibleBounds ) ) {
+        constantCoinTerm.localViewBoundsProperty.set( relativeVisibleBounds );
+      }
+    };
 
-      // update pointer areas
-      valueText.mouseArea = valueText.localBounds
-        .dilatedXY( POINTER_AREA_X_DILATION_AMOUNT, POINTER_AREA_Y_DILATION_AMOUNT )
-        .shiftedY( POINTER_AREA_DOWN_SHIFT );
-      valueText.touchArea = valueText.mouseArea;
+    // update the representation when model properties that affect it change
+    const updateRepresentationMultilink = Property.multilink(
+      [
+        constantCoinTerm.totalCountProperty,
+        constantCoinTerm.showMinusSignWhenNegativeProperty,
+        constantCoinTerm.cardOpacityProperty,
+        constantCoinTerm.scaleProperty
+      ],
+      () => {
 
-      // update the card background
-      self.cardLikeBackground.setRectBounds( self.coinAndTextRootNode.visibleLocalBounds.dilatedXY(
-        AbstractCoinTermNode.BACKGROUND_CARD_X_MARGIN,
-        ( AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_TEXT_MODE - self.coinAndTextRootNode.visibleLocalBounds.height ) / 2
-      ) );
-      self.cardLikeBackground.visible = constantCoinTerm.cardOpacityProperty.get() > 0;
-      self.cardLikeBackground.opacity = constantCoinTerm.cardOpacityProperty.get();
+        // update value text
+        valueText.setScaleMagnitude( constantCoinTerm.scaleProperty.get() );
+        if ( constantCoinTerm.showMinusSignWhenNegativeProperty.get() ) {
+          valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value;
+        }
+        else {
+          valueText.text = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value );
+        }
 
-      // update the bounds that are registered with the model
-      updateBoundsInModel();
-    }
-  );
+        // update relative position
+        valueText.centerX = 0;
+        valueText.y = AbstractCoinTermNode.TEXT_BASELINE_Y_OFFSET * constantCoinTerm.scaleProperty.get();
 
-  this.disposeConstantCoinTermNode = function() {
-    viewModeProperty.unlink( handleViewModeChanged );
-    updateRepresentationMultilink.dispose();
-  };
+        // update pointer areas
+        valueText.mouseArea = valueText.localBounds
+          .dilatedXY( POINTER_AREA_X_DILATION_AMOUNT, POINTER_AREA_Y_DILATION_AMOUNT )
+          .shiftedY( POINTER_AREA_DOWN_SHIFT );
+        valueText.touchArea = valueText.mouseArea;
+
+        // update the card background
+        this.cardLikeBackground.setRectBounds( this.coinAndTextRootNode.visibleLocalBounds.dilatedXY(
+          AbstractCoinTermNode.BACKGROUND_CARD_X_MARGIN,
+          ( AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_TEXT_MODE - this.coinAndTextRootNode.visibleLocalBounds.height ) / 2
+        ) );
+        this.cardLikeBackground.visible = constantCoinTerm.cardOpacityProperty.get() > 0;
+        this.cardLikeBackground.opacity = constantCoinTerm.cardOpacityProperty.get();
+
+        // update the bounds that are registered with the model
+        updateBoundsInModel();
+      }
+    );
+
+    this.disposeConstantCoinTermNode = () => {
+      viewModeProperty.unlink( handleViewModeChanged );
+      updateRepresentationMultilink.dispose();
+    };
+  }
+
+  // @public
+  dispose() {
+    this.disposeConstantCoinTermNode();
+    super.dispose();
+  }
 }
 
 expressionExchange.register( 'ConstantCoinTermNode', ConstantCoinTermNode );
-
-inherit( AbstractCoinTermNode, ConstantCoinTermNode, {
-
-  // @public
-  dispose: function() {
-    this.disposeConstantCoinTermNode();
-    AbstractCoinTermNode.prototype.dispose.call( this );
-  }
-} );
 
 export default ConstantCoinTermNode;

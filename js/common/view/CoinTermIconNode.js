@@ -8,7 +8,6 @@
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Property from '../../../../axon/js/Property.js';
-import inherit from '../../../../phet-core/js/inherit.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
@@ -26,86 +25,85 @@ const CONSTANT_FONT = new PhetFont( 18 );
 const COIN_SCALING_FACTOR = 0.4; // empirically determined to yield coin icons of the desired size
 const MAX_TERM_WIDTH_PROPORTION = 1.75; // limits how wide text can be relative to coin, empirically determined
 
-/**
- * @param {CoinTerm} coinTerm - model of a coin
- * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
- * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
- * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
- * @param {Object} [options]
- * @constructor
- */
-function CoinTermIconNode( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty, options ) {
+class CoinTermIconNode extends Node {
 
-  Node.call( this );
+  /**
+   * @param {CoinTerm} coinTerm - model of a coin
+   * @param {Property.<ViewMode>} viewModeProperty - controls whether to show the coin or the term
+   * @param {Property.<boolean>} showCoinValuesProperty - controls whether or not coin value is shown
+   * @param {Property.<boolean>} showVariableValuesProperty - controls whether or not variable values are shown
+   * @param {Object} [options]
+   */
+  constructor( coinTerm, viewModeProperty, showCoinValuesProperty, showVariableValuesProperty, options ) {
 
-  // add the node that represents the icon
-  const coinIconNode = CoinNodeFactory.createIconNode( coinTerm.typeID, coinTerm.coinRadius * COIN_SCALING_FACTOR );
-  this.addChild( coinIconNode );
+    super();
 
-  // control coin icon visibility
-  viewModeProperty.link( function( representationMode ) {
-    coinIconNode.visible = representationMode === ViewMode.COINS;
-  } );
+    // add the node that represents the icon
+    const coinIconNode = CoinNodeFactory.createIconNode( coinTerm.typeID, coinTerm.coinRadius * COIN_SCALING_FACTOR );
+    this.addChild( coinIconNode );
 
-  // convenience variable for positioning the textual labels created below
-  const coinCenter = coinIconNode.center;
+    // control coin icon visibility
+    viewModeProperty.link( representationMode => {
+      coinIconNode.visible = representationMode === ViewMode.COINS;
+    } );
 
-  // add the coin value text
-  const coinValueText = new Text( coinTerm.valueProperty.value, { font: COIN_VALUE_FONT, center: coinCenter } );
-  this.addChild( coinValueText );
+    // convenience variable for positioning the textual labels created below
+    const coinCenter = coinIconNode.center;
 
-  // control the coin value text visibility
-  Property.multilink( [ viewModeProperty, showCoinValuesProperty ], function( viewMode, showCoinValues ) {
-    coinValueText.visible = viewMode === ViewMode.COINS && showCoinValues;
-  } );
+    // add the coin value text
+    const coinValueText = new Text( coinTerm.valueProperty.value, { font: COIN_VALUE_FONT, center: coinCenter } );
+    this.addChild( coinValueText );
 
-  // determine the max width of the textual components
-  const maxTextWidth = coinIconNode.width * MAX_TERM_WIDTH_PROPORTION;
+    // control the coin value text visibility
+    Property.multilink( [ viewModeProperty, showCoinValuesProperty ], ( viewMode, showCoinValues ) => {
+      coinValueText.visible = viewMode === ViewMode.COINS && showCoinValues;
+    } );
 
-  // add the 'term' text, e.g. xy
-  const termText = new RichText( coinTerm.termText, {
-    font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
-    maxWidth: maxTextWidth
-  } );
-  if ( coinTerm.totalCountProperty.get() < 0 ) {
-    termText.text = MathSymbols.UNARY_MINUS + termText.text;
-  }
-  termText.center = coinCenter;
-  this.addChild( termText );
+    // determine the max width of the textual components
+    const maxTextWidth = coinIconNode.width * MAX_TERM_WIDTH_PROPORTION;
 
-  // control the term text visibility
-  const termTextVisibleProperty = new DerivedProperty(
-    [ viewModeProperty, showVariableValuesProperty ],
-    function( viewMode, showVariableValues ) {
-      return ( viewMode === ViewMode.VARIABLES && !showVariableValues );
+    // add the 'term' text, e.g. xy
+    const termText = new RichText( coinTerm.termText, {
+      font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
+      maxWidth: maxTextWidth
+    } );
+    if ( coinTerm.totalCountProperty.get() < 0 ) {
+      termText.text = MathSymbols.UNARY_MINUS + termText.text;
     }
-  );
-  termTextVisibleProperty.linkAttribute( termText, 'visible' );
+    termText.center = coinCenter;
+    this.addChild( termText );
 
-  // Add the text that includes the variable values.  This can change, so it starts off blank.
-  const termWithVariableValuesText = new RichText( ' ', {
-    font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
-    maxWidth: maxTextWidth
-  } );
-  this.addChild( termWithVariableValuesText );
+    // control the term text visibility
+    const termTextVisibleProperty = new DerivedProperty(
+      [ viewModeProperty, showVariableValuesProperty ],
+      ( viewMode, showVariableValues ) => viewMode === ViewMode.VARIABLES && !showVariableValues
+    );
+    termTextVisibleProperty.linkAttribute( termText, 'visible' );
 
-  // update the variable text when it changes, which is triggered by changes to the underlying variable values
-  coinTerm.termValueTextProperty.link( function() {
-    const termValueText = coinTerm.termValueTextProperty.value;
-    const sign = coinTerm.totalCountProperty.get() > 0 ? '' : MathSymbols.UNARY_MINUS;
-    termWithVariableValuesText.text = sign + termValueText;
-    termWithVariableValuesText.center = coinCenter;
-  } );
+    // Add the text that includes the variable values.  This can change, so it starts off blank.
+    const termWithVariableValuesText = new RichText( ' ', {
+      font: coinTerm.isConstant ? CONSTANT_FONT : VARIABLE_FONT,
+      maxWidth: maxTextWidth
+    } );
+    this.addChild( termWithVariableValuesText );
 
-  // control the visibility of the value text
-  Property.multilink( [ viewModeProperty, showVariableValuesProperty ], function( viewMode, showVariableValues ) {
-    termWithVariableValuesText.visible = viewMode === ViewMode.VARIABLES && showVariableValues;
-  } );
+    // update the variable text when it changes, which is triggered by changes to the underlying variable values
+    coinTerm.termValueTextProperty.link( () => {
+      const termValueText = coinTerm.termValueTextProperty.value;
+      const sign = coinTerm.totalCountProperty.get() > 0 ? '' : MathSymbols.UNARY_MINUS;
+      termWithVariableValuesText.text = sign + termValueText;
+      termWithVariableValuesText.center = coinCenter;
+    } );
 
-  this.mutate( options );
+    // control the visibility of the value text
+    Property.multilink( [ viewModeProperty, showVariableValuesProperty ], ( viewMode, showVariableValues ) => {
+      termWithVariableValuesText.visible = viewMode === ViewMode.VARIABLES && showVariableValues;
+    } );
+
+    this.mutate( options );
+  }
 }
 
 expressionExchange.register( 'CoinTermIconNode', CoinTermIconNode );
 
-inherit( Node, CoinTermIconNode );
 export default CoinTermIconNode;

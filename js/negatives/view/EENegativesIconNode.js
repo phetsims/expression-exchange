@@ -7,7 +7,6 @@
  */
 
 import Screen from '../../../../joist/js/Screen.js';
-import inherit from '../../../../phet-core/js/inherit.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
@@ -25,30 +24,31 @@ const FONT_SIZE = 100;
 const MATH_FONT = new MathSymbolFont( FONT_SIZE );
 const TEXT_FONT = new PhetFont( FONT_SIZE );
 
-/**
- * @constructor
- */
-function EENegativesIconNode() {
+class EENegativesIconNode extends Rectangle {
 
-  // create the background
-  Rectangle.call( this, 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
+  /**
+   */
+  constructor() {
 
-  // create and add the equation node
-  const equationNode = new HBox( {
-    children: [
-      new Text( '3', { font: TEXT_FONT } ),
-      new RichText( 'x<sup>2</sup>', { font: MATH_FONT, supScale: 0.5 } ),
-      new Text( ' ' + MathSymbols.MINUS + ' ', { font: TEXT_FONT } ),
-      new RichText( 'x<sup>2</sup>', { font: MATH_FONT, supScale: 0.5 } )
-    ],
-    align: 'bottom'
-  } );
-  equationNode.centerX = ICON_SIZE.width / 2;
-  equationNode.centerY = ICON_SIZE.height * 0.45;
-  this.addChild( equationNode );
+    // create the background
+    super( 0, 0, ICON_SIZE.width, ICON_SIZE.height, { fill: BACKGROUND_COLOR } );
+
+    // create and add the equation node
+    const equationNode = new HBox( {
+      children: [
+        new Text( '3', { font: TEXT_FONT } ),
+        new RichText( 'x<sup>2</sup>', { font: MATH_FONT, supScale: 0.5 } ),
+        new Text( ' ' + MathSymbols.MINUS + ' ', { font: TEXT_FONT } ),
+        new RichText( 'x<sup>2</sup>', { font: MATH_FONT, supScale: 0.5 } )
+      ],
+      align: 'bottom'
+    } );
+    equationNode.centerX = ICON_SIZE.width / 2;
+    equationNode.centerY = ICON_SIZE.height * 0.45;
+    this.addChild( equationNode );
+  }
 }
 
 expressionExchange.register( 'EENegativesIconNode', EENegativesIconNode );
 
-inherit( Rectangle, EENegativesIconNode );
 export default EENegativesIconNode;

@@ -78,7 +78,7 @@ function createHexagonalCoinIcon( outerMaxRadius, outerCircleColor, innerCircleR
   const vector = Vector2.createPolar( outerMaxRadius, Math.PI * -0.25 ); // angle empirically determined to match coin image
   outerShape.moveToPoint( vector );
 
-  _.times( 6, function() {
+  _.times( 6, () => {
     vector.rotate( Math.PI / 3 );
     outerShape.lineTo( vector.x, vector.y );
   } );
@@ -115,7 +115,7 @@ const CoinNodeFactory = {
    * @returns {Node}
    * @public
    */
-  createImageNode: function( coinTermTypeID, radius, isFront ) {
+  createImageNode( coinTermTypeID, radius, isFront ) {
 
     const imageMap = isFront ? coinFrontImages : coinBackImages;
     const imageNode = new Image( imageMap[ coinTermTypeID ] );
@@ -133,7 +133,7 @@ const CoinNodeFactory = {
    * @param {number} radius
    * @param {Object} [options]
    */
-  createIconNode: function( coinTermTypeID, radius, options ) {
+  createIconNode( coinTermTypeID, radius, options ) {
     options = options || {};
 
     let iconNode = null;

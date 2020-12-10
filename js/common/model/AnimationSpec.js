@@ -6,31 +6,31 @@
  * @author John Blanco
  */
 
-import inherit from '../../../../phet-core/js/inherit.js';
 import expressionExchange from '../../expressionExchange.js';
 
-/**
- * @param {Vector2} startPosition - the position from which the animation should begin
- * @param {Vector2} travelVector - the path from the start to the destination
- * @param {number} totalDuration - in seconds, amount of time that the animation should take
- * @constructor
- */
-function AnimationSpec( startPosition, travelVector, totalDuration ) {
+class AnimationSpec {
 
-  // @public (read-only) {Vector2}
-  this.startPosition = startPosition;
+  /**
+   * @param {Vector2} startPosition - the position from which the animation should begin
+   * @param {Vector2} travelVector - the path from the start to the destination
+   * @param {number} totalDuration - in seconds, amount of time that the animation should take
+   */
+  constructor( startPosition, travelVector, totalDuration ) {
 
-  // @public (read-only) {Vector2}
-  this.travelVector = travelVector;
+    // @public (read-only) {Vector2}
+    this.startPosition = startPosition;
 
-  // @public (read-only) {number}
-  this.totalDuration = totalDuration;
+    // @public (read-only) {Vector2}
+    this.travelVector = travelVector;
 
-  // @public (read-only) {number} - time that has passed since the animation was initiated
-  this.timeSoFar = 0;
+    // @public (read-only) {number}
+    this.totalDuration = totalDuration;
+
+    // @public (read-only) {number} - time that has passed since the animation was initiated
+    this.timeSoFar = 0;
+  }
 }
 
 expressionExchange.register( 'AnimationSpec', AnimationSpec );
 
-inherit( Object, AnimationSpec );
 export default AnimationSpec;

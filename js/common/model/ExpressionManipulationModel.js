@@ -14,7 +14,6 @@ import Property from '../../../../axon/js/Property.js';
 import StringProperty from '../../../../axon/js/StringProperty.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
-import inherit from '../../../../phet-core/js/inherit.js';
 import merge from '../../../../phet-core/js/merge.js';
 import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
@@ -33,148 +32,143 @@ const RETRIEVED_COIN_TERM_FIRST_POSITION = new Vector2( 250, 50 ); // upper left
 const NUM_RETRIEVED_COIN_TERM_COLUMNS = 6;
 const MIN_RETRIEVAL_PLACEMENT_DISTANCE = 30; // empirically determined
 
-/**
- * @constructor
- * @param {Object} [options]
- */
-function ExpressionManipulationModel( options ) {
+class ExpressionManipulationModel {
 
-  options = merge( {
-
-    // defines whether to present just coins, just variables, or both to the user
-    allowedRepresentations: AllowedRepresentations.COINS_AND_VARIABLES,
-
-    // flag that controls how cancellation is handled in cases where coin terms don't completely cancel each other out
-    partialCancellationEnabled: true,
-
-    // flag that controls whether the 'simplify negatives' setting is on or off by default
-    simplifyNegativesDefault: false
-
-  }, options );
-
-  const initialViewMode = options.allowedRepresentations === AllowedRepresentations.VARIABLES_ONLY ?
-                          ViewMode.VARIABLES : ViewMode.COINS;
-
-  // @public {Property.<ViewMode>}
-  this.viewModeProperty = new StringProperty( initialViewMode );
-
-  // @public {Property.<boolean>}
-  this.showCoinValuesProperty = new Property( false );
-  this.showVariableValuesProperty = new Property( false );
-  this.showAllCoefficientsProperty = new Property( false );
-
-  // @public {Property.<number>}
-  this.xTermValueProperty = new Property( 2 );
-  this.yTermValueProperty = new Property( 5 );
-  this.zTermValueProperty = new Property( 10 );
-
-  // @public (read-only) {Property.<number>}
-  this.totalValueProperty = new Property( 0 );
-
-  // @public (read-only) {Property.<Expression>} - null when no expression is being edited
-  this.expressionBeingEditedProperty = new Property( null );
-
-  // @public {Property.<boolean>}
-  this.simplifyNegativesProperty = new Property( options.simplifyNegativesDefault );
-
-  const self = this;
-
-  // @public (read-only) {CoinTermFactory} - factory used to create coin terms
-  this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
-
-  // @public (read-only) {AllowedRepresentations} - options that control what is available to the user to manipulate
-  this.allowedRepresentations = options.allowedRepresentations;
-
-  // @public (read/listen-only) {ObservableArrayDef.<CoinTerm>} - list of all coin terms in the model
-  this.coinTerms = createObservableArray();
-
-  // @public (read/listen-only) {ObservableArrayDef.<Expression>} - list of expressions in the model
-  this.expressions = createObservableArray();
-
-  // @public (read/listen-only) {ObservableArrayDef.<ExpressionHint} - list of expression hints in the model
-  this.expressionHints = createObservableArray();
-
-  // @public (read-only) {Bounds2} - coin terms and expression that end up outside these bounds are moved back inside
-  this.retrievalBounds = Bounds2.EVERYTHING;
-
-  // @public (read-only) {Array.<EECollectionArea>} - areas where expressions or coin terms can be collected, used
-  // only in game
-  this.collectionAreas = [];
-
-  /*
-   * @private, with some elements accessible via methods define below - This is a populated data structure that
-   * contains counts for the various possible combinations of coin term types and minimum decomposition.  For
-   * instance, it keeps track of the number of 2X values that can't be further decomposed.
-   * {CoinTermTypeID} => {Array.<{ count: {number}, countProperty: {Property.<number>|null} }>}
-   *
-   * This is structured as an object with each of the possible coin term types as the keys.  Each of the values is
-   * an array that is indexed by the minimum decomposibility, but is offset to account for the fact that the values
-   * can be negative, such as for the number of instances of -2x.  Each element of the array is an object that has
-   * a count value and a count property.  The counts are updated any time a coin term is added or removed.  The count
-   * properties are created lazily when requested via methods defined below, and are updated at the same time as the
-   * counts if they exist.
+  /**
+   * @param {Object} [options]
    */
-  this.coinTermCounts = {};
-  const countObjectsPerCoinTermType = EESharedConstants.MAX_NON_DECOMPOSABLE_AMOUNT * 2 + 1;
-  _.keys( CoinTermTypeID ).forEach( function( coinTermType ) {
-    self.coinTermCounts[ coinTermType ] = new Array( countObjectsPerCoinTermType );
-    _.times( countObjectsPerCoinTermType, function( index ) {
-      self.coinTermCounts[ coinTermType ][ index ] = { count: 0, countProperty: null };
-    } );
-  } );
+  constructor( options ) {
 
-  // @public {@Bounds2} - should be set by view, generally just once.  Used to determine when to remove a coin term
-  // because the user has essentially put it away
-  this.creatorBoxBounds = Bounds2.NOTHING;
+    options = merge( {
 
-  // @private {boolean} - make this option available to methods
-  this.partialCancellationEnabled = options.partialCancellationEnabled;
+      // defines whether to present just coins, just variables, or both to the user
+      allowedRepresentations: AllowedRepresentations.COINS_AND_VARIABLES,
 
-  // add a listener that resets the coin term values when the view mode switches from variables to coins
-  this.viewModeProperty.link( function( newViewMode, oldViewMode ) {
-    if ( newViewMode === ViewMode.COINS && oldViewMode === ViewMode.VARIABLES ) {
-      self.xTermValueProperty.reset();
-      self.yTermValueProperty.reset();
-      self.zTermValueProperty.reset();
-    }
-  } );
+      // flag that controls how cancellation is handled in cases where coin terms don't completely cancel each other out
+      partialCancellationEnabled: true,
 
-  // add a listener that updates the total whenever one of the term value properties change
-  Property.multilink(
-    [ this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty, this.coinTerms.lengthProperty ],
-    function() {
-      let total = 0;
-      self.coinTerms.forEach( function( coinTerm ) {
-        total += coinTerm.valueProperty.value * coinTerm.totalCountProperty.get();
+      // flag that controls whether the 'simplify negatives' setting is on or off by default
+      simplifyNegativesDefault: false
+
+    }, options );
+
+    const initialViewMode = options.allowedRepresentations === AllowedRepresentations.VARIABLES_ONLY ?
+                            ViewMode.VARIABLES : ViewMode.COINS;
+
+    // @public {Property.<ViewMode>}
+    this.viewModeProperty = new StringProperty( initialViewMode );
+
+    // @public {Property.<boolean>}
+    this.showCoinValuesProperty = new Property( false );
+    this.showVariableValuesProperty = new Property( false );
+    this.showAllCoefficientsProperty = new Property( false );
+
+    // @public {Property.<number>}
+    this.xTermValueProperty = new Property( 2 );
+    this.yTermValueProperty = new Property( 5 );
+    this.zTermValueProperty = new Property( 10 );
+
+    // @public (read-only) {Property.<number>}
+    this.totalValueProperty = new Property( 0 );
+
+    // @public (read-only) {Property.<Expression>} - null when no expression is being edited
+    this.expressionBeingEditedProperty = new Property( null );
+
+    // @public {Property.<boolean>}
+    this.simplifyNegativesProperty = new Property( options.simplifyNegativesDefault );
+
+
+    // @public (read-only) {CoinTermFactory} - factory used to create coin terms
+    this.coinTermFactory = new CoinTermFactory( this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty );
+
+    // @public (read-only) {AllowedRepresentations} - options that control what is available to the user to manipulate
+    this.allowedRepresentations = options.allowedRepresentations;
+
+    // @public (read/listen-only) {ObservableArrayDef.<CoinTerm>} - list of all coin terms in the model
+    this.coinTerms = createObservableArray();
+
+    // @public (read/listen-only) {ObservableArrayDef.<Expression>} - list of expressions in the model
+    this.expressions = createObservableArray();
+
+    // @public (read/listen-only) {ObservableArrayDef.<ExpressionHint} - list of expression hints in the model
+    this.expressionHints = createObservableArray();
+
+    // @public (read-only) {Bounds2} - coin terms and expression that end up outside these bounds are moved back inside
+    this.retrievalBounds = Bounds2.EVERYTHING;
+
+    // @public (read-only) {Array.<EECollectionArea>} - areas where expressions or coin terms can be collected, used
+    // only in game
+    this.collectionAreas = [];
+
+    /*
+     * @private, with some elements accessible via methods define below - This is a populated data structure that
+     * contains counts for the various possible combinations of coin term types and minimum decomposition.  For
+     * instance, it keeps track of the number of 2X values that can't be further decomposed.
+     * {CoinTermTypeID} => {Array.<{ count: {number}, countProperty: {Property.<number>|null} }>}
+     *
+     * This is structured as an object with each of the possible coin term types as the keys.  Each of the values is
+     * an array that is indexed by the minimum decomposibility, but is offset to account for the fact that the values
+     * can be negative, such as for the number of instances of -2x.  Each element of the array is an object that has
+     * a count value and a count property.  The counts are updated any time a coin term is added or removed.  The count
+     * properties are created lazily when requested via methods defined below, and are updated at the same time as the
+     * counts if they exist.
+     */
+    this.coinTermCounts = {};
+    const countObjectsPerCoinTermType = EESharedConstants.MAX_NON_DECOMPOSABLE_AMOUNT * 2 + 1;
+    _.keys( CoinTermTypeID ).forEach( coinTermType => {
+      this.coinTermCounts[ coinTermType ] = new Array( countObjectsPerCoinTermType );
+      _.times( countObjectsPerCoinTermType, index => {
+        this.coinTermCounts[ coinTermType ][ index ] = { count: 0, countProperty: null };
       } );
-      self.totalValueProperty.set( total );
-    }
-  );
+    } );
 
-  // add a listener that handles the addition of coin terms
-  this.coinTerms.addItemAddedListener( this.coinTermAddedListener.bind( this ) );
+    // @public {@Bounds2} - should be set by view, generally just once.  Used to determine when to remove a coin term
+    // because the user has essentially put it away
+    this.creatorBoxBounds = Bounds2.NOTHING;
 
-  // add a listener that handles the addition of an expression
-  this.expressions.addItemAddedListener( this.expressionAddedListener.bind( this ) );
-}
+    // @private {boolean} - make this option available to methods
+    this.partialCancellationEnabled = options.partialCancellationEnabled;
 
-expressionExchange.register( 'ExpressionManipulationModel', ExpressionManipulationModel );
+    // add a listener that resets the coin term values when the view mode switches from variables to coins
+    this.viewModeProperty.link( ( newViewMode, oldViewMode ) => {
+      if ( newViewMode === ViewMode.COINS && oldViewMode === ViewMode.VARIABLES ) {
+        this.xTermValueProperty.reset();
+        this.yTermValueProperty.reset();
+        this.zTermValueProperty.reset();
+      }
+    } );
 
-inherit( Object, ExpressionManipulationModel, {
+    // add a listener that updates the total whenever one of the term value properties change
+    Property.multilink(
+      [ this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty, this.coinTerms.lengthProperty ],
+      () => {
+        let total = 0;
+        this.coinTerms.forEach( coinTerm => {
+          total += coinTerm.valueProperty.value * coinTerm.totalCountProperty.get();
+        } );
+        this.totalValueProperty.set( total );
+      }
+    );
+
+    // add a listener that handles the addition of coin terms
+    this.coinTerms.addItemAddedListener( this.coinTermAddedListener.bind( this ) );
+
+    // add a listener that handles the addition of an expression
+    this.expressions.addItemAddedListener( this.expressionAddedListener.bind( this ) );
+  }
 
   /**
    * main step function for this model, should only be called by the framework
    * @param {number} dt
    * @public
    */
-  step: function( dt ) {
+  step( dt ) {
 
-    const self = this;
     let userControlledCoinTerms;
     const coinTermsWithHalos = [];
 
     // step all the coin terms
-    this.coinTerms.forEach( function( coinTerm ) { coinTerm.step( dt ); } );
+    this.coinTerms.forEach( coinTerm => { coinTerm.step( dt ); } );
 
     // Update the state of the hints and halos.  This has to be done in the step function rather than in the
     // event listeners, where much of the other action occurs, because the code needs to figure out which hints and
@@ -182,25 +176,23 @@ inherit( Object, ExpressionManipulationModel, {
     if ( !this.expressionBeingEditedProperty.get() ) {
 
       // clear the hovering lists for all expressions - they will then be updated below
-      this.expressions.forEach( function( expression ) {
+      this.expressions.forEach( expression => {
         expression.clearHoveringCoinTerms();
         expression.clearHoveringExpressions();
       } );
 
       // get a list of user controlled expressions, max of one on mouse based systems, any number on touch devices
-      const userControlledExpressions = _.filter( this.expressions, function( expression ) {
-        return expression.userControlledProperty.get();
-      } );
+      const userControlledExpressions = _.filter( this.expressions, expression => expression.userControlledProperty.get() );
 
       const collectionAreasWhoseHalosShouldBeActive = [];
 
       // Update hints for expressions and collection areas.
-      userControlledExpressions.forEach( function( userControlledExpression ) {
+      userControlledExpressions.forEach( userControlledExpression => {
 
-        const expressionIsOverCreatorBox = userControlledExpression.getBounds().intersectsBounds( self.creatorBoxBounds );
-        const mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForExpression( userControlledExpression );
-        const mostOverlappingExpression = self.getExpressionMostOverlappingWithExpression( userControlledExpression );
-        const mostOverlappingCoinTerm = self.getFreeCoinTermMostOverlappingWithExpression( userControlledExpression );
+        const expressionIsOverCreatorBox = userControlledExpression.getBounds().intersectsBounds( this.creatorBoxBounds );
+        const mostOverlappingCollectionArea = this.getMostOverlappingCollectionAreaForExpression( userControlledExpression );
+        const mostOverlappingExpression = this.getExpressionMostOverlappingWithExpression( userControlledExpression );
+        const mostOverlappingCoinTerm = this.getFreeCoinTermMostOverlappingWithExpression( userControlledExpression );
         let expressionOverWhichThisExpressionIsHovering = null;
         let coinTermOverWhichThisExpressionIsHovering = null;
 
@@ -223,7 +215,7 @@ inherit( Object, ExpressionManipulationModel, {
         }
 
         // update hover info for each of the other expressions with respect to this one
-        self.expressions.forEach( function( expression ) {
+        this.expressions.forEach( expression => {
 
           if ( expression === userControlledExpression ) {
             // skip self
@@ -245,20 +237,18 @@ inherit( Object, ExpressionManipulationModel, {
       } );
 
       // get a list of all user controlled coin terms, max of one coin on mouse-based systems, any number on touch devices
-      userControlledCoinTerms = _.filter( this.coinTerms, function( coin ) {
-        return coin.userControlledProperty.get();
-      } );
+      userControlledCoinTerms = _.filter( this.coinTerms, coin => coin.userControlledProperty.get() );
 
       // check each user-controlled coin term to see if it's in a position to combine with an expression or another
       // coin term
       const neededExpressionHints = [];
-      userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
+      userControlledCoinTerms.forEach( userControlledCoinTerm => {
 
-        const coinTermIsOverCreatorBox = userControlledCoinTerm.getViewBounds().intersectsBounds( self.creatorBoxBounds );
-        const mostOverlappingCollectionArea = self.getMostOverlappingCollectionAreaForCoinTerm( userControlledCoinTerm );
-        const mostOverlappingExpression = self.getExpressionMostOverlappingWithCoinTerm( userControlledCoinTerm );
-        const mostOverlappingLikeCoinTerm = self.getMostOverlappingLikeCoinTerm( userControlledCoinTerm );
-        const joinableFreeCoinTerm = self.checkForJoinableFreeCoinTerm( userControlledCoinTerm );
+        const coinTermIsOverCreatorBox = userControlledCoinTerm.getViewBounds().intersectsBounds( this.creatorBoxBounds );
+        const mostOverlappingCollectionArea = this.getMostOverlappingCollectionAreaForCoinTerm( userControlledCoinTerm );
+        const mostOverlappingExpression = this.getExpressionMostOverlappingWithCoinTerm( userControlledCoinTerm );
+        const mostOverlappingLikeCoinTerm = this.getMostOverlappingLikeCoinTerm( userControlledCoinTerm );
+        const joinableFreeCoinTerm = this.checkForJoinableFreeCoinTerm( userControlledCoinTerm );
         let expressionOverWhichCoinTermIsHovering = null;
 
         if ( coinTermIsOverCreatorBox ) {
@@ -290,7 +280,7 @@ inherit( Object, ExpressionManipulationModel, {
         }
 
         // update hover info for each expression with respect to this coin term
-        self.expressions.forEach( function( expression ) {
+        this.expressions.forEach( expression => {
           if ( expression === expressionOverWhichCoinTermIsHovering ) {
             expression.addHoveringCoinTerm( userControlledCoinTerm );
           }
@@ -301,46 +291,46 @@ inherit( Object, ExpressionManipulationModel, {
       if ( neededExpressionHints.length > 0 ) {
 
         // remove any expression hints that are no longer needed
-        this.expressionHints.forEach( function( existingExpressionHint ) {
+        this.expressionHints.forEach( existingExpressionHint => {
           let matchFound = false;
-          neededExpressionHints.forEach( function( neededExpressionHint ) {
+          neededExpressionHints.forEach( neededExpressionHint => {
             if ( neededExpressionHint.equals( existingExpressionHint ) ) {
               matchFound = true;
             }
           } );
           if ( !matchFound ) {
-            self.removeExpressionHint( existingExpressionHint );
+            this.removeExpressionHint( existingExpressionHint );
           }
         } );
 
         // add any needed expression hints that are not yet on the list
-        neededExpressionHints.forEach( function( neededExpressionHint ) {
+        neededExpressionHints.forEach( neededExpressionHint => {
           let matchFound = false;
-          self.expressionHints.forEach( function( existingExpressionHint ) {
+          this.expressionHints.forEach( existingExpressionHint => {
             if ( existingExpressionHint.equals( neededExpressionHint ) ) {
               matchFound = true;
             }
           } );
           if ( !matchFound ) {
-            self.expressionHints.add( neededExpressionHint );
+            this.expressionHints.add( neededExpressionHint );
           }
         } );
       }
       else {
-        self.expressionHints.forEach( function( existingExpressionHint ) {
-          self.removeExpressionHint( existingExpressionHint );
+        this.expressionHints.forEach( existingExpressionHint => {
+          this.removeExpressionHint( existingExpressionHint );
         } );
       }
 
       // update hover info for each collection area
-      self.collectionAreas.forEach( function( collectionArea ) {
+      this.collectionAreas.forEach( collectionArea => {
         collectionArea.haloActiveProperty.set(
           collectionAreasWhoseHalosShouldBeActive.indexOf( collectionArea ) >= 0
         );
       } );
 
       // step the expressions
-      this.expressions.forEach( function( expression ) {
+      this.expressions.forEach( expression => {
         expression.step( dt );
       } );
     }
@@ -351,16 +341,14 @@ inherit( Object, ExpressionManipulationModel, {
       // coins is tested so that their halos can be activated.
 
       // get a list of all user controlled coins, max of one coin on mouse-based systems, any number on touch devices
-      userControlledCoinTerms = _.filter( this.coinTerms, function( coinTerm ) {
-        return coinTerm.userControlledProperty.get();
-      } );
+      userControlledCoinTerms = _.filter( this.coinTerms, coinTerm => coinTerm.userControlledProperty.get() );
 
       // check for overlap between coins that can combine
-      userControlledCoinTerms.forEach( function( userControlledCoinTerm ) {
+      userControlledCoinTerms.forEach( userControlledCoinTerm => {
 
-        const overlappingCoinTerm = self.getOverlappingLikeCoinTermWithinExpression(
+        const overlappingCoinTerm = this.getOverlappingLikeCoinTermWithinExpression(
           userControlledCoinTerm,
-          self.expressionBeingEditedProperty.get()
+          this.expressionBeingEditedProperty.get()
         );
 
         if ( overlappingCoinTerm ) {
@@ -373,24 +361,24 @@ inherit( Object, ExpressionManipulationModel, {
     }
 
     // go through all coin terms and update the state of their combine halos
-    this.coinTerms.forEach( function( coinTerm ) {
+    this.coinTerms.forEach( coinTerm => {
       coinTerm.combineHaloActiveProperty.set( coinTermsWithHalos.indexOf( coinTerm ) !== -1 );
     } );
-  },
+  }
 
   // @public
-  addCoinTerm: function( coinTerm ) {
+  addCoinTerm( coinTerm ) {
     this.coinTerms.add( coinTerm );
     this.updateCoinTermCounts( coinTerm.typeID );
     phet.log && phet.log( 'added ' + coinTerm.id + ', composition = [' + coinTerm.composition + ']'
     );
-  },
+  }
 
   // @public
-  removeCoinTerm: function( coinTerm, animate ) {
+  removeCoinTerm( coinTerm, animate ) {
 
     // remove the coin term from any expressions
-    this.expressions.forEach( function( expression ) {
+    this.expressions.forEach( expression => {
       if ( expression.containsCoinTerm( coinTerm ) ) {
         expression.removeCoinTerm( coinTerm );
       }
@@ -405,7 +393,7 @@ inherit( Object, ExpressionManipulationModel, {
       this.coinTerms.remove( coinTerm );
       this.updateCoinTermCounts( coinTerm.typeID );
     }
-  },
+  }
 
   /**
    * get a property that represents the count in the model of coin terms of the given type and min decomposition
@@ -414,7 +402,7 @@ inherit( Object, ExpressionManipulationModel, {
    * @param {boolean} createIfUndefined
    * @public
    */
-  getCoinTermCountProperty: function( coinTermTypeID, minimumDecomposition, createIfUndefined ) {
+  getCoinTermCountProperty( coinTermTypeID, minimumDecomposition, createIfUndefined ) {
     assert && assert( this.coinTermCounts.hasOwnProperty( coinTermTypeID ), 'unrecognized coin term type ID' );
     assert && assert( minimumDecomposition !== 0, 'minimumDecomposition cannot be 0' );
 
@@ -433,12 +421,13 @@ inherit( Object, ExpressionManipulationModel, {
     }
 
     return coinTermCountProperty;
-  },
+  }
 
   /**
    * stop editing the expression that is currently selected for edit, does nothing if no expression selected
+   * @public
    */
-  stopEditingExpression: function() {
+  stopEditingExpression() {
 
     const expressionBeingEdited = this.expressionBeingEditedProperty.get();
     expressionBeingEdited.inEditModeProperty.set( false );
@@ -450,51 +439,48 @@ inherit( Object, ExpressionManipulationModel, {
     }
 
     this.expressionBeingEditedProperty.set( null );
-  },
+  }
 
   // @private - update the count properties for the specified coin term type
-  updateCoinTermCounts: function( coinTermTypeID ) {
-
-    const self = this;
+  updateCoinTermCounts( coinTermTypeID ) {
 
     // zero the non-property version of the counts
-    this.coinTermCounts[ coinTermTypeID ].forEach( function( countObject ) {
+    this.coinTermCounts[ coinTermTypeID ].forEach( countObject => {
       countObject.count = 0;
     } );
 
     // loop through the current set of coin terms and update counts for the specified coin term type
-    this.coinTerms.forEach( function( coinTerm ) {
+    this.coinTerms.forEach( coinTerm => {
       if ( coinTerm.typeID === coinTermTypeID ) {
-        coinTerm.composition.forEach( function( minDecomposition ) {
-          self.coinTermCounts[ coinTermTypeID ][ minDecomposition + EESharedConstants.MAX_NON_DECOMPOSABLE_AMOUNT ].count++;
+        coinTerm.composition.forEach( minDecomposition => {
+          this.coinTermCounts[ coinTermTypeID ][ minDecomposition + EESharedConstants.MAX_NON_DECOMPOSABLE_AMOUNT ].count++;
         } );
       }
     } );
 
     // update any count properties that exist
-    this.coinTermCounts[ coinTermTypeID ].forEach( function( countObject ) {
+    this.coinTermCounts[ coinTermTypeID ].forEach( countObject => {
       if ( countObject.countProperty ) {
         countObject.countProperty.set( countObject.count );
       }
     } );
-  },
+  }
 
   // @public - remove the specified expression
-  removeExpression: function( expression ) {
-    const self = this;
+  removeExpression( expression ) {
     const coinTermsToRemove = expression.removeAllCoinTerms();
-    coinTermsToRemove.forEach( function( coinTerm ) {
-      self.removeCoinTerm( coinTerm, true );
+    coinTermsToRemove.forEach( coinTerm => {
+      this.removeCoinTerm( coinTerm, true );
     } );
     this.expressions.remove( expression );
     phet.log && phet.log( 'removed ' + expression.id );
-  },
+  }
 
   // @private, remove an expression hint
-  removeExpressionHint: function( expressionHint ) {
+  removeExpressionHint( expressionHint ) {
     expressionHint.clear();
     this.expressionHints.remove( expressionHint );
-  },
+  }
 
   /**
    * get the expression that overlaps the most with the provided coin term, null if no overlap exists, user controlled
@@ -502,12 +488,12 @@ inherit( Object, ExpressionManipulationModel, {
    * @param {CoinTerm} coinTerm
    * @private
    */
-  getExpressionMostOverlappingWithCoinTerm: function( coinTerm ) {
+  getExpressionMostOverlappingWithCoinTerm( coinTerm ) {
     let maxOverlap = 0;
     let mostOverlappingExpression = null;
 
     // check each expression against the coin term to see which has max overlap
-    this.expressions.forEach( function( expression ) {
+    this.expressions.forEach( expression => {
 
       if ( !expression.userControlledProperty.get() && // exclude expressions that are being moved by a user
            !expression.inProgressAnimationProperty.get() && // exclude expressions that are animating to a destination
@@ -519,7 +505,7 @@ inherit( Object, ExpressionManipulationModel, {
       }
     } );
     return mostOverlappingExpression;
-  },
+  }
 
   /**
    * get the free coin term (i.e. one that is not in an expression) that overlaps the most with the provided
@@ -528,11 +514,11 @@ inherit( Object, ExpressionManipulationModel, {
    * @returns {CoinTerm}
    * @private
    */
-  getFreeCoinTermMostOverlappingWithExpression: function( expression ) {
+  getFreeCoinTermMostOverlappingWithExpression( expression ) {
     let maxOverlap = 0;
     let mostOverlappingFreeCoinTerm = null;
 
-    this.coinTerms.forEach( function( coinTerm ) {
+    this.coinTerms.forEach( coinTerm => {
 
       // make sure the coin term is eligible and then compare the amount of overlap to what was previously seen
       if ( !coinTerm.userControlledProperty.get() && // exclude user controlled coin terms
@@ -545,7 +531,7 @@ inherit( Object, ExpressionManipulationModel, {
       }
     } );
     return mostOverlappingFreeCoinTerm;
-  },
+  }
 
   /**
    * get the expression that overlaps the most with the provided expression, null if no overlap exists, user
@@ -553,12 +539,12 @@ inherit( Object, ExpressionManipulationModel, {
    * @param {Expression} thisExpression
    * @private
    */
-  getExpressionMostOverlappingWithExpression: function( thisExpression ) {
+  getExpressionMostOverlappingWithExpression( thisExpression ) {
     let maxOverlap = 0;
     let mostOverlappingExpression = null;
 
     // test each other expression for eligibility and overlap
-    this.expressions.forEach( function( thatExpression ) {
+    this.expressions.forEach( thatExpression => {
 
       // make sure the expression is eligible for consideration, then determine if it is the most overlapping
       if ( thatExpression !== thisExpression && !thatExpression.userControlledProperty.get() && // exclude expressions that are being moved by a user
@@ -570,14 +556,14 @@ inherit( Object, ExpressionManipulationModel, {
       }
     } );
     return mostOverlappingExpression;
-  },
+  }
 
   /**
    * Get the next position where a retrieved coin term (i.e. one that ended up out of bounds) can be placed.
    * @returns {Vector2}
    * @private
    */
-  getNextOpenRetrievalSpot: function() {
+  getNextOpenRetrievalSpot() {
     const position = new Vector2( 0, 0 );
     let row = 0;
     let column = 0;
@@ -605,7 +591,7 @@ inherit( Object, ExpressionManipulationModel, {
       }
     }
     return position;
-  },
+  }
 
   /**
    * find a position where the provided expression won't overlap with others - this is only approximate, and doesn't
@@ -613,7 +599,7 @@ inherit( Object, ExpressionManipulationModel, {
    * @returns {Vector2}
    * @private
    */
-  getOpenExpressionPlacementPosition: function(expression ) {
+  getOpenExpressionPlacementPosition( expression ) {
 
     // variables that controls the search grid, empirically determined
     const minX = 170;
@@ -678,34 +664,34 @@ inherit( Object, ExpressionManipulationModel, {
     }
 
     return position;
-  },
+  }
 
   /**
    * get a reference to the collection area that most overlaps with the provided expression, null if no overlap exists
    * @param {Expression} expression
    * @private
    */
-  getMostOverlappingCollectionAreaForExpression: function( expression ) {
+  getMostOverlappingCollectionAreaForExpression( expression ) {
     let maxOverlap = 0;
     let mostOverlappingCollectionArea = null;
-    this.collectionAreas.forEach( function( collectionArea ) {
+    this.collectionAreas.forEach( collectionArea => {
       if ( expression.getOverlap( collectionArea ) > maxOverlap ) {
         mostOverlappingCollectionArea = collectionArea;
         maxOverlap = expression.getOverlap( collectionArea );
       }
     } );
     return mostOverlappingCollectionArea;
-  },
+  }
 
   /**
    * get a reference to the collection area that most overlaps with the provided coin term, null if no overlap exists
    * @param {CoinTerm} coinTerm
    * @private
    */
-  getMostOverlappingCollectionAreaForCoinTerm: function( coinTerm ) {
+  getMostOverlappingCollectionAreaForCoinTerm( coinTerm ) {
     let maxOverlap = 0;
     let mostOverlappingCollectionArea = null;
-    this.collectionAreas.forEach( function( collectionArea ) {
+    this.collectionAreas.forEach( collectionArea => {
       const coinTermBounds = coinTerm.getViewBounds();
       const collectionAreaBounds = collectionArea.bounds;
       const xOverlap = Math.max(
@@ -723,14 +709,14 @@ inherit( Object, ExpressionManipulationModel, {
       }
     } );
     return mostOverlappingCollectionArea;
-  },
+  }
 
   /**
    * handler for when a coin term is added to the model, hooks up a bunch of listeners
    * @param addedCoinTerm
    * @private
    */
-  coinTermAddedListener: function( addedCoinTerm ) {
+  coinTermAddedListener( addedCoinTerm ) {
 
     const self = this;
 
@@ -811,7 +797,7 @@ inherit( Object, ExpressionManipulationModel, {
 
           // The coin term was released in a place where it could join another free coin term.
           let expressionHintToRemove;
-          self.expressionHints.forEach( function( expressionHint ) {
+          self.expressionHints.forEach( expressionHint => {
             if ( expressionHint.containsCoinTerm( addedCoinTerm ) && expressionHint.containsCoinTerm( joinableFreeCoinTerm ) ) {
               expressionHintToRemove = expressionHint;
             }
@@ -864,7 +850,7 @@ inherit( Object, ExpressionManipulationModel, {
       const interCoinTermDistance = relativeViewBounds.width + BREAK_APART_SPACING;
       let nextLeftX = pointToDistributeAround.x - interCoinTermDistance;
       let nextRightX = pointToDistributeAround.x + interCoinTermDistance;
-      extractedCoinTerms.forEach( function( extractedCoinTerm, index ) {
+      extractedCoinTerms.forEach( ( extractedCoinTerm, index ) => {
         let destination;
         self.addCoinTerm( extractedCoinTerm );
         if ( index % 2 === 0 ) {
@@ -916,7 +902,7 @@ inherit( Object, ExpressionManipulationModel, {
     addedCoinTerm.existenceStrengthProperty.link( coinTermExistenceStrengthListener );
 
     // clean up the listeners added above if and when this coin term is removed from the model
-    self.coinTerms.addItemRemovedListener( function coinTermRemovalListener( removedCoinTerm ) {
+    this.coinTerms.addItemRemovedListener( function coinTermRemovalListener( removedCoinTerm ) {
       if ( removedCoinTerm === addedCoinTerm ) {
         addedCoinTerm.userControlledProperty.unlink( coinTermUserControlledListener );
         addedCoinTerm.breakApartEmitter.removeListener( coinTermBreakApartListener );
@@ -925,14 +911,14 @@ inherit( Object, ExpressionManipulationModel, {
         self.coinTerms.removeItemRemovedListener( coinTermRemovalListener );
       }
     } );
-  },
+  }
 
   /**
    * handle the addition of an expresion to the model
    * @param {Expression} addedExpression
    * @private
    */
-  expressionAddedListener: function( addedExpression ) {
+  expressionAddedListener( addedExpression ) {
     const self = this;
 
     // add a listener for when the expression is released, which may cause it to be combined with another expression
@@ -985,7 +971,7 @@ inherit( Object, ExpressionManipulationModel, {
 
               const coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
               self.expressions.remove( addedExpression );
-              coinTermsToBeMoved.forEach( function( coinTerm ) {
+              coinTermsToBeMoved.forEach( coinTerm => {
                 phet.log && phet.log( 'moving ' + coinTerm.id +
                                       ' from ' + addedExpression.id +
                                       ' to ' + mostOverlappingExpression.id );
@@ -1056,7 +1042,7 @@ inherit( Object, ExpressionManipulationModel, {
 
       // spread the released coin terms out horizontally
       //var numRetrievedCoinTerms = 0;
-      newlyFreedCoinTerms.forEach( function( newlyFreedCoinTerm ) {
+      newlyFreedCoinTerms.forEach( newlyFreedCoinTerm => {
 
         // calculate a destination that will cause the coin terms to spread out from the expression center
         const horizontalDistanceFromExpressionCenter = newlyFreedCoinTerm.positionProperty.get().x - expressionCenterX;
@@ -1087,7 +1073,7 @@ inherit( Object, ExpressionManipulationModel, {
     addedExpression.inEditModeProperty.link( editModeListener );
 
     // remove the listeners when this expression is removed
-    self.expressions.addItemRemovedListener( function expressionRemovedListener( removedExpression ) {
+    this.expressions.addItemRemovedListener( function expressionRemovedListener( removedExpression ) {
       if ( removedExpression === addedExpression ) {
         addedExpression.dispose();
         addedExpression.userControlledProperty.unlink( expressionUserControlledListener );
@@ -1096,15 +1082,15 @@ inherit( Object, ExpressionManipulationModel, {
         self.expressions.removeItemRemovedListener( expressionRemovedListener );
       }
     } );
-  },
+  }
 
   /**
    * @public
    */
-  reset: function() {
+  reset() {
 
     // reset any collection areas that have been created
-    this.collectionAreas.forEach( function( collectionArea ) {
+    this.collectionAreas.forEach( collectionArea => {
       collectionArea.reset();
     } );
 
@@ -1120,13 +1106,13 @@ inherit( Object, ExpressionManipulationModel, {
     this.totalValueProperty.reset();
     this.expressionBeingEditedProperty.reset();
     this.simplifyNegativesProperty.reset();
-    _.values( this.coinTermCounts ).forEach( function( coinTermCountArray ) {
-      coinTermCountArray.forEach( function( coinTermCountObject ) {
+    _.values( this.coinTermCounts ).forEach( coinTermCountArray => {
+      coinTermCountArray.forEach( coinTermCountObject => {
         coinTermCountObject.count = 0;
         coinTermCountObject.countProperty && coinTermCountObject.countProperty.reset();
       } );
     } );
-  },
+  }
 
   /**
    * test if coinTermB is in the "expression combine zone" of coinTermA
@@ -1135,7 +1121,7 @@ inherit( Object, ExpressionManipulationModel, {
    * @returns {boolean}
    * @private
    */
-  isCoinTermInExpressionCombineZone: function( coinTermA, coinTermB ) {
+  isCoinTermInExpressionCombineZone( coinTermA, coinTermB ) {
 
     // Make the combine zone wider, but vertically shorter, than the actual bounds, as this gives the most desirable
     // behavior.  The multiplier for the height was empirically determined.
@@ -1145,7 +1131,7 @@ inherit( Object, ExpressionManipulationModel, {
     );
 
     return extendedTargetCoinTermBounds.intersectsBounds( coinTermB.getViewBounds() );
-  },
+  }
 
   /**
    * returns true if coin term is currently part of an expression
@@ -1153,14 +1139,14 @@ inherit( Object, ExpressionManipulationModel, {
    * @returns {boolean}
    * @public
    */
-  isCoinTermInExpression: function( coinTerm ) {
+  isCoinTermInExpression( coinTerm ) {
     for ( let i = 0; i < this.expressions.length; i++ ) {
       if ( this.expressions.get( i ).containsCoinTerm( coinTerm ) ) {
         return true;
       }
     }
     return false;
-  },
+  }
 
   /**
    * Check for coin terms that are not already in expressions that are positioned such that they could combine with
@@ -1170,12 +1156,10 @@ inherit( Object, ExpressionManipulationModel, {
    * @returns {CoinTerm|null}
    * @private
    */
-  checkForJoinableFreeCoinTerm: function( thisCoinTerm ) {
+  checkForJoinableFreeCoinTerm( thisCoinTerm ) {
 
     let joinableFreeCoinTerm = null;
-    const self = this;
-
-    this.coinTerms.forEach( function( thatCoinTerm ) {
+    this.coinTerms.forEach( thatCoinTerm => {
 
       // Okay, this is one nasty looking 'if' clause, but the basic idea is that first a bunch of conditions are
       // checked that would exclude the provided coin terms from joining, then it checks to see if the coin term is
@@ -1185,7 +1169,7 @@ inherit( Object, ExpressionManipulationModel, {
            thatCoinTerm.expressionProperty.get() === null && // exclude coin terms that are in or are joining expressions
            !thatCoinTerm.collectedProperty.get() && // exclude coin terms that are in a collection
            !thatCoinTerm.inProgressAnimationProperty.get() && // exclude coin terms that are moving
-           self.isCoinTermInExpressionCombineZone( thatCoinTerm, thisCoinTerm ) && // in the 'combine zone'
+           this.isCoinTermInExpressionCombineZone( thatCoinTerm, thisCoinTerm ) && // in the 'combine zone'
            ( !joinableFreeCoinTerm ||
              ( joinableFreeCoinTerm.positionProperty.get().distance( thatCoinTerm ) <
                joinableFreeCoinTerm.positionProperty.get().distance( thisCoinTerm ) ) ) ) {
@@ -1195,7 +1179,7 @@ inherit( Object, ExpressionManipulationModel, {
     } );
 
     return joinableFreeCoinTerm;
-  },
+  }
 
   /**
    * get the amount of overlap given two coin terms by comparing position and coin radius
@@ -1204,18 +1188,19 @@ inherit( Object, ExpressionManipulationModel, {
    * @returns {number}
    * @private
    */
-  getCoinOverlapAmount: function( coinTermA, coinTermB ) {
+  getCoinOverlapAmount( coinTermA, coinTermB ) {
     const distanceBetweenCenters = coinTermA.positionProperty.get().distance( coinTermB.positionProperty.get() );
     return Math.max( ( coinTermA.coinRadius + coinTermB.coinRadius ) - distanceBetweenCenters, 0 );
-  },
+  }
 
   /**
    * get the amount of overlap between the view representations of two coin terms
    * @param {CoinTerm} coinTermA
    * @param {CoinTerm} coinTermB
    * @returns {number} amount of overlap, which is essentially an area value in view coordinates
+   * @private
    */
-  getViewBoundsOverlapAmount: function( coinTermA, coinTermB ) {
+  getViewBoundsOverlapAmount( coinTermA, coinTermB ) {
     let overlap = 0;
 
     if ( coinTermA.getViewBounds().intersectsBounds( coinTermB.getViewBounds() ) ) {
@@ -1223,7 +1208,7 @@ inherit( Object, ExpressionManipulationModel, {
       overlap = intersection.width * intersection.height;
     }
     return overlap;
-  },
+  }
 
   /**
    * get the coin term that overlaps the most with the provided coin term, is of the same type, is not user
@@ -1232,24 +1217,23 @@ inherit( Object, ExpressionManipulationModel, {
    * @returns {CoinTerm}
    * @private
    */
-  getMostOverlappingLikeCoinTerm: function( thisCoinTerm ) {
+  getMostOverlappingLikeCoinTerm( thisCoinTerm ) {
     assert && assert( this.coinTerms.includes( thisCoinTerm ), 'overlap requested for something that is not in model' );
-    const self = this;
     let mostOverlappingLikeCoinTerm = null;
     let maxOverlapAmount = 0;
 
-    this.coinTerms.forEach( function( thatCoinTerm ) {
+    this.coinTerms.forEach( thatCoinTerm => {
 
       // test that the coin term is eligible for consideration first
-      if ( thatCoinTerm.isEligibleToCombineWith( thisCoinTerm ) && !self.isCoinTermInExpression( thatCoinTerm ) ) {
+      if ( thatCoinTerm.isEligibleToCombineWith( thisCoinTerm ) && !this.isCoinTermInExpression( thatCoinTerm ) ) {
 
         // calculate and compare the relative overlap amounts, done a bit differently in the different view modes
         let overlapAmount;
-        if ( self.viewModeProperty.get() === ViewMode.COINS ) {
-          overlapAmount = self.getCoinOverlapAmount( thisCoinTerm, thatCoinTerm );
+        if ( this.viewModeProperty.get() === ViewMode.COINS ) {
+          overlapAmount = this.getCoinOverlapAmount( thisCoinTerm, thatCoinTerm );
         }
         else {
-          overlapAmount = self.getViewBoundsOverlapAmount( thisCoinTerm, thatCoinTerm );
+          overlapAmount = this.getViewBoundsOverlapAmount( thisCoinTerm, thatCoinTerm );
         }
 
         if ( overlapAmount > maxOverlapAmount ) {
@@ -1259,7 +1243,7 @@ inherit( Object, ExpressionManipulationModel, {
       }
     } );
     return mostOverlappingLikeCoinTerm;
-  },
+  }
 
   /**
    * @param {CoinTerm} coinTerm
@@ -1267,7 +1251,7 @@ inherit( Object, ExpressionManipulationModel, {
    * @returns {CoinTerm|null}
    * @private
    */
-  getOverlappingLikeCoinTermWithinExpression: function( coinTerm, expression ) {
+  getOverlappingLikeCoinTermWithinExpression( coinTerm, expression ) {
 
     let overlappingCoinTerm = null;
 
@@ -1289,15 +1273,16 @@ inherit( Object, ExpressionManipulationModel, {
       }
     }
     return overlappingCoinTerm;
-  },
+  }
 
   /**
    * @param {Bounds2} bounds
+   * @public
    */
-  setRetrievalBounds: function( bounds ) {
+  setRetrievalBounds( bounds ) {
     assert && assert( this.retrievalBounds === Bounds2.EVERYTHING, 'coin term bounds should only be set once' );
     this.retrievalBounds = bounds;
-  },
+  }
 
   /**
    * returns true is any expression or coin term is currently user controlled, helpful in preventing multi-touch
@@ -1305,7 +1290,7 @@ inherit( Object, ExpressionManipulationModel, {
    * @returns {boolean}
    * @public
    */
-  isAnythingUserControlled: function() {
+  isAnythingUserControlled() {
     let somethingIsUserControlled = false;
     let i;
     for ( i = 0; i < this.coinTerms.length && !somethingIsUserControlled; i++ ) {
@@ -1320,7 +1305,8 @@ inherit( Object, ExpressionManipulationModel, {
     }
     return somethingIsUserControlled;
   }
+}
 
-} );
+expressionExchange.register( 'ExpressionManipulationModel', ExpressionManipulationModel );
 
 export default ExpressionManipulationModel;

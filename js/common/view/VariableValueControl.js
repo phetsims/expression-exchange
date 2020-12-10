@@ -4,87 +4,87 @@
  * a node that allows the user to change the values of the variables that underlie the various coin terms
  */
 
-import inherit from '../../../../phet-core/js/inherit.js';
 import merge from '../../../../phet-core/js/merge.js';
 import ResetButton from '../../../../scenery-phet/js/buttons/ResetButton.js';
 import VBox from '../../../../scenery/js/nodes/VBox.js';
 import expressionExchange from '../../expressionExchange.js';
 import LeftRightNumberSpinner from './LeftRightNumberSpinner.js';
 
-/**
- * @param {Object} [options]
- * @constructor
- */
-function VariableValueControl( options ) {
+class VariableValueControl extends VBox {
 
-  options = merge( {
-    xTermValueProperty: null,
-    yTermValueProperty: null,
-    zTermValueProperty: null,
-    minValue: 0,
-    maxValue: 10
-  }, options );
+  /**
+   * @param {Object} [options]
+   */
+  constructor( options ) {
 
-  // convenience vars to make the code below more readable
-  const xValueProperty = options.xTermValueProperty;
-  const yValueProperty = options.yTermValueProperty;
-  const zValueProperty = options.zTermValueProperty;
+    options = merge( {
+      xTermValueProperty: null,
+      yTermValueProperty: null,
+      zTermValueProperty: null,
+      minValue: 0,
+      maxValue: 10
+    }, options );
 
-  //  button that will be used to restore the default values
-  const restoreDefaultsButton = new ResetButton( {
-    baseColor: '#f5f5f5',
-    arrowColor: 'black',
-    radius: 16,
-    touchAreaDilation: 5,
-    listener: function() {
-      xValueProperty && xValueProperty.reset();
-      yValueProperty && yValueProperty.reset();
-      zValueProperty && zValueProperty.reset();
+    // convenience vars to make the code below more readable
+    const xValueProperty = options.xTermValueProperty;
+    const yValueProperty = options.yTermValueProperty;
+    const zValueProperty = options.zTermValueProperty;
+
+    //  button that will be used to restore the default values
+    const restoreDefaultsButton = new ResetButton( {
+      baseColor: '#f5f5f5',
+      arrowColor: 'black',
+      radius: 16,
+      touchAreaDilation: 5,
+      listener: () => {
+        xValueProperty && xValueProperty.reset();
+        yValueProperty && yValueProperty.reset();
+        zValueProperty && zValueProperty.reset();
+      }
+    } );
+
+    function updateRestoreButtonEnabledState() {
+      restoreDefaultsButton.enabled =
+        ( xValueProperty !== null && xValueProperty.value !== xValueProperty.initialValue ) ||
+        ( yValueProperty !== null && yValueProperty.value !== yValueProperty.initialValue ) ||
+        ( zValueProperty !== null && zValueProperty.value !== zValueProperty.initialValue );
     }
-  } );
 
-  function updateRestoreButtonEnabledState() {
-    restoreDefaultsButton.enabled =
-      ( xValueProperty !== null && xValueProperty.value !== xValueProperty.initialValue ) ||
-      ( yValueProperty !== null && yValueProperty.value !== yValueProperty.initialValue ) ||
-      ( zValueProperty !== null && zValueProperty.value !== zValueProperty.initialValue );
+    // hook up function for updating the enabled state of the "restore defaults" button
+    xValueProperty && xValueProperty.link( updateRestoreButtonEnabledState );
+    yValueProperty && yValueProperty.link( updateRestoreButtonEnabledState );
+    zValueProperty && zValueProperty.link( updateRestoreButtonEnabledState );
+
+    // create the tweaker controls
+    const controls = [];
+    const tweakerOptions = { minValue: options.minValue, maxValue: options.maxValue };
+    xValueProperty && controls.push( new LeftRightNumberSpinner(
+      xValueProperty,
+      'x',
+      tweakerOptions
+    ) );
+    yValueProperty && controls.push( new LeftRightNumberSpinner(
+      yValueProperty,
+      'y',
+      tweakerOptions
+    ) );
+    zValueProperty && controls.push( new LeftRightNumberSpinner(
+      zValueProperty,
+      'z',
+      tweakerOptions
+    ) );
+
+    // add in the 'restore defaults' button
+    controls.push( restoreDefaultsButton );
+
+    // construct the VBox with the tweakers and the 'restore default values' button
+    super( {
+      children: controls,
+      spacing: 20
+    } );
   }
-
-  // hook up function for updating the enabled state of the "restore defaults" button
-  xValueProperty && xValueProperty.link( updateRestoreButtonEnabledState );
-  yValueProperty && yValueProperty.link( updateRestoreButtonEnabledState );
-  zValueProperty && zValueProperty.link( updateRestoreButtonEnabledState );
-
-  // create the tweaker controls
-  const controls = [];
-  const tweakerOptions = { minValue: options.minValue, maxValue: options.maxValue };
-  xValueProperty && controls.push( new LeftRightNumberSpinner(
-    xValueProperty,
-    'x',
-    tweakerOptions
-  ) );
-  yValueProperty && controls.push( new LeftRightNumberSpinner(
-    yValueProperty,
-    'y',
-    tweakerOptions
-  ) );
-  zValueProperty && controls.push( new LeftRightNumberSpinner(
-    zValueProperty,
-    'z',
-    tweakerOptions
-  ) );
-
-  // add in the 'restore defaults' button
-  controls.push( restoreDefaultsButton );
-
-  // construct the VBox with the tweakers and the 'restore default values' button
-  VBox.call( this, {
-    children: controls,
-    spacing: 20
-  } );
 }
 
 expressionExchange.register( 'VariableValueControl', VariableValueControl );
 
-inherit( VBox, VariableValueControl );
 export default VariableValueControl;

@@ -107,7 +107,7 @@ class ExpressionExplorationScreenView extends ScreenView {
     } );
     Property.multilink(
       [ model.totalValueProperty, model.viewModeProperty ],
-      function( totalValue ) {
+      totalValue => {
         if ( model.viewModeProperty.get() === ViewMode.COINS ) {
           totalValueText.text = StringUtils.fillIn( numberCentsPatternString, { number: totalValue } );
         }
@@ -179,7 +179,7 @@ class ExpressionExplorationScreenView extends ScreenView {
     this.addChild( variableValuesAccordionBox );
 
     // the values control is only visible when in variable mode
-    model.viewModeProperty.link( function( viewMode ) {
+    model.viewModeProperty.link( viewMode => {
       variableValuesAccordionBox.visible = viewMode === ViewMode.VARIABLES;
     } );
 
@@ -281,7 +281,7 @@ class ExpressionExplorationScreenView extends ScreenView {
     this.addChild( showVariableValuesCheckbox );
 
     // control whether the coin values or variable values checkbox is visible
-    model.viewModeProperty.link( function( viewMode ) {
+    model.viewModeProperty.link( viewMode => {
       showCoinValuesCheckbox.visible = viewMode === ViewMode.COINS;
       showVariableValuesCheckbox.visible = viewMode === ViewMode.VARIABLES;
     } );
@@ -314,7 +314,7 @@ class ExpressionExplorationScreenView extends ScreenView {
 
     // add the 'Reset All' button
     const resetAllButton = new ResetAllButton( {
-      listener: function() {
+      listener: () => {
         model.reset();
         coinTermCreatorBox.reset();
         myCollectionAccordionBox.expandedProperty.reset();
@@ -331,7 +331,7 @@ class ExpressionExplorationScreenView extends ScreenView {
     this.addChild( resetAllButton );
 
     // monitor the view bounds and update the layout and the barrier rectangle size
-    this.visibleBoundsProperty.link( function( visibleBounds ) {
+    this.visibleBoundsProperty.link( visibleBounds => {
 
       // update the positions of the floating controls
       totalValueAccordionBox.left = visibleBounds.left + FLOATING_PANEL_INSET;

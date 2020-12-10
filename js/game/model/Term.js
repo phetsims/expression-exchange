@@ -6,27 +6,23 @@
  * @author John Blanco
  */
 
-import inherit from '../../../../phet-core/js/inherit.js';
 import CoinTermTypeID from '../../common/enum/CoinTermTypeID.js';
 import expressionExchange from '../../expressionExchange.js';
 
-/**
- * @param {number} coefficient
- * @param {CoinTermTypeID} coinTermTypeID
- * @constructor
- */
-function Term( coefficient, coinTermTypeID ) {
+class Term {
 
-  // @public (read-only) {number}
-  this.coefficient = coefficient;
+  /**
+   * @param {number} coefficient
+   * @param {CoinTermTypeID} coinTermTypeID
+   */
+  constructor( coefficient, coinTermTypeID ) {
 
-  // @public (read-only) {CoinTermTypeID}
-  this.coinTermTypeID = coinTermTypeID;
-}
+    // @public (read-only) {number}
+    this.coefficient = coefficient;
 
-expressionExchange.register( 'Term', Term );
-
-inherit( Object, Term, {
+    // @public (read-only) {CoinTermTypeID}
+    this.coinTermTypeID = coinTermTypeID;
+  }
 
   /**
    * multiply this term by the provide term
@@ -34,7 +30,7 @@ inherit( Object, Term, {
    * @returns {Term}
    * @public
    */
-  times: function( term ) {
+  times( term ) {
     const result = new Term( this.coefficient * term.coefficient, null );
     if ( this.coinTermTypeID === CoinTermTypeID.CONSTANT ) {
       result.coinTermTypeID = term.coinTermTypeID;
@@ -61,16 +57,19 @@ inherit( Object, Term, {
     }
 
     return result;
-  },
+  }
 
   /**
    * returns true if the provided coin term matches this term
    * @param {CoinTerm} coinTerm
    * @returns {boolean}
+   * @public
    */
-  matchesCoinTerm: function( coinTerm ) {
+  matchesCoinTerm( coinTerm ) {
     return this.coinTermTypeID === coinTerm.typeID && this.coefficient === coinTerm.totalCountProperty.get();
   }
-} );
+}
+
+expressionExchange.register( 'Term', Term );
 
 export default Term;

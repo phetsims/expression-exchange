@@ -56,7 +56,7 @@ function createCardStackIcon( numberOnStack, numberOfAdditionalCards ) {
   const cards = [];
 
   // create the blank cards
-  _.times( numberOfAdditionalCards + 1, function( cardNumber ) {
+  _.times( numberOfAdditionalCards + 1, cardNumber => {
     cards.push( new Rectangle( 0, 0, cardWidth, cardHeight, CARD_CORNER_ROUNDING, CARD_CORNER_ROUNDING, {
       fill: EESharedConstants.CARD_BACKGROUND_COLOR,
       stroke: 'black',
@@ -74,7 +74,7 @@ function createCardStackIcon( numberOnStack, numberOfAdditionalCards ) {
   } ) );
 
   // add the cards to the root node
-  cards.reverse().forEach( function( card ) {
+  cards.reverse().forEach( card => {
     rootNode.addChild( card );
   } );
 
@@ -93,7 +93,7 @@ const EEGameLevelIconFactory = {
    * @returns {Node}
    * @public
    */
-  createIcon: function( gameLevel ) {
+  createIcon( gameLevel ) {
 
     let icon;
 

@@ -6,7 +6,6 @@
  * @author John Blanco
  */
 
-import inherit from '../../../../phet-core/js/inherit.js';
 import ArrowNode from '../../../../scenery-phet/js/ArrowNode.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
@@ -20,61 +19,62 @@ const MATH_FONT = new MathSymbolFont( { size: 21, weight: 'bold' } );
 const RECTANGLE_BACKGROUND_COLOR = 'rgba( 255, 255, 255, 0.6 )';
 const RECT_CORNER_RADIUS = 6;
 
-/**
- * @constructor
- */
-function ShowSubtractionIcon() {
+class ShowSubtractionIcon extends Node {
 
-  // create the background
-  Node.call( this );
+  /**
+   */
+  constructor() {
 
-  // add a rectangle with the first portion of the text
-  const firstTextWithBackground = new TextWidthBackground( '+ ' + MathSymbols.UNARY_MINUS + 'x' );
-  this.addChild( firstTextWithBackground );
+    // create the background
+    super();
 
-  // add the arrow
-  const arrow = new ArrowNode( 0, 0, 15, 0, {
-    left: firstTextWithBackground.right + 5,
-    centerY: firstTextWithBackground.height / 2,
-    stroke: null,
-    fill: 'rgb( 150, 0, 0 )',
-    tailWidth: 3,
-    headHeight: 7
-  } );
-  this.addChild( arrow );
+    // add a rectangle with the first portion of the text
+    const firstTextWithBackground = new TextWidthBackground( '+ ' + MathSymbols.UNARY_MINUS + 'x' );
+    this.addChild( firstTextWithBackground );
 
-  // add the 2nd enclosed text portion
-  this.addChild( new TextWidthBackground( MathSymbols.MINUS + ' x', { left: arrow.right + 5 } ) );
+    // add the arrow
+    const arrow = new ArrowNode( 0, 0, 15, 0, {
+      left: firstTextWithBackground.right + 5,
+      centerY: firstTextWithBackground.height / 2,
+      stroke: null,
+      fill: 'rgb( 150, 0, 0 )',
+      tailWidth: 3,
+      headHeight: 7
+    } );
+    this.addChild( arrow );
+
+    // add the 2nd enclosed text portion
+    this.addChild( new TextWidthBackground( MathSymbols.MINUS + ' x', { left: arrow.right + 5 } ) );
+  }
 }
 
-/**
- * inner class for the background box used for the textual portions of the icon
- * @param {string} text
- * @param {Object} [options]
- * @constructor
- */
-function TextWidthBackground( text, options ) {
+class TextWidthBackground extends Rectangle {
 
-  // create the textual node
-  const textNode = new Text( text, { font: MATH_FONT } );
+  /**
+   * inner class for the background box used for the textual portions of the icon
+   * @param {string} text
+   * @param {Object} [options]
+   */
+  constructor( text, options ) {
 
-  // create the background, which is a rounded rectangle (the width and height multipliers were empirically determined)
-  Rectangle.call( this, 0, 0, textNode.width * 1.4, textNode.height * 1.1, {
-    fill: RECTANGLE_BACKGROUND_COLOR,
-    cornerRadius: RECT_CORNER_RADIUS
-  } );
+    // create the textual node
+    const textNode = new Text( text, { font: MATH_FONT } );
 
-  // position and add the text node
-  textNode.center = this.center;
-  this.addChild( textNode );
+    // create the background, which is a rounded rectangle (the width and height multipliers were empirically determined)
+    super( 0, 0, textNode.width * 1.4, textNode.height * 1.1, {
+      fill: RECTANGLE_BACKGROUND_COLOR,
+      cornerRadius: RECT_CORNER_RADIUS
+    } );
 
-  // pass through any options to the parent type
-  this.mutate( options );
+    // position and add the text node
+    textNode.center = this.center;
+    this.addChild( textNode );
+
+    // pass through any options to the parent type
+    this.mutate( options );
+  }
 }
-
-inherit( Rectangle, TextWidthBackground );
 
 expressionExchange.register( 'ShowSubtractionIcon', ShowSubtractionIcon );
 
-inherit( Node, ShowSubtractionIcon );
 export default ShowSubtractionIcon;

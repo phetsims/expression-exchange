@@ -17,6 +17,7 @@ import EEGameIconNode from './view/EEGameIconNode.js';
 import EEGameScreenView from './view/EEGameScreenView.js';
 
 class EEGameScreen extends Screen {
+
   constructor() {
 
     const options = {
@@ -29,8 +30,8 @@ class EEGameScreen extends Screen {
     };
 
     super(
-      function() { return new EEGameModel(); },
-      function( model ) { return new EEGameScreenView( model ); },
+      () => new EEGameModel(),
+      model => new EEGameScreenView( model ),
       options
     );
   }

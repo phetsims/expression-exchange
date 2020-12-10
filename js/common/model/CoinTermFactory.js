@@ -11,7 +11,6 @@
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Property from '../../../../axon/js/Property.js';
-import inherit from '../../../../phet-core/js/inherit.js';
 import expressionExchange from '../../expressionExchange.js';
 import CoinTermTypeID from '../enum/CoinTermTypeID.js';
 import CoinTerm from './CoinTerm.js';
@@ -20,98 +19,73 @@ import CoinTerm from './CoinTerm.js';
 const CONSTANT_ONE_VALUE_PROPERTY = new Property( 1 );
 const CONSTANT_ONE_TEXT_VALUE_PROPERTY = new Property( '1' );
 
-/**
- * @param {number} xValueProperty
- * @param {number} yValueProperty
- * @param {number} zValueProperty
- * @constructor
- */
-function CoinTermFactory( xValueProperty, yValueProperty, zValueProperty ) {
+class CoinTermFactory {
 
-  // @private - values of the variables
-  this.xValueProperty = xValueProperty;
-  this.yValueProperty = yValueProperty;
-  this.zValueProperty = zValueProperty;
+  /**
+   * @param {number} xValueProperty
+   * @param {number} yValueProperty
+   * @param {number} zValueProperty
+   */
+  constructor( xValueProperty, yValueProperty, zValueProperty ) {
 
-  // @private {Property.<string>} - string representations of the variables
-  this.xValueStringProperty = new DerivedProperty( [ xValueProperty ], function( value ) {
-    return '(' + value.toString() + ')';
-  } );
-  this.yValueStringProperty = new DerivedProperty( [ yValueProperty ], function( value ) {
-    return '(' + value.toString() + ')';
-  } );
-  this.zValueStringProperty = new DerivedProperty( [ zValueProperty ], function( value ) {
-    return '(' + value.toString() + ')';
-  } );
+    // @private - values of the variables
+    this.xValueProperty = xValueProperty;
+    this.yValueProperty = yValueProperty;
+    this.zValueProperty = zValueProperty;
 
-  // @private, value property for x times y
-  this.xTimesYValueProperty = new DerivedProperty(
-    [ this.xValueProperty, this.yValueProperty ],
-    function( xValue, yValue ) {
-      return xValue * yValue;
-    }
-  );
+    // @private {Property.<string>} - string representations of the variables
+    this.xValueStringProperty = new DerivedProperty( [ xValueProperty ], value => '(' + value.toString() + ')' );
+    this.yValueStringProperty = new DerivedProperty( [ yValueProperty ], value => '(' + value.toString() + ')' );
+    this.zValueStringProperty = new DerivedProperty( [ zValueProperty ], value => '(' + value.toString() + ')' );
 
-  // @private, the string depicted for x times y when 'variable values' is enabled
-  this.xTimesYValueStringProperty = new DerivedProperty(
-    [ this.xValueProperty, this.yValueProperty ],
-    function( xValue, yValue ) {
-      return '(' + xValue.toString() + ')(' + yValue.toString() + ')';
-    }
-  );
+    // @private, value property for x times y
+    this.xTimesYValueProperty = new DerivedProperty(
+      [ this.xValueProperty, this.yValueProperty ],
+      ( xValue, yValue ) => xValue * yValue
+    );
 
-  // @private, value property for x squared
-  this.xSquaredValueProperty = new DerivedProperty(
-    [ this.xValueProperty ],
-    function( xValue ) {
-      return xValue * xValue;
-    }
-  );
+    // @private, the string depicted for x times y when 'variable values' is enabled
+    this.xTimesYValueStringProperty = new DerivedProperty(
+      [ this.xValueProperty, this.yValueProperty ],
+      ( xValue, yValue ) => '(' + xValue.toString() + ')(' + yValue.toString() + ')'
+    );
 
-  // @private, the string depicted for x squared when 'variable values' is enabled
-  this.xSquaredValueStringProperty = new DerivedProperty(
-    [ this.xValueProperty ],
-    function( xValue ) {
-      return '(' + xValue.toString() + ')' + '<sup>2</sup>';
-    }
-  );
+    // @private, value property for x squared
+    this.xSquaredValueProperty = new DerivedProperty(
+      [ this.xValueProperty ],
+      xValue => xValue * xValue
+    );
 
-  // @private, value property for y squared
-  this.ySquaredValueProperty = new DerivedProperty(
-    [ this.yValueProperty ],
-    function( yValue ) {
-      return yValue * yValue;
-    }
-  );
+    // @private, the string depicted for x squared when 'variable values' is enabled
+    this.xSquaredValueStringProperty = new DerivedProperty(
+      [ this.xValueProperty ],
+      xValue => '(' + xValue.toString() + ')' + '<sup>2</sup>'
+    );
 
-  // @private, the string depicted for y squared when 'variable values' is enabled
-  this.ySquaredValueStringProperty = new DerivedProperty(
-    [ this.yValueProperty ],
-    function( yValue ) {
-      return '(' + yValue.toString() + ')' + '<sup>2</sup>';
-    }
-  );
+    // @private, value property for y squared
+    this.ySquaredValueProperty = new DerivedProperty(
+      [ this.yValueProperty ],
+      yValue => yValue * yValue
+    );
 
-  // @private, value property for x squared times y squared
-  this.xSquaredTimesYSquaredValueProperty = new DerivedProperty(
-    [ this.xValueProperty, this.yValueProperty ],
-    function( xValue, yValue ) {
-      return xValue * xValue * yValue * yValue;
-    }
-  );
+    // @private, the string depicted for y squared when 'variable values' is enabled
+    this.ySquaredValueStringProperty = new DerivedProperty(
+      [ this.yValueProperty ],
+      yValue => '(' + yValue.toString() + ')' + '<sup>2</sup>'
+    );
 
-  // @private, the string depicted for y squared when 'variable values' is enabled
-  this.xSquaredTimesYSquaredValueStringProperty = new DerivedProperty(
-    [ this.xValueProperty, this.yValueProperty ],
-    function( xValue, yValue ) {
-      return '(' + xValue.toString() + ')' + '<sup>2</sup>' + '(' + yValue.toString() + ')' + '<sup>2</sup>';
-    }
-  );
-}
+    // @private, value property for x squared times y squared
+    this.xSquaredTimesYSquaredValueProperty = new DerivedProperty(
+      [ this.xValueProperty, this.yValueProperty ],
+      ( xValue, yValue ) => xValue * xValue * yValue * yValue
+    );
 
-expressionExchange.register( 'CoinTermFactory', CoinTermFactory );
-
-inherit( Object, CoinTermFactory, {
+    // @private, the string depicted for y squared when 'variable values' is enabled
+    this.xSquaredTimesYSquaredValueStringProperty = new DerivedProperty(
+      [ this.xValueProperty, this.yValueProperty ],
+      ( xValue, yValue ) => '(' + xValue.toString() + ')' + '<sup>2</sup>' + '(' + yValue.toString() + ')' + '<sup>2</sup>'
+    );
+  }
 
   /**
    * create a coin term of the specified type
@@ -120,7 +94,7 @@ inherit( Object, CoinTermFactory, {
    * @returns {CoinTerm}
    * @public
    */
-  createCoinTerm: function( typeID, options ) {
+  createCoinTerm( typeID, options ) {
 
     let valueProperty;
     let coinRadius;
@@ -199,6 +173,8 @@ inherit( Object, CoinTermFactory, {
       options
     );
   }
-} );
+}
+
+expressionExchange.register( 'CoinTermFactory', CoinTermFactory );
 
 export default CoinTermFactory;

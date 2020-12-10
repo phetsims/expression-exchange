@@ -8,26 +8,86 @@
  * @author John Blanco
  */
 
-import inherit from '../../../../phet-core/js/inherit.js';
 import CoinTermTypeID from '../../common/enum/CoinTermTypeID.js';
 import expressionExchange from '../../expressionExchange.js';
 import Term from './Term.js';
 
-/**
- * @param {string} expressionString
- * @constructor
- */
-function ExpressionDescription( expressionString ) {
+class ExpressionDescription {
 
-  // @public (read-only) {string} - the string that describes this expression
-  this.expressionString = expressionString;
+  /**
+   * @param {string} expressionString
+   */
+  constructor( expressionString ) {
 
-  // remove all spaces from the expression
-  const noWhitespaceExpressionString = expressionString.replace( /\s/g, '' );
+    // @public (read-only) {string} - the string that describes this expression
+    this.expressionString = expressionString;
 
-  // @public (read-only) {Array.<Term>} - Description of the expression as an ordered set of terms that contain the
-  // coefficient and the coin term ID
-  this.terms = interpretExpression( noWhitespaceExpressionString, 0 ).terms;
+    // remove all spaces from the expression
+    const noWhitespaceExpressionString = expressionString.replace( /\s/g, '' );
+
+    // @public (read-only) {Array.<Term>} - Description of the expression as an ordered set of terms that contain the
+    // coefficient and the coin term ID
+    this.terms = interpretExpression( noWhitespaceExpressionString, 0 ).terms;
+  }
+
+  /**
+   * compares the content of a user-created expression with this description, returns true if they are equivalent
+   * @param {Expression} expression
+   * @returns {boolean}
+   * @public
+   */
+  expressionMatches( expression ) {
+
+    // count the totals of the coin term types in the provided expression
+
+    const expressionCoinTermCounts = {}; // maps coin term types (CoinTermTypeID) to numbers of each in the expression
+    expression.coinTerms.forEach( coinTerm => {
+      if ( expressionCoinTermCounts[ coinTerm.typeID ] ) {
+        expressionCoinTermCounts[ coinTerm.typeID ] += coinTerm.totalCountProperty.get();
+      }
+      else {
+        expressionCoinTermCounts[ coinTerm.typeID ] = coinTerm.totalCountProperty.get();
+      }
+    } );
+
+    // remove any terms that were present in the equation but were ultimately cancelled out
+    _.keys( expressionCoinTermCounts ).forEach( key => {
+      if ( expressionCoinTermCounts[ key ] === 0 ) {
+        delete expressionCoinTermCounts[ key ];
+      }
+    } );
+
+    const expressionCoinTermCountKeys = Object.keys( expressionCoinTermCounts );
+
+    // Does the expression have the same number of coin term types as the description?
+    if ( this.terms.length !== expressionCoinTermCountKeys.length ) {
+      return false;
+    }
+
+    // Do the counts match?  Note that this assumes the expression description is reduced.
+    for ( let i = 0; i < this.terms.length; i++ ) {
+      const termDescriptor = this.terms[ i ];
+      const expressionCount = expressionCoinTermCounts[ termDescriptor.coinTermTypeID ];
+      if ( !expressionCount || expressionCount !== termDescriptor.coefficient ) {
+        return false;
+      }
+    }
+
+    // if we made it to here, the expression matches the description
+    return true;
+  }
+
+  /**
+   * compares a coin term with this description, returns true if they are equivalent
+   * @param {CoinTerm} coinTerm
+   * @returns {boolean}
+   * @public
+   */
+  coinTermMatches( coinTerm ) {
+
+    // there must be only a single coin term in the description for this to be a match
+    return this.terms.length === 1 && this.terms[ 0 ].matchesCoinTerm( coinTerm );
+  }
 }
 
 // helper function to identify one of the supported operators
@@ -79,17 +139,13 @@ function interpretExpression( expressionString, currentIndex ) {
       subExpressionInterpretationResult = interpretExpression( expressionString, currentIndex );
 
       // the previously extracted term is now used to multiply the extracted expression (distributive property)
-      const multipliedSubExpression = _.map( subExpressionInterpretationResult.terms, function( term ) {
-        return term.times( termExtractionResult.term );
-      } );
+      const multipliedSubExpression = _.map( subExpressionInterpretationResult.terms, term => term.times( termExtractionResult.term ) );
 
       // add the new terms to the terms array or consolidate it with existing therms, and then update the index
-      multipliedSubExpression.forEach( function( multipliedSubExpressionTerm ) {
+      multipliedSubExpression.forEach( multipliedSubExpressionTerm => {
 
         // extract terms from the term array that match this one - there should be zero or one, no more
-        const matchingTermsArray = _.filter( terms, function( term ) {
-          return term.coinTermTypeID === multipliedSubExpressionTerm.coinTermTypeID;
-        } );
+        const matchingTermsArray = _.filter( terms, term => term.coinTermTypeID === multipliedSubExpressionTerm.coinTermTypeID );
 
         // test that the terms array was properly reduced before reaching this point
         assert && assert( matchingTermsArray.length <= 1, 'error - terms array was not properly reduced' );
@@ -188,68 +244,5 @@ function extractTerm( expressionString, index ) {
 }
 
 expressionExchange.register( 'ExpressionDescription', ExpressionDescription );
-
-inherit( Object, ExpressionDescription, {
-
-    /**
-     * compares the content of a user-created expression with this description, returns true if they are equivalent
-     * @param {Expression} expression
-     * @returns {boolean}
-     * @public
-     */
-    expressionMatches: function( expression ) {
-
-      // count the totals of the coin term types in the provided expression
-
-      const expressionCoinTermCounts = {}; // maps coin term types (CoinTermTypeID) to numbers of each in the expression
-      expression.coinTerms.forEach( function( coinTerm ) {
-        if ( expressionCoinTermCounts[ coinTerm.typeID ] ) {
-          expressionCoinTermCounts[ coinTerm.typeID ] += coinTerm.totalCountProperty.get();
-        }
-        else {
-          expressionCoinTermCounts[ coinTerm.typeID ] = coinTerm.totalCountProperty.get();
-        }
-      } );
-
-      // remove any terms that were present in the equation but were ultimately cancelled out
-      _.keys( expressionCoinTermCounts ).forEach( function( key ) {
-        if ( expressionCoinTermCounts[ key ] === 0 ) {
-          delete expressionCoinTermCounts[ key ];
-        }
-      } );
-
-      const expressionCoinTermCountKeys = Object.keys( expressionCoinTermCounts );
-
-      // Does the expression have the same number of coin term types as the description?
-      if ( this.terms.length !== expressionCoinTermCountKeys.length ) {
-        return false;
-      }
-
-      // Do the counts match?  Note that this assumes the expression description is reduced.
-      for ( let i = 0; i < this.terms.length; i++ ) {
-        const termDescriptor = this.terms[ i ];
-        const expressionCount = expressionCoinTermCounts[ termDescriptor.coinTermTypeID ];
-        if ( !expressionCount || expressionCount !== termDescriptor.coefficient ) {
-          return false;
-        }
-      }
-
-      // if we made it to here, the expression matches the description
-      return true;
-    },
-
-    /**
-     * compares a coin term with this description, returns true if they are equivalent
-     * @param {CoinTerm} coinTerm
-     * @returns {boolean}
-     * @public
-     */
-    coinTermMatches: function( coinTerm ) {
-
-      // there must be only a single coin term in the description for this to be a match
-      return this.terms.length === 1 && this.terms[ 0 ].matchesCoinTerm( coinTerm );
-    }
-  }
-);
 
 export default ExpressionDescription;

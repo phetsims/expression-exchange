@@ -28,7 +28,7 @@ const simOptions = {
 };
 
 // launch the sim
-simLauncher.launch( function() {
+simLauncher.launch( () => {
   const sim = new Sim(
     expressionExchangeTitleString,
     [

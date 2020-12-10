@@ -18,6 +18,7 @@ import expressionExchangeStrings from '../expressionExchangeStrings.js';
 import EEExploreIconNode from './view/EEExploreIconNode.js';
 
 class EEExploreScreen extends Screen {
+
   constructor() {
 
     const options = {
@@ -30,8 +31,8 @@ class EEExploreScreen extends Screen {
     };
 
     super(
-      function() { return new ExpressionManipulationModel(); },
-      function( model ) { return new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.EXPLORE ); },
+      () => new ExpressionManipulationModel(),
+      model => new ExpressionExplorationScreenView( model, CoinTermCreatorSetID.EXPLORE ),
       options
     );
   }

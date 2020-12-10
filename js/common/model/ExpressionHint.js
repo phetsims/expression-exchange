@@ -6,31 +6,27 @@
  * @author John Blanco
  */
 
-import inherit from '../../../../phet-core/js/inherit.js';
 import expressionExchange from '../../expressionExchange.js';
 
-/**
- * @param {CoinTerm} anchorCoinTerm - the coin term that is staying put as this expression is being formed
- * @param {CoinTerm} movingCoinTerm - the coin term that is being moved by the user to join this expression
- * @constructor
- */
-function ExpressionHint( anchorCoinTerm, movingCoinTerm ) {
+class ExpressionHint {
 
-  // @public (read-only) {CoinTerm}
-  this.anchorCoinTerm = anchorCoinTerm;
-  this.movingCoinTerm = movingCoinTerm;
+  /**
+   * @param {CoinTerm} anchorCoinTerm - the coin term that is staying put as this expression is being formed
+   * @param {CoinTerm} movingCoinTerm - the coin term that is being moved by the user to join this expression
+   */
+  constructor( anchorCoinTerm, movingCoinTerm ) {
 
-  // @public {boolean}
-  this.anchorOnLeft = anchorCoinTerm.positionProperty.get().x < movingCoinTerm.positionProperty.get().x;
+    // @public (read-only) {CoinTerm}
+    this.anchorCoinTerm = anchorCoinTerm;
+    this.movingCoinTerm = movingCoinTerm;
 
-  // set the flag indicating that breaking apart is suppressed
-  anchorCoinTerm.breakApartAllowedProperty.set( false );
-  movingCoinTerm.breakApartAllowedProperty.set( false );
-}
+    // @public {boolean}
+    this.anchorOnLeft = anchorCoinTerm.positionProperty.get().x < movingCoinTerm.positionProperty.get().x;
 
-expressionExchange.register( 'ExpressionHint', ExpressionHint );
-
-inherit( Object, ExpressionHint, {
+    // set the flag indicating that breaking apart is suppressed
+    anchorCoinTerm.breakApartAllowedProperty.set( false );
+    movingCoinTerm.breakApartAllowedProperty.set( false );
+  }
 
   /**
    * returns true if this expression hint includes the provided coin term
@@ -38,31 +34,33 @@ inherit( Object, ExpressionHint, {
    * @returns {boolean}
    * @public
    */
-  containsCoinTerm: function( coinTerm ) {
+  containsCoinTerm( coinTerm ) {
     return ( coinTerm === this.anchorCoinTerm || coinTerm === this.movingCoinTerm );
-  },
+  }
 
   /**
    * @param {ExpressionHint} otherExpressionHint
    * @returns {boolean}
    * @public
    */
-  equals: function( otherExpressionHint ) {
+  equals( otherExpressionHint ) {
     return ( otherExpressionHint.anchorCoinTerm === this.anchorCoinTerm &&
              otherExpressionHint.movingCoinTerm === this.movingCoinTerm &&
              otherExpressionHint.anchorOnLeft === this.anchorOnLeft
     );
-  },
+  }
 
   /**
    * Clear this expression hint, generally done just before removing it from the model.  This updated the state of
    * any coin terms that were affected by the existence of the hint.
    * @public
    */
-  clear: function() {
+  clear() {
     this.anchorCoinTerm.breakApartAllowedProperty.set( true );
     this.movingCoinTerm.breakApartAllowedProperty.set( true );
   }
-} );
+}
+
+expressionExchange.register( 'ExpressionHint', ExpressionHint );
 
 export default ExpressionHint;

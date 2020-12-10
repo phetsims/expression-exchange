@@ -6,25 +6,25 @@
  * @author John Blanco
  */
 
-import inherit from '../../../../phet-core/js/inherit.js';
 import AllowedRepresentations from '../../common/enum/AllowedRepresentations.js';
 import CoinTermCreatorSetID from '../../common/enum/CoinTermCreatorSetID.js';
 import ExpressionManipulationModel from '../../common/model/ExpressionManipulationModel.js';
 import expressionExchange from '../../expressionExchange.js';
 
-/**
- * @constructor
- */
-function EENegativesModel() {
+class EENegativesModel extends ExpressionManipulationModel {
 
-  ExpressionManipulationModel.call( this, {
-    coinTermCollection: CoinTermCreatorSetID.VARIABLES,
-    allowedRepresentations: AllowedRepresentations.VARIABLES_ONLY
-  } );
+  /**
+   */
+  constructor() {
 
+    super( {
+      coinTermCollection: CoinTermCreatorSetID.VARIABLES,
+      allowedRepresentations: AllowedRepresentations.VARIABLES_ONLY
+    } );
+
+  }
 }
 
 expressionExchange.register( 'EENegativesModel', EENegativesModel );
 
-inherit( ExpressionManipulationModel, EENegativesModel );
 export default EENegativesModel;

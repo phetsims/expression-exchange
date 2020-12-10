@@ -14,7 +14,6 @@ import Emitter from '../../../../axon/js/Emitter.js';
 import Property from '../../../../axon/js/Property.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
-import inherit from '../../../../phet-core/js/inherit.js';
 import merge from '../../../../phet-core/js/merge.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import expressionExchange from '../../expressionExchange.js';
@@ -25,188 +24,183 @@ import VariableCoinTermNode from './VariableCoinTermNode.js';
 // constants
 const STAGGER_OFFSET = 3; // in screen coordinates, empirically determined for optimal look
 
-/**
- * @param {ExpressionManipulationModel} expressionManipulationModel - model where coin terms are to be added
- * @param {ExpressionManipulationView} expressionManipulationView - view where coin term nodes will be shown
- * @param {CoinTermTypeID} typeID - type of coin term to create
- * @param {function} coinTermCreatorFunction - function( {CoinTermTypeID}, options ) : {CoinTerm} - creates the coin
- * term model elements that are added to the model, also used for creating "dummy" instances to associate with the
- * view nodes that collectively comprise the constructed creator node
- * @param {Object} [options]
- * @constructor
- */
-function CoinTermCreatorNode( expressionManipulationModel,
-                              expressionManipulationView,
-                              typeID,
-                              coinTermCreatorFunction,
-                              options ) {
+class CoinTermCreatorNode extends Node {
 
-  options = merge( {
+  /**
+   * @param {ExpressionManipulationModel} expressionManipulationModel - model where coin terms are to be added
+   * @param {ExpressionManipulationView} expressionManipulationView - view where coin term nodes will be shown
+   * @param {CoinTermTypeID} typeID - type of coin term to create
+   * @param {function} coinTermCreatorFunction - function( {CoinTermTypeID}, options ) : {CoinTerm} - creates the coin
+   * term model elements that are added to the model, also used for creating "dummy" instances to associate with the
+   * view nodes that collectively comprise the constructed creator node
+   * @param {Object} [options]
+   */
+  constructor( expressionManipulationModel, expressionManipulationView, typeID, coinTermCreatorFunction, options ) {
 
-    dragBounds: Bounds2.EVERYTHING,
+    options = merge( {
 
-    // initial count of the coin term that will be created, can be negative
-    createdCoinTermInitialCount: 1,
+      dragBounds: Bounds2.EVERYTHING,
 
-    // flag that controls whether created coin term can be decomposed
-    createdCoinTermDecomposable: true,
+      // initial count of the coin term that will be created, can be negative
+      createdCoinTermInitialCount: 1,
 
-    // property that controls the number of creator nodes to show as a stack
-    numberToShowProperty: new Property( 1 ),
+      // flag that controls whether created coin term can be decomposed
+      createdCoinTermDecomposable: true,
 
-    // the maximum number of this coin term that will be shown
-    maxNumberShown: 1,
+      // property that controls the number of creator nodes to show as a stack
+      numberToShowProperty: new Property( 1 ),
 
-    // controls whether the coin term(s) that comprise this node should be on backgrounds that look like cards
-    onCard: false
-  }, options );
+      // the maximum number of this coin term that will be shown
+      maxNumberShown: 1,
 
-  Node.call( this, { cursor: 'pointer' } );
-  const self = this;
+      // controls whether the coin term(s) that comprise this node should be on backgrounds that look like cards
+      onCard: false
+    }, options );
 
-  // @public (read-only) {number} - initial count of the coin term created by this creator node, a.k.a. the coefficient
-  this.createdCoinTermInitialCount = options.createdCoinTermInitialCount;
+    super( { cursor: 'pointer' } );
+    const self = this;
 
-  this.typeID = typeID; // @public (read-only) {CoinTermID}
-  this.disposeEmitter = new Emitter(); // @public (read-only)
+    // @public (read-only) {number} - initial count of the coin term created by this creator node, a.k.a. the coefficient
+    this.createdCoinTermInitialCount = options.createdCoinTermInitialCount;
 
-  // add the individual coin term node(s)
-  const coinTermNodes = [];
-  _.times( options.maxNumberShown, function( index ) {
-    let coinTermNode;
-    const coinTermNodeOptions = {
-      addDragHandler: false,
-      x: index * STAGGER_OFFSET,
-      y: index * STAGGER_OFFSET
-    };
-    const dummyCoinTerm = coinTermCreatorFunction( typeID, {
-      initialPosition: Vector2.ZERO,
-      initialCount: options.createdCoinTermInitialCount,
-      initiallyOnCard: options.onCard
-    } );
-    if ( typeID === CoinTermTypeID.CONSTANT ) {
-      coinTermNode = new ConstantCoinTermNode(
-        dummyCoinTerm,
-        expressionManipulationModel.viewModeProperty,
-        coinTermNodeOptions
-      );
-    }
-    else {
-      coinTermNode = new VariableCoinTermNode(
-        dummyCoinTerm,
-        expressionManipulationModel.viewModeProperty,
-        expressionManipulationModel.showCoinValuesProperty,
-        expressionManipulationModel.showVariableValuesProperty,
-        expressionManipulationModel.showAllCoefficientsProperty,
-        coinTermNodeOptions
-      );
-    }
-    self.addChild( coinTermNode );
-    coinTermNodes.push( coinTermNode );
-  } );
+    this.typeID = typeID; // @public (read-only) {CoinTermID}
+    this.disposeEmitter = new Emitter(); // @public (read-only)
 
-  // create a listener that changes the visibility of individual nodes as the number to show changes
-  function numberToShowListener( numberToShow ) {
-
-    self.pickable = numberToShow > 0;
-
-    coinTermNodes.forEach( function( coinTermNode, index ) {
-      coinTermNode.visible = index < numberToShow;
-    } );
-
-    if ( numberToShow === 0 ) {
-
-      // show a faded version of the first node
-      coinTermNodes[ 0 ].opacity = 0.4;
-      coinTermNodes[ 0 ].visible = true;
-    }
-    else {
-      coinTermNodes[ 0 ].opacity = 1;
-    }
-  }
-
-  // control the visibility of the individual coin term nodes
-  options.numberToShowProperty.link( numberToShowListener );
-
-  // Add the listener that will allow the user to click on this node and create a new coin term, and then position it
-  // in the model.  This works by forwarding the events it receives to the node that gets created in the view.
-  this.addInputListener( {
-
-    down: function( event ) {
-
-      // ignore this if already dragging
-      if ( event.pointer.dragging ) { return; }
-
-      // don't try to start drags with a right mouse button or an attached pointer
-      if ( !event.canStartPress() ) { return; }
-
-      // Determine the origin position of the new element based on where the creator node is.  This is done so that
-      // the position to which this element will return when it is "put away" will match the position of this creator
-      // node.
-      const originPosition = expressionManipulationView.globalToLocalPoint( self.localToGlobalPoint( Vector2.ZERO ) );
-
-      // Determine the initial position where this element should move to after it's created based on the position of
-      // the pointer event.
-      const initialPosition = expressionManipulationView.globalToLocalPoint( event.pointer.point );
-
-      // create and add the new coin term to the model, which result in a node being created in the view
-      const createdCoinTerm = coinTermCreatorFunction( typeID, {
-        initialPosition: originPosition,
+    // add the individual coin term node(s)
+    const coinTermNodes = [];
+    _.times( options.maxNumberShown, index => {
+      let coinTermNode;
+      const coinTermNodeOptions = {
+        addDragHandler: false,
+        x: index * STAGGER_OFFSET,
+        y: index * STAGGER_OFFSET
+      };
+      const dummyCoinTerm = coinTermCreatorFunction( typeID, {
+        initialPosition: Vector2.ZERO,
         initialCount: options.createdCoinTermInitialCount,
-        decomposable: options.createdCoinTermDecomposable,
         initiallyOnCard: options.onCard
       } );
-      createdCoinTerm.setPositionAndDestination( initialPosition );
-      expressionManipulationModel.addCoinTerm( createdCoinTerm );
-
-      // get the view node that should have appeared in the view so that events can be forwarded to its drag handler
-      const createdCoinTermView = expressionManipulationView.getViewForCoinTerm( createdCoinTerm );
-      assert && assert( createdCoinTermView, 'unable to find coin term view' );
-
-      if ( createdCoinTermView ) {
-
-        // forward the event to the view node's drag handler
-        createdCoinTermView.dragHandler.startDrag( event );
+      if ( typeID === CoinTermTypeID.CONSTANT ) {
+        coinTermNode = new ConstantCoinTermNode(
+          dummyCoinTerm,
+          expressionManipulationModel.viewModeProperty,
+          coinTermNodeOptions
+        );
       }
-    },
+      else {
+        coinTermNode = new VariableCoinTermNode(
+          dummyCoinTerm,
+          expressionManipulationModel.viewModeProperty,
+          expressionManipulationModel.showCoinValuesProperty,
+          expressionManipulationModel.showVariableValuesProperty,
+          expressionManipulationModel.showAllCoefficientsProperty,
+          coinTermNodeOptions
+        );
+      }
+      this.addChild( coinTermNode );
+      coinTermNodes.push( coinTermNode );
+    } );
 
-    // touch enters this node
-    touchenter: function( event ) {
-      this.down( event );
-    },
+    // create a listener that changes the visibility of individual nodes as the number to show changes
+    function numberToShowListener( numberToShow ) {
 
-    // touch moves over this node
-    touchmove: function( event ) {
-      this.down( event );
+      self.pickable = numberToShow > 0;
+
+      coinTermNodes.forEach( ( coinTermNode, index ) => {
+        coinTermNode.visible = index < numberToShow;
+      } );
+
+      if ( numberToShow === 0 ) {
+
+        // show a faded version of the first node
+        coinTermNodes[ 0 ].opacity = 0.4;
+        coinTermNodes[ 0 ].visible = true;
+      }
+      else {
+        coinTermNodes[ 0 ].opacity = 1;
+      }
     }
 
-  } );
+    // control the visibility of the individual coin term nodes
+    options.numberToShowProperty.link( numberToShowListener );
 
-  // dispose function
-  this.disposeCoinTermCreatorNode = function() {
-    coinTermNodes.forEach( function( coinTermNode ) {
-      coinTermNode.dispose();
+    // Add the listener that will allow the user to click on this node and create a new coin term, and then position it
+    // in the model.  This works by forwarding the events it receives to the node that gets created in the view.
+    this.addInputListener( {
+
+      down: event => {
+
+        // ignore this if already dragging
+        if ( event.pointer.dragging ) { return; }
+
+        // don't try to start drags with a right mouse button or an attached pointer
+        if ( !event.canStartPress() ) { return; }
+
+        // Determine the origin position of the new element based on where the creator node is.  This is done so that
+        // the position to which this element will return when it is "put away" will match the position of this creator
+        // node.
+        const originPosition = expressionManipulationView.globalToLocalPoint( this.localToGlobalPoint( Vector2.ZERO ) );
+
+        // Determine the initial position where this element should move to after it's created based on the position of
+        // the pointer event.
+        const initialPosition = expressionManipulationView.globalToLocalPoint( event.pointer.point );
+
+        // create and add the new coin term to the model, which result in a node being created in the view
+        const createdCoinTerm = coinTermCreatorFunction( typeID, {
+          initialPosition: originPosition,
+          initialCount: options.createdCoinTermInitialCount,
+          decomposable: options.createdCoinTermDecomposable,
+          initiallyOnCard: options.onCard
+        } );
+        createdCoinTerm.setPositionAndDestination( initialPosition );
+        expressionManipulationModel.addCoinTerm( createdCoinTerm );
+
+        // get the view node that should have appeared in the view so that events can be forwarded to its drag handler
+        const createdCoinTermView = expressionManipulationView.getViewForCoinTerm( createdCoinTerm );
+        assert && assert( createdCoinTermView, 'unable to find coin term view' );
+
+        if ( createdCoinTermView ) {
+
+          // forward the event to the view node's drag handler
+          createdCoinTermView.dragHandler.startDrag( event );
+        }
+      },
+
+      // touch enters this node
+      touchenter: function( event ) {
+        this.down( event );
+      },
+
+      // touch moves over this node
+      touchmove: function( event ) {
+        this.down( event );
+      }
+
     } );
-    options.numberToShowProperty.unlink( numberToShowListener );
 
-    // this type emits an event upon disposal because it was needed to avoid memory leaks
-    this.disposeEmitter.emit();
-    this.disposeEmitter.removeAllListeners();
-    this.disposeEmitter.dispose();
-  };
-}
+    // dispose function
+    this.disposeCoinTermCreatorNode = function() {
+      coinTermNodes.forEach( coinTermNode => {
+        coinTermNode.dispose();
+      } );
+      options.numberToShowProperty.unlink( numberToShowListener );
 
-expressionExchange.register( 'CoinTermCreatorNode', CoinTermCreatorNode );
-
-inherit( Node, CoinTermCreatorNode, {
+      // this type emits an event upon disposal because it was needed to avoid memory leaks
+      this.disposeEmitter.emit();
+      this.disposeEmitter.removeAllListeners();
+      this.disposeEmitter.dispose();
+    };
+  }
 
   /**
    * @public
    */
-  dispose: function() {
+  dispose() {
     this.disposeCoinTermCreatorNode();
-    Node.prototype.dispose.call( this );
+    super.dispose();
   }
-} );
+}
+
+expressionExchange.register( 'CoinTermCreatorNode', CoinTermCreatorNode );
 
 export default CoinTermCreatorNode;

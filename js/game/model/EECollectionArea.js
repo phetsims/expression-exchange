@@ -8,7 +8,6 @@
 import Emitter from '../../../../axon/js/Emitter.js';
 import Property from '../../../../axon/js/Property.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
-import inherit from '../../../../phet-core/js/inherit.js';
 import EESharedConstants from '../../common/EESharedConstants.js';
 import CoinTerm from '../../common/model/CoinTerm.js';
 import Expression from '../../common/model/Expression.js';
@@ -17,42 +16,39 @@ import expressionExchange from '../../expressionExchange.js';
 // constants
 const REJECTED_ITEM_DISTANCE = 20; // empirically determined
 
-/**
- * @param {number} x
- * @param {number} y
- * @param {ViewMode} viewMode
- * @param {Property.<boolean>} undoAllowedProperty
- * @constructor
- */
-function EECollectionArea( x, y, viewMode, undoAllowedProperty ) {
+class EECollectionArea {
 
-  // @public (read-only) {Property.<boolean>} - property indicating whether the undo functionality is enabled
-  this.undoAllowedProperty = undoAllowedProperty;
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {ViewMode} viewMode
+   * @param {Property.<boolean>} undoAllowedProperty
+   */
+  constructor( x, y, viewMode, undoAllowedProperty ) {
 
-  // @public (read-only) {Expression|CoinTerm} - expression or coin term that has been collected, null if nothing
-  this.collectedItemProperty = new Property( null );
+    // @public (read-only) {Property.<boolean>} - property indicating whether the undo functionality is enabled
+    this.undoAllowedProperty = undoAllowedProperty;
 
-  // @public {Property.<ExpressionDescription|null} - description of the expression that this capture area can hold
-  this.expressionDescriptionProperty = new Property( null );
+    // @public (read-only) {Expression|CoinTerm} - expression or coin term that has been collected, null if nothing
+    this.collectedItemProperty = new Property( null );
 
-  // @public (read-only) {Bounds2} - bounds in model space of this capture area
-  this.bounds = EESharedConstants.COLLECTION_AREA_SIZE.toBounds( x, y );
+    // @public {Property.<ExpressionDescription|null} - description of the expression that this capture area can hold
+    this.expressionDescriptionProperty = new Property( null );
 
-  // @public (read-only) {ViewMode} - view mode (coins or variables)
-  this.viewMode = viewMode;
+    // @public (read-only) {Bounds2} - bounds in model space of this capture area
+    this.bounds = EESharedConstants.COLLECTION_AREA_SIZE.toBounds( x, y );
 
-  // @public {Property.<boolean>} - used by the view to turn on/off a "halo" for the collection area, generally used
-  // when the user holds something over the collection area
-  this.haloActiveProperty = new Property( false );
+    // @public (read-only) {ViewMode} - view mode (coins or variables)
+    this.viewMode = viewMode;
 
-  // @public (read-only) {Emitter} - emitter that emits an event when an at attempt is made to collect an item, and
-  // includes a parameter that is true if the item was collected and false if not
-  this.collectionAttemptedEmitter = new Emitter( { parameters: [ { valueType: 'boolean' } ] } );
-}
+    // @public {Property.<boolean>} - used by the view to turn on/off a "halo" for the collection area, generally used
+    // when the user holds something over the collection area
+    this.haloActiveProperty = new Property( false );
 
-expressionExchange.register( 'EECollectionArea', EECollectionArea );
-
-inherit( Object, EECollectionArea, {
+    // @public (read-only) {Emitter} - emitter that emits an event when an at attempt is made to collect an item, and
+    // includes a parameter that is true if the item was collected and false if not
+    this.collectionAttemptedEmitter = new Emitter( { parameters: [ { valueType: 'boolean' } ] } );
+  }
 
   /**
    * Test the provided expression and, if it matches the spec, capture it by moving it into the center of this
@@ -60,7 +56,7 @@ inherit( Object, EECollectionArea, {
    * @param {Expression} expression
    * @public
    */
-  collectOrRejectExpression: function( expression ) {
+  collectOrRejectExpression( expression ) {
 
     // test that this collection area is in the correct state
     assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
@@ -98,7 +94,7 @@ inherit( Object, EECollectionArea, {
 
     // signal the results of this collection attempt
     this.collectionAttemptedEmitter.emit( collected );
-  },
+  }
 
   /**
    * Test the provided coin term and, if it matches the spec, capture it by moving it into the center of this
@@ -106,7 +102,7 @@ inherit( Object, EECollectionArea, {
    * @param {CoinTerm} coinTerm
    * @public
    */
-  collectOrRejectCoinTerm: function( coinTerm ) {
+  collectOrRejectCoinTerm( coinTerm ) {
 
     // test that this collection area is in the correct state
     assert && assert( this.expressionDescriptionProperty.get(), 'no expression description for collection area' );
@@ -136,21 +132,21 @@ inherit( Object, EECollectionArea, {
 
     // signal the results of this collection attempt
     this.collectionAttemptedEmitter.emit( collected );
-  },
+  }
 
   /**
    * @returns {boolean}
    * @public
    */
-  isEmpty: function() {
+  isEmpty() {
     return this.collectedItemProperty.get() === null;
-  },
+  }
 
   /**
    * eject the currently collected expression, no-op if no expression is currently collected
    * @public
    */
-  ejectCollectedItem: function() {
+  ejectCollectedItem() {
     const collectedItem = this.collectedItemProperty.get();
     let collectedItemBounds;
     let yDestination;
@@ -178,7 +174,7 @@ inherit( Object, EECollectionArea, {
 
     // update internal state
     this.collectedItemProperty.reset();
-  },
+  }
 
   /**
    * get a reference to this collection area's model bounds, the results should not be changed, this exists to allow
@@ -186,21 +182,22 @@ inherit( Object, EECollectionArea, {
    * @returns {Bounds2}
    * @public
    */
-  getBounds: function() {
+  getBounds() {
     return this.bounds;
-  },
+  }
 
   /**
    * reset the collection area
    * @public
    */
-  reset: function() {
+  reset() {
     if ( this.collectedItemProperty.get() ) {
       this.collectedItemProperty.get().collectedProperty.set( false );
     }
     this.collectedItemProperty.reset();
   }
+}
 
-} );
+expressionExchange.register( 'EECollectionArea', EECollectionArea );
 
 export default EECollectionArea;

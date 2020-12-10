@@ -71,7 +71,7 @@ function makeExploreScreenCreatorNode( typeID, createdCoinTermInitialCount, mode
     createdCoinTermInitialCount > 0 ? 1 : -1,
     true
   );
-  instanceCount.link( function( count ) {
+  instanceCount.link( count => {
     numberToShowProperty.set( count + Math.abs( createdCoinTermInitialCount ) <= CREATION_LIMIT_FOR_EXPLORE_SCREENS ? 1 : 0 );
   } );
 
@@ -105,7 +105,7 @@ function makeGameScreenCreatorNode( typeID, createdCoinTermInitialCount, numInst
   // multiple creator nodes are shown in a staggered arrangement.
   const numberToShowProperty = new DerivedProperty(
     [ model.getCoinTermCountProperty( typeID, createdCoinTermInitialCount, true ) ],
-    function( instanceCount ) { return numInstancesAllowed - instanceCount; }
+    instanceCount => numInstancesAllowed - instanceCount
   );
 
   // create the "creator node" for the specified coin term type
@@ -126,7 +126,7 @@ function makeGameScreenCreatorNode( typeID, createdCoinTermInitialCount, numInst
   );
 
   // dispose of the derived property in order to avoid memory leaks
-  coinTermCreatorNode.disposeEmitter.addListener( function() {
+  coinTermCreatorNode.disposeEmitter.addListener( () => {
     numberToShowProperty.dispose();
   } );
 
@@ -149,7 +149,7 @@ const CoinTermCreatorBoxFactory = {
    * @returns {CoinTermCreatorBox}
    * @public
    */
-  createExploreScreenCreatorBox: function( creatorSetID, model, view, options ) {
+  createExploreScreenCreatorBox( creatorSetID, model, view, options ) {
 
     options = merge( {
       itemsPerCarouselPage: creatorSetID === CoinTermCreatorSetID.VARIABLES ? 4 : 3,
@@ -158,7 +158,7 @@ const CoinTermCreatorBoxFactory = {
 
     // create the list of creator nodes from the descriptor list
     const creatorNodes = [];
-    EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS[ creatorSetID ].forEach( function( descriptor ) {
+    EXPLORE_SCREEN_COIN_TERM_CREATOR_SET_DESCRIPTORS[ creatorSetID ].forEach( descriptor => {
       creatorNodes.push( makeExploreScreenCreatorNode(
         descriptor.typeID,
         descriptor.initialCount,
@@ -178,7 +178,7 @@ const CoinTermCreatorBoxFactory = {
    * @returns {CoinTermCreatorBox}
    * @public
    */
-  createGameScreenCreatorBox: function( challengeDescriptor, model, view, options ) {
+  createGameScreenCreatorBox( challengeDescriptor, model, view, options ) {
     options = merge( {
       itemSpacing: 30,
       align: 'top'
@@ -186,7 +186,7 @@ const CoinTermCreatorBoxFactory = {
 
     // create the list of creator nodes from the descriptor list
     const creatorNodes = [];
-    challengeDescriptor.carouselContents.forEach( function( descriptor ) {
+    challengeDescriptor.carouselContents.forEach( descriptor => {
       creatorNodes.push( makeGameScreenCreatorNode(
         descriptor.typeID,
         descriptor.minimumDecomposition,

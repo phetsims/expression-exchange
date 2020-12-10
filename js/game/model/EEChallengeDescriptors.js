@@ -562,7 +562,7 @@ const EEChallengeDescriptors = {
    * @returns {EEChallengeDescriptor}
    * @public
    */
-  getChallengeDescriptor: function( level, challengeNumber ) {
+  getChallengeDescriptor( level, challengeNumber ) {
     return challengeSets[ level ][ challengeNumber ];
   },
 
@@ -570,7 +570,7 @@ const EEChallengeDescriptors = {
    * randomize the challenge sets
    * @public
    */
-  shuffleChallenges: function() {
+  shuffleChallenges() {
     for ( let i = 0; i < challengeSets.length; i++ ) {
       challengeSets[ i ] = phet.joist.random.shuffle( challengeSets[ i ] );
     }
