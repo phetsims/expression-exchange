@@ -6,6 +6,7 @@
  * @author John Blanco
  */
 
+import dotRandom from '../../../../dot/js/dotRandom.js';
 import CoinTermTypeID from '../../common/enum/CoinTermTypeID.js';
 import expressionExchange from '../../expressionExchange.js';
 import ExpressionDescription from './ExpressionDescription.js';
@@ -572,7 +573,7 @@ const EEChallengeDescriptors = {
    */
   shuffleChallenges() {
     for ( let i = 0; i < challengeSets.length; i++ ) {
-      challengeSets[ i ] = phet.joist.random.shuffle( challengeSets[ i ] );
+      challengeSets[ i ] = dotRandom.shuffle( challengeSets[ i ] );
     }
   },
 

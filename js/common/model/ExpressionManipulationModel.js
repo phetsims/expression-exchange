@@ -13,6 +13,7 @@ import createObservableArray from '../../../../axon/js/createObservableArray.js'
 import Property from '../../../../axon/js/Property.js';
 import StringProperty from '../../../../axon/js/StringProperty.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
+import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import merge from '../../../../phet-core/js/merge.js';
 import expressionExchange from '../../expressionExchange.js';
@@ -658,8 +659,8 @@ class ExpressionManipulationModel {
 
       // the screen was too full and we couldn't find a spot, so choose something at random
       position.setXY(
-        minX + phet.joist.random.nextDouble() * ( this.retrievalBounds.width - expression.widthProperty.get() - minX ),
-        minY + phet.joist.random.nextDouble() * ( this.retrievalBounds.height - expression.widthProperty.get() - minY )
+        minX + dotRandom.nextDouble() * ( this.retrievalBounds.width - expression.widthProperty.get() - minX ),
+        minY + dotRandom.nextDouble() * ( this.retrievalBounds.height - expression.widthProperty.get() - minY )
       );
     }
 
