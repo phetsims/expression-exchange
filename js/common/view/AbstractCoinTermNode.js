@@ -132,7 +132,7 @@ class AbstractCoinTermNode extends Node {
     this.disposeAbstractCoinTermNode = () => {
       this.clearHideButtonTimer();
       if ( this.breakApartButton ) {
-        this.breakApartButton.buttonModel.overProperty.unlink( this.breakApartButtonOverListener );
+        this.breakApartButton.buttonModel.looksOverProperty.unlink( this.breakApartButtonOverListener );
         this.breakApartButton.removeListener( this.breakApartButtonListener );
         this.breakApartButton.dispose();
       }
@@ -229,7 +229,7 @@ class AbstractCoinTermNode extends Node {
 
     // add a listener for changes to the 'break apart allowed' state
     this.breakApartButtonOverListener = this.handleOverBreakApartButtonChanged.bind( this ); // @private, needed for disposal
-    this.breakApartButton.buttonModel.overProperty.lazyLink( this.breakApartButtonOverListener );
+    this.breakApartButton.buttonModel.looksOverProperty.lazyLink( this.breakApartButtonOverListener );
   }
 
   /**
