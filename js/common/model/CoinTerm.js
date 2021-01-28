@@ -439,7 +439,7 @@ class CoinTerm {
    */
   getViewBounds() {
     const position = this.positionProperty.get();
-    return this.localViewBoundsProperty.get().shifted( position.x, position.y );
+    return this.localViewBoundsProperty.get().shiftedXY( position.x, position.y );
   }
 
   /**
