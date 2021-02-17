@@ -12,7 +12,6 @@ import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import merge from '../../../../phet-core/js/merge.js';
 import MovableDragHandler from '../../../../scenery-phet/js/input/MovableDragHandler.js';
-import Touch from '../../../../scenery/js/input/Touch.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import expressionExchange from '../../expressionExchange.js';
@@ -353,7 +352,7 @@ class AbstractCoinTermNode extends Node {
       startDrag: event => {
 
         // offset things a little in touch mode for better visibility while dragging
-        if ( event.pointer instanceof Touch ) {
+        if ( event.pointer.isTouchLike() ) {
           const position = this.globalToParentPoint( event.pointer.point );
           const adjustedPosition = position.plusXY( 0, TOUCH_DRAG_Y_OFFSET );
           if ( dragBounds.containsPoint( adjustedPosition ) ) {
