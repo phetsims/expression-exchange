@@ -183,10 +183,10 @@ const stringToTermTypeMap = {
   'x^2*y2': CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED,
   'x^2': CoinTermTypeID.X_SQUARED,
   'y^2': CoinTermTypeID.Y_SQUARED,
-  'xy': CoinTermTypeID.X_TIMES_Y,
-  'x': CoinTermTypeID.X,
-  'y': CoinTermTypeID.Y,
-  'z': CoinTermTypeID.Z
+  xy: CoinTermTypeID.X_TIMES_Y,
+  x: CoinTermTypeID.X,
+  y: CoinTermTypeID.Y,
+  z: CoinTermTypeID.Z
 };
 
 /**
