@@ -11,7 +11,7 @@ import stepTimer from '../../../../axon/js/stepTimer.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import merge from '../../../../phet-core/js/merge.js';
-import MovableDragHandler from '../../../../scenery-phet/js/input/MovableDragHandler.js';
+import DragListener from '../../../../scenery/js/listeners/DragListener.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import expressionExchange from '../../expressionExchange.js';
@@ -331,44 +331,46 @@ class AbstractCoinTermNode extends Node {
 
     // create a position property and link it to the coin term, necessary because coin term has both position and
     // destination properties, both of which must be set when dragging occurs
-    const coinTermPositionAndDestination = new Property( this.coinTerm.positionProperty.get() );
-    coinTermPositionAndDestination.lazyLink( positionAndDestination => {
+    const coinTermPositionAndDestinationProperty = new Property( this.coinTerm.positionProperty.get() );
+    coinTermPositionAndDestinationProperty.lazyLink( positionAndDestination => {
       this.coinTerm.setPositionAndDestination( positionAndDestination );
     } );
 
     // @public - drag handler, public in support of event forwarding from creator nodes
-    this.dragHandler = new MovableDragHandler( coinTermPositionAndDestination, {
+    this.dragHandler = new DragListener( {
+
+      positionProperty: coinTermPositionAndDestinationProperty,
 
       // allow moving a finger (touch) across a node to pick it up
       allowTouchSnag: true,
 
       // bound the area where the coin terms can go
-      dragBounds: dragBounds,
+      dragBoundsProperty: new Property( dragBounds ),
 
       // set the target node so that MovableDragHandler knows where to get the coordinate transform, supports event
       // forwarding
       targetNode: this,
 
-      startDrag: event => {
+      start: event => {
 
         // offset things a little in touch mode for better visibility while dragging
         if ( event.pointer.isTouchLike() ) {
           const position = this.globalToParentPoint( event.pointer.point );
           const adjustedPosition = position.plusXY( 0, TOUCH_DRAG_Y_OFFSET );
           if ( dragBounds.containsPoint( adjustedPosition ) ) {
-            coinTermPositionAndDestination.set( adjustedPosition );
+            coinTermPositionAndDestinationProperty.set( adjustedPosition );
           }
           else {
-            coinTermPositionAndDestination.set( position );
+            coinTermPositionAndDestinationProperty.set( position );
           }
         }
         else {
-          coinTermPositionAndDestination.set( this.coinTerm.positionProperty.get() );
+          coinTermPositionAndDestinationProperty.set( this.coinTerm.positionProperty.get() );
         }
         this.coinTerm.userControlledProperty.set( true );
       },
 
-      endDrag: () => {
+      end: () => {
         this.coinTerm.userControlledProperty.set( false );
       }
     } );

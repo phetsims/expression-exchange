@@ -15,6 +15,7 @@ import Property from '../../../../axon/js/Property.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import merge from '../../../../phet-core/js/merge.js';
+import DragListener from '../../../../scenery/js/listeners/DragListener.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import expressionExchange from '../../expressionExchange.js';
 import CoinTermTypeID from '../enum/CoinTermTypeID.js';
@@ -126,15 +127,7 @@ class CoinTermCreatorNode extends Node {
 
     // Add the listener that will allow the user to click on this node and create a new coin term, and then position it
     // in the model.  This works by forwarding the events it receives to the node that gets created in the view.
-    this.addInputListener( {
-
-      down: event => {
-
-        // ignore this if already dragging
-        if ( event.pointer.dragging ) { return; }
-
-        // don't try to start drags with a right mouse button or an attached pointer
-        if ( !event.canStartPress() ) { return; }
+    this.addInputListener( DragListener.createForwardingListener( event => {
 
         // Determine the origin position of the new element based on where the creator node is.  This is done so that
         // the position to which this element will return when it is "put away" will match the position of this creator
@@ -162,21 +155,13 @@ class CoinTermCreatorNode extends Node {
         if ( createdCoinTermView ) {
 
           // forward the event to the view node's drag handler
-          createdCoinTermView.dragHandler.startDrag( event );
+          createdCoinTermView.dragHandler.press( event, createdCoinTermView );
         }
       },
-
-      // touch enters this node
-      touchenter: function( event ) {
-        this.down( event );
-      },
-
-      // touch moves over this node
-      touchmove: function( event ) {
-        this.down( event );
+      {
+        allowTouchSnag: true
       }
-
-    } );
+    ) );
 
     // dispose function
     this.disposeCoinTermCreatorNode = function() {
