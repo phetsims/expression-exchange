@@ -753,7 +753,7 @@ class ExpressionManipulationModel {
             overlappingLikeCoinTerm.absorb( addedCoinTerm, self.partialCancellationEnabled );
             phet.log && phet.log(
               overlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' + overlappingLikeCoinTerm.id +
-              ' composition = ' + '[' + overlappingLikeCoinTerm.composition + ']' );
+              ' composition = [' + overlappingLikeCoinTerm.composition + ']' );
             self.removeCoinTerm( addedCoinTerm, false );
           }
           else {
@@ -787,7 +787,7 @@ class ExpressionManipulationModel {
             mostOverlappingLikeCoinTerm.absorb( addedCoinTerm, self.partialCancellationEnabled );
             phet.log && phet.log(
               mostOverlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' +
-              mostOverlappingLikeCoinTerm.id + ' composition = ' + '[' +
+              mostOverlappingLikeCoinTerm.id + ' composition = [' +
               mostOverlappingLikeCoinTerm.composition + ']' );
             self.removeCoinTerm( addedCoinTerm, false );
             addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );

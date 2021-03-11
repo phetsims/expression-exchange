@@ -59,7 +59,7 @@ class CoinTermFactory {
     // @private, the string depicted for x squared when 'variable values' is enabled
     this.xSquaredValueStringProperty = new DerivedProperty(
       [ this.xValueProperty ],
-      xValue => '(' + xValue.toString() + ')' + '<sup>2</sup>'
+      xValue => '(' + xValue.toString() + ')<sup>2</sup>'
     );
 
     // @private, value property for y squared
@@ -71,7 +71,7 @@ class CoinTermFactory {
     // @private, the string depicted for y squared when 'variable values' is enabled
     this.ySquaredValueStringProperty = new DerivedProperty(
       [ this.yValueProperty ],
-      yValue => '(' + yValue.toString() + ')' + '<sup>2</sup>'
+      yValue => '(' + yValue.toString() + ')<sup>2</sup>'
     );
 
     // @private, value property for x squared times y squared
@@ -83,7 +83,7 @@ class CoinTermFactory {
     // @private, the string depicted for y squared when 'variable values' is enabled
     this.xSquaredTimesYSquaredValueStringProperty = new DerivedProperty(
       [ this.xValueProperty, this.yValueProperty ],
-      ( xValue, yValue ) => '(' + xValue.toString() + ')' + '<sup>2</sup>' + '(' + yValue.toString() + ')' + '<sup>2</sup>'
+      ( xValue, yValue ) => '(' + xValue.toString() + ')<sup>2</sup>(' + yValue.toString() + ')<sup>2</sup>'
     );
   }
 

@@ -104,7 +104,7 @@ function createVariableExpressionFragment( expressionString, startIndex ) {
 
   // identify the expression to be created based on a finite set of those supported
   if ( expressionString.indexOf( 'x^2', startIndex ) === startIndex ) {
-    node = new RichText( 'x' + '<sup>2</sup>', SUB_SUP_OPTIONS );
+    node = new RichText( 'x<sup>2</sup>', SUB_SUP_OPTIONS );
     charsUsed = 3;
   }
   else if ( expressionString.indexOf( 'y^2', startIndex ) === startIndex ) {
