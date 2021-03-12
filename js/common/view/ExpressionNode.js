@@ -98,7 +98,7 @@ class ExpressionNode extends Node {
         for ( let i = 0; i < coinTermsLeftToRight.length - 1; i++ ) {
 
           // determine whether to show a plus sign or a minus sign
-          var symbolText;
+          let symbolText;
           if ( simplifyNegativesProperty.value &&
                coinTermsLeftToRight[ i + 1 ].totalCountProperty.get() < 0 && !coinTermsLeftToRight[ i + 1 ].userControlledProperty.get() ) {
             symbolText = MathSymbols.MINUS;

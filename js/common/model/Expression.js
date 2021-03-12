@@ -347,7 +347,7 @@ class Expression {
     const scaledCoinTermSpacing = INTER_COIN_TERM_SPACING * this.scaleProperty.get();
 
     // adjust the positions of coin terms to the right of the middle
-    for ( var i = middleCoinTermIndex + 1; i < coinTermsLeftToRight.length; i++ ) {
+    for ( let i = middleCoinTermIndex + 1; i < coinTermsLeftToRight.length; i++ ) {
 
       // adjust the position of this coin term to be the correct distance from its neighbor to the left
       const leftNeighbor = coinTermsLeftToRight[ i - 1 ];
@@ -360,7 +360,7 @@ class Expression {
     }
 
     // adjust the positions of coin terms to the left of the middle
-    for ( i = middleCoinTermIndex - 1; i >= 0; i-- ) {
+    for ( let i = middleCoinTermIndex - 1; i >= 0; i-- ) {
       // adjust the position of this coin term to be the correct distance from its neighbor to the right
       const rightNeighbor = coinTermsLeftToRight[ i + 1 ];
       xPos = rightNeighbor.destinationProperty.get().x + rightNeighbor.localViewBoundsProperty.get().minX -

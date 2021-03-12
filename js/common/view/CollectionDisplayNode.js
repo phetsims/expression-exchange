@@ -76,8 +76,9 @@ class CollectionDisplayNode extends Node {
       // wrap the icon in separate nodes so that it can appear in multiple places, and set the position of each
       const wrappedIconNodes = [];
       for ( let j = 0; j < MAX_COINS_TERMS_PER_TYPE / MAX_COIN_TERMS_PER_ROW; j++ ) {
+        let wrappedIconNode = null;
         for ( let k = 0; k < MAX_COIN_TERMS_PER_ROW; k++ ) {
-          var wrappedIconNode = new Node( {
+          wrappedIconNode = new Node( {
             children: [ coinTermIcon ],
             centerX: COIN_CENTER_INSET + k * interCoinTermHorizontalSpacing,
             top: j === 0 ? bottomOfPreviousRow + DIFFERENT_TYPE_VERTICAL_SPACING : bottomOfPreviousRow + SAME_TYPE_VERTICAL_SPACING
