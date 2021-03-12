@@ -39,7 +39,7 @@ class Expression {
   constructor( anchorCoinTerm, floatingCoinTerm, simplifyNegativesProperty ) {
 
     const self = this;
-    this.id = 'EX-' + ( ++creationCount );
+    this.id = `EX-${++creationCount}`;
 
     //------------------------------------------------------------------------
     // properties
@@ -195,8 +195,8 @@ class Expression {
     };
 
     // logging, for debug purposes
-    phet.log && phet.log( 'created ' + this.id + ' with anchor = ' + anchorCoinTerm.id +
-                          ' and floating = ' + floatingCoinTerm.id );
+    phet.log && phet.log( `created ${this.id} with anchor = ${anchorCoinTerm.id
+                          } and floating = ${floatingCoinTerm.id}` );
   }
 
   /**
@@ -508,7 +508,7 @@ class Expression {
       this.updateCoinTermShowMinusSignFlag();
     }
 
-    phet.log && phet.log( 'removed ' + coinTerm.id + ' from ' + this.id );
+    phet.log && phet.log( `removed ${coinTerm.id} from ${this.id}` );
   }
 
   /**

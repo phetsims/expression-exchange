@@ -132,7 +132,7 @@ const EEGameLevelIconFactory = {
         break;
 
       default:
-        assert && assert( false, 'no icon available for game level ' + gameLevel );
+        assert && assert( false, `no icon available for game level ${gameLevel}` );
         break;
     }
 

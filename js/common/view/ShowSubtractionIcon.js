@@ -29,7 +29,7 @@ class ShowSubtractionIcon extends Node {
     super();
 
     // add a rectangle with the first portion of the text
-    const firstTextWithBackground = new TextWidthBackground( '+ ' + MathSymbols.UNARY_MINUS + 'x' );
+    const firstTextWithBackground = new TextWidthBackground( `+ ${MathSymbols.UNARY_MINUS}x` );
     this.addChild( firstTextWithBackground );
 
     // add the arrow
@@ -44,7 +44,7 @@ class ShowSubtractionIcon extends Node {
     this.addChild( arrow );
 
     // add the 2nd enclosed text portion
-    this.addChild( new TextWidthBackground( MathSymbols.MINUS + ' x', { left: arrow.right + 5 } ) );
+    this.addChild( new TextWidthBackground( `${MathSymbols.MINUS} x`, { left: arrow.right + 5 } ) );
   }
 }
 

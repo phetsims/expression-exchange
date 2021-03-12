@@ -168,7 +168,7 @@ function interpretExpression( expressionString, currentIndex ) {
       currentIndex = subExpressionInterpretationResult.newIndex;
     }
     else {
-      assert && assert( false, 'error occurred while interpreting expression string, string = ' + expressionString );
+      assert && assert( false, `error occurred while interpreting expression string, string = ${expressionString}` );
     }
   }
 

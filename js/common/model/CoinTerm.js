@@ -42,7 +42,7 @@ class CoinTerm {
    */
   constructor( valueProperty, coinRadius, termText, termValueTextProperty, typeID, options ) {
 
-    this.id = 'CT-' + ( ++creationCount ); // @public (read-only) - unique ID useful for debugging
+    this.id = `CT-${++creationCount}`; // @public (read-only) - unique ID useful for debugging
 
     options = merge( {
       initialCount: 1, // number of instances of this coin term initially combined together, can be negative
@@ -159,7 +159,7 @@ class CoinTerm {
     //------------------------------------------------------------------------
 
     this.userControlledProperty.link( uc => {
-      phet.log && phet.log( 'coin term ' + this.id + ' uc changed to: ' + uc );
+      phet.log && phet.log( `coin term ${this.id} uc changed to: ${uc}` );
     } );
 
     // monitor the total count, start fading the existence strength if it goes to zero

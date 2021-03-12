@@ -371,7 +371,7 @@ class ExpressionManipulationModel {
   addCoinTerm( coinTerm ) {
     this.coinTerms.add( coinTerm );
     this.updateCoinTermCounts( coinTerm.typeID );
-    phet.log && phet.log( 'added ' + coinTerm.id + ', composition = [' + coinTerm.composition + ']'
+    phet.log && phet.log( `added ${coinTerm.id}, composition = [${coinTerm.composition}]`
     );
   }
 
@@ -390,7 +390,7 @@ class ExpressionManipulationModel {
       coinTerm.returnToOrigin();
     }
     else {
-      phet.log && phet.log( 'removed ' + coinTerm.id );
+      phet.log && phet.log( `removed ${coinTerm.id}` );
       this.coinTerms.remove( coinTerm );
       this.updateCoinTermCounts( coinTerm.typeID );
     }
@@ -474,7 +474,7 @@ class ExpressionManipulationModel {
       this.removeCoinTerm( coinTerm, true );
     } );
     this.expressions.remove( expression );
-    phet.log && phet.log( 'removed ' + expression.id );
+    phet.log && phet.log( `removed ${expression.id}` );
   }
 
   // @private, remove an expression hint
@@ -752,8 +752,8 @@ class ExpressionManipulationModel {
             // combine the dropped coin term with the one with which it overlaps
             overlappingLikeCoinTerm.absorb( addedCoinTerm, self.partialCancellationEnabled );
             phet.log && phet.log(
-              overlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' + overlappingLikeCoinTerm.id +
-              ' composition = [' + overlappingLikeCoinTerm.composition + ']' );
+              `${overlappingLikeCoinTerm.id} absorbed ${addedCoinTerm.id}, ${overlappingLikeCoinTerm.id
+              } composition = [${overlappingLikeCoinTerm.composition}]` );
             self.removeCoinTerm( addedCoinTerm, false );
           }
           else {
@@ -777,7 +777,7 @@ class ExpressionManipulationModel {
 
           // the user is adding the coin term to an expression
           mostOverlappingExpression.addCoinTerm( addedCoinTerm );
-          phet.log && phet.log( 'added ' + addedCoinTerm.id + ' to ' + mostOverlappingExpression.id );
+          phet.log && phet.log( `added ${addedCoinTerm.id} to ${mostOverlappingExpression.id}` );
         }
         else if ( mostOverlappingLikeCoinTerm ) {
 
@@ -786,9 +786,9 @@ class ExpressionManipulationModel {
           addedCoinTerm.destinationReachedEmitter.addListener( function destinationReachedListener() {
             mostOverlappingLikeCoinTerm.absorb( addedCoinTerm, self.partialCancellationEnabled );
             phet.log && phet.log(
-              mostOverlappingLikeCoinTerm.id + ' absorbed ' + addedCoinTerm.id + ', ' +
-              mostOverlappingLikeCoinTerm.id + ' composition = [' +
-              mostOverlappingLikeCoinTerm.composition + ']' );
+              `${mostOverlappingLikeCoinTerm.id} absorbed ${addedCoinTerm.id}, ${
+              mostOverlappingLikeCoinTerm.id} composition = [${
+              mostOverlappingLikeCoinTerm.composition}]` );
             self.removeCoinTerm( addedCoinTerm, false );
             addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
           } );
@@ -937,7 +937,7 @@ class ExpressionManipulationModel {
         // state checking
         assert && assert(
           numOverlappingCoinTerms === 0 || numOverlappingCoinTerms === 1,
-          'max of one overlapping free coin term when expression is released, seeing ' + numOverlappingCoinTerms
+          `max of one overlapping free coin term when expression is released, seeing ${numOverlappingCoinTerms}`
         );
 
         if ( releasedOverCreatorBox ) {
@@ -973,9 +973,9 @@ class ExpressionManipulationModel {
               const coinTermsToBeMoved = addedExpression.removeAllCoinTerms();
               self.expressions.remove( addedExpression );
               coinTermsToBeMoved.forEach( coinTerm => {
-                phet.log && phet.log( 'moving ' + coinTerm.id +
-                                      ' from ' + addedExpression.id +
-                                      ' to ' + mostOverlappingExpression.id );
+                phet.log && phet.log( `moving ${coinTerm.id
+                                      } from ${addedExpression.id
+                                      } to ${mostOverlappingExpression.id}` );
                 mostOverlappingExpression.addCoinTerm( coinTerm );
               } );
             }

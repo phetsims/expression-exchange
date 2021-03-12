@@ -34,9 +34,9 @@ class CoinTermFactory {
     this.zValueProperty = zValueProperty;
 
     // @private {Property.<string>} - string representations of the variables
-    this.xValueStringProperty = new DerivedProperty( [ xValueProperty ], value => '(' + value.toString() + ')' );
-    this.yValueStringProperty = new DerivedProperty( [ yValueProperty ], value => '(' + value.toString() + ')' );
-    this.zValueStringProperty = new DerivedProperty( [ zValueProperty ], value => '(' + value.toString() + ')' );
+    this.xValueStringProperty = new DerivedProperty( [ xValueProperty ], value => `(${value.toString()})` );
+    this.yValueStringProperty = new DerivedProperty( [ yValueProperty ], value => `(${value.toString()})` );
+    this.zValueStringProperty = new DerivedProperty( [ zValueProperty ], value => `(${value.toString()})` );
 
     // @private, value property for x times y
     this.xTimesYValueProperty = new DerivedProperty(
@@ -47,7 +47,7 @@ class CoinTermFactory {
     // @private, the string depicted for x times y when 'variable values' is enabled
     this.xTimesYValueStringProperty = new DerivedProperty(
       [ this.xValueProperty, this.yValueProperty ],
-      ( xValue, yValue ) => '(' + xValue.toString() + ')(' + yValue.toString() + ')'
+      ( xValue, yValue ) => `(${xValue.toString()})(${yValue.toString()})`
     );
 
     // @private, value property for x squared
@@ -59,7 +59,7 @@ class CoinTermFactory {
     // @private, the string depicted for x squared when 'variable values' is enabled
     this.xSquaredValueStringProperty = new DerivedProperty(
       [ this.xValueProperty ],
-      xValue => '(' + xValue.toString() + ')<sup>2</sup>'
+      xValue => `(${xValue.toString()})<sup>2</sup>`
     );
 
     // @private, value property for y squared
@@ -71,7 +71,7 @@ class CoinTermFactory {
     // @private, the string depicted for y squared when 'variable values' is enabled
     this.ySquaredValueStringProperty = new DerivedProperty(
       [ this.yValueProperty ],
-      yValue => '(' + yValue.toString() + ')<sup>2</sup>'
+      yValue => `(${yValue.toString()})<sup>2</sup>`
     );
 
     // @private, value property for x squared times y squared
@@ -83,7 +83,7 @@ class CoinTermFactory {
     // @private, the string depicted for y squared when 'variable values' is enabled
     this.xSquaredTimesYSquaredValueStringProperty = new DerivedProperty(
       [ this.xValueProperty, this.yValueProperty ],
-      ( xValue, yValue ) => '(' + xValue.toString() + ')<sup>2</sup>(' + yValue.toString() + ')<sup>2</sup>'
+      ( xValue, yValue ) => `(${xValue.toString()})<sup>2</sup>(${yValue.toString()})<sup>2</sup>`
     );
   }
 
@@ -161,7 +161,7 @@ class CoinTermFactory {
         break;
 
       default:
-        assert && assert( false, 'Unrecognized type ID for coin term, = ' + typeID );
+        assert && assert( false, `Unrecognized type ID for coin term, = ${typeID}` );
     }
 
     return new CoinTerm(

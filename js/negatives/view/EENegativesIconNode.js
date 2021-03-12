@@ -38,7 +38,7 @@ class EENegativesIconNode extends Rectangle {
       children: [
         new Text( '3', { font: TEXT_FONT } ),
         new RichText( 'x<sup>2</sup>', { font: MATH_FONT, supScale: 0.5 } ),
-        new Text( ' ' + MathSymbols.MINUS + ' ', { font: TEXT_FONT } ),
+        new Text( ` ${MathSymbols.MINUS} `, { font: TEXT_FONT } ),
         new RichText( 'x<sup>2</sup>', { font: MATH_FONT, supScale: 0.5 } )
       ],
       align: 'bottom'

@@ -58,7 +58,7 @@ class ExpressionDescriptionNode extends HBox {
 
         // add plus symbol if not at end of expression
         if ( index < expressionDescription.terms.length - 1 ) {
-          const plusSign = new Text( ' ' + MathSymbols.PLUS + ' ', { font: COIN_EXPRESSION_FONT } );
+          const plusSign = new Text( ` ${MathSymbols.PLUS} `, { font: COIN_EXPRESSION_FONT } );
           this.addChild( plusSign );
         }
 
@@ -159,7 +159,7 @@ function createNonVariableExpressionFragment( expressionString, startIndex ) {
   assert && assert( fragmentString.length, 'no expression fragment found, method should not have been called' );
 
   // replace the minus sign used in subtraction operations with the unicode character
-  fragmentString = fragmentString.replace( / - /g, ' ' + MathSymbols.MINUS + ' ' );
+  fragmentString = fragmentString.replace( / - /g, ` ${MathSymbols.MINUS} ` );
 
   return {
     node: new Text( fragmentString, { font: EXPRESSION_FONT_FOR_NON_VARIABLE } ),
