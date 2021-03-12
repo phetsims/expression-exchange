@@ -20,7 +20,7 @@ import BreakApartButton from './BreakApartButton.js';
 
 // constants
 const BACKGROUND_CORNER_ROUNDING = 5;
-const TOUCH_DRAG_Y_OFFSET = -30; // empirically determined
+const TOUCH_DRAG_OFFSET = new Vector2( 0, -30 ); // empirically determined
 
 class AbstractCoinTermNode extends Node {
 
@@ -108,7 +108,8 @@ class AbstractCoinTermNode extends Node {
     // function to update the pickability as the states change
     const updatePickability = () => {
       const expression = coinTerm.expressionProperty.get();
-      this.pickable = ( expression === null || expression.inEditModeProperty.get() ) && !coinTerm.inProgressAnimationProperty.get() && !coinTerm.collectedProperty.get();
+      this.pickable = ( expression === null || expression.inEditModeProperty.get() )
+                      && !coinTerm.inProgressAnimationProperty.get() && !coinTerm.collectedProperty.get();
     };
 
     // update the pickability of this node
@@ -313,12 +314,17 @@ class AbstractCoinTermNode extends Node {
    */
   handleBreakApartButtonPressed() {
 
+    // Interrupt any dragging that is in progress, which helps to prevent weird multi-touch problems.  See
+    // https://github.com/phetsims/expression-exchange/issues/151.
+    this.coinAndTextRootNode.interruptInput();
+
+    // Break this composite coin term into separate ones.
     this.coinTerm.breakApart();
 
-    // hide the button after clicking
+    // Hide the button, since it must have been pressed to get here.
     this.hideBreakApartButton();
 
-    // cancel timer if running
+    // Cancel timer (if running).
     this.clearHideButtonTimer();
   }
 
@@ -329,8 +335,8 @@ class AbstractCoinTermNode extends Node {
    */
   addDragHandler( dragBounds ) {
 
-    // create a position property and link it to the coin term, necessary because coin term has both position and
-    // destination properties, both of which must be set when dragging occurs
+    // Create a position property and link it to the coin term, necessary because coin term has both position and
+    // destination properties, both of which must be set when dragging occurs.
     const coinTermPositionAndDestinationProperty = new Property( this.coinTerm.positionProperty.get() );
     coinTermPositionAndDestinationProperty.lazyLink( positionAndDestination => {
       this.coinTerm.setPositionAndDestination( positionAndDestination );
@@ -351,22 +357,12 @@ class AbstractCoinTermNode extends Node {
       // forwarding
       targetNode: this,
 
-      start: event => {
+      // Offset the position a little if this is a touch pointer so that the finger doesn't cover the coin term.
+      offsetPosition: ( viewPoint, dragListener ) => {
+        return dragListener.pointer.isTouchLike() ? TOUCH_DRAG_OFFSET : Vector2.ZERO;
+      },
 
-        // offset things a little in touch mode for better visibility while dragging
-        if ( event.pointer.isTouchLike() ) {
-          const position = this.globalToParentPoint( event.pointer.point );
-          const adjustedPosition = position.plusXY( 0, TOUCH_DRAG_Y_OFFSET );
-          if ( dragBounds.containsPoint( adjustedPosition ) ) {
-            coinTermPositionAndDestinationProperty.set( adjustedPosition );
-          }
-          else {
-            coinTermPositionAndDestinationProperty.set( position );
-          }
-        }
-        else {
-          coinTermPositionAndDestinationProperty.set( this.coinTerm.positionProperty.get() );
-        }
+      start: () => {
         this.coinTerm.userControlledProperty.set( true );
       },
 
