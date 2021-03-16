@@ -196,7 +196,7 @@ class Expression {
 
     // logging, for debug purposes
     phet.log && phet.log( `created ${this.id} with anchor = ${anchorCoinTerm.id
-                          } and floating = ${floatingCoinTerm.id}` );
+    } and floating = ${floatingCoinTerm.id}` );
   }
 
   /**

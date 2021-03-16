@@ -787,8 +787,8 @@ class ExpressionManipulationModel {
             mostOverlappingLikeCoinTerm.absorb( addedCoinTerm, self.partialCancellationEnabled );
             phet.log && phet.log(
               `${mostOverlappingLikeCoinTerm.id} absorbed ${addedCoinTerm.id}, ${
-              mostOverlappingLikeCoinTerm.id} composition = [${
-              mostOverlappingLikeCoinTerm.composition}]` );
+                mostOverlappingLikeCoinTerm.id} composition = [${
+                mostOverlappingLikeCoinTerm.composition}]` );
             self.removeCoinTerm( addedCoinTerm, false );
             addedCoinTerm.destinationReachedEmitter.removeListener( destinationReachedListener );
           } );
@@ -974,8 +974,8 @@ class ExpressionManipulationModel {
               self.expressions.remove( addedExpression );
               coinTermsToBeMoved.forEach( coinTerm => {
                 phet.log && phet.log( `moving ${coinTerm.id
-                                      } from ${addedExpression.id
-                                      } to ${mostOverlappingExpression.id}` );
+                } from ${addedExpression.id
+                } to ${mostOverlappingExpression.id}` );
                 mostOverlappingExpression.addCoinTerm( coinTerm );
               } );
             }
