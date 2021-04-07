@@ -137,10 +137,11 @@ class VariableCoinTermNode extends AbstractCoinTermNode {
       this.updateRepresentation.bind( this )
     );
 
+    let flipStateAnimator;
     if ( options.supportShowValues ) {
 
       // hook up the listener that will step the changes to the flip state when the 'show values' state changes
-      var flipStateAnimator = this.updateCoinFlipAnimations.bind( this ); // eslint-disable-line no-var
+      flipStateAnimator = this.updateCoinFlipAnimations.bind( this );
       showCoinValuesProperty.link( flipStateAnimator );
 
       // adjust the coin images when the flipped state changes

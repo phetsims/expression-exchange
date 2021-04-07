@@ -298,9 +298,10 @@ class ExpressionExplorationScreenView extends ScreenView {
     );
     this.addChild( showAllCoefficientsCheckbox );
 
-    // if negative values are possible, show the checkbox that allows them to be simplified
+    // If negative values are possible, show the checkbox that allows them to be simplified.
+    let showSubtractionCheckbox;
     if ( coinTermCreatorBox.negativeTermsPresent ) {
-      var showSubtractionCheckbox = new Checkbox( // eslint-disable-line no-var
+      showSubtractionCheckbox = new Checkbox(
         new ShowSubtractionIcon(),
         model.simplifyNegativesProperty,
         {

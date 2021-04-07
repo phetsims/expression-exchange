@@ -1042,7 +1042,6 @@ class ExpressionManipulationModel {
       self.expressions.remove( addedExpression );
 
       // spread the released coin terms out horizontally
-      //var numRetrievedCoinTerms = 0;
       newlyFreedCoinTerms.forEach( newlyFreedCoinTerm => {
 
         // calculate a destination that will cause the coin terms to spread out from the expression center
