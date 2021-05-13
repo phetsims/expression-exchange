@@ -21,7 +21,7 @@
     "branch": "HEAD"
   },
   "expression-exchange": {
-    "sha": "c5f1762c6f555b3d2b387b9d68a8616f5eca931f",
+    "sha": "176898aeb4d2316d1accedf9728a21c144a96e55",
     "branch": "1.1"
   },
   "joist": {
@@ -49,7 +49,7 @@
     "branch": "HEAD"
   },
   "scenery": {
-    "sha": "ee05da84b821fe2c88ef7dc8555c3f497a84ea47",
+    "sha": "2073732c90b0784b162933b9c75ddad4a9a172c8",
     "branch": "expression-exchange-1.1"
   },
   "scenery-phet": {
