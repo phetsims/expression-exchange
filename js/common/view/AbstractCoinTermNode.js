@@ -118,12 +118,13 @@ class AbstractCoinTermNode extends Node {
       updatePickability
     );
 
-    // allow the coin term to be pickable if the expression that it is in transitions into edit mode
+    // Hook up a listener that will allow the coin term to be pickable if the expression that it is in transitions into
+    // edit mode.
     coinTerm.expressionProperty.link( ( expression, previousExpression ) => {
       if ( expression ) {
         expression.inEditModeProperty.link( updatePickability );
       }
-      else if ( previousExpression ) {
+      if ( previousExpression && previousExpression.inEditModeProperty.hasListener( updatePickability ) ) {
         previousExpression.inEditModeProperty.unlink( updatePickability );
       }
     } );
@@ -141,6 +142,9 @@ class AbstractCoinTermNode extends Node {
       coinTerm.userControlledProperty.unlink( userControlledListener );
       coinTerm.breakApartAllowedProperty.unlink( breakApartAllowedListener );
       coinTerm.totalCountProperty.unlink( totalCountListener );
+      if ( coinTerm.expressionProperty.value ) {
+        coinTerm.expressionProperty.value.inEditModeProperty.unlink( updatePickability );
+      }
       pickabilityUpdaterMultilink.dispose();
       this.removeAllChildren();
     };
