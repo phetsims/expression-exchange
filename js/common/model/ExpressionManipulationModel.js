@@ -1,4 +1,4 @@
-// Copyright 2015-2020, University of Colorado Boulder
+// Copyright 2015-2021, University of Colorado Boulder
 
 /**
  * A model that allows users to move coin terms around, combine them into expressions, edit the expressions, change the

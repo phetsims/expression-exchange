@@ -1,4 +1,4 @@
-// Copyright 2017-2020, University of Colorado Boulder
+// Copyright 2017-2021, University of Colorado Boulder
 
 /**
  * an array of static objects that describe the Expression Exchange challenges, organized by game level

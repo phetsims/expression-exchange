@@ -1,4 +1,4 @@
-// Copyright 2016-2020, University of Colorado Boulder
+// Copyright 2016-2021, University of Colorado Boulder
 
 /**
  * This type represents a model of an expression.  An expression is a set of coin terms all positioned in a line.  In
