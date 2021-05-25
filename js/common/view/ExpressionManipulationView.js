@@ -9,6 +9,7 @@
 import Property from '../../../../axon/js/Property.js';
 import Shape from '../../../../kite/js/Shape.js';
 import merge from '../../../../phet-core/js/merge.js';
+import PressListener from '../../../../scenery/js/listeners/PressListener.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import expressionExchange from '../../expressionExchange.js';
@@ -84,23 +85,14 @@ class ExpressionManipulationView extends Node {
     } );
     this.addChild( barrierRectanglePath );
 
-    // add a listener to the barrier rectangle that will exit the expression editing mode when clicked upon
-    let barrierRectangleArmedForRemoval = false;
-    barrierRectanglePath.addInputListener( {
-
-      down: () => {
+    // Add a listener to the barrier rectangle that will exit the expression editing mode when clicked upon.
+    barrierRectanglePath.addInputListener( new PressListener( {
+      release: () => {
         if ( !model.isAnythingUserControlled() ) {
-          barrierRectangleArmedForRemoval = true;
-        }
-      },
-
-      up: () => {
-        if ( barrierRectangleArmedForRemoval ) {
           model.stopEditingExpression();
-          barrierRectangleArmedForRemoval = false;
         }
       }
-    } );
+    } ) );
 
     // define a function that will update the shape of the barrier rectangle
     function updateBarrierRectangle() {
