@@ -1,5 +1,5 @@
 {
-  "comment": "# expression-exchange 1.1.15-rc.3 Tue Jun 01 2021 19:55:19 GMT-0600 (Mountain Daylight Time)",
+  "comment": "# expression-exchange 1.1.15 Thu Jun 17 2021 13:10:16 GMT-0600 (Mountain Daylight Time)",
   "assert": {
     "sha": "5c3f92048a9c2ffd6df8ede54fd64f1f7a7e4ef2",
     "branch": "HEAD"
@@ -21,7 +21,7 @@
     "branch": "HEAD"
   },
   "expression-exchange": {
-    "sha": "92133197d713d69a7b74e50d34c0b2b5436d7113",
+    "sha": "9853cf1f7b92b8425457e0edffb80b67d6a5fc7d",
     "branch": "1.1"
   },
   "joist": {
