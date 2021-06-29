@@ -79,7 +79,8 @@ class LevelSelectionNode extends Node {
             numberOfStars: options.numStarsOnButtons,
             perfectScore: options.perfectScore,
             scale: options.buttonScale
-          }
+          },
+          soundPlayerIndex: i
         }
       );
       this.addChild( buttons[ i ] );
