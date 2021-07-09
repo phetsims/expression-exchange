@@ -94,7 +94,7 @@ class EEGameLevelView extends Node {
 
     // add the refresh button
     const refreshButton = new RefreshButton( {
-      iconScale: 0.7,
+      iconHeight: 27,
       xMargin: 9,
       yMargin: 7,
       listener: () => { levelModel.refresh(); },
