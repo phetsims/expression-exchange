@@ -7,13 +7,14 @@
 
 import merge from '../../../../phet-core/js/merge.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
+import Path from '../../../../scenery/js/nodes/Path.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
-import FontAwesomeNode from '../../../../sun/js/FontAwesomeNode.js';
+import scissorsShape from '../../../../sherpa/js/fontawesome-5/cutSolidShape.js';
 import expressionExchange from '../../expressionExchange.js';
 
 // constants
 const MARGIN = 3.5;
-const ICON_SCALE = 0.35;
+const ICON_WIDTH = 16; // in screen coordinates
 const BLACK_SCISSORS_ICON = createIconNode( 'black' );
 const YELLOW_SCISSORS_ICON = createIconNode( 'yellow' );
 
@@ -64,15 +65,15 @@ class BreakApartButton extends RectangularPushButton {
 /**
  * helper function for creating the icon node used on the button
  * @param {string} color
- * @returns {FontAwesomeNode}
+ * @returns {Path}
  */
 function createIconNode( color ) {
-  return new FontAwesomeNode( 'cut', {
-    scale: ICON_SCALE,
-    rotation: -Math.PI / 2, // scissors point up
-    fill: color,
-    stroke: color
+  const iconNode = new Path( scissorsShape, {
+    rotation: -Math.PI / 2, // make scissors point up
+    fill: color
   } );
+  iconNode.setScaleMagnitude( ICON_WIDTH / iconNode.width );
+  return iconNode;
 }
 
 expressionExchange.register( 'BreakApartButton', BreakApartButton );

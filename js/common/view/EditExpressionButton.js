@@ -6,12 +6,15 @@
 
 import merge from '../../../../phet-core/js/merge.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
+import Path from '../../../../scenery/js/nodes/Path.js';
+import Color from '../../../../scenery/js/util/Color.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
-import FontAwesomeNode from '../../../../sun/js/FontAwesomeNode.js';
 import expressionExchange from '../../expressionExchange.js';
+import exchangeShape from '../../../../sherpa/js/fontawesome-5/exchangeAltSolidShape.js';
+
 
 // constants
-const ICON = new FontAwesomeNode( 'exchange', { scale: 0.35 } ); // scale empirically determined
+const ICON = new Path( exchangeShape, { scale: 0.03, fill: Color.BLACK } ); // scale empirically determined
 
 class EditExpressionButton extends RectangularPushButton {
 
