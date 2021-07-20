@@ -10,11 +10,11 @@ import Path from '../../../../scenery/js/nodes/Path.js';
 import Color from '../../../../scenery/js/util/Color.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
 import expressionExchange from '../../expressionExchange.js';
-import exchangeShape from '../../../../sherpa/js/fontawesome-5/exchangeAltSolidShape.js';
+import exchangeAltSolidShape from '../../../../sherpa/js/fontawesome-5/exchangeAltSolidShape.js';
 
 
 // constants
-const ICON = new Path( exchangeShape, { scale: 0.03, fill: Color.BLACK } ); // scale empirically determined
+const ICON = new Path( exchangeAltSolidShape, { scale: 0.03, fill: Color.BLACK } ); // scale empirically determined
 
 class EditExpressionButton extends RectangularPushButton {
 

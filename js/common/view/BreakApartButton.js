@@ -9,7 +9,7 @@ import merge from '../../../../phet-core/js/merge.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
-import scissorsShape from '../../../../sherpa/js/fontawesome-5/cutSolidShape.js';
+import cutSolidShape from '../../../../sherpa/js/fontawesome-5/cutSolidShape.js';
 import expressionExchange from '../../expressionExchange.js';
 
 // constants
@@ -68,7 +68,7 @@ class BreakApartButton extends RectangularPushButton {
  * @returns {Path}
  */
 function createIconNode( color ) {
-  const iconNode = new Path( scissorsShape, {
+  const iconNode = new Path( cutSolidShape, {
     rotation: -Math.PI / 2, // make scissors point up
     fill: color
   } );
