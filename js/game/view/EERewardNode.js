@@ -2,7 +2,7 @@
 
 /**
  * The reward that is displayed when all levels have been correctly completed.  For testing, the simulation can be run
- * with the 'reward' query parameter to show the reward each time a level is successfully completed.
+ * with the 'showRewardNodeEveryLevel' query parameter to show the reward each time a level is successfully completed.
  *
  * @author John Blanco
  */

@@ -7,7 +7,6 @@
  */
 
 import Property from '../../../../axon/js/Property.js';
-import platform from '../../../../phet-core/js/platform.js';
 import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
 import BackButton from '../../../../scenery-phet/js/buttons/BackButton.js';
 import RefreshButton from '../../../../scenery-phet/js/buttons/RefreshButton.js';
@@ -175,7 +174,7 @@ class EEGameLevelView extends Node {
 
     // helper function for showing the reward node
     const showRewardNode = () => {
-      if ( !this.rewardNode && !platform.mobileSafari ) {
+      if ( !this.rewardNode ) {
         this.rewardNode = new EERewardNode();
         background.addChild( this.rewardNode );
       }
