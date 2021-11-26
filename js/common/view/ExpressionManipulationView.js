@@ -9,9 +9,9 @@
 import Property from '../../../../axon/js/Property.js';
 import Shape from '../../../../kite/js/Shape.js';
 import merge from '../../../../phet-core/js/merge.js';
-import PressListener from '../../../../scenery/js/listeners/PressListener.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
-import Path from '../../../../scenery/js/nodes/Path.js';
+import { PressListener } from '../../../../scenery/js/imports.js';
+import { Node } from '../../../../scenery/js/imports.js';
+import { Path } from '../../../../scenery/js/imports.js';
 import expressionExchange from '../../expressionExchange.js';
 import EECollectionAreaNode from '../../game/view/EECollectionAreaNode.js';
 import UndoButton from '../../game/view/UndoButton.js';

@@ -6,7 +6,7 @@
  */
 
 import merge from '../../../../phet-core/js/merge.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
+import { Node } from '../../../../scenery/js/imports.js';
 import expressionExchange from '../../expressionExchange.js';
 import CoinTermIconNode from './CoinTermIconNode.js';
 
