@@ -22,7 +22,7 @@ import ABSwitch from '../../../../sun/js/ABSwitch.js';
 import AccordionBox from '../../../../sun/js/AccordionBox.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
 import Panel from '../../../../sun/js/Panel.js';
-import switchCoinImage from '../../../mipmaps/switch-coin_png.js';
+import switchCoin_png from '../../../mipmaps/switchCoin_png.js';
 import expressionExchange from '../../expressionExchange.js';
 import expressionExchangeStrings from '../../expressionExchangeStrings.js';
 import EESharedConstants from '../EESharedConstants.js';
@@ -186,7 +186,7 @@ class ExpressionExplorationScreenView extends ScreenView {
     // if both representations are allowed, add the switch for switching between coin and term view
     if ( model.allowedRepresentations === AllowedRepresentations.COINS_AND_VARIABLES ) {
 
-      const coinImageNode = new Image( switchCoinImage, { minWidth: SWITCH_COIN_WIDTH, maxWidth: SWITCH_COIN_WIDTH } );
+      const coinImageNode = new Image( switchCoin_png, { minWidth: SWITCH_COIN_WIDTH, maxWidth: SWITCH_COIN_WIDTH } );
       coinImageNode.touchArea = coinImageNode.localBounds.dilatedXY( 15, 20 ).shiftedX( -10 );
 
       // enclose the variable text in a node so that its vertical position can be accurately set
