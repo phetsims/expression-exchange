@@ -10,7 +10,7 @@
  * @author John Blanco
  */
 
-import Property from '../../../../axon/js/Property.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import Matrix3 from '../../../../dot/js/Matrix3.js';
 import { Shape } from '../../../../kite/js/imports.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
@@ -136,7 +136,7 @@ class ExpressionNode extends Node {
     } );
 
     // update the shape when hint states of the expression change
-    const updateBackgroundAndSymbolsMultilink = Property.multilink(
+    const updateBackgroundAndSymbolsMultilink = Multilink.multilink(
       [ expression.leftHintActiveProperty, expression.rightHintActiveProperty, simplifyNegativesProperty ],
       updateBackgroundAndSymbols
     );
@@ -160,7 +160,7 @@ class ExpressionNode extends Node {
     expression.combineHaloActiveProperty.link( activateCombineHint );
 
     // update the shape of the left hint
-    const leftHintMultilink = Property.multilink(
+    const leftHintMultilink = Multilink.multilink(
       [ expression.heightProperty, expression.widthProperty, expression.leftHintWidthProperty ],
       ( expressionHeight, expressionWidth, hintWidth ) => {
         let leftHintShape = new Shape()
@@ -176,7 +176,7 @@ class ExpressionNode extends Node {
     );
 
     // update the shape of the right hint
-    const rightHintMultilink = Property.multilink(
+    const rightHintMultilink = Multilink.multilink(
       [ expression.heightProperty, expression.widthProperty, expression.rightHintWidthProperty ],
       ( expressionHeight, expressionWidth, hintWidth ) => {
         let rightHintShape = new Shape().moveTo( expressionWidth, 0 );

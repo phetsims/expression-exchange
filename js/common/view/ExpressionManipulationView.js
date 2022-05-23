@@ -6,7 +6,7 @@
  * @author John Blanco
  */
 
-import Property from '../../../../axon/js/Property.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import { Shape } from '../../../../kite/js/imports.js';
 import merge from '../../../../phet-core/js/merge.js';
 import { PressListener } from '../../../../scenery/js/imports.js';
@@ -68,7 +68,7 @@ class ExpressionManipulationView extends Node {
       this.addChild( undoButton );
 
       // control the visibility of the undo button
-      Property.multilink(
+      Multilink.multilink(
         [ collectionArea.undoAllowedProperty, collectionArea.collectedItemProperty ],
         ( undoAllowed, collectedItem ) => {
           undoButton.visible = undoAllowed && collectedItem !== null;
@@ -127,14 +127,14 @@ class ExpressionManipulationView extends Node {
       // if there previously was an expression being edited, we need to release the multilink that was watching its size
       if ( previousExpressionBeingEdited ) {
         assert && assert( updateHoleMultilink, 'expected a multilink to be present' );
-        Property.unmultilink( updateHoleMultilink );
+        Multilink.unmultilink( updateHoleMultilink );
         updateHoleMultilink = null;
       }
 
       // If there is a new expression being edited, we need to listen to its size and adjust the hole in the barrier if
       // the size changes.
       if ( currentExpressionBeingEdited !== null ) {
-        updateHoleMultilink = Property.multilink(
+        updateHoleMultilink = Multilink.multilink(
           [
             currentExpressionBeingEdited.upperLeftCornerProperty,
             currentExpressionBeingEdited.widthProperty,

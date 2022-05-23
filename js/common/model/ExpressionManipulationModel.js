@@ -12,6 +12,7 @@
 import createObservableArray from '../../../../axon/js/createObservableArray.js';
 import Property from '../../../../axon/js/Property.js';
 import StringProperty from '../../../../axon/js/StringProperty.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
@@ -140,7 +141,7 @@ class ExpressionManipulationModel {
     } );
 
     // add a listener that updates the total whenever one of the term value properties change
-    Property.multilink(
+    Multilink.multilink(
       [ this.xTermValueProperty, this.yTermValueProperty, this.zTermValueProperty, this.coinTerms.lengthProperty ],
       () => {
         let total = 0;

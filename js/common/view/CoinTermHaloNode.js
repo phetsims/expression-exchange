@@ -7,7 +7,7 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
-import Property from '../../../../axon/js/Property.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import { Circle } from '../../../../scenery/js/imports.js';
 import { Node } from '../../../../scenery/js/imports.js';
 import { RadialGradient } from '../../../../scenery/js/imports.js';
@@ -49,7 +49,7 @@ class CoinTermHaloNode extends Node {
     this.addChild( termHalo );
 
     // control term halo visibility
-    const termHaloVisibleMultilink = Property.multilink(
+    const termHaloVisibleMultilink = Multilink.multilink(
       [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
       ( viewMode, combineHaloActive ) => {
         termHalo.visible = viewMode === ViewMode.VARIABLES && combineHaloActive;

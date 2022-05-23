@@ -7,6 +7,7 @@
  */
 
 import Property from '../../../../axon/js/Property.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import merge from '../../../../phet-core/js/merge.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
@@ -121,7 +122,7 @@ class VariableCoinTermNode extends AbstractCoinTermNode {
     this.activeFlipAnimation = null;
 
     // if anything about the coin term's values changes or any of the display mode, the representation needs to be updated
-    const updateRepresentationMultilink = Property.multilink(
+    const updateRepresentationMultilink = Multilink.multilink(
       [
         viewModeProperty,
         showAllCoefficientsProperty,

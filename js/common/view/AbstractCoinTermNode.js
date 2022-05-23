@@ -7,6 +7,7 @@
  */
 
 import Property from '../../../../axon/js/Property.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import stepTimer from '../../../../axon/js/stepTimer.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
@@ -113,7 +114,7 @@ class AbstractCoinTermNode extends Node {
     };
 
     // update the pickability of this node
-    const pickabilityUpdaterMultilink = Property.multilink(
+    const pickabilityUpdaterMultilink = Multilink.multilink(
       [ coinTerm.expressionProperty, coinTerm.inProgressAnimationProperty, coinTerm.collectedProperty ],
       updatePickability
     );

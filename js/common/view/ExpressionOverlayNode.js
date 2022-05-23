@@ -7,7 +7,7 @@
  * @author John Blanco
  */
 
-import Property from '../../../../axon/js/Property.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import stepTimer from '../../../../axon/js/stepTimer.js';
 import Utils from '../../../../dot/js/Utils.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
@@ -40,7 +40,7 @@ class ExpressionOverlayNode extends Node {
     this.addChild( expressionShapeNode );
 
     // update the shape if the height or width change
-    const updateShapeMultilink = Property.multilink(
+    const updateShapeMultilink = Multilink.multilink(
       [ expression.widthProperty, expression.heightProperty ],
       () => {
         expressionShapeNode.shape = Shape.rect( 0, 0, expression.widthProperty.get(), expression.heightProperty.get() );
@@ -183,7 +183,7 @@ class ExpressionOverlayNode extends Node {
       }
     }
 
-    const updateDragHandlerAttachmentMultilink = Property.multilink(
+    const updateDragHandlerAttachmentMultilink = Multilink.multilink(
       [ expression.inProgressAnimationProperty, expression.collectedProperty ],
       updateDragHandlerAttachmentState
     );

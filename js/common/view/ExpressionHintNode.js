@@ -8,7 +8,7 @@
  * @author John Blanco
  */
 
-import Property from '../../../../axon/js/Property.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import { Shape } from '../../../../kite/js/imports.js';
 import { Node } from '../../../../scenery/js/imports.js';
 import { Path } from '../../../../scenery/js/imports.js';
@@ -29,7 +29,7 @@ class ExpressionHintNode extends Node {
   constructor( expressionHint ) {
     super( { pickable: false } );
 
-    const boundsUpdateMultilink = Property.multilink(
+    const boundsUpdateMultilink = Multilink.multilink(
       [
         expressionHint.anchorCoinTerm.localViewBoundsProperty,
         expressionHint.movingCoinTerm.localViewBoundsProperty

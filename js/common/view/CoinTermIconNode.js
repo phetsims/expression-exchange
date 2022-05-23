@@ -7,7 +7,7 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
-import Property from '../../../../axon/js/Property.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
@@ -55,7 +55,7 @@ class CoinTermIconNode extends Node {
     this.addChild( coinValueText );
 
     // control the coin value text visibility
-    Property.multilink( [ viewModeProperty, showCoinValuesProperty ], ( viewMode, showCoinValues ) => {
+    Multilink.multilink( [ viewModeProperty, showCoinValuesProperty ], ( viewMode, showCoinValues ) => {
       coinValueText.visible = viewMode === ViewMode.COINS && showCoinValues;
     } );
 
@@ -96,7 +96,7 @@ class CoinTermIconNode extends Node {
     } );
 
     // control the visibility of the value text
-    Property.multilink( [ viewModeProperty, showVariableValuesProperty ], ( viewMode, showVariableValues ) => {
+    Multilink.multilink( [ viewModeProperty, showVariableValuesProperty ], ( viewMode, showVariableValues ) => {
       termWithVariableValuesText.visible = viewMode === ViewMode.VARIABLES && showVariableValues;
     } );
 

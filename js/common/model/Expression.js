@@ -9,6 +9,7 @@
 
 import createObservableArray from '../../../../axon/js/createObservableArray.js';
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import Emitter from '../../../../axon/js/Emitter.js';
 import Property from '../../../../axon/js/Property.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
@@ -120,7 +121,7 @@ class Expression {
     this.joinZone = new Bounds2( 0, 0, 0, 0 );
 
     // update the join zone as the size and/or position of the expression changes
-    Property.multilink(
+    Multilink.multilink(
       [ this.upperLeftCornerProperty, this.widthProperty, this.heightProperty ],
       ( upperLeftCorner, width, height ) => {
         this.joinZone.setMinMax(

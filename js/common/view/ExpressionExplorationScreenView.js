@@ -7,7 +7,7 @@
  * @author John Blanco
  */
 
-import Property from '../../../../axon/js/Property.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import ScreenView from '../../../../joist/js/ScreenView.js';
 import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
@@ -105,7 +105,7 @@ class ExpressionExplorationScreenView extends ScreenView {
       minWidth: totalValueReadoutWidth,
       maxWidth: totalValueReadoutWidth
     } );
-    Property.multilink(
+    Multilink.multilink(
       [ model.totalValueProperty, model.viewModeProperty ],
       totalValue => {
         if ( model.viewModeProperty.get() === ViewMode.COINS ) {

@@ -6,7 +6,7 @@
  * @author John Blanco
  */
 
-import Property from '../../../../axon/js/Property.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import { Text } from '../../../../scenery/js/imports.js';
 import expressionExchange from '../../expressionExchange.js';
@@ -72,7 +72,7 @@ class ConstantCoinTermNode extends AbstractCoinTermNode {
     };
 
     // update the representation when model properties that affect it change
-    const updateRepresentationMultilink = Property.multilink(
+    const updateRepresentationMultilink = Multilink.multilink(
       [
         constantCoinTerm.totalCountProperty,
         constantCoinTerm.showMinusSignWhenNegativeProperty,
