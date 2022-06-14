@@ -211,12 +211,12 @@ function extractTerm( expressionString, index ) {
   let coefficientString = '';
 
   // pull out any numbers, and note that this assumes only integers are used as coefficients
-  while ( !isNaN( parseInt( expressionString.charAt( index ), 10 ) ) ) {
+  while ( !isNaN( Number( expressionString.charAt( index ) ) ) ) {
     coefficientString += expressionString.charAt( index++ );
   }
 
   // determine the numerical value of the coefficient
-  const coefficient = ( coefficientString.length > 0 ? parseInt( coefficientString, 10 ) : 1 ) * signMultiplier;
+  const coefficient = ( coefficientString.length > 0 ? Number( coefficientString ) : 1 ) * signMultiplier;
 
   // determine where the term ends within the expression string
   const nextPlusSignIndex = expressionString.indexOf( '+', index );
