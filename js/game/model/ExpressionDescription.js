@@ -211,7 +211,7 @@ function extractTerm( expressionString, index ) {
   let coefficientString = '';
 
   // pull out any numbers, and note that this assumes only integers are used as coefficients
-  while ( !isNaN( Number( expressionString.charAt( index ) ) ) ) {
+  while ( !isNaN( Number( expressionString[ index ] ) ) ) {
     coefficientString += expressionString.charAt( index++ );
   }
 
