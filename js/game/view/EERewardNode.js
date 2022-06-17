@@ -31,7 +31,7 @@ class EERewardNode extends RewardNode {
     // add nodes that look like smiley faces, stars, and variables
     const nodes = [
       new FaceNode( FACE_DIAMETER ),
-      new StarNode( { outerRadius: STAR_OUTER_RADIUS, innerRadius: STAR_INNER_RADIUS } ),
+      new StarNode( { starShapeOptions: { outerRadius: STAR_OUTER_RADIUS, innerRadius: STAR_INNER_RADIUS } } ),
       new Text( 'x', { font: VARIABLE_FONT } ),
       new Text( 'y', { font: VARIABLE_FONT } ),
       new Text( 'z', { font: VARIABLE_FONT } )
