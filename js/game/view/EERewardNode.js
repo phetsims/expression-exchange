@@ -1,4 +1,4 @@
-// Copyright 2017-2021, University of Colorado Boulder
+// Copyright 2017-2022, University of Colorado Boulder
 
 /**
  * The reward that is displayed when all levels have been correctly completed.  For testing, the simulation can be run
