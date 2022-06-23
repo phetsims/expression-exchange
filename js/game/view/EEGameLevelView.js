@@ -133,15 +133,11 @@ class EEGameLevelView extends Node {
 
     // add the checkbox that allows expressions with negative values to be simplified
     const boundsOfLowestCollectionArea = _.last( levelModel.collectionAreas ).bounds;
-    const showSubtractionCheckbox = new Checkbox(
-      new ShowSubtractionIcon(),
-      levelModel.simplifyNegativesProperty,
-      {
-        left: boundsOfLowestCollectionArea.left,
-        top: boundsOfLowestCollectionArea.bottom + 20,
-        maxWidth: boundsOfLowestCollectionArea.minX
-      }
-    );
+    const showSubtractionCheckbox = new Checkbox( levelModel.simplifyNegativesProperty, new ShowSubtractionIcon(), {
+      left: boundsOfLowestCollectionArea.left,
+      top: boundsOfLowestCollectionArea.bottom + 20,
+      maxWidth: boundsOfLowestCollectionArea.minX
+    } );
     middleLayer.addChild( showSubtractionCheckbox );
 
     // only show the checkbox for simplifying expressions with negative values if some are present in the challenge

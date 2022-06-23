@@ -257,27 +257,19 @@ class ExpressionExplorationScreenView extends ScreenView {
     const checkboxTitleMaxWidth = myCollectionAccordionBox.width * 0.8;
 
     // add the checkbox that controls visibility of coin values
-    const showCoinValuesCheckbox = new Checkbox(
-      new Text( coinValuesString, { font: CHECKBOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
-      model.showCoinValuesProperty,
-      {
-        top: coinTermCreatorBox.top,
-        left: myCollectionAccordionBox.left,
-        maxWidth: myCollectionAccordionBox.width
-      }
-    );
+    const showCoinValuesCheckbox = new Checkbox( model.showCoinValuesProperty, new Text( coinValuesString, { font: CHECKBOX_FONT, maxWidth: checkboxTitleMaxWidth } ), {
+      top: coinTermCreatorBox.top,
+      left: myCollectionAccordionBox.left,
+      maxWidth: myCollectionAccordionBox.width
+    } );
     this.addChild( showCoinValuesCheckbox );
 
     // add the checkbox that controls visibility of variable values
-    const showVariableValuesCheckbox = new Checkbox(
-      new Text( variableValuesString, { font: CHECKBOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
-      model.showVariableValuesProperty,
-      {
-        top: coinTermCreatorBox.top,
-        left: myCollectionAccordionBox.left,
-        maxWidth: myCollectionAccordionBox.width
-      }
-    );
+    const showVariableValuesCheckbox = new Checkbox( model.showVariableValuesProperty, new Text( variableValuesString, { font: CHECKBOX_FONT, maxWidth: checkboxTitleMaxWidth } ), {
+      top: coinTermCreatorBox.top,
+      left: myCollectionAccordionBox.left,
+      maxWidth: myCollectionAccordionBox.width
+    } );
     this.addChild( showVariableValuesCheckbox );
 
     // control whether the coin values or variable values checkbox is visible
@@ -287,29 +279,21 @@ class ExpressionExplorationScreenView extends ScreenView {
     } );
 
     // add the checkbox that controls whether all coefficients (including 1) are shown
-    const showAllCoefficientsCheckbox = new Checkbox(
-      new Text( allCoefficientsString, { font: CHECKBOX_FONT, maxWidth: checkboxTitleMaxWidth } ),
-      model.showAllCoefficientsProperty,
-      {
-        top: showCoinValuesCheckbox.bottom + CHECKBOX_VERTICAL_SPACING,
-        left: myCollectionAccordionBox.left,
-        maxWidth: myCollectionAccordionBox.width
-      }
-    );
+    const showAllCoefficientsCheckbox = new Checkbox( model.showAllCoefficientsProperty, new Text( allCoefficientsString, { font: CHECKBOX_FONT, maxWidth: checkboxTitleMaxWidth } ), {
+      top: showCoinValuesCheckbox.bottom + CHECKBOX_VERTICAL_SPACING,
+      left: myCollectionAccordionBox.left,
+      maxWidth: myCollectionAccordionBox.width
+    } );
     this.addChild( showAllCoefficientsCheckbox );
 
     // If negative values are possible, show the checkbox that allows them to be simplified.
     let showSubtractionCheckbox;
     if ( coinTermCreatorBox.negativeTermsPresent ) {
-      showSubtractionCheckbox = new Checkbox(
-        new ShowSubtractionIcon(),
-        model.simplifyNegativesProperty,
-        {
-          top: showAllCoefficientsCheckbox.bottom + CHECKBOX_VERTICAL_SPACING,
-          left: myCollectionAccordionBox.left,
-          maxWidth: myCollectionAccordionBox.width
-        }
-      );
+      showSubtractionCheckbox = new Checkbox( model.simplifyNegativesProperty, new ShowSubtractionIcon(), {
+        top: showAllCoefficientsCheckbox.bottom + CHECKBOX_VERTICAL_SPACING,
+        left: myCollectionAccordionBox.left,
+        maxWidth: myCollectionAccordionBox.width
+      } );
       this.addChild( showSubtractionCheckbox );
     }
 
