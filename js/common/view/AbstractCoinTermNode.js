@@ -108,9 +108,15 @@ class AbstractCoinTermNode extends Node {
 
     // function to update the pickability as the states change
     const updatePickability = () => {
-      const expression = coinTerm.expressionProperty.get();
-      this.pickable = ( expression === null || expression.inEditModeProperty.get() )
-                      && !coinTerm.inProgressAnimationProperty.get() && !coinTerm.collectedProperty.get();
+
+      // There is some rare race condition where the code below was being called after the node was disposed.  I
+      // (jbphet) was never able to track it down, largely because it was so hard to reproduce, so I just added the
+      // 'if' statement as a guard.  See https://github.com/phetsims/expression-exchange/issues/147.
+      if ( !this.isDisposed ){
+        const expression = coinTerm.expressionProperty.get();
+        this.pickable = ( expression === null || expression.inEditModeProperty.get() )
+                        && !coinTerm.inProgressAnimationProperty.get() && !coinTerm.collectedProperty.get();
+      }
     };
 
     // update the pickability of this node
