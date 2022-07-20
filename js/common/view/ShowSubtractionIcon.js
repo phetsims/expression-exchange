@@ -9,9 +9,7 @@
 import ArrowNode from '../../../../scenery-phet/js/ArrowNode.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
-import { Node } from '../../../../scenery/js/imports.js';
-import { Rectangle } from '../../../../scenery/js/imports.js';
-import { Text } from '../../../../scenery/js/imports.js';
+import { Node, Rectangle, Text } from '../../../../scenery/js/imports.js';
 import expressionExchange from '../../expressionExchange.js';
 
 // constants

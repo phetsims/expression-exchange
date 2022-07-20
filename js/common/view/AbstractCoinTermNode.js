@@ -6,15 +6,13 @@
  * @author John Blanco
  */
 
-import Property from '../../../../axon/js/Property.js';
 import Multilink from '../../../../axon/js/Multilink.js';
+import Property from '../../../../axon/js/Property.js';
 import stepTimer from '../../../../axon/js/stepTimer.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import merge from '../../../../phet-core/js/merge.js';
-import { DragListener } from '../../../../scenery/js/imports.js';
-import { Node } from '../../../../scenery/js/imports.js';
-import { Rectangle } from '../../../../scenery/js/imports.js';
+import { DragListener, Node, Rectangle } from '../../../../scenery/js/imports.js';
 import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
 import BreakApartButton from './BreakApartButton.js';

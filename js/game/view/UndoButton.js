@@ -8,8 +8,7 @@
 
 import { Shape } from '../../../../kite/js/imports.js';
 import merge from '../../../../phet-core/js/merge.js';
-import { Path } from '../../../../scenery/js/imports.js';
-import { Color } from '../../../../scenery/js/imports.js';
+import { Color, Path } from '../../../../scenery/js/imports.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
 import expressionExchange from '../../expressionExchange.js';
 

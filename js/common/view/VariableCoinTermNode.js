@@ -6,16 +6,14 @@
  * @author John Blanco
  */
 
-import Property from '../../../../axon/js/Property.js';
 import Multilink from '../../../../axon/js/Multilink.js';
+import Property from '../../../../axon/js/Property.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import merge from '../../../../phet-core/js/merge.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
-import { Rectangle } from '../../../../scenery/js/imports.js';
-import { RichText } from '../../../../scenery/js/imports.js';
-import { Text } from '../../../../scenery/js/imports.js';
+import { Rectangle, RichText, Text } from '../../../../scenery/js/imports.js';
 import Animation from '../../../../twixt/js/Animation.js';
 import Easing from '../../../../twixt/js/Easing.js';
 import expressionExchange from '../../expressionExchange.js';

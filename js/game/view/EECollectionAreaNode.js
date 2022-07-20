@@ -4,8 +4,7 @@
  * view representation of the area where expressions can be collected, used in the game
  */
 
-import { Node } from '../../../../scenery/js/imports.js';
-import { Rectangle } from '../../../../scenery/js/imports.js';
+import { Node, Rectangle } from '../../../../scenery/js/imports.js';
 import expressionExchange from '../../expressionExchange.js';
 import ExpressionDescriptionNode from './ExpressionDescriptionNode.js';
 

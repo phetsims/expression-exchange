@@ -6,10 +6,9 @@
  */
 
 import merge from '../../../../phet-core/js/merge.js';
-import { Node } from '../../../../scenery/js/imports.js';
-import { Path } from '../../../../scenery/js/imports.js';
-import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
+import { Node, Path } from '../../../../scenery/js/imports.js';
 import scissorsShape from '../../../../sherpa/js/fontawesome-4/scissorsShape.js';
+import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
 import expressionExchange from '../../expressionExchange.js';
 
 // constants

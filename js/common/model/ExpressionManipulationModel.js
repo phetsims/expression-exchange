@@ -10,9 +10,9 @@
  */
 
 import createObservableArray from '../../../../axon/js/createObservableArray.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import Property from '../../../../axon/js/Property.js';
 import StringProperty from '../../../../axon/js/StringProperty.js';
-import Multilink from '../../../../axon/js/Multilink.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';

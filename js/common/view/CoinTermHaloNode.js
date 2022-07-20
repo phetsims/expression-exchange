@@ -8,9 +8,7 @@
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Multilink from '../../../../axon/js/Multilink.js';
-import { Circle } from '../../../../scenery/js/imports.js';
-import { Node } from '../../../../scenery/js/imports.js';
-import { RadialGradient } from '../../../../scenery/js/imports.js';
+import { Circle, Node, RadialGradient } from '../../../../scenery/js/imports.js';
 import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
 import ViewMode from '../enum/ViewMode.js';

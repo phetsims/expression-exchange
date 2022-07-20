@@ -10,8 +10,7 @@
  */
 
 import merge from '../../../../phet-core/js/merge.js';
-import { HBox } from '../../../../scenery/js/imports.js';
-import { Node } from '../../../../scenery/js/imports.js';
+import { HBox, Node } from '../../../../scenery/js/imports.js';
 import Carousel from '../../../../sun/js/Carousel.js';
 import Panel from '../../../../sun/js/Panel.js';
 import expressionExchange from '../../expressionExchange.js';

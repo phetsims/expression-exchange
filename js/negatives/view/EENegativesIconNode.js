@@ -10,10 +10,7 @@ import Screen from '../../../../joist/js/Screen.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
-import { HBox } from '../../../../scenery/js/imports.js';
-import { Rectangle } from '../../../../scenery/js/imports.js';
-import { RichText } from '../../../../scenery/js/imports.js';
-import { Text } from '../../../../scenery/js/imports.js';
+import { HBox, Rectangle, RichText, Text } from '../../../../scenery/js/imports.js';
 import EESharedConstants from '../../common/EESharedConstants.js';
 import expressionExchange from '../../expressionExchange.js';
 

@@ -9,9 +9,7 @@
 import Multilink from '../../../../axon/js/Multilink.js';
 import { Shape } from '../../../../kite/js/imports.js';
 import merge from '../../../../phet-core/js/merge.js';
-import { PressListener } from '../../../../scenery/js/imports.js';
-import { Node } from '../../../../scenery/js/imports.js';
-import { Path } from '../../../../scenery/js/imports.js';
+import { Node, Path, PressListener } from '../../../../scenery/js/imports.js';
 import expressionExchange from '../../expressionExchange.js';
 import EECollectionAreaNode from '../../game/view/EECollectionAreaNode.js';
 import UndoButton from '../../game/view/UndoButton.js';
