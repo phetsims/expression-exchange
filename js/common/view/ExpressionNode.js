@@ -147,8 +147,10 @@ class ExpressionNode extends Node {
     expression.upperLeftCornerProperty.link( updatePosition );
 
     // update the visibility of the left and right hints
-    const leftHintHandle = expression.leftHintActiveProperty.linkAttribute( leftHintNode, 'visible' );
-    const rightHintHandle = expression.rightHintActiveProperty.linkAttribute( rightHintNode, 'visible' );
+    const leftHintHandle = visible => {leftHintNode.visible = visible;};
+    const rightHintHandle = visible => {rightHintNode.visible = visible;};
+    expression.leftHintActiveProperty.link( leftHintHandle );
+    expression.rightHintActiveProperty.link( rightHintHandle );
 
     // turn the halo on and off based on the associated property
     function activateCombineHint( combineHintActive ) {
@@ -193,8 +195,8 @@ class ExpressionNode extends Node {
       expression.layoutChangedEmitter.removeListener( updateBackgroundAndSymbols );
       updateBackgroundAndSymbolsMultilink.dispose();
       expression.upperLeftCornerProperty.unlink( updatePosition );
-      expression.leftHintActiveProperty.unlinkAttribute( leftHintHandle );
-      expression.rightHintActiveProperty.unlinkAttribute( rightHintHandle );
+      expression.leftHintActiveProperty.unlink( leftHintHandle );
+      expression.rightHintActiveProperty.unlink( rightHintHandle );
       expression.combineHaloActiveProperty.unlink( activateCombineHint );
       leftHintMultilink.dispose();
       rightHintMultilink.dispose();

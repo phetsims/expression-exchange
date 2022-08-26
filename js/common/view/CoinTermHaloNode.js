@@ -38,7 +38,8 @@ class CoinTermHaloNode extends Node {
     // control coin halo visibility
     const coinHaloVisibleProperty = new DerivedProperty( [ viewModeProperty, coinTerm.combineHaloActiveProperty ],
       ( viewMode, combineHaloActive ) => ( viewMode === ViewMode.COINS ) && combineHaloActive );
-    const coinHaloVisibilityObserver = coinHaloVisibleProperty.linkAttribute( coinHalo, 'visible' );
+    const coinHaloVisibilityObserver = visible => {coinHalo.visible = visible;};
+    coinHaloVisibleProperty.link( coinHaloVisibilityObserver );
 
     // add the term halo
     const termHalo = new Circle( EESharedConstants.TERM_COMBINE_DISTANCE, {
@@ -62,7 +63,7 @@ class CoinTermHaloNode extends Node {
     coinTerm.positionProperty.link( handlePositionChanged );
 
     this.disposeCoinTermHaloNode = () => {
-      coinHaloVisibleProperty.unlinkAttribute( coinHaloVisibilityObserver );
+      coinHaloVisibleProperty.unlink( coinHaloVisibilityObserver );
       coinHaloVisibleProperty.dispose();
       termHaloVisibleMultilink.dispose();
       coinTerm.positionProperty.unlink( handlePositionChanged );

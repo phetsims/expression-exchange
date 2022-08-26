@@ -46,7 +46,8 @@ class ExpressionOverlayNode extends Node {
     );
 
     // update the expression's position as this node moves
-    const translationLinkHandle = expression.upperLeftCornerProperty.linkAttribute( this, 'translation' );
+    const translationLinkHandle = position => {this.translation = position;};
+    expression.upperLeftCornerProperty.link( translationLinkHandle );
 
     // become invisible if the expression goes into edit mode so that the user can interact with the coin terms within
     function updateVisibility( inEditMode ) {
@@ -197,7 +198,7 @@ class ExpressionOverlayNode extends Node {
     this.disposeExpressionOverlayNode = () => {
       editExpressionButton.dispose();
       breakApartButton.dispose();
-      expression.upperLeftCornerProperty.unlinkAttribute( translationLinkHandle );
+      expression.upperLeftCornerProperty.unlink( translationLinkHandle );
       expression.inEditModeProperty.unlink( updateVisibility );
       updateShapeMultilink.dispose();
       updateDragHandlerAttachmentMultilink.dispose();
