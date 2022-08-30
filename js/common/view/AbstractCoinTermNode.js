@@ -362,7 +362,7 @@ class AbstractCoinTermNode extends Node {
       // bound the area where the coin terms can go
       dragBoundsProperty: new Property( dragBounds ),
 
-      // set the target node so that MovableDragHandler knows where to get the coordinate transform, supports event
+      // set the target node so that DragListener knows where to get the coordinate transform, supports event
       // forwarding
       targetNode: this,
 
