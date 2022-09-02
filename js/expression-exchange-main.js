@@ -14,7 +14,7 @@ import expressionExchangeStrings from './expressionExchangeStrings.js';
 import EEGameScreen from './game/EEGameScreen.js';
 import EENegativesScreen from './negatives/EENegativesScreen.js';
 
-const expressionExchangeTitleString = expressionExchangeStrings[ 'expression-exchange' ].title;
+const expressionExchangeTitleStringProperty = expressionExchangeStrings[ 'expression-exchange' ].titleStringProperty;
 
 // credits
 const simOptions = {
@@ -30,7 +30,7 @@ const simOptions = {
 // launch the sim
 simLauncher.launch( () => {
   const sim = new Sim(
-    expressionExchangeTitleString,
+    expressionExchangeTitleStringProperty,
     [
       new EEBasicsScreen(),
       new EEExploreScreen(),
