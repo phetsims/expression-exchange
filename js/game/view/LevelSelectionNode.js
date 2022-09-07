@@ -14,12 +14,12 @@ import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import { Node, Text } from '../../../../scenery/js/imports.js';
 import LevelSelectionButton from '../../../../vegas/js/LevelSelectionButton.js';
 import ScoreDisplayStars from '../../../../vegas/js/ScoreDisplayStars.js';
-import vegasStrings from '../../../../vegas/js/vegasStrings.js';
+import VegasStrings from '../../../../vegas/js/VegasStrings.js';
 import EESharedConstants from '../../common/EESharedConstants.js';
 import expressionExchange from '../../expressionExchange.js';
 import EEGameModel from '../model/EEGameModel.js';
 
-const chooseYourLevelString = vegasStrings.chooseYourLevel;
+const chooseYourLevelString = VegasStrings.chooseYourLevel;
 
 class LevelSelectionNode extends Node {
 
