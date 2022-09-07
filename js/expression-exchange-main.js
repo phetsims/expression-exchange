@@ -10,11 +10,11 @@ import Sim from '../../joist/js/Sim.js';
 import simLauncher from '../../joist/js/simLauncher.js';
 import EEBasicsScreen from './basics/EEBasicsScreen.js';
 import EEExploreScreen from './explore/EEExploreScreen.js';
-import expressionExchangeStrings from './expressionExchangeStrings.js';
+import ExpressionExchangeStrings from './ExpressionExchangeStrings.js';
 import EEGameScreen from './game/EEGameScreen.js';
 import EENegativesScreen from './negatives/EENegativesScreen.js';
 
-const expressionExchangeTitleStringProperty = expressionExchangeStrings[ 'expression-exchange' ].titleStringProperty;
+const expressionExchangeTitleStringProperty = ExpressionExchangeStrings[ 'expression-exchange' ].titleStringProperty;
 
 // credits
 const simOptions = {

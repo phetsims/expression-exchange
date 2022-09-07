@@ -6,12 +6,12 @@ import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import { Node, Text } from '../../../../scenery/js/imports.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
 import expressionExchange from '../../expressionExchange.js';
-import expressionExchangeStrings from '../../expressionExchangeStrings.js';
+import ExpressionExchangeStrings from '../../ExpressionExchangeStrings.js';
 
 // constants
 const FACE_DIAMETER = 150; // empirically determined
 
-const nextString = expressionExchangeStrings.next;
+const nextString = ExpressionExchangeStrings.next;
 
 class NextLevelNode extends Node {
 

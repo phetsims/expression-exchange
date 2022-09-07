@@ -45,8 +45,8 @@ type StringsType = {
   'youCompletedAllLevelsStringProperty': TReadOnlyProperty<string>;
 };
 
-const expressionExchangeStrings = getStringModule( 'EXPRESSION_EXCHANGE' ) as StringsType;
+const ExpressionExchangeStrings = getStringModule( 'EXPRESSION_EXCHANGE' ) as StringsType;
 
-expressionExchange.register( 'expressionExchangeStrings', expressionExchangeStrings );
+expressionExchange.register( 'ExpressionExchangeStrings', ExpressionExchangeStrings );
 
-export default expressionExchangeStrings;
+export default ExpressionExchangeStrings;

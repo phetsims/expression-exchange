@@ -21,7 +21,7 @@ import Checkbox from '../../../../sun/js/Checkbox.js';
 import Panel from '../../../../sun/js/Panel.js';
 import switchCoin_png from '../../../mipmaps/switchCoin_png.js';
 import expressionExchange from '../../expressionExchange.js';
-import expressionExchangeStrings from '../../expressionExchangeStrings.js';
+import ExpressionExchangeStrings from '../../ExpressionExchangeStrings.js';
 import EESharedConstants from '../EESharedConstants.js';
 import AllowedRepresentations from '../enum/AllowedRepresentations.js';
 import CoinTermCreatorSetID from '../enum/CoinTermCreatorSetID.js';
@@ -32,13 +32,13 @@ import ExpressionManipulationView from './ExpressionManipulationView.js';
 import ShowSubtractionIcon from './ShowSubtractionIcon.js';
 import VariableValueControl from './VariableValueControl.js';
 
-const allCoefficientsString = expressionExchangeStrings.allCoefficients;
-const coinValuesString = expressionExchangeStrings.coinValues;
-const myCollectionString = expressionExchangeStrings.myCollection;
-const numberCentsPatternString = expressionExchangeStrings.numberCentsPattern;
-const totalString = expressionExchangeStrings.total;
-const variablesString = expressionExchangeStrings.variables;
-const variableValuesString = expressionExchangeStrings.variableValues;
+const allCoefficientsString = ExpressionExchangeStrings.allCoefficients;
+const coinValuesString = ExpressionExchangeStrings.coinValues;
+const myCollectionString = ExpressionExchangeStrings.myCollection;
+const numberCentsPatternString = ExpressionExchangeStrings.numberCentsPattern;
+const totalString = ExpressionExchangeStrings.total;
+const variablesString = ExpressionExchangeStrings.variables;
+const variableValuesString = ExpressionExchangeStrings.variableValues;
 
 // constants
 const ACCORDION_BOX_TITLE_FONT = new PhetFont( { size: 16, weight: 'bold' } );

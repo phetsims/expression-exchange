@@ -19,11 +19,11 @@ import CoinTermCreatorBoxFactory from '../../common/view/CoinTermCreatorBoxFacto
 import ExpressionManipulationView from '../../common/view/ExpressionManipulationView.js';
 import ShowSubtractionIcon from '../../common/view/ShowSubtractionIcon.js';
 import expressionExchange from '../../expressionExchange.js';
-import expressionExchangeStrings from '../../expressionExchangeStrings.js';
+import ExpressionExchangeStrings from '../../ExpressionExchangeStrings.js';
 import EERewardNode from './EERewardNode.js';
 import NextLevelNode from './NextLevelNode.js';
 
-const levelNumberPatternString = expressionExchangeStrings.levelNumberPattern;
+const levelNumberPatternString = ExpressionExchangeStrings.levelNumberPattern;
 
 // constants
 const BUTTON_XY_TOUCH_DILATION = 4;

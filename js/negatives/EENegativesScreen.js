@@ -15,7 +15,7 @@ import CoinTermCreatorSetID from '../common/enum/CoinTermCreatorSetID.js';
 import ExpressionManipulationModel from '../common/model/ExpressionManipulationModel.js';
 import ExpressionExplorationScreenView from '../common/view/ExpressionExplorationScreenView.js';
 import expressionExchange from '../expressionExchange.js';
-import expressionExchangeStrings from '../expressionExchangeStrings.js';
+import ExpressionExchangeStrings from '../ExpressionExchangeStrings.js';
 import EENegativesIconNode from './view/EENegativesIconNode.js';
 
 class EENegativesScreen extends Screen {
@@ -23,7 +23,7 @@ class EENegativesScreen extends Screen {
   constructor() {
 
     const options = {
-      name: expressionExchangeStrings.negatives,
+      name: ExpressionExchangeStrings.negatives,
       backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
       homeScreenIcon: new ScreenIcon( new EENegativesIconNode(), {
         maxIconWidthProportion: 1,
