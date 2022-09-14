@@ -22,7 +22,7 @@ class EEExploreScreen extends Screen {
   constructor() {
 
     const options = {
-      name: ExpressionExchangeStrings.explore,
+      name: ExpressionExchangeStrings.exploreStringProperty,
       backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
       homeScreenIcon: new ScreenIcon( new EEExploreIconNode(), {
         maxIconWidthProportion: 1,

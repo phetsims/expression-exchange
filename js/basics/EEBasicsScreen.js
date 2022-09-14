@@ -22,7 +22,7 @@ class EEBasicsScreen extends Screen {
   constructor() {
 
     const options = {
-      name: ExpressionExchangeStrings.basics,
+      name: ExpressionExchangeStrings.basicsStringProperty,
       backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
       homeScreenIcon: new ScreenIcon( new EEBasicsIconNode(), {
         maxIconWidthProportion: 1,

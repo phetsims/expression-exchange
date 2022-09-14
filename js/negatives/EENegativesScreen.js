@@ -23,7 +23,7 @@ class EENegativesScreen extends Screen {
   constructor() {
 
     const options = {
-      name: ExpressionExchangeStrings.negatives,
+      name: ExpressionExchangeStrings.negativesStringProperty,
       backgroundColorProperty: new Property( EESharedConstants.NON_GAME_SCREENS_BACKGROUND_COLOR ),
       homeScreenIcon: new ScreenIcon( new EENegativesIconNode(), {
         maxIconWidthProportion: 1,
