@@ -36,11 +36,11 @@ class CoinTerm {
    * @param {Property.<number>} valueProperty - value of the coin term wrapped in a property
    * @param {number} coinRadius - radius of the coin portion of the coin term, in view coordinates
    * @param {string} termText - textual representation, e.g. 'x', must be compatible with SubSupText
-   * @param {Property.<string>} termValueTextProperty
+   * @param {Property.<string>} termValueStringProperty
    * @param {CoinTermTypeID} typeID - type identifier for this coin term
    * @param {Object} [options]
    */
-  constructor( valueProperty, coinRadius, termText, termValueTextProperty, typeID, options ) {
+  constructor( valueProperty, coinRadius, termText, termValueStringProperty, typeID, options ) {
 
     this.id = `CT-${++creationCount}`; // @public (read-only) - unique ID useful for debugging
 
@@ -121,7 +121,7 @@ class CoinTerm {
     this.isConstant = typeID === CoinTermTypeID.CONSTANT;
 
     // @public (read-only) - a property which contains the text that should be shown when displaying term value
-    this.termValueTextProperty = termValueTextProperty;
+    this.termValueStringProperty = termValueStringProperty;
 
     // @public (read-only) {Array.<number>} - tracks what this coin term is composed of and what it can be broken down into
     this.composition = [];
@@ -386,7 +386,7 @@ class CoinTerm {
         this.valueProperty,
         this.coinRadius,
         this.termText,
-        this.termValueTextProperty,
+        this.termValueStringProperty,
         this.typeID,
         {
           initialCount: this.composition[ i ],

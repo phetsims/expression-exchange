@@ -128,7 +128,7 @@ class VariableCoinTermNode extends AbstractCoinTermNode {
         showCoinValuesProperty,
         coinTerm.totalCountProperty,
         coinTerm.valueProperty,
-        coinTerm.termValueTextProperty,
+        coinTerm.termValueStringProperty,
         coinTerm.showMinusSignWhenNegativeProperty,
         coinTerm.cardOpacityProperty,
         coinTerm.scaleProperty
@@ -239,7 +239,7 @@ class VariableCoinTermNode extends AbstractCoinTermNode {
     this.termText.visible = viewMode === ViewMode.VARIABLES && !showVariableValues;
 
     // term value text, which shows the variable values and operators such as exponents
-    let termValueText = this.coinTerm.termValueTextProperty.value;
+    let termValueText = this.coinTerm.termValueStringProperty.value;
     if ( this.coinTerm.totalCountProperty.get() === -1 && !showAllCoefficients &&
          this.coinTerm.showMinusSignWhenNegativeProperty.get() ) {
       // prepend a minus sign

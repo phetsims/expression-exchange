@@ -99,7 +99,7 @@ class CoinTermFactory {
     let valueProperty;
     let coinRadius;
     let termText;
-    let termValueTextProperty;
+    let termValueStringProperty;
 
     // set up the various values and properties based on the specified type ID
     switch( typeID ) {
@@ -108,56 +108,56 @@ class CoinTermFactory {
         valueProperty = this.xValueProperty;
         coinRadius = 22;
         termText = 'x';
-        termValueTextProperty = this.xValueStringProperty;
+        termValueStringProperty = this.xValueStringProperty;
         break;
 
       case CoinTermTypeID.Y:
         valueProperty = this.yValueProperty;
         coinRadius = 22;
         termText = 'y';
-        termValueTextProperty = this.yValueStringProperty;
+        termValueStringProperty = this.yValueStringProperty;
         break;
 
       case CoinTermTypeID.Z:
         valueProperty = this.zValueProperty;
         coinRadius = 25;
         termText = 'z';
-        termValueTextProperty = this.zValueStringProperty;
+        termValueStringProperty = this.zValueStringProperty;
         break;
 
       case CoinTermTypeID.X_TIMES_Y:
         valueProperty = this.xTimesYValueProperty;
         coinRadius = 25;
         termText = 'xy';
-        termValueTextProperty = this.xTimesYValueStringProperty;
+        termValueStringProperty = this.xTimesYValueStringProperty;
         break;
 
       case CoinTermTypeID.X_SQUARED:
         valueProperty = this.xSquaredValueProperty;
         coinRadius = 27;
         termText = 'x<sup>2</sup>';
-        termValueTextProperty = this.xSquaredValueStringProperty;
+        termValueStringProperty = this.xSquaredValueStringProperty;
         break;
 
       case CoinTermTypeID.Y_SQUARED:
         valueProperty = this.ySquaredValueProperty;
         coinRadius = 27;
         termText = 'y<sup>2</sup>';
-        termValueTextProperty = this.ySquaredValueStringProperty;
+        termValueStringProperty = this.ySquaredValueStringProperty;
         break;
 
       case CoinTermTypeID.X_SQUARED_TIMES_Y_SQUARED:
         valueProperty = this.xSquaredTimesYSquaredValueProperty;
         coinRadius = 28;
         termText = 'x<sup>2</sup>y<sup>2</sup>';
-        termValueTextProperty = this.xSquaredTimesYSquaredValueStringProperty;
+        termValueStringProperty = this.xSquaredTimesYSquaredValueStringProperty;
         break;
 
       case CoinTermTypeID.CONSTANT:
         valueProperty = CONSTANT_ONE_VALUE_PROPERTY;
         coinRadius = 20; // fairly arbitrary, since this should never end up being depicted as a coin
         termText = '1';
-        termValueTextProperty = CONSTANT_ONE_TEXT_VALUE_PROPERTY;
+        termValueStringProperty = CONSTANT_ONE_TEXT_VALUE_PROPERTY;
         break;
 
       default:
@@ -168,7 +168,7 @@ class CoinTermFactory {
       valueProperty,
       coinRadius,
       termText,
-      termValueTextProperty,
+      termValueStringProperty,
       typeID,
       options
     );

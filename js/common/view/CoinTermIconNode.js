@@ -86,8 +86,8 @@ class CoinTermIconNode extends Node {
     this.addChild( termWithVariableValuesText );
 
     // update the variable text when it changes, which is triggered by changes to the underlying variable values
-    coinTerm.termValueTextProperty.link( () => {
-      const termValueText = coinTerm.termValueTextProperty.value;
+    coinTerm.termValueStringProperty.link( () => {
+      const termValueText = coinTerm.termValueStringProperty.value;
       const sign = coinTerm.totalCountProperty.get() > 0 ? '' : MathSymbols.UNARY_MINUS;
       termWithVariableValuesText.text = sign + termValueText;
       termWithVariableValuesText.center = coinCenter;
