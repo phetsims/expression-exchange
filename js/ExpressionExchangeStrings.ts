@@ -5,44 +5,44 @@
  */
 /* eslint-disable */
 import getStringModule from '../../chipper/js/getStringModule.js';
-import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
+import LinkableProperty from '../../axon/js/LinkableProperty.js';
 import expressionExchange from './expressionExchange.js';
 
 type StringsType = {
   'coinValues': string;
-  'coinValuesStringProperty': TReadOnlyProperty<string>;
+  'coinValuesStringProperty': LinkableProperty<string>;
   'done': string;
-  'doneStringProperty': TReadOnlyProperty<string>;
+  'doneStringProperty': LinkableProperty<string>;
   'numberCentsPattern': string;
-  'numberCentsPatternStringProperty': TReadOnlyProperty<string>;
+  'numberCentsPatternStringProperty': LinkableProperty<string>;
   'expression-exchange': {
     'title': string;
-    'titleStringProperty': TReadOnlyProperty<string>;
+    'titleStringProperty': LinkableProperty<string>;
   };
   'explore': string;
-  'exploreStringProperty': TReadOnlyProperty<string>;
+  'exploreStringProperty': LinkableProperty<string>;
   'basics': string;
-  'basicsStringProperty': TReadOnlyProperty<string>;
+  'basicsStringProperty': LinkableProperty<string>;
   'negatives': string;
-  'negativesStringProperty': TReadOnlyProperty<string>;
+  'negativesStringProperty': LinkableProperty<string>;
   'game': string;
-  'gameStringProperty': TReadOnlyProperty<string>;
+  'gameStringProperty': LinkableProperty<string>;
   'myCollection': string;
-  'myCollectionStringProperty': TReadOnlyProperty<string>;
+  'myCollectionStringProperty': LinkableProperty<string>;
   'allCoefficients': string;
-  'allCoefficientsStringProperty': TReadOnlyProperty<string>;
+  'allCoefficientsStringProperty': LinkableProperty<string>;
   'total': string;
-  'totalStringProperty': TReadOnlyProperty<string>;
+  'totalStringProperty': LinkableProperty<string>;
   'variableValues': string;
-  'variableValuesStringProperty': TReadOnlyProperty<string>;
+  'variableValuesStringProperty': LinkableProperty<string>;
   'variables': string;
-  'variablesStringProperty': TReadOnlyProperty<string>;
+  'variablesStringProperty': LinkableProperty<string>;
   'levelNumberPattern': string;
-  'levelNumberPatternStringProperty': TReadOnlyProperty<string>;
+  'levelNumberPatternStringProperty': LinkableProperty<string>;
   'next': string;
-  'nextStringProperty': TReadOnlyProperty<string>;
+  'nextStringProperty': LinkableProperty<string>;
   'youCompletedAllLevels': string;
-  'youCompletedAllLevelsStringProperty': TReadOnlyProperty<string>;
+  'youCompletedAllLevelsStringProperty': LinkableProperty<string>;
 };
 
 const ExpressionExchangeStrings = getStringModule( 'EXPRESSION_EXCHANGE' ) as StringsType;
