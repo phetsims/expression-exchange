@@ -60,6 +60,7 @@ class ExpressionManipulationView extends Node {
     // add the buttons for ejecting expressions from the collection area, must be above the expressions in the z-order
     model.collectionAreas.forEach( collectionArea => {
       const undoButton = new UndoButton( {
+        baseColor: 'yellow',
         listener: () => { collectionArea.ejectCollectedItem(); },
         leftTop: collectionArea.bounds.leftTop
       } );
