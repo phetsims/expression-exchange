@@ -12,7 +12,7 @@ import merge from '../../../../phet-core/js/merge.js';
 import { Node, Path, PressListener } from '../../../../scenery/js/imports.js';
 import expressionExchange from '../../expressionExchange.js';
 import EECollectionAreaNode from '../../game/view/EECollectionAreaNode.js';
-import UndoButton from '../../game/view/UndoButton.js';
+import UndoButton from '../../../../scenery-phet/js/buttons/UndoButton.js';
 import CoinTermHaloNode from './CoinTermHaloNode.js';
 import ConstantCoinTermNode from './ConstantCoinTermNode.js';
 import ExpressionHintNode from './ExpressionHintNode.js';
