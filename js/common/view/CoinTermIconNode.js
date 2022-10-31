@@ -66,7 +66,7 @@ class CoinTermIconNode extends Node {
       maxWidth: maxTextWidth
     } );
     if ( coinTerm.totalCountProperty.get() < 0 ) {
-      termText.text = MathSymbols.UNARY_MINUS + termText.text;
+      termText.string = MathSymbols.UNARY_MINUS + termText.string;
     }
     termText.center = coinCenter;
     this.addChild( termText );
@@ -89,7 +89,7 @@ class CoinTermIconNode extends Node {
     coinTerm.termValueStringProperty.link( () => {
       const termValueText = coinTerm.termValueStringProperty.value;
       const sign = coinTerm.totalCountProperty.get() > 0 ? '' : MathSymbols.UNARY_MINUS;
-      termWithVariableValuesText.text = sign + termValueText;
+      termWithVariableValuesText.string = sign + termValueText;
       termWithVariableValuesText.center = coinCenter;
     } );
 

@@ -225,10 +225,10 @@ class VariableCoinTermNode extends AbstractCoinTermNode {
     if ( this.coinTerm.totalCountProperty.get() < 0 && !coefficientVisible &&
          this.coinTerm.showMinusSignWhenNegativeProperty.get() ) {
 
-      this.termText.text = MathSymbols.UNARY_MINUS + this.coinTerm.termText;
+      this.termText.string = MathSymbols.UNARY_MINUS + this.coinTerm.termText;
     }
     else {
-      this.termText.text = this.coinTerm.termText;
+      this.termText.string = this.coinTerm.termText;
     }
     this.termText.centerX = 0;
     this.termText.y = textBaseline * scale;
@@ -248,7 +248,7 @@ class VariableCoinTermNode extends AbstractCoinTermNode {
 
     if ( this.termWithVariableValuesText ) {
       this.termWithVariableValuesText.setScaleMagnitude( scale );
-      this.termWithVariableValuesText.text = termValueText;
+      this.termWithVariableValuesText.string = termValueText;
       this.termWithVariableValuesText.centerX = 0;
       this.termWithVariableValuesText.y = textBaseline * scale;
       this.termWithVariableValuesText.mouseArea = this.termWithVariableValuesText.localBounds
