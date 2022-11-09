@@ -9,10 +9,11 @@
 import Multilink from '../../../../axon/js/Multilink.js';
 import { Shape } from '../../../../kite/js/imports.js';
 import merge from '../../../../phet-core/js/merge.js';
+import UndoButton from '../../../../scenery-phet/js/buttons/UndoButton.js';
+import PhetColorScheme from '../../../../scenery-phet/js/PhetColorScheme.js';
 import { Node, Path, PressListener } from '../../../../scenery/js/imports.js';
 import expressionExchange from '../../expressionExchange.js';
 import EECollectionAreaNode from '../../game/view/EECollectionAreaNode.js';
-import UndoButton from '../../../../scenery-phet/js/buttons/UndoButton.js';
 import CoinTermHaloNode from './CoinTermHaloNode.js';
 import ConstantCoinTermNode from './ConstantCoinTermNode.js';
 import ExpressionHintNode from './ExpressionHintNode.js';
@@ -60,7 +61,7 @@ class ExpressionManipulationView extends Node {
     // add the buttons for ejecting expressions from the collection area, must be above the expressions in the z-order
     model.collectionAreas.forEach( collectionArea => {
       const undoButton = new UndoButton( {
-        baseColor: 'yellow',
+        baseColor: PhetColorScheme.BUTTON_YELLOW,
         listener: () => { collectionArea.ejectCollectedItem(); },
         leftTop: collectionArea.bounds.leftTop
       } );
@@ -240,8 +241,7 @@ class ExpressionManipulationView extends Node {
    * @public
    */
   getViewForCoinTerm( coinTerm ) {
-    const coinTermView = _.find( this.coinTermLayer.children, coinTermNode => coinTermNode.coinTerm === coinTerm );
-    return coinTermView;
+    return this.coinTermLayer.children.find( coinTermNode => coinTermNode.coinTerm === coinTerm );
   }
 }
 

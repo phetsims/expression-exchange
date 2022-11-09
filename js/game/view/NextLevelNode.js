@@ -2,6 +2,7 @@
 
 
 import FaceNode from '../../../../scenery-phet/js/FaceNode.js';
+import PhetColorScheme from '../../../../scenery-phet/js/PhetColorScheme.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import { Node, Text } from '../../../../scenery/js/imports.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
@@ -31,7 +32,7 @@ class NextLevelNode extends Node {
       centerX: faceNode.centerX,
       top: faceNode.bottom + 10,
       listener: listener,
-      baseColor: 'yellow'
+      baseColor: PhetColorScheme.BUTTON_YELLOW
     } );
 
     // add the push button
