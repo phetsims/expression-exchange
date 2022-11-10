@@ -10,7 +10,6 @@
  * cases.
  */
 
-import Emitter from '../../../../axon/js/Emitter.js';
 import Property from '../../../../axon/js/Property.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
@@ -64,7 +63,6 @@ class CoinTermCreatorNode extends Node {
     this.createdCoinTermInitialCount = options.createdCoinTermInitialCount;
 
     this.typeID = typeID; // @public (read-only) {CoinTermID}
-    this.disposeEmitter = new Emitter(); // @public (read-only)
 
     // add the individual coin term node(s)
     const coinTermNodes = [];
@@ -168,11 +166,6 @@ class CoinTermCreatorNode extends Node {
         coinTermNode.dispose();
       } );
       options.numberToShowProperty.unlink( numberToShowListener );
-
-      // this type emits an event upon disposal because it was needed to avoid memory leaks
-      this.disposeEmitter.emit();
-      this.disposeEmitter.removeAllListeners();
-      this.disposeEmitter.dispose();
     };
   }
 
