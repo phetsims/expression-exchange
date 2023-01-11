@@ -40,39 +40,15 @@ class CoinTermCreatorBox extends Node {
     // @public (read-only) {Array.<CoinTermTypeID>} - list of the coin term types present in this creator box
     this.coinTermTypeList = _.uniq( _.map( creatorNodes, 'typeID' ) );
 
-    // add the panel or carousel that will contain the various coin terms that the user can create
-    if ( creatorNodes.length > options.itemsPerCarouselPage ) {
-
-      // check options compatibility
-      assert && assert(
-        options.align === 'center',
-        'only center alignment is supported for creator boxes that use a carousel'
-      );
-
-      // @private {Node}
-      this.coinTermCreatorBox = new Carousel( creatorNodes, {
-        itemsPerPage: options.itemsPerCarouselPage,
-        spacing: options.itemSpacing,
-        cornerRadius: options.cornerRadius
-      } );
-    }
-    else {
-
-      // everything will fit on one page, so use a panel instead of a carousel
-      const coinTermCreatorHBox = new HBox( {
-        children: creatorNodes,
-        spacing: options.itemSpacing,
-        align: options.align,
-        resize: false
-      } );
-      // @private {Node}
-      this.coinTermCreatorBox = new Panel( coinTermCreatorHBox, {
-        cornerRadius: options.cornerRadius,
-        xMargin: 65, // empirically determined to be similar in appearance to carousels
-        yMargin: 14, // empirically determined to be similar in appearance to carousels
-        resize: false
-      } );
-    }
+    // @private {Node}
+    this.coinTermCreatorBox = new Carousel( creatorNodes.map( element => {
+      return { createNode: tandem => element };
+    } ), {
+      itemsPerPage: options.itemsPerCarouselPage,
+      spacing: options.itemSpacing,
+      margin: 14,
+      cornerRadius: options.cornerRadius
+    } );
     this.addChild( this.coinTermCreatorBox );
 
     this.mutate( options );
