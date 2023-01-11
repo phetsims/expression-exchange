@@ -10,9 +10,8 @@
  */
 
 import merge from '../../../../phet-core/js/merge.js';
-import { HBox, Node } from '../../../../scenery/js/imports.js';
+import { Node } from '../../../../scenery/js/imports.js';
 import Carousel from '../../../../sun/js/Carousel.js';
-import Panel from '../../../../sun/js/Panel.js';
 import expressionExchange from '../../expressionExchange.js';
 
 class CoinTermCreatorBox extends Node {
@@ -29,7 +28,6 @@ class CoinTermCreatorBox extends Node {
       itemsPerCarouselPage: 3,
       itemSpacing: 20, // empirically determined to work for most cases in this sim
       cornerRadius: 4,
-      staggeredCreatorNodes: false,
       align: 'center'
     }, options );
 
