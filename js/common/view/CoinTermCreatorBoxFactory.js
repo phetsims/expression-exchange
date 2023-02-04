@@ -153,7 +153,7 @@ const CoinTermCreatorBoxFactory = {
 
     options = merge( {
       itemsPerCarouselPage: creatorSetID === CoinTermCreatorSetID.VARIABLES ? 4 : 3,
-      itemSpacing: creatorSetID === CoinTermCreatorSetID.VARIABLES ? 35 : 40
+      itemSpacing: creatorSetID === CoinTermCreatorSetID.VARIABLES ? 5 : 10
     }, options );
 
     // create the list of creator nodes from the descriptor list
@@ -180,7 +180,7 @@ const CoinTermCreatorBoxFactory = {
    */
   createGameScreenCreatorBox( challengeDescriptor, model, view, options ) {
     options = merge( {
-      itemSpacing: 30,
+      itemSpacing: 5,
       align: 'top'
     }, options );
 
