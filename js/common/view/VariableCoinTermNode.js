@@ -212,7 +212,7 @@ class VariableCoinTermNode extends AbstractCoinTermNode {
 
     // update coin value text
     if ( this.coinValueText ) {
-      this.coinValueText.text = this.coinTerm.valueProperty.value;
+      this.coinValueText.string = this.coinTerm.valueProperty.value;
       this.coinValueText.centerX = this.coinTerm.coinRadius;
       this.coinValueText.centerY = this.coinTerm.coinRadius;
     }
@@ -261,7 +261,7 @@ class VariableCoinTermNode extends AbstractCoinTermNode {
 
     // coefficient value and visibility
     this.coefficientText.setScaleMagnitude( scale );
-    this.coefficientText.text = this.coinTerm.showMinusSignWhenNegativeProperty.get() ?
+    this.coefficientText.string = this.coinTerm.showMinusSignWhenNegativeProperty.get() ?
                                 this.coinTerm.totalCountProperty.get() :
                                 Math.abs( this.coinTerm.totalCountProperty.get() );
     this.coefficientText.visible = coefficientVisible;

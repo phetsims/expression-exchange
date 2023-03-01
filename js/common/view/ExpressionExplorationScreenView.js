@@ -106,10 +106,10 @@ class ExpressionExplorationScreenView extends ScreenView {
       [ model.totalValueProperty, model.viewModeProperty ],
       totalValue => {
         if ( model.viewModeProperty.get() === ViewMode.COINS ) {
-          totalValueText.text = StringUtils.fillIn( numberCentsPatternString, { number: totalValue } );
+          totalValueText.string = StringUtils.fillIn( numberCentsPatternString, { number: totalValue } );
         }
         else {
-          totalValueText.text = totalValue;
+          totalValueText.string = totalValue;
         }
       }
     );

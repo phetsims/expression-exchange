@@ -84,10 +84,10 @@ class ConstantCoinTermNode extends AbstractCoinTermNode {
         // update value text
         valueText.setScaleMagnitude( constantCoinTerm.scaleProperty.get() );
         if ( constantCoinTerm.showMinusSignWhenNegativeProperty.get() ) {
-          valueText.text = constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value;
+          valueText.string = constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value;
         }
         else {
-          valueText.text = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value );
+          valueText.string = Math.abs( constantCoinTerm.valueProperty.value * constantCoinTerm.totalCountProperty.value );
         }
 
         // update relative position
