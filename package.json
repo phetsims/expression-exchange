@@ -25,7 +25,13 @@
     },
     "simulation": true,
     "supportsOutputJS": true,
-    "published": true
+    "published": true,
+    "screenNameKeys": [
+      "EXPRESSION_EXCHANGE/basics",
+      "EXPRESSION_EXCHANGE/explore",
+      "EXPRESSION_EXCHANGE/negatives",
+      "EXPRESSION_EXCHANGE/game"
+    ]
   },
   "eslintConfig": {
     "extends": "../chipper/eslint/sim_eslintrc.js"
