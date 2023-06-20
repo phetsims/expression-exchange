@@ -5,44 +5,44 @@
  */
 /* eslint-disable */
 import getStringModule from '../../chipper/js/getStringModule.js';
-import LinkableProperty from '../../axon/js/LinkableProperty.js';
+import type LocalizedStringProperty from '../../chipper/js/LocalizedStringProperty.js';
 import expressionExchange from './expressionExchange.js';
 
 type StringsType = {
   'coinValues': string;
-  'coinValuesStringProperty': LinkableProperty<string>;
+  'coinValuesStringProperty': LocalizedStringProperty;
   'done': string;
-  'doneStringProperty': LinkableProperty<string>;
+  'doneStringProperty': LocalizedStringProperty;
   'numberCentsPattern': string;
-  'numberCentsPatternStringProperty': LinkableProperty<string>;
+  'numberCentsPatternStringProperty': LocalizedStringProperty;
   'expression-exchange': {
     'title': string;
-    'titleStringProperty': LinkableProperty<string>;
+    'titleStringProperty': LocalizedStringProperty;
   };
   'explore': string;
-  'exploreStringProperty': LinkableProperty<string>;
+  'exploreStringProperty': LocalizedStringProperty;
   'basics': string;
-  'basicsStringProperty': LinkableProperty<string>;
+  'basicsStringProperty': LocalizedStringProperty;
   'negatives': string;
-  'negativesStringProperty': LinkableProperty<string>;
+  'negativesStringProperty': LocalizedStringProperty;
   'game': string;
-  'gameStringProperty': LinkableProperty<string>;
+  'gameStringProperty': LocalizedStringProperty;
   'myCollection': string;
-  'myCollectionStringProperty': LinkableProperty<string>;
+  'myCollectionStringProperty': LocalizedStringProperty;
   'allCoefficients': string;
-  'allCoefficientsStringProperty': LinkableProperty<string>;
+  'allCoefficientsStringProperty': LocalizedStringProperty;
   'total': string;
-  'totalStringProperty': LinkableProperty<string>;
+  'totalStringProperty': LocalizedStringProperty;
   'variableValues': string;
-  'variableValuesStringProperty': LinkableProperty<string>;
+  'variableValuesStringProperty': LocalizedStringProperty;
   'variables': string;
-  'variablesStringProperty': LinkableProperty<string>;
+  'variablesStringProperty': LocalizedStringProperty;
   'levelNumberPattern': string;
-  'levelNumberPatternStringProperty': LinkableProperty<string>;
+  'levelNumberPatternStringProperty': LocalizedStringProperty;
   'next': string;
-  'nextStringProperty': LinkableProperty<string>;
+  'nextStringProperty': LocalizedStringProperty;
   'youCompletedAllLevels': string;
-  'youCompletedAllLevelsStringProperty': LinkableProperty<string>;
+  'youCompletedAllLevelsStringProperty': LocalizedStringProperty;
 };
 
 const ExpressionExchangeStrings = getStringModule( 'EXPRESSION_EXCHANGE' ) as StringsType;
