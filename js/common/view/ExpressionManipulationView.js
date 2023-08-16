@@ -9,7 +9,7 @@
 import Multilink from '../../../../axon/js/Multilink.js';
 import { Shape } from '../../../../kite/js/imports.js';
 import merge from '../../../../phet-core/js/merge.js';
-import UndoButton from '../../../../scenery-phet/js/buttons/UndoButton.js';
+import ReturnButton from '../../../../scenery-phet/js/buttons/ReturnButton.js';
 import PhetColorScheme from '../../../../scenery-phet/js/PhetColorScheme.js';
 import { Node, Path, PressListener } from '../../../../scenery/js/imports.js';
 import expressionExchange from '../../expressionExchange.js';
@@ -60,18 +60,18 @@ class ExpressionManipulationView extends Node {
 
     // add the buttons for ejecting expressions from the collection area, must be above the expressions in the z-order
     model.collectionAreas.forEach( collectionArea => {
-      const undoButton = new UndoButton( {
+      const returnButton = new ReturnButton( {
         baseColor: PhetColorScheme.BUTTON_YELLOW,
         listener: () => { collectionArea.ejectCollectedItem(); },
         leftTop: collectionArea.bounds.leftTop
       } );
-      this.addChild( undoButton );
+      this.addChild( returnButton );
 
       // control the visibility of the undo button
       Multilink.multilink(
         [ collectionArea.undoAllowedProperty, collectionArea.collectedItemProperty ],
         ( undoAllowed, collectedItem ) => {
-          undoButton.visible = undoAllowed && collectedItem !== null;
+          returnButton.visible = undoAllowed && collectedItem !== null;
         }
       );
     } );
