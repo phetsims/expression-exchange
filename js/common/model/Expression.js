@@ -72,7 +72,7 @@ class Expression {
     this.scaleProperty = new DerivedProperty( [ this.collectedProperty ], collected => collected ?
                                                                                        Math.min( EESharedConstants.COLLECTION_AREA_SIZE.width / this.widthProperty.get(), 1 ) * 0.9 :
                                                                                        1, {
-      accessNonDependencies: true
+      strictAxonDependencies: false
     } );
 
     //------------------------------------------------------------------------
