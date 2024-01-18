@@ -6,6 +6,8 @@
  *
  * Note the expression description string is re-parsed in this object because the expression description is in the
  * reduced form (no parens) and we need to handle subscripts and superscripts.
+ *
+ * @author John Blanco (PhET Interactive Simulations)
  */
 
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';

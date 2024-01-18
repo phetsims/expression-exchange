@@ -2,6 +2,8 @@
 
 /**
  * a node that allows the user to change the values of the variables that underlie the various coin terms
+ *
+ * @author John Blanco (PhET Interactive Simulations)
  */
 
 import merge from '../../../../phet-core/js/merge.js';

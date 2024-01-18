@@ -2,6 +2,8 @@
 
 /**
  * button used for putting expressions into edit mode
+ *
+ * @author John Blanco (PhET Interactive Simulations)
  */
 
 import merge from '../../../../phet-core/js/merge.js';

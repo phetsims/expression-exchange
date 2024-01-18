@@ -1,5 +1,8 @@
 // Copyright 2017-2022, University of Colorado Boulder
 
+/**
+ * @author John Blanco (PhET Interactive Simulations)
+ */
 
 import FaceNode from '../../../../scenery-phet/js/FaceNode.js';
 import PhetColorScheme from '../../../../scenery-phet/js/PhetColorScheme.js';

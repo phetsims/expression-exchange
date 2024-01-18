@@ -8,6 +8,8 @@
  * initial thoughts are that we would need to decide whether to extract much of the functionality into a base class
  * and derive subclasses to handle sim-specific behavior, or have some sort of options that could make it work in all
  * cases.
+ *
+ * @author John Blanco (PhET Interactive Simulations)
  */
 
 import Property from '../../../../axon/js/Property.js';

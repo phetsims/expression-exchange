@@ -3,6 +3,8 @@
 /**
  * a node that monitors the coin terms in the model and displays a summary of what has been created (a.k.a. "collected")
  * by the user
+ *
+ * @author John Blanco (PhET Interactive Simulations)
  */
 
 import merge from '../../../../phet-core/js/merge.js';

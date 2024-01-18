@@ -3,6 +3,8 @@
 /**
  * model element used in the game that represents the area where an expression or coin term can be collected if it
  * matches the collection specification
+ *
+ * @author John Blanco (PhET Interactive Simulations)
  */
 
 import Emitter from '../../../../axon/js/Emitter.js';
