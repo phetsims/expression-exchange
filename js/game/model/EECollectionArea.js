@@ -1,4 +1,4 @@
-// Copyright 2017-2020, University of Colorado Boulder
+// Copyright 2017-2024, University of Colorado Boulder
 
 /**
  * model element used in the game that represents the area where an expression or coin term can be collected if it
