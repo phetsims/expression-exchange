@@ -21,7 +21,7 @@
     "branch": "HEAD"
   },
   "expression-exchange": {
-    "sha": "283122d395330a14c7b2be9651195d7082129498",
+    "sha": "07c74bb66ebfc0e251cf187af16192f0337ff28c",
     "branch": "1.1"
   },
   "joist": {
@@ -37,7 +37,7 @@
     "branch": "HEAD"
   },
   "phetcommon": {
-    "sha": "aaec4f96d6bfbca69f3cffc587b828fe20e61316",
+    "sha": "b240d4ea00f4b8d0ecbcc94a358f594b881e825e",
     "branch": "HEAD"
   },
   "phetmarks": {
