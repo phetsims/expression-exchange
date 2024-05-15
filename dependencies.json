@@ -13,7 +13,7 @@
     "branch": "HEAD"
   },
   "chipper": {
-    "sha": "3f25690dae494d5f2bc4da4fac0f877db780bb39",
+    "sha": "3a098cdb1d252ee0477404c448385967e04e77d0",
     "branch": "HEAD"
   },
   "dot": {
@@ -21,7 +21,7 @@
     "branch": "HEAD"
   },
   "expression-exchange": {
-    "sha": "c5c162d68213387b63784747bbdfd29a37d0a115",
+    "sha": "5b8399497b991d8b9019eec92a26917698a8d965",
     "branch": "1.1"
   },
   "joist": {
