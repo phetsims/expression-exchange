@@ -71,9 +71,7 @@ class Expression {
     // @public (read-only) - scale, used to shrink the expression when it is collected or uncollected
     this.scaleProperty = new DerivedProperty( [ this.collectedProperty ], collected => collected ?
                                                                                        Math.min( EESharedConstants.COLLECTION_AREA_SIZE.width / this.widthProperty.get(), 1 ) * 0.9 :
-                                                                                       1, {
-      strictAxonDependencies: false //TODO https://github.com/phetsims/expression-exchange/issues/162
-    } );
+                                                                                       1 );
 
     //------------------------------------------------------------------------
     // observable arrays
