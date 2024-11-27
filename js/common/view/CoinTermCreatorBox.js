@@ -9,11 +9,11 @@
  * @author John Blanco
  */
 
+import Vector2 from '../../../../dot/js/Vector2.js';
+import { Shape } from '../../../../kite/js/imports.js';
 import merge from '../../../../phet-core/js/merge.js';
 import { Node, Rectangle } from '../../../../scenery/js/imports.js';
 import Carousel from '../../../../sun/js/Carousel.js';
-import { Shape } from '../../../../kite/js/imports.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
 import expressionExchange from '../../expressionExchange.js';
 
 class CoinTermCreatorBox extends Node {
