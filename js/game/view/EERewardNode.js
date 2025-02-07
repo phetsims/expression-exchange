@@ -10,7 +10,7 @@
 import FaceNode from '../../../../scenery-phet/js/FaceNode.js';
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import StarNode from '../../../../scenery-phet/js/StarNode.js';
-import { Text } from '../../../../scenery/js/imports.js';
+import Text from '../../../../scenery/js/nodes/Text.js';
 import RewardNode from '../../../../vegas/js/RewardNode.js';
 import CoinTermTypeID from '../../common/enum/CoinTermTypeID.js';
 import CoinNodeFactory from '../../common/view/CoinNodeFactory.js';

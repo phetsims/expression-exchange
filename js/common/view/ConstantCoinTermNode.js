@@ -8,7 +8,7 @@
 
 import Multilink from '../../../../axon/js/Multilink.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
-import { Text } from '../../../../scenery/js/imports.js';
+import Text from '../../../../scenery/js/nodes/Text.js';
 import expressionExchange from '../../expressionExchange.js';
 import ViewMode from '../enum/ViewMode.js';
 import AbstractCoinTermNode from './AbstractCoinTermNode.js';

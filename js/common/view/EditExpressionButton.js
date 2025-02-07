@@ -7,7 +7,9 @@
  */
 
 import merge from '../../../../phet-core/js/merge.js';
-import { Color, Node, Path } from '../../../../scenery/js/imports.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
+import Path from '../../../../scenery/js/nodes/Path.js';
+import Color from '../../../../scenery/js/util/Color.js';
 import exchangeAltSolidShape from '../../../../sherpa/js/fontawesome-5/exchangeAltSolidShape.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
 import expressionExchange from '../../expressionExchange.js';

@@ -6,7 +6,8 @@
  * @author John Blanco (PhET Interactive Simulations)
  */
 
-import { Node, Rectangle } from '../../../../scenery/js/imports.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
+import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import expressionExchange from '../../expressionExchange.js';
 import ExpressionDescriptionNode from './ExpressionDescriptionNode.js';
 

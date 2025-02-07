@@ -8,7 +8,7 @@
 
 import merge from '../../../../phet-core/js/merge.js';
 import ResetButton from '../../../../scenery-phet/js/buttons/ResetButton.js';
-import { VBox } from '../../../../scenery/js/imports.js';
+import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import expressionExchange from '../../expressionExchange.js';
 import LeftRightNumberSpinner from './LeftRightNumberSpinner.js';
 

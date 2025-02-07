@@ -7,11 +7,13 @@
  */
 
 import Multilink from '../../../../axon/js/Multilink.js';
-import { Shape } from '../../../../kite/js/imports.js';
+import Shape from '../../../../kite/js/Shape.js';
 import merge from '../../../../phet-core/js/merge.js';
 import ReturnButton from '../../../../scenery-phet/js/buttons/ReturnButton.js';
 import PhetColorScheme from '../../../../scenery-phet/js/PhetColorScheme.js';
-import { Node, Path, PressListener } from '../../../../scenery/js/imports.js';
+import PressListener from '../../../../scenery/js/listeners/PressListener.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
+import Path from '../../../../scenery/js/nodes/Path.js';
 import expressionExchange from '../../expressionExchange.js';
 import EECollectionAreaNode from '../../game/view/EECollectionAreaNode.js';
 import CoinTermHaloNode from './CoinTermHaloNode.js';

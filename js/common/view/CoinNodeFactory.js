@@ -6,8 +6,11 @@
  */
 
 import Vector2 from '../../../../dot/js/Vector2.js';
-import { Shape } from '../../../../kite/js/imports.js';
-import { Circle, Color, Image, Path } from '../../../../scenery/js/imports.js';
+import Shape from '../../../../kite/js/Shape.js';
+import Circle from '../../../../scenery/js/nodes/Circle.js';
+import Image from '../../../../scenery/js/nodes/Image.js';
+import Path from '../../../../scenery/js/nodes/Path.js';
+import Color from '../../../../scenery/js/util/Color.js';
 import coinX_png from '../../../images/coinX_png.js';
 import coinXBack_png from '../../../images/coinXBack_png.js';
 import coinXSquared_png from '../../../images/coinXSquared_png.js';

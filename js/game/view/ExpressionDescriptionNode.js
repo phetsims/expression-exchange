@@ -13,7 +13,9 @@
 import MathSymbolFont from '../../../../scenery-phet/js/MathSymbolFont.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
-import { HBox, RichText, Text } from '../../../../scenery/js/imports.js';
+import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
+import RichText from '../../../../scenery/js/nodes/RichText.js';
+import Text from '../../../../scenery/js/nodes/Text.js';
 import ViewMode from '../../common/enum/ViewMode.js';
 import CoinNodeFactory from '../../common/view/CoinNodeFactory.js';
 import expressionExchange from '../../expressionExchange.js';
