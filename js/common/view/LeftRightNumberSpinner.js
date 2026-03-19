@@ -17,7 +17,6 @@ import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import NumberSpinner from '../../../../sun/js/NumberSpinner.js';
-import expressionExchange from '../../expressionExchange.js';
 
 // constants
 const READOUT_FONT = new PhetFont( 16 );
@@ -64,7 +63,5 @@ class LeftRightNumberSpinner extends Node {
     } ) );
   }
 }
-
-expressionExchange.register( 'LeftRightNumberSpinner', LeftRightNumberSpinner );
 
 export default LeftRightNumberSpinner;

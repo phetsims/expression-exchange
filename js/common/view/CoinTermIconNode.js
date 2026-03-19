@@ -14,7 +14,6 @@ import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import expressionExchange from '../../expressionExchange.js';
 import ViewMode from '../enum/ViewMode.js';
 import CoinNodeFactory from './CoinNodeFactory.js';
 
@@ -103,7 +102,5 @@ class CoinTermIconNode extends Node {
     this.mutate( options );
   }
 }
-
-expressionExchange.register( 'CoinTermIconNode', CoinTermIconNode );
 
 export default CoinTermIconNode;

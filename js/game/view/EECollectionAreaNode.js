@@ -8,7 +8,6 @@
 
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
-import expressionExchange from '../../expressionExchange.js';
 import ExpressionDescriptionNode from './ExpressionDescriptionNode.js';
 
 // constants
@@ -63,7 +62,5 @@ class EECollectionAreaNode extends Node {
     } );
   }
 }
-
-expressionExchange.register( 'EECollectionAreaNode', EECollectionAreaNode );
 
 export default EECollectionAreaNode;

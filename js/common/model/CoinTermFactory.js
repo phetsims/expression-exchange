@@ -11,7 +11,6 @@
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Property from '../../../../axon/js/Property.js';
-import expressionExchange from '../../expressionExchange.js';
 import CoinTermTypeID from '../enum/CoinTermTypeID.js';
 import CoinTerm from './CoinTerm.js';
 
@@ -174,7 +173,5 @@ class CoinTermFactory {
     );
   }
 }
-
-expressionExchange.register( 'CoinTermFactory', CoinTermFactory );
 
 export default CoinTermFactory;

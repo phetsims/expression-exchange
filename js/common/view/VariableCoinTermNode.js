@@ -18,7 +18,6 @@ import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Animation from '../../../../twixt/js/Animation.js';
 import Easing from '../../../../twixt/js/Easing.js';
-import expressionExchange from '../../expressionExchange.js';
 import EEQueryParameters from '../EEQueryParameters.js';
 import ViewMode from '../enum/ViewMode.js';
 import AbstractCoinTermNode from './AbstractCoinTermNode.js';
@@ -390,7 +389,5 @@ class VariableCoinTermNode extends AbstractCoinTermNode {
     super.dispose();
   }
 }
-
-expressionExchange.register( 'VariableCoinTermNode', VariableCoinTermNode );
 
 export default VariableCoinTermNode;

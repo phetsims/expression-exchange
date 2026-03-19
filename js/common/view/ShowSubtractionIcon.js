@@ -12,7 +12,6 @@ import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import expressionExchange from '../../expressionExchange.js';
 
 // constants
 const MATH_FONT = new MathSymbolFont( { size: 21, weight: 'bold' } );
@@ -74,7 +73,5 @@ class TextWidthBackground extends Rectangle {
     this.mutate( options );
   }
 }
-
-expressionExchange.register( 'ShowSubtractionIcon', ShowSubtractionIcon );
 
 export default ShowSubtractionIcon;

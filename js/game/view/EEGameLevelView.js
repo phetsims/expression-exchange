@@ -20,7 +20,6 @@ import EEQueryParameters from '../../common/EEQueryParameters.js';
 import CoinTermCreatorBoxFactory from '../../common/view/CoinTermCreatorBoxFactory.js';
 import ExpressionManipulationView from '../../common/view/ExpressionManipulationView.js';
 import ShowSubtractionIcon from '../../common/view/ShowSubtractionIcon.js';
-import expressionExchange from '../../expressionExchange.js';
 import ExpressionExchangeStrings from '../../ExpressionExchangeStrings.js';
 import EERewardNode from './EERewardNode.js';
 import NextLevelNode from './NextLevelNode.js';
@@ -271,7 +270,5 @@ class EEGameLevelView extends Node {
     }
   }
 }
-
-expressionExchange.register( 'EEGameLevelView', EEGameLevelView );
 
 export default EEGameLevelView;

@@ -6,8 +6,6 @@
  * @author John Blanco
  */
 
-import expressionExchange from '../../expressionExchange.js';
-
 const ViewMode = {
   COINS: 'COINS',
   VARIABLES: 'VARIABLES'
@@ -15,7 +13,5 @@ const ViewMode = {
 
 // verify that enum is immutable, without the runtime penalty in production code
 if ( assert ) { Object.freeze( ViewMode ); }
-
-expressionExchange.register( 'ViewMode', ViewMode );
 
 export default ViewMode;

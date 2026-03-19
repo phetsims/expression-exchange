@@ -18,7 +18,6 @@ import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import ViewMode from '../../common/enum/ViewMode.js';
 import CoinNodeFactory from '../../common/view/CoinNodeFactory.js';
-import expressionExchange from '../../expressionExchange.js';
 
 // constants
 const COIN_ICON_RADIUS = 10;
@@ -185,7 +184,5 @@ function createExpressionFragment( expressionString, index ) {
   }
   return expressionFragment;
 }
-
-expressionExchange.register( 'ExpressionDescriptionNode', ExpressionDescriptionNode );
 
 export default ExpressionDescriptionNode;

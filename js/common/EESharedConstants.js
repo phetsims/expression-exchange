@@ -7,7 +7,6 @@
 
 import Dimension2 from '../../../dot/js/Dimension2.js';
 import Color from '../../../scenery/js/util/Color.js';
-import expressionExchange from '../expressionExchange.js';
 
 const EESharedConstants = {
 
@@ -36,7 +35,5 @@ const EESharedConstants = {
   // misc
   RESET_ALL_BUTTON_RADIUS: 24
 };
-
-expressionExchange.register( 'EESharedConstants', EESharedConstants );
 
 export default EESharedConstants;

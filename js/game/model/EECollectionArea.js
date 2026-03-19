@@ -13,7 +13,6 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import EESharedConstants from '../../common/EESharedConstants.js';
 import CoinTerm from '../../common/model/CoinTerm.js';
 import Expression from '../../common/model/Expression.js';
-import expressionExchange from '../../expressionExchange.js';
 
 // constants
 const REJECTED_ITEM_DISTANCE = 20; // empirically determined
@@ -199,7 +198,5 @@ class EECollectionArea {
     this.collectedItemProperty.reset();
   }
 }
-
-expressionExchange.register( 'EECollectionArea', EECollectionArea );
 
 export default EECollectionArea;

@@ -14,7 +14,6 @@ import AllowedRepresentations from '../common/enum/AllowedRepresentations.js';
 import CoinTermCreatorSetID from '../common/enum/CoinTermCreatorSetID.js';
 import ExpressionManipulationModel from '../common/model/ExpressionManipulationModel.js';
 import ExpressionExplorationScreenView from '../common/view/ExpressionExplorationScreenView.js';
-import expressionExchange from '../expressionExchange.js';
 import ExpressionExchangeStrings from '../ExpressionExchangeStrings.js';
 import EENegativesIconNode from './view/EENegativesIconNode.js';
 
@@ -41,5 +40,4 @@ class EENegativesScreen extends Screen {
   }
 }
 
-expressionExchange.register( 'EENegativesScreen', EENegativesScreen );
 export default EENegativesScreen;

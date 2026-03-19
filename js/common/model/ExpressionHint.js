@@ -6,8 +6,6 @@
  * @author John Blanco
  */
 
-import expressionExchange from '../../expressionExchange.js';
-
 class ExpressionHint {
 
   /**
@@ -60,7 +58,5 @@ class ExpressionHint {
     this.movingCoinTerm.breakApartAllowedProperty.set( true );
   }
 }
-
-expressionExchange.register( 'ExpressionHint', ExpressionHint );
 
 export default ExpressionHint;

@@ -10,7 +10,6 @@ import ScreenView from '../../../../joist/js/ScreenView.js';
 import Animation from '../../../../twixt/js/Animation.js';
 import Easing from '../../../../twixt/js/Easing.js';
 import GameAudioPlayer from '../../../../vegas/js/GameAudioPlayer.js';
-import expressionExchange from '../../expressionExchange.js';
 import EEGameModel from '../model/EEGameModel.js';
 import EEGameLevelIconFactory from './EEGameLevelIconFactory.js';
 import EEGameLevelView from './EEGameLevelView.js';
@@ -157,5 +156,4 @@ class EEGameScreenView extends ScreenView {
   }
 }
 
-expressionExchange.register( 'EEGameScreenView', EEGameScreenView );
 export default EEGameScreenView;

@@ -14,7 +14,6 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import RewardNode from '../../../../vegas/js/RewardNode.js';
 import CoinTermTypeID from '../../common/enum/CoinTermTypeID.js';
 import CoinNodeFactory from '../../common/view/CoinNodeFactory.js';
-import expressionExchange from '../../expressionExchange.js';
 
 // constants
 const NUMBER_OF_NODES = 60;
@@ -48,5 +47,4 @@ class EERewardNode extends RewardNode {
   }
 }
 
-expressionExchange.register( 'EERewardNode', EERewardNode );
 export default EERewardNode;

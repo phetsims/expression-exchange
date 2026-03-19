@@ -17,7 +17,6 @@ import LevelSelectionButton from '../../../../vegas/js/LevelSelectionButton.js';
 import ScoreDisplayStars from '../../../../vegas/js/ScoreDisplayStars.js';
 import VegasStrings from '../../../../vegas/js/VegasStrings.js';
 import EESharedConstants from '../../common/EESharedConstants.js';
-import expressionExchange from '../../expressionExchange.js';
 import EEGameModel from '../model/EEGameModel.js';
 
 const chooseYourLevelString = VegasStrings.chooseYourLevel;
@@ -119,7 +118,5 @@ class LevelSelectionNode extends Node {
     } );
   }
 }
-
-expressionExchange.register( 'LevelSelectionNode', LevelSelectionNode );
 
 export default LevelSelectionNode;

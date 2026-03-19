@@ -15,7 +15,6 @@ import merge from '../../../../phet-core/js/merge.js';
 import DragListener from '../../../../scenery/js/listeners/DragListener.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
-import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
 import BreakApartButton from './BreakApartButton.js';
 
@@ -411,7 +410,5 @@ AbstractCoinTermNode.BACKGROUND_CARD_HEIGHT_COIN_MODE = 70;
 
 // @public {number} - horizontal margin for card background
 AbstractCoinTermNode.BACKGROUND_CARD_X_MARGIN = 15;
-
-expressionExchange.register( 'AbstractCoinTermNode', AbstractCoinTermNode );
 
 export default AbstractCoinTermNode;

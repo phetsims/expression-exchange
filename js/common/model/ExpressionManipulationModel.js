@@ -17,7 +17,6 @@ import Bounds2 from '../../../../dot/js/Bounds2.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import merge from '../../../../phet-core/js/merge.js';
-import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
 import AllowedRepresentations from '../enum/AllowedRepresentations.js';
 import CoinTermTypeID from '../enum/CoinTermTypeID.js';
@@ -1307,7 +1306,5 @@ class ExpressionManipulationModel {
     return somethingIsUserControlled;
   }
 }
-
-expressionExchange.register( 'ExpressionManipulationModel', ExpressionManipulationModel );
 
 export default ExpressionManipulationModel;

@@ -13,7 +13,6 @@
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Property from '../../../../axon/js/Property.js';
 import merge from '../../../../phet-core/js/merge.js';
-import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
 import CoinTermCreatorSetID from '../enum/CoinTermCreatorSetID.js';
 import CoinTermTypeID from '../enum/CoinTermTypeID.js';
@@ -202,7 +201,5 @@ const CoinTermCreatorBoxFactory = {
     return new CoinTermCreatorBox( creatorNodes, options );
   }
 };
-
-expressionExchange.register( 'CoinTermCreatorBoxFactory', CoinTermCreatorBoxFactory );
 
 export default CoinTermCreatorBoxFactory;

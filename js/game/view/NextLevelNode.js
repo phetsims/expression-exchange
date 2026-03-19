@@ -10,7 +10,6 @@ import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
-import expressionExchange from '../../expressionExchange.js';
 import ExpressionExchangeStrings from '../../ExpressionExchangeStrings.js';
 
 // constants
@@ -45,7 +44,5 @@ class NextLevelNode extends Node {
     this.mutate( options );
   }
 }
-
-expressionExchange.register( 'NextLevelNode', NextLevelNode );
 
 export default NextLevelNode;

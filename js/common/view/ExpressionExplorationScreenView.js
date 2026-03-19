@@ -23,7 +23,6 @@ import AccordionBox from '../../../../sun/js/AccordionBox.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
 import Panel from '../../../../sun/js/Panel.js';
 import switchCoin_png from '../../../mipmaps/switchCoin_png.js';
-import expressionExchange from '../../expressionExchange.js';
 import ExpressionExchangeStrings from '../../ExpressionExchangeStrings.js';
 import EESharedConstants from '../EESharedConstants.js';
 import AllowedRepresentations from '../enum/AllowedRepresentations.js';
@@ -337,5 +336,4 @@ class ExpressionExplorationScreenView extends ScreenView {
   }
 }
 
-expressionExchange.register( 'ExpressionExplorationScreenView', ExpressionExplorationScreenView );
 export default ExpressionExplorationScreenView;

@@ -6,8 +6,6 @@
  * @author John Blanco
  */
 
-import expressionExchange from '../../expressionExchange.js';
-
 class AnimationSpec {
 
   /**
@@ -30,7 +28,5 @@ class AnimationSpec {
     this.timeSoFar = 0;
   }
 }
-
-expressionExchange.register( 'AnimationSpec', AnimationSpec );
 
 export default AnimationSpec;

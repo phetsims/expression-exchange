@@ -7,7 +7,6 @@
  */
 
 import CoinTermTypeID from '../../common/enum/CoinTermTypeID.js';
-import expressionExchange from '../../expressionExchange.js';
 
 class Term {
 
@@ -69,7 +68,5 @@ class Term {
     return this.coinTermTypeID === coinTerm.typeID && this.coefficient === coinTerm.totalCountProperty.get();
   }
 }
-
-expressionExchange.register( 'Term', Term );
 
 export default Term;

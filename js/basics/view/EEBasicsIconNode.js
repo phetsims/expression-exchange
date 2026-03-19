@@ -14,7 +14,6 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import EESharedConstants from '../../common/EESharedConstants.js';
 import CoinTermTypeID from '../../common/enum/CoinTermTypeID.js';
 import CoinNodeFactory from '../../common/view/CoinNodeFactory.js';
-import expressionExchange from '../../expressionExchange.js';
 
 // constants
 const ICON_SIZE = Screen.MINIMUM_HOME_SCREEN_ICON_SIZE;
@@ -54,7 +53,5 @@ class EEBasicsIconNode extends Rectangle {
     } ) );
   }
 }
-
-expressionExchange.register( 'EEBasicsIconNode', EEBasicsIconNode );
 
 export default EEBasicsIconNode;

@@ -25,7 +25,6 @@ import coinYSquared_png from '../../../images/coinYSquared_png.js';
 import coinYSquaredBack_png from '../../../images/coinYSquaredBack_png.js';
 import coinZ_png from '../../../images/coinZ_png.js';
 import coinZBack_png from '../../../images/coinZBack_png.js';
-import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
 import CoinTermTypeID from '../enum/CoinTermTypeID.js';
 
@@ -206,7 +205,5 @@ const CoinNodeFactory = {
     return iconNode;
   }
 };
-
-expressionExchange.register( 'CoinNodeFactory', CoinNodeFactory );
 
 export default CoinNodeFactory;

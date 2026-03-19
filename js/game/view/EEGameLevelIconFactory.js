@@ -12,7 +12,6 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import EESharedConstants from '../../common/EESharedConstants.js';
 import CoinTermTypeID from '../../common/enum/CoinTermTypeID.js';
 import CoinNodeFactory from '../../common/view/CoinNodeFactory.js';
-import expressionExchange from '../../expressionExchange.js';
 
 // constants
 const CARD_CORNER_ROUNDING = 4;
@@ -139,7 +138,5 @@ const EEGameLevelIconFactory = {
     return icon;
   }
 };
-
-expressionExchange.register( 'EEGameLevelIconFactory', EEGameLevelIconFactory );
 
 export default EEGameLevelIconFactory;

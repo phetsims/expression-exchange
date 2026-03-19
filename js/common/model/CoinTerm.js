@@ -15,7 +15,6 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import Vector2Property from '../../../../dot/js/Vector2Property.js';
 import merge from '../../../../phet-core/js/merge.js';
 import Easing from '../../../../twixt/js/Easing.js';
-import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
 import CoinTermTypeID from '../enum/CoinTermTypeID.js';
 import AnimationSpec from './AnimationSpec.js';
@@ -451,7 +450,5 @@ class CoinTerm {
     return this.existenceStrengthProperty.get() < 1;
   }
 }
-
-expressionExchange.register( 'CoinTerm', CoinTerm );
 
 export default CoinTerm;

@@ -9,7 +9,6 @@
 import Property from '../../../../axon/js/Property.js';
 import EEQueryParameters from '../../common/EEQueryParameters.js';
 import AllowedRepresentations from '../../common/enum/AllowedRepresentations.js';
-import expressionExchange from '../../expressionExchange.js';
 import EEChallengeDescriptors from './EEChallengeDescriptors.js';
 import EEGameLevel from './EEGameLevel.js';
 
@@ -132,7 +131,5 @@ EEGameModel.CHALLENGES_PER_LEVEL = CHALLENGES_PER_LEVEL;
 EEGameModel.MAX_SCORE_PER_LEVEL = MAX_SCORE_PER_LEVEL;
 EEGameModel.NUMBER_OF_LEVELS = NUMBER_OF_LEVELS;
 EEGameModel.POINTS_PER_CHALLENGE = POINTS_PER_CHALLENGE;
-
-expressionExchange.register( 'EEGameModel', EEGameModel );
 
 export default EEGameModel;

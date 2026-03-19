@@ -12,7 +12,6 @@ import Path from '../../../../scenery/js/nodes/Path.js';
 import Color from '../../../../scenery/js/util/Color.js';
 import scissorsShape from '../../../../sherpa/js/fontawesome-4/scissorsShape.js';
 import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
-import expressionExchange from '../../expressionExchange.js';
 
 // constants
 const MARGIN = 3.5;
@@ -78,5 +77,4 @@ function createIconNode( color ) {
   return iconNode;
 }
 
-expressionExchange.register( 'BreakApartButton', BreakApartButton );
 export default BreakApartButton;

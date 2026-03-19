@@ -15,7 +15,6 @@ import Shape from '../../../../kite/js/Shape.js';
 import DragListener from '../../../../scenery/js/listeners/DragListener.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
-import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
 import BreakApartButton from './BreakApartButton.js';
 import EditExpressionButton from './EditExpressionButton.js';
@@ -253,7 +252,5 @@ class ExpressionOverlayNode extends Node {
     super.dispose();
   }
 }
-
-expressionExchange.register( 'ExpressionOverlayNode', ExpressionOverlayNode );
 
 export default ExpressionOverlayNode;

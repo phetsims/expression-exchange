@@ -8,7 +8,6 @@
 
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import CoinTermTypeID from '../../common/enum/CoinTermTypeID.js';
-import expressionExchange from '../../expressionExchange.js';
 import ExpressionDescription from './ExpressionDescription.js';
 
 // The challenge set, organized as a 2D array where the first dimension is level, the second is challenge number.
@@ -580,7 +579,5 @@ const EEChallengeDescriptors = {
   //@public
   CHALLENGES_PER_LEVEL: 5
 };
-
-expressionExchange.register( 'EEChallengeDescriptors', EEChallengeDescriptors );
 
 export default EEChallengeDescriptors;

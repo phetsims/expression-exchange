@@ -11,7 +11,6 @@ import Property from '../../../../axon/js/Property.js';
 import AllowedRepresentations from '../../common/enum/AllowedRepresentations.js';
 import ViewMode from '../../common/enum/ViewMode.js';
 import ExpressionManipulationModel from '../../common/model/ExpressionManipulationModel.js';
-import expressionExchange from '../../expressionExchange.js';
 import EEChallengeDescriptors from './EEChallengeDescriptors.js';
 import EECollectionArea from './EECollectionArea.js';
 
@@ -141,7 +140,5 @@ class EEGameLevel extends ExpressionManipulationModel {
     ) );
   }
 }
-
-expressionExchange.register( 'EEGameLevel', EEGameLevel );
 
 export default EEGameLevel;

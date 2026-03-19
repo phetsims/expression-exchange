@@ -9,7 +9,6 @@
 
 import merge from '../../../../phet-core/js/merge.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
-import expressionExchange from '../../expressionExchange.js';
 import CoinTermIconNode from './CoinTermIconNode.js';
 
 // constants
@@ -105,7 +104,5 @@ class CollectionDisplayNode extends Node {
     } );
   }
 }
-
-expressionExchange.register( 'CollectionDisplayNode', CollectionDisplayNode );
 
 export default CollectionDisplayNode;

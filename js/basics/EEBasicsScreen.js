@@ -13,7 +13,6 @@ import EESharedConstants from '../common/EESharedConstants.js';
 import CoinTermCreatorSetID from '../common/enum/CoinTermCreatorSetID.js';
 import ExpressionManipulationModel from '../common/model/ExpressionManipulationModel.js';
 import ExpressionExplorationScreenView from '../common/view/ExpressionExplorationScreenView.js';
-import expressionExchange from '../expressionExchange.js';
 import ExpressionExchangeStrings from '../ExpressionExchangeStrings.js';
 import EEBasicsIconNode from './view/EEBasicsIconNode.js';
 
@@ -38,5 +37,4 @@ class EEBasicsScreen extends Screen {
   }
 }
 
-expressionExchange.register( 'EEBasicsScreen', EEBasicsScreen );
 export default EEBasicsScreen;

@@ -15,7 +15,6 @@ import merge from '../../../../phet-core/js/merge.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Carousel from '../../../../sun/js/Carousel.js';
-import expressionExchange from '../../expressionExchange.js';
 
 class CoinTermCreatorBox extends Node {
 
@@ -94,7 +93,5 @@ class CoinTermCreatorBox extends Node {
     super.dispose();
   }
 }
-
-expressionExchange.register( 'CoinTermCreatorBox', CoinTermCreatorBox );
 
 export default CoinTermCreatorBox;

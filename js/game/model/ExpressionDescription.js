@@ -9,7 +9,6 @@
  */
 
 import CoinTermTypeID from '../../common/enum/CoinTermTypeID.js';
-import expressionExchange from '../../expressionExchange.js';
 import Term from './Term.js';
 
 class ExpressionDescription {
@@ -242,7 +241,5 @@ function extractTerm( expressionString, index ) {
     newIndex: index + termString.length
   };
 }
-
-expressionExchange.register( 'ExpressionDescription', ExpressionDescription );
 
 export default ExpressionDescription;

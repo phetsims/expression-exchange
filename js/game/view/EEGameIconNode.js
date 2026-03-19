@@ -17,7 +17,6 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import EESharedConstants from '../../common/EESharedConstants.js';
 import CoinTermTypeID from '../../common/enum/CoinTermTypeID.js';
 import CoinNodeFactory from '../../common/view/CoinNodeFactory.js';
-import expressionExchange from '../../expressionExchange.js';
 
 // constants
 const BACKGROUND_COLOR = EESharedConstants.GAME_SCREEN_BACKGROUND_COLOR;
@@ -96,7 +95,5 @@ class EEGameIconNode extends Rectangle {
     } ) );
   }
 }
-
-expressionExchange.register( 'EEGameIconNode', EEGameIconNode );
 
 export default EEGameIconNode;

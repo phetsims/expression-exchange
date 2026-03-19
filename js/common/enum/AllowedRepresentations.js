@@ -6,8 +6,6 @@
  * @author John Blanco
  */
 
-import expressionExchange from '../../expressionExchange.js';
-
 const AllowedRepresentations = {
   COINS_ONLY: 'COINS_ONLY',
   VARIABLES_ONLY: 'VARIABLES_ONLY',
@@ -16,7 +14,5 @@ const AllowedRepresentations = {
 
 // verify that enum is immutable, without the runtime penalty in production code
 if ( assert ) { Object.freeze( AllowedRepresentations ); }
-
-expressionExchange.register( 'AllowedRepresentations', AllowedRepresentations );
 
 export default AllowedRepresentations;

@@ -18,7 +18,6 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import merge from '../../../../phet-core/js/merge.js';
 import DragListener from '../../../../scenery/js/listeners/DragListener.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
-import expressionExchange from '../../expressionExchange.js';
 import CoinTermTypeID from '../enum/CoinTermTypeID.js';
 import ConstantCoinTermNode from './ConstantCoinTermNode.js';
 import VariableCoinTermNode from './VariableCoinTermNode.js';
@@ -180,7 +179,5 @@ class CoinTermCreatorNode extends Node {
     super.dispose();
   }
 }
-
-expressionExchange.register( 'CoinTermCreatorNode', CoinTermCreatorNode );
 
 export default CoinTermCreatorNode;

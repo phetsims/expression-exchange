@@ -6,8 +6,6 @@
  * @author John Blanco
  */
 
-import expressionExchange from '../../expressionExchange.js';
-
 const CoinTermCreatorSetID = {
   BASICS: 'BASICS',
   EXPLORE: 'EXPLORE',
@@ -16,7 +14,5 @@ const CoinTermCreatorSetID = {
 
 // verify that enum is immutable, without the runtime penalty in production code
 if ( assert ) { Object.freeze( CoinTermCreatorSetID ); }
-
-expressionExchange.register( 'CoinTermCreatorSetID', CoinTermCreatorSetID );
 
 export default CoinTermCreatorSetID;

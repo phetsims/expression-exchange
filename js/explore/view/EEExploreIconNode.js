@@ -14,7 +14,6 @@ import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import EESharedConstants from '../../common/EESharedConstants.js';
-import expressionExchange from '../../expressionExchange.js';
 
 // constants
 const ICON_SIZE = Screen.MINIMUM_HOME_SCREEN_ICON_SIZE;
@@ -47,7 +46,5 @@ class EEExploreIconNode extends Rectangle {
     this.addChild( equationNode );
   }
 }
-
-expressionExchange.register( 'EEExploreIconNode', EEExploreIconNode );
 
 export default EEExploreIconNode;

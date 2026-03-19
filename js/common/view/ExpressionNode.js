@@ -18,7 +18,6 @@ import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
 
 // constants
@@ -214,7 +213,5 @@ class ExpressionNode extends Node {
     super.dispose();
   }
 }
-
-expressionExchange.register( 'ExpressionNode', ExpressionNode );
 
 export default ExpressionNode;

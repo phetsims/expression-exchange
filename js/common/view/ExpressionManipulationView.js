@@ -14,7 +14,6 @@ import PhetColorScheme from '../../../../scenery-phet/js/PhetColorScheme.js';
 import PressListener from '../../../../scenery/js/listeners/PressListener.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
-import expressionExchange from '../../expressionExchange.js';
 import EECollectionAreaNode from '../../game/view/EECollectionAreaNode.js';
 import CoinTermHaloNode from './CoinTermHaloNode.js';
 import ConstantCoinTermNode from './ConstantCoinTermNode.js';
@@ -246,7 +245,5 @@ class ExpressionManipulationView extends Node {
     return this.coinTermLayer.children.find( coinTermNode => coinTermNode.coinTerm === coinTerm );
   }
 }
-
-expressionExchange.register( 'ExpressionManipulationView', ExpressionManipulationView );
 
 export default ExpressionManipulationView;

@@ -16,7 +16,6 @@ import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Vector2Property from '../../../../dot/js/Vector2Property.js';
 import Easing from '../../../../twixt/js/Easing.js';
-import expressionExchange from '../../expressionExchange.js';
 import EESharedConstants from '../EESharedConstants.js';
 import AnimationSpec from './AnimationSpec.js';
 
@@ -791,7 +790,5 @@ class Expression {
     this.resizeNeeded = true;
   }
 }
-
-expressionExchange.register( 'Expression', Expression );
 
 export default Expression;

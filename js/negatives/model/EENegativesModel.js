@@ -9,7 +9,6 @@
 import AllowedRepresentations from '../../common/enum/AllowedRepresentations.js';
 import CoinTermCreatorSetID from '../../common/enum/CoinTermCreatorSetID.js';
 import ExpressionManipulationModel from '../../common/model/ExpressionManipulationModel.js';
-import expressionExchange from '../../expressionExchange.js';
 
 class EENegativesModel extends ExpressionManipulationModel {
 
@@ -24,7 +23,5 @@ class EENegativesModel extends ExpressionManipulationModel {
 
   }
 }
-
-expressionExchange.register( 'EENegativesModel', EENegativesModel );
 
 export default EENegativesModel;
