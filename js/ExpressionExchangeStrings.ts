@@ -50,4 +50,6 @@ type StringsType = {
 
 const ExpressionExchangeStrings = getStringModule( 'EXPRESSION_EXCHANGE' ) as StringsType;
 
+expressionExchange.register( 'ExpressionExchangeStrings', ExpressionExchangeStrings );
+
 export default ExpressionExchangeStrings;
